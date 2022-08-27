@@ -1,0 +1,81 @@
+:root {
+	--color-1: #149414;
+	--color-2: #0e6b0e;
+	--color-3: #649568;
+	--color-4: #9ccc9c;
+	--color-5: #2b5329;
+}
+
+body {
+	background-color: black;
+	color: white;
+}
+
+.carousel {
+	height: 100vh;
+	width: 100%;
+	overflow: hidden;
+}
+
+.carousel .carousel-inner {
+	height: 100%;
+}
+
+.carousel-item {
+	height: 100vh;
+}
+
+.color-1 {
+	color: #149414;
+}
+
+.color-2 {
+	color: #0e6b0e;
+}
+
+.color-3 {
+	color: #649568;
+}
+
+.color-4 {
+	color: #9ccc9c;
+}
+
+.color-5 {
+	color: #2b5329;
+}
+
+.move-center {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.game-board {
+	display: grid;
+	grid-template-rows: 100px 100px 100px;
+	grid-template-columns: 100px 100px 100px;
+	grid-gap: 10px;
+}
+
+.box {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 5px solid var(--color-4);
+	color: var(--color-4);
+	font-size: 50px;
+}
+
+.boxe {
+	background: var(--color-5);
+}
+
+.boxe:hover {
+	background: var(--color-1);
+}
+
+.xo-stats {
+	width: 320px;
+	text-align: center;
+}
