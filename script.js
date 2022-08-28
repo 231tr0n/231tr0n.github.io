@@ -1,3 +1,14 @@
+const prev_button = document.getElementById('prev');
+const next_button = document.getElementById('next');
+
+prev_button.onclick = () => {
+	prev_button.blur();
+};
+
+next_button.onclick = () => {
+	next_button.blur();
+};
+
 (() => {
 	const xobox = [];
 	const x = '❌';
@@ -50,6 +61,7 @@
 	};
 
 	const reset = () => {
+		restart.blur();
 		steps.length = 0;
 		game_over = false;
 		message.innerText = 'Best of Luck!';
@@ -154,6 +166,7 @@
 	};
 
 	const reset = () => {
+		restart.blur();
 		message.innerText = 'Best of Luck!';
 		game_over = false;
 		x = 0;
@@ -227,7 +240,8 @@
 						message.innerText = `Congratulations! The word is '${answer}'.`;
 						return;
 					}
-					if (!newline()) {
+					const new_word = newline();
+					if (!new_word) {
 						game_over = true;
 						message.innerText = `Well Tried! The word is '${answer}'.`;
 					}
