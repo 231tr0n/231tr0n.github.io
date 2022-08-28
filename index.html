@@ -16,22 +16,20 @@
 				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></button>
 				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></button>
 				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="3"></button>
 			</div>
 			<div class="carousel-inner">
 				<div class="carousel-item active">
-					<br>
-					<br>
-					<br>
-					<div class = 'move-center' id = 'introduction'>
+					<div class = 'd-flex h-100 align-items-center justify-content-center' id = 'introduction'>
 						<div class="card bg-transparent" style = 'width: 400px;'>
 							<img src="zeltron.jpg" class="card-img-top" alt="...">
 							<div class="card-body">
-								<h4 class="card-title text-center"><span class = 'badge bg-primary'>Srikar(231tr0n)</span></h4>
-								<p class="card-text alert alert-info">
+								<div class="card-text alert alert-info">
+									<h4 class="card-title text-center"><span class = 'badge bg-primary'>Srikar(231tr0n)</span></h4>
 									Hello, I am Srikar also known as 231tr0n. I am intrested in web development and security. I enjoy programming in golang and javascript.
 									I am also a linux user who enjoys hacking it to the core.
-								</p>
-								<div class = 'text-center'>
+								</div>
+								<div class = 'alert alert-success text-center'>
 									<span class="badge bg-success">Javascript(Nodejs)</span>
 									<span class="badge bg-success">Golang</span>
 									<span class="badge bg-success">Python</span>
@@ -40,8 +38,7 @@
 									<span class="badge bg-success">SQL and NoSQL</span>
 									<span class="badge bg-success">Docker</span>
 								</div>
-								<br>
-								<div class = 'text-center'>
+								<div class = 'alert alert-secondary text-center'>
 									<a href="mailto:zeltronsrikar@gmail.com"><span class="badge bg-secondary">E-Mail</span></a>
 									<a href="https://www.github.com/231tr0n"><span class="badge bg-secondary">Github</span></a>
 									<a href="https://www.gitlab.com/231tr0n"><span class="badge bg-secondary">Gitlab</span></a>
@@ -54,14 +51,30 @@
 					</div>
 				</div>
 				<div class="carousel-item">
-					<br>
-					<br>
-					<br>
-					<div class = 'move-center' id = 'tic-tac-toe'>
-						<div class = 'd-block' >
+					<div class = 'd-flex h-100 align-items-center justify-content-center' id = 'introduction'>
+						<div class="card bg-transparent" style = 'width: 400px;'>
+							<div class="card-body alert alert-info">
+								<ul class = 'list-group list-group-flush text-center'>
+									<li class="list-group-item bg-transparent"><h4 class="card-title text-center"><span class = 'badge bg-primary'>Coding inventions done so far</span></h4></li>
+									<li class="list-group-item bg-transparent"><a href="https://www.github.com/231tr0n/nodejs-proxy"><span class="badge bg-secondary">Proxy server written in nodejs</span></a></li>
+									<li class="list-group-item bg-transparent"><a href="https://www.github.com/231tr0n/pappu"><span class="badge bg-secondary">Discord Bot named Pappu</span></a></li>
+									<li class="list-group-item bg-transparent"><a href="https://www.github.com/231tr0n/custom-go-router"><span class="badge bg-secondary">Go HTTP Router</span></a></li>
+									<li class="list-group-item bg-transparent"><a href="https://231tr0n.github.io"><span class="badge bg-secondary">Personal Website</span></a></li>
+									<li class="list-group-item bg-transparent"><a href="https://www.github.com/231tr0n/config"><span class="badge bg-secondary">Dotfiles</span></a></li>
+									<li class="list-group-item bg-transparent"><a href="https://www.github.com/231tr0n/reinforcement-learning-for-pingpong"><span class="badge bg-secondary">Reinforcement Learning for Pingpong</span></a></li>
+									<li class="list-group-item bg-transparent"><a href="https://www.github.com/231tr0n/reinforcement-learning-for-snake-game"><span class="badge bg-secondary">Reinforcement Learning for Snake game</span></a></li>
+									<li class="list-group-item bg-transparent"><a href="https://github.com/231tr0n/hamiltonian-path-in-a-graph"><span class="badge bg-secondary">Finding Hamiltonian Path in a graph</span></a></li>
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="carousel-item">
+					<div class = 'd-flex h-100 justify-content-center align-items-center' id = 'tic-tac-toe'>
+						<div class = 'd-block'>
 							<h1 class="color-1 text-center">Tic-Tac-Toe</h1>
 							<br>
-							<div class='move-center'>
+							<div class='d-flex justify-content-center align-items-center'>
 								<div class="game-board" id = 'game-board'>
 									<div class="box" id='00'></div>
 									<div class="box" id='01'></div>
@@ -75,8 +88,8 @@
 								</div>
 							</div>
 							<br>
-							<div class = 'move-center'>
-								<div class = 'xo-stats'>
+							<div class = 'd-flex justify-content-center align-items-center'>
+								<div class = 'xo-stats text-center'>
 									<div class = 'alert alert-success' id = 'message'>Best of Luck!</div>
 									<button type="button" class="btn btn-success" id = 'restart'>Restart</button>
 								</div>
@@ -85,10 +98,7 @@
 					</div>
 				</div>
 				<div class="carousel-item">
-					<br>
-					<br>
-					<br>
-					<div class = 'move-center' id = 'wordle'>
+					<div class = 'd-flex h-100 justify-content-center align-items-center' id = 'wordle'>
 						<div class = 'd-block'>
 							<h1 class="color-1 text-center">Wordle</h1>
 							<br>
@@ -125,8 +135,8 @@
 								<div class="character" id='w54'></div>
 							</div>
 							<br>
-							<div class = 'move-center'>
-								<div class = 'wordle-stats'>
+							<div class = 'd-flex justify-content-center align-items-center'>
+								<div class = 'wordle-stats text-center'>
 									<div class = 'alert alert-success' id = 'message1'>Best of Luck!</div>
 									<button type="button" class="btn btn-success" id = 'restart1'>Restart</button>
 								</div>

@@ -193,15 +193,17 @@ next_button.onclick = () => {
 		const test = answer.toUpperCase().split('');
 		for (let j = 0; j < 5; j ++) {
 			const temp = getter(x, j);
-			if (answer[j] == temp) {
+			if (test[j] == temp) {
 				csetter(x, j, '#538d4e');
-				test.splice(j, 1);
+				test[j] = '';
 				score += 1;
-			} else {
-				if (test.includes(temp)) {
-					csetter(x, j, '#b59f3b');
-					test.splice(test.indexOf(temp), 1);
-				}
+			}
+		}
+		for (let j = 0; j < 5; j ++) {
+			const temp = getter(x, j);
+			if (test.includes(temp)) {
+				csetter(x, j, '#b59f3b');
+				test[test.indexOf(temp)] = '';
 			}
 		}
 		return score;

@@ -14,16 +14,6 @@ body {
 	color: white;
 }
 
-.carousel {
-	height: 100vh;
-	width: 100%;
-	overflow: hidden;
-}
-
-.carousel .carousel-inner {
-	height: 100%;
-}
-
 .carousel-item {
 	height: 100vh;
 }
@@ -46,12 +36,6 @@ body {
 
 .color-5 {
 	color: #2b5329;
-}
-
-.move-center {
-	display: flex;
-	justify-content: center;
-	align-items: center;
 }
 
 .game-board {
@@ -94,10 +78,8 @@ body {
 
 .xo-stats {
 	width: 320px;
-	text-align: center;
 }
 
 .wordle-stats {
 	width: 290px;
-	text-align: center;
 }
