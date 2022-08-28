@@ -2,10 +2,10 @@
 	"env": {
 		"browser": true,
 		"commonjs": true,
-		"es2021": true,
-		"node": true
+		"es2021": true
 	},
 	"globals": {
+		"bootstrap": "readable"
 	},
 	"extends": [
 		"airbnb-base"
@@ -80,6 +80,9 @@
 			"off"
 		],
 		"no-continue": [
+			"off"
+		],
+		"no-lonely-if": [
 			"off"
 		]
 	}

@@ -43,36 +43,49 @@
 		return false;
 	};
 
+	const getter = (i, j) => xobox[i][j].innerText;
+
+	const setter = (i, j, value) => {
+		xobox[i][j].innerText = value;
+	};
+
 	const reset = () => {
 		steps.length = 0;
 		game_over = false;
 		message.innerText = 'Best of Luck!';
 		for (let i = 0; i < 3; i ++) {
 			for (let j = 0; j < 3; j ++) {
-				xobox[i][j].innerText = '';
+				setter(i, j, '');
 			}
 		}
 		turn = x;
 	};
 
 	const predict_winner = () => {
-		if (game_over) {
-			if (steps.length != 9) {
-				message.innerText = `Congratulations! ${turn} won.`;
-			} else {
-				message.innerText = 'It\'s a tie!';
-				game_over = true;
-			}
+		if (check()) {
+			message.innerText = `Congratulations! ${turn} won.`;
+			game_over = true;
+			return true;
 		}
+		if (steps.length == 9) {
+			message.innerText = 'It\'s a tie!';
+			game_over = true;
+			return true;
+		}
+		game_over = false;
+		return false;
 	};
 
 	const next = (i, j) => {
-		if (xobox[i][j].innerText == '') {
-			predict_winner();
-			xobox[i][j].innerText = turn;
+		if (getter(i, j) == '') {
+			if (predict_winner()) {
+				return;
+			}
+			setter(i, j, turn);
 			steps.push([i, j, turn]);
-			game_over = check();
-			predict_winner();
+			if (predict_winner()) {
+				return;
+			}
 			if (turn == x) {
 				turn = o;
 			} else {
@@ -85,7 +98,7 @@
 		if (!game_over) {
 			if (steps.length > 0) {
 				const temp = steps.pop();
-				xobox[temp[0]][temp[1]].innerText = '';
+				setter(temp[0], temp[1], '');
 				turn = temp[2];
 			}
 		}
@@ -95,58 +108,136 @@
 		reset();
 	};
 
-	xobox[0][0].onclick = () => {
-		next(0, 0);
+	for (let i = 0; i < 3; i ++) {
+		for (let j = 0; j < 3; j ++) {
+			(() => {
+				xobox[i][j].onclick = () => {
+					next(i, j);
+				};
+				xobox[i][j].ondblclick = () => {
+					prev();
+				};
+			})();
+		}
+	}
+})();
+
+(() => {
+	const message = document.getElementById('message1');
+	const restart = document.getElementById('restart1');
+	const answer = 'POWER';
+	const matrix = [];
+	let game_over = false;
+	let x = 0;
+	let y = 0;
+
+	for (let i = 0; i < 6; i ++) {
+		matrix.push([]);
+		for (let j = 0; j < 5; j ++) {
+			matrix[i][j] = document.getElementById(`w${i}${j}`);
+			matrix[i][j].innerText = '';
+		}
+	}
+
+	const setter = (i, j, value) => {
+		matrix[i][j].innerText = value.toUpperCase();
 	};
-	xobox[0][1].onclick = () => {
-		next(0, 1);
+
+	const csetter = (i, j, color) => {
+		matrix[i][j].style.backgroundColor = color;
 	};
-	xobox[0][2].onclick = () => {
-		next(0, 2);
+
+	const getter = (i, j) => matrix[i][j].innerText;
+
+	const updater = (value) => {
+		matrix[x][y].innerText = value.toUpperCase();
 	};
-	xobox[1][0].onclick = () => {
-		next(1, 0);
+
+	const reset = () => {
+		message.innerText = 'Best of Luck!';
+		game_over = false;
+		x = 0;
+		y = 0;
+		for (let i = 0; i < 6; i ++) {
+			for (let j = 0; j < 5; j ++) {
+				setter(i, j, '');
+				csetter(i, j, '#212529');
+			}
+		}
 	};
-	xobox[1][1].onclick = () => {
-		next(1, 1);
+
+	const newline = () => {
+		if (x < 5) {
+			x += 1;
+			y = 0;
+			return true;
+		}
+		return false;
 	};
-	xobox[1][2].onclick = () => {
-		next(1, 2);
+
+	const check = () => {
+		let score = 0;
+		const test = answer.toUpperCase().split('');
+		for (let j = 0; j < 5; j ++) {
+			const temp = getter(x, j);
+			if (answer[j] == temp) {
+				csetter(x, j, '#538d4e');
+				test.splice(j, 1);
+				score += 1;
+			} else {
+				if (test.includes(temp)) {
+					csetter(x, j, '#b59f3b');
+					test.splice(test.indexOf(temp), 1);
+				}
+			}
+		}
+		return score;
 	};
-	xobox[2][0].onclick = () => {
-		next(2, 0);
+
+	const increment = () => {
+		if (y < 5) {
+			y += 1;
+			return true;
+		}
+		return false;
 	};
-	xobox[2][1].onclick = () => {
-		next(2, 1);
+
+	const decrement = () => {
+		if (y > 0) {
+			y -= 1;
+			return true;
+		}
+		return false;
 	};
-	xobox[2][2].onclick = () => {
-		next(2, 2);
+
+	restart.onclick = () => {
+		reset();
 	};
-	xobox[0][0].ondblclick = () => {
-		prev();
-	};
-	xobox[0][1].ondblclick = () => {
-		prev();
-	};
-	xobox[0][2].ondblclick = () => {
-		prev();
-	};
-	xobox[1][0].ondblclick = () => {
-		prev();
-	};
-	xobox[1][1].ondblclick = () => {
-		prev();
-	};
-	xobox[1][2].ondblclick = () => {
-		prev();
-	};
-	xobox[2][0].ondblclick = () => {
-		prev();
-	};
-	xobox[2][1].ondblclick = () => {
-		prev();
-	};
-	xobox[2][2].ondblclick = () => {
-		prev();
-	};
+
+	document.addEventListener('keydown', (event) => {
+		if (!game_over) {
+			if (event.key == 'Backspace') {
+				decrement();
+				updater('');
+			} else if (event.key == 'Enter') {
+				if (y == 5) {
+					const score = check();
+					if (score == 5) {
+						game_over = true;
+						message.innerText = `Congratulations! The word is '${answer}'.`;
+						return;
+					}
+					if (!newline()) {
+						game_over = true;
+						message.innerText = `Well Tried! The word is '${answer}'.`;
+					}
+				}
+			} else if (event.key.toUpperCase() !== event.key.toLowerCase() && event.key.length == 1) {
+				if (y < 5) {
+					updater(event.key.toUpperCase());
+					increment();
+				}
+			}
+		}
+	});
 })();

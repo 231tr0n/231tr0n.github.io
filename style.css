@@ -4,6 +4,9 @@
 	--color-3: #649568;
 	--color-4: #9ccc9c;
 	--color-5: #2b5329;
+	--color-position-wrong: #b59f3b;
+	--color-position-right: #538d4e;
+	--color-letter-wrong: #212529;
 }
 
 body {
@@ -58,6 +61,13 @@ body {
 	grid-gap: 10px;
 }
 
+.wordle-grid {
+	display: grid;
+	grid-template-rows: 50px 50px 50px 50px 50px 50px;
+	grid-template-columns: 50px 50px 50px 50px 50px;
+	grid-gap: 10px;
+}
+
 .box {
 	display: flex;
 	justify-content: center;
@@ -65,17 +75,29 @@ body {
 	border: 5px solid var(--color-4);
 	color: var(--color-4);
 	font-size: 50px;
-}
-
-.boxe {
 	background: var(--color-5);
 }
 
-.boxe:hover {
+.box:hover {
 	background: var(--color-1);
+}
+
+.character {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border: 1px solid var(--color-4);
+	color: white;
+	background-color: var(--color-letter-wrong);
+	font-size: 20px;
 }
 
 .xo-stats {
 	width: 320px;
+	text-align: center;
+}
+
+.wordle-stats {
+	width: 290px;
 	text-align: center;
 }

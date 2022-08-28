@@ -11,10 +11,11 @@
 		</title>
 	</head>
 	<body>
-		<div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="true">
+		<div id="carouselExampleIndicators" class="carousel slide" data-bs-interval="false" data-bs-ride="false" data-bs-keyboard="false">
 			<div class="carousel-indicators">
-				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1"></button>
+				<button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2"></button>
 			</div>
 			<div class="carousel-inner">
 				<div class="carousel-item active">
@@ -22,18 +23,32 @@
 					<br>
 					<br>
 					<div class = 'move-center'>
-						<div class="card bg-dark" style = 'width: 30vw;'>
+						<div class="card bg-transparent" style = 'width: 400px;'>
 							<img src="zeltron.jpg" class="card-img-top" alt="...">
 							<div class="card-body">
-								<h5 class="card-title color-1">Srikar(231tr0n)</h5>
-								<p class="card-text color-4">Hello, I am Srikar also known as 231tr0n. I am intrested in web development and security. I enjoy programming in golang and javascript.</p>
-								<ul>
-									<li><strong>Gmail:</strong> zeltronsrikar@gmail.com<br /></li>
-									<li><strong>Github:</strong> <a href="https://www.github.com/231tr0n">https://www.github.com/231tr0n</a><br /></li>
-									<li><strong>LinkedIn:</strong> <a href="https://www.linkedin.com/in/231tr0n">https://www.linkedin.com/in/231tr0n</a><br /></li>
-									<li><strong>Twitter:</strong> <a href="https://www.twitter.com/231tr0n">https://www.twitter.com/231tr0n</a><br /></li>
-									<li><strong>Website:</strong> <a href="https://231tr0n.github.io">https://231tr0n.github.io</a><br /></li>
-								</ul>
+								<h4 class="card-title text-center"><span class = 'badge bg-primary'>Srikar(231tr0n)</span></h4>
+								<p class="card-text alert alert-info">
+									Hello, I am Srikar also known as 231tr0n. I am intrested in web development and security. I enjoy programming in golang and javascript.
+									I am also a linux user who enjoys hacking it to the core.
+								</p>
+								<div class = 'text-center'>
+									<span class="badge bg-success">Javascript(Nodejs)</span>
+									<span class="badge bg-success">Golang</span>
+									<span class="badge bg-success">Python</span>
+									<span class="badge bg-success">Java</span>
+									<span class="badge bg-success">C/C++</span>
+									<span class="badge bg-success">SQL and NoSQL</span>
+									<span class="badge bg-success">Docker</span>
+								</div>
+								<br>
+								<div class = 'text-center'>
+									<a href="mailto:zeltronsrikar@gmail.com"><span class="badge bg-secondary">E-Mail</span></a>
+									<a href="https://www.github.com/231tr0n"><span class="badge bg-secondary">Github</span></a>
+									<a href="https://www.gitlab.com/231tr0n"><span class="badge bg-secondary">Gitlab</span></a>
+									<a href="https://www.linkedin.com/in/231tr0n"><span class="badge bg-secondary">LinkedIn</span></a>
+									<a href="https://www.twitter.com/231tr0n"><span class="badge bg-secondary">Twitter</span></a>
+									<a href="https://231tr0n.github.io"><span class="badge bg-secondary">Website</span></a>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -43,29 +58,78 @@
 					<br>
 					<br>
 					<div class = 'move-center'>
-						<div id = 'xo-game' class="card bg-dark" style = 'width: 30%;'>
-							<div class="card-body">
-								<h1 class="card-title color-1 text-center">Tic-Tac-Toe</h1>
-								<div class='container move-center'>
-									<div class="game-board" id = 'game-board'>
-										<div class="box boxe" id='00'></div>
-										<div class="box boxe" id='01'></div>
-										<div class="box boxe" id='02'></div>
-										<div class="box boxe" id='10'></div>
-										<div class="box boxe" id='11'></div>
-										<div class="box boxe" id='12'></div>
-										<div class="box boxe" id='20'></div>
-										<div class="box boxe" id='21'></div>
-										<div class="box boxe" id='22'></div>
-									</div>
+						<div style = 'display: block;'>
+							<h1 class="color-1 text-center">Tic-Tac-Toe</h1>
+							<br>
+							<div class='move-center'>
+								<div class="game-board" id = 'game-board'>
+									<div class="box" id='00'></div>
+									<div class="box" id='01'></div>
+									<div class="box" id='02'></div>
+									<div class="box" id='10'></div>
+									<div class="box" id='11'></div>
+									<div class="box" id='12'></div>
+									<div class="box" id='20'></div>
+									<div class="box" id='21'></div>
+									<div class="box" id='22'></div>
 								</div>
-								<br>
-								<div class = 'move-center'>
-									<div class = 'xo-stats'>
-										<div class = 'alert alert-success' id = 'message'>Best of Luck!</div>
-										<button type="button" class="btn btn-success" id = 'restart'>Restart</button>
-									</div>
+							</div>
+							<br>
+							<div class = 'move-center'>
+								<div class = 'xo-stats'>
+									<div class = 'alert alert-success' id = 'message'>Best of Luck!</div>
+									<button type="button" class="btn btn-success" id = 'restart'>Restart</button>
 								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="carousel-item">
+					<br>
+					<br>
+					<br>
+					<div style = 'display: block;'>
+						<h1 class="color-1 text-center">Wordle</h1>
+						<br>
+						<div class = 'move-center'>
+							<div class="wordle-grid" id = 'wordle-grid'>
+								<div class="character" id='w00'></div>
+								<div class="character" id='w01'></div>
+								<div class="character" id='w02'></div>
+								<div class="character" id='w03'></div>
+								<div class="character" id='w04'></div>
+								<div class="character" id='w10'></div>
+								<div class="character" id='w11'></div>
+								<div class="character" id='w12'></div>
+								<div class="character" id='w13'></div>
+								<div class="character" id='w14'></div>
+								<div class="character" id='w20'></div>
+								<div class="character" id='w21'></div>
+								<div class="character" id='w22'></div>
+								<div class="character" id='w23'></div>
+								<div class="character" id='w24'></div>
+								<div class="character" id='w30'></div>
+								<div class="character" id='w31'></div>
+								<div class="character" id='w32'></div>
+								<div class="character" id='w33'></div>
+								<div class="character" id='w34'></div>
+								<div class="character" id='w40'></div>
+								<div class="character" id='w41'></div>
+								<div class="character" id='w42'></div>
+								<div class="character" id='w43'></div>
+								<div class="character" id='w44'></div>
+								<div class="character" id='w50'></div>
+								<div class="character" id='w51'></div>
+								<div class="character" id='w52'></div>
+								<div class="character" id='w53'></div>
+								<div class="character" id='w54'></div>
+							</div>
+						</div>
+						<br>
+						<div class = 'move-center'>
+							<div class = 'wordle-stats'>
+								<div class = 'alert alert-success' id = 'message1'>Best of Luck!</div>
+								<button type="button" class="btn btn-success" id = 'restart1'>Restart</button>
 							</div>
 						</div>
 					</div>
