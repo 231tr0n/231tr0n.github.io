@@ -16,6 +16,7 @@ next_button.onclick = () => {
 	let turn = x;
 	const steps = [];
 	let game_over = false;
+	const grid = document.getElementById('game-board');
 	const message = document.getElementById('message');
 	const restart = document.getElementById('restart');
 
@@ -124,9 +125,11 @@ next_button.onclick = () => {
 		for (let j = 0; j < 3; j ++) {
 			(() => {
 				xobox[i][j].onclick = () => {
+					grid.focus();
 					next(i, j);
 				};
 				xobox[i][j].ondblclick = () => {
+					grid.focus();
 					prev();
 				};
 			})();
@@ -135,6 +138,7 @@ next_button.onclick = () => {
 })();
 
 (() => {
+	const grid = document.getElementById('wordle-grid');
 	const message = document.getElementById('message1');
 	const restart = document.getElementById('restart1');
 	const answer = 'POWER';
@@ -230,6 +234,7 @@ next_button.onclick = () => {
 	};
 
 	document.addEventListener('keydown', (event) => {
+		grid.focus();
 		if (!game_over) {
 			if (event.key == 'Backspace') {
 				decrement();
