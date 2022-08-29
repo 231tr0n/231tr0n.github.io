@@ -63,6 +63,7 @@ next_button.onclick = () => {
 
 	const reset = () => {
 		restart.blur();
+		grid.focus();
 		steps.length = 0;
 		game_over = false;
 		message.innerText = 'Best of Luck!';
@@ -171,6 +172,7 @@ next_button.onclick = () => {
 
 	const reset = () => {
 		restart.blur();
+		grid.focus();
 		message.innerText = 'Best of Luck!';
 		game_over = false;
 		x = 0;
