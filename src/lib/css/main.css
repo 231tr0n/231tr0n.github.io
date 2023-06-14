@@ -1,0 +1,44 @@
+:root {
+  --color-dark-background: #1a1a1a;
+  --color-dark-foreground: #cccccc;
+  /* --color-dark-component: #2e2e2e; */
+  --color-dark-component: #3a3c3b;
+  --color-light-background: #ffffff;
+  --color-light-foreground: #454545;
+  --color-light-component: #c1c1c1;
+}
+
+body {
+  padding: 0px;
+  margin: 0px;
+}
+
+@font-face {
+  font-family: HurmitNerdFontMono-Bold;
+  src: url("/fonts/HurmitNerdFontMono-Bold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: HurmitNerdFontMono-BoldItalic;
+  src: url("/fonts/HurmitNerdFontMono-BoldItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: HurmitNerdFontMono-Italic;
+  src: url("/fonts/HurmitNerdFontMono-Italic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: HurmitNerdFontMono-LightItalic;
+  src: url("/fonts/HurmitNerdFontMono-LightItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: HurmitNerdFontMono-Light;
+  src: url("/fonts/HurmitNerdFontMono-Light.otf") format("opentype");
+}
+
+@font-face {
+  font-family: HurmitNerdFontMono-Regular;
+  src: url("/fonts/HurmitNerdFontMono-Regular.otf") format("opentype");
+}

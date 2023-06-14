@@ -1,25 +1,23 @@
 {
   "name": "231tr0n.github.io",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.1",
+  "private": true,
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint -c .eslintrc.cjs --fix . && eslint -c .eslintrc.json --fix ."
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/231tr0n/231tr0n.github.io.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/231tr0n/231tr0n.github.io/issues"
-  },
-  "homepage": "https://github.com/231tr0n/231tr0n.github.io#readme",
   "devDependencies": {
-    "eslint": "^8.23.0",
+    "@sveltejs/adapter-static": "^2.0.2",
+    "@sveltejs/kit": "^1.20.2",
+    "eslint": "^8.42.0",
     "eslint-config-airbnb-base": "^15.0.0",
-    "eslint-plugin-import": "^2.26.0",
-    "javascript-obfuscator": "^4.0.0"
-  }
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-svelte": "^2.30.0",
+    "npm-check-updates": "^16.10.12",
+    "svelte": "^3.59.1",
+    "vite": "^4.3.9"
+  },
+  "type": "module"
 }
