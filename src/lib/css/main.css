@@ -1,0 +1,109 @@
+:root {
+  --color-dark-background: #1a1a1a;
+  --color-dark-foreground: #cccccc;
+  --color-dark-component: #3a3c3b;
+  --color-dark-heading: darkorange;
+  --color-dark-keyword: #8b8b00;
+  --color-dark-anchor: darkcyan;
+  --color-light-background: #f7fafd;
+  --color-light-foreground: #454545;
+  --color-light-component: #c1c1c1;
+  --color-light-heading: darkred;
+  --color-light-keyword: darkmagenta;
+  --color-light-anchor: darkcyan;
+
+  --color-red: red;
+  --color-blue: darkblue;
+  --color-green: darkgreen;
+  --color-yellow: #8b8b00;
+  --color-pink: darkmagenta;
+  --color-orange: darkorange;
+  --color-brown: darkred;
+  --color-cyan: darkcyan;
+  --color-white: #cccccc;
+  --color-black: #454545;
+  --color-darkgrey: #3a3c3b;
+  --color-lightgrey: #c1c1c1;
+}
+
+@font-face {
+  font-family: HurmitNerdFontMono-Bold;
+  src: url("/fonts/HurmitNerdFontMono-Bold.otf") format("opentype");
+}
+
+@font-face {
+  font-family: HurmitNerdFontMono-BoldItalic;
+  src: url("/fonts/HurmitNerdFontMono-BoldItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: HurmitNerdFontMono-Italic;
+  src: url("/fonts/HurmitNerdFontMono-Italic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: HurmitNerdFontMono-LightItalic;
+  src: url("/fonts/HurmitNerdFontMono-LightItalic.otf") format("opentype");
+}
+
+@font-face {
+  font-family: HurmitNerdFontMono-Light;
+  src: url("/fonts/HurmitNerdFontMono-Light.otf") format("opentype");
+}
+
+@font-face {
+  font-family: HurmitNerdFontMono-Regular;
+  src: url("/fonts/HurmitNerdFontMono-Regular.otf") format("opentype");
+}
+
+a {
+  color: var(--color-dark-anchor);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a img {
+  border: 2px solid transparent;
+}
+
+a img:hover {
+  border: 2px solid var(--color-dark-anchor);
+}
+
+body.light-mode a {
+  color: var(--color-light-anchor);
+}
+
+body.light-mode a img:hover {
+  border: 2px solid var(--color-light-anchor);
+}
+
+body {
+  background-color: var(--color-dark-background);
+  color: var(--color-dark-foreground);
+  font-family: HurmitNerdFontMono-Regular;
+}
+
+body.light-mode {
+  background-color: var(--color-light-background);
+  color: var(--color-light-foreground);
+}
+
+button {
+  border: 2px solid transparent;
+}
+
+button:hover {
+  border: 2px solid var(--color-dark-anchor);
+}
+
+body.light-mode button:hover {
+  border: 2px solid var(--color-light-anchor);
+}
+
+img {
+  vertical-align: middle;
+}
