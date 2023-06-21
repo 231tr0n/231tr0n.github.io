@@ -1,0 +1,62 @@
+:root {
+  --color-1: #149414;
+  --color-2: #9ccc9c;
+  --color-3: #2b5329;
+  --color-4: #ff0000;
+}
+
+.game-board {
+  margin: 1em;
+  width: max-content;
+  display: grid;
+  grid-template-rows: 50px 50px 50px;
+  grid-template-columns: 50px 50px 50px;
+  grid-gap: 10px;
+}
+
+.box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 5px solid var(--color-2);
+  color: var(--color-4);
+  font-size: 20px;
+  background-color: var(--color-3);
+}
+
+.box:hover {
+  background-color: var(--color-1);
+}
+
+button {
+  margin: 1em;
+  border-radius: 5px;
+  background-color: var(--color-3);
+  color: white;
+  padding: 5px;
+  border: 2px solid white;
+}
+
+button:hover {
+  background-color: white;
+  color: var(--color-3);
+  border: 2px solid var(--color-3);
+}
+
+.center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+#message {
+  margin: 1em;
+  width: max-content;
+  border-radius: 5px;
+  padding: 5px;
+  background-color: var(--color-2);
+  border: 2px solid var(--color-3);
+  color: var(--color-3);
+}
