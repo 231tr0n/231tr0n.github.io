@@ -97,16 +97,6 @@
     }
   };
 
-  const prev = () => {
-    if (!game_over) {
-      if (steps.length > 0) {
-        const temp = steps.pop();
-        setter(temp[0], temp[1], '');
-        turn = temp[2];
-      }
-    }
-  };
-
   restart.onclick = () => {
     reset();
   };
