@@ -4,7 +4,6 @@
   const o = 'o';
   let turn = x;
   const steps = [];
-  let game_over = false;
   const grid = document.getElementById('game-board');
   const message = document.getElementById('message');
   const restart = document.getElementById('restart');
@@ -54,7 +53,6 @@
     restart.blur();
     grid.focus();
     steps.length = 0;
-    game_over = false;
     message.innerText = 'Best of Luck!';
     for (let i = 0; i < 3; i++) {
       for (let j = 0; j < 3; j++) {
@@ -67,15 +65,12 @@
   const predict_winner = () => {
     if (check()) {
       message.innerText = "Congratulations! '" + turn + "' won.";
-      game_over = true;
       return true;
     }
     if (steps.length == 9) {
       message.innerText = "It's a tie!";
-      game_over = true;
       return true;
     }
-    game_over = false;
     return false;
   };
 
@@ -110,7 +105,6 @@
         };
         xobox[i][j].ondblclick = () => {
           grid.focus();
-          prev();
         };
       })();
     }
