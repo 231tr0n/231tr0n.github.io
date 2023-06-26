@@ -5,6 +5,10 @@
   --color-4: #ff0000;
 }
 
+body {
+  background-color: black;
+}
+
 .game-board {
   margin: 1em;
   width: max-content;
