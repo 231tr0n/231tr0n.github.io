@@ -64,7 +64,7 @@
 
   const predict_winner = () => {
     if (check()) {
-      message.innerText = "Congratulations! '" + turn + "' won.";
+      message.innerText = `Congratulations! '${turn}' won.`;
       return true;
     }
     if (steps.length == 9) {
