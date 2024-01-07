@@ -16,28 +16,60 @@
   }
 
   const check = () => {
-    if (xobox[0][0].innerText != '' && xobox[0][0].innerText == xobox[0][1].innerText && xobox[0][0].innerText == xobox[0][2].innerText) {
+    if (
+      xobox[0][0].innerText != '' &&
+      xobox[0][0].innerText == xobox[0][1].innerText &&
+      xobox[0][0].innerText == xobox[0][2].innerText
+    ) {
       return true;
     }
-    if (xobox[1][0].innerText != '' && xobox[1][0].innerText == xobox[1][1].innerText && xobox[1][0].innerText == xobox[1][2].innerText) {
+    if (
+      xobox[1][0].innerText != '' &&
+      xobox[1][0].innerText == xobox[1][1].innerText &&
+      xobox[1][0].innerText == xobox[1][2].innerText
+    ) {
       return true;
     }
-    if (xobox[2][0].innerText != '' && xobox[2][0].innerText == xobox[2][1].innerText && xobox[2][0].innerText == xobox[2][2].innerText) {
+    if (
+      xobox[2][0].innerText != '' &&
+      xobox[2][0].innerText == xobox[2][1].innerText &&
+      xobox[2][0].innerText == xobox[2][2].innerText
+    ) {
       return true;
     }
-    if (xobox[0][0].innerText != '' && xobox[0][0].innerText == xobox[1][0].innerText && xobox[0][0].innerText == xobox[2][0].innerText) {
+    if (
+      xobox[0][0].innerText != '' &&
+      xobox[0][0].innerText == xobox[1][0].innerText &&
+      xobox[0][0].innerText == xobox[2][0].innerText
+    ) {
       return true;
     }
-    if (xobox[0][1].innerText != '' && xobox[0][1].innerText == xobox[1][1].innerText && xobox[0][1].innerText == xobox[2][1].innerText) {
+    if (
+      xobox[0][1].innerText != '' &&
+      xobox[0][1].innerText == xobox[1][1].innerText &&
+      xobox[0][1].innerText == xobox[2][1].innerText
+    ) {
       return true;
     }
-    if (xobox[0][2].innerText != '' && xobox[0][2].innerText == xobox[1][2].innerText && xobox[0][2].innerText == xobox[2][2].innerText) {
+    if (
+      xobox[0][2].innerText != '' &&
+      xobox[0][2].innerText == xobox[1][2].innerText &&
+      xobox[0][2].innerText == xobox[2][2].innerText
+    ) {
       return true;
     }
-    if (xobox[0][0].innerText != '' && xobox[0][0].innerText == xobox[1][1].innerText && xobox[0][0].innerText == xobox[2][2].innerText) {
+    if (
+      xobox[0][0].innerText != '' &&
+      xobox[0][0].innerText == xobox[1][1].innerText &&
+      xobox[0][0].innerText == xobox[2][2].innerText
+    ) {
       return true;
     }
-    if (xobox[2][0].innerText != '' && xobox[2][0].innerText == xobox[1][1].innerText && xobox[2][0].innerText == xobox[0][2].innerText) {
+    if (
+      xobox[2][0].innerText != '' &&
+      xobox[2][0].innerText == xobox[1][1].innerText &&
+      xobox[2][0].innerText == xobox[0][2].innerText
+    ) {
       return true;
     }
     return false;
