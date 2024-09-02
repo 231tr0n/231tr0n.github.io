@@ -1,0 +1,32 @@
+{
+  "name": "website",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "prettier --check . && eslint --fix .",
+    "format": "prettier --check --write ."
+  },
+  "devDependencies": {
+    "@sveltejs/adapter-static": "^3.0.4",
+    "@sveltejs/kit": "^2.5.25",
+    "@sveltejs/vite-plugin-svelte": "^3.1.2",
+    "@types/eslint": "^9.6.1",
+    "eslint": "^9.9.1",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-svelte": "^2.43.0",
+    "globals": "^15.9.0",
+    "npm-check-updates": "^17.1.1",
+    "prettier": "^3.3.3",
+    "prettier-plugin-svelte": "^3.2.6",
+    "svelte": "^4.2.19",
+    "vite": "^5.4.2"
+  },
+  "type": "module",
+  "dependencies": {
+    "ace-code": "^1.36.2",
+    "highlight.js": "^11.10.0"
+  }
+}
