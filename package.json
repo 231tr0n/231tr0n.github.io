@@ -6,7 +6,7 @@
     "dev": "vite dev",
     "build": "vite build",
     "preview": "vite preview",
-    "lint": "prettier --check . && eslint --fix .",
+    "lint": "prettier --check --write . && eslint --fix .",
     "format": "prettier --check --write ."
   },
   "devDependencies": {
