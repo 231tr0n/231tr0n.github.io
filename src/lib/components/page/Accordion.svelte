@@ -65,13 +65,13 @@
   }
 
   details {
-    margin-top: 1em;
+    margin-top: 5px;
   }
 
   summary {
     list-style: none;
     border-bottom: 1px solid var(--color-dark-foreground);
-    margin-bottom: 1em;
+    margin-bottom: 5px;
   }
 
   a > button {
