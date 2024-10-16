@@ -91,6 +91,9 @@
 
   <h2>Stuff I touched in my life</h2>
   <div class="center">
+    <a target="_blank" href="https://openjdk.org">
+      <img class="logo" alt="Java" src="/images/java.avif" />
+    </a>
     <a target="_blank" href="https://go.dev">
       <img class="logo" alt="Golang" src="/images/go.avif" />
     </a>
@@ -109,18 +112,18 @@
     <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/CSS">
       <img class="logo" alt="Css" src="/images/css.avif" />
     </a>
-    <a target="_blank" href="https://gcc.gnu.org">
-      <img class="logo" alt="C" src="/images/c.avif" />
-    </a>
+    <!-- <a target="_blank" href="https://gcc.gnu.org"> -->
+    <!--   <img class="logo" alt="C" src="/images/c.avif" /> -->
+    <!-- </a> -->
     <a target="_blank" href="https://www.docker.com">
       <img class="logo" alt="Docker" src="/images/docker.svg" />
     </a>
     <a target="_blank" href="https://git-scm.com">
       <img class="logo" alt="Git" src="/images/git.avif" />
     </a>
-    <a target="_blank" href="https://www.php.net">
-      <img class="logo" alt="Php" src="/images/php.avif" />
-    </a>
+    <!-- <a target="_blank" href="https://www.php.net"> -->
+    <!--   <img class="logo" alt="Php" src="/images/php.avif" /> -->
+    <!-- </a> -->
     <a target="_blank" href="https://en.wikipedia.org/wiki/SQL">
       <img class="logo" alt="Sql" src="/images/sql.avif" />
     </a>
@@ -129,9 +132,6 @@
     </a>
     <a target="_blank" href="https://angular.dev">
       <img class="logo" alt="Angular" src="/images/angular.svg" />
-    </a>
-    <a target="_blank" href="https://openjdk.org">
-      <img class="logo" alt="Java" src="/images/java.avif" />
     </a>
     <a target="_blank" href="https://www.gnu.org/software/bash">
       <img class="logo" alt="Bash" src="/images/bash.avif" />
@@ -149,13 +149,13 @@
       <img class="logo" alt="Windows" src="/images/windows.avif" />
     </a><br />
     <a target="_blank" href="https://en.wikipedia.org/wiki/Application_security">
-      <img class="big-logo" alt="Windows" src="/images/webappsec.avif" />
+      <img class="big-logo" alt="Application security" src="/images/webappsec.avif" />
     </a>
     <a
       target="_blank"
       href="https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning"
     >
-      <img class="big-logo" alt="Windows" src="/images/ai.avif" />
+      <img class="big-logo" alt="AI/ML" src="/images/ai.avif" />
     </a>
   </div>
 
