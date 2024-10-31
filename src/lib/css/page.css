@@ -1,137 +1,137 @@
 :root {
-  --color-dark-badge-background: transparent;
-  --color-dark-badge-foreground: var(--color-solarized-green);
+	--color-dark-badge-background: transparent;
+	--color-dark-badge-foreground: var(--color-solarized-green);
 
-  --color-light-badge-background: transparent;
-  --color-light-badge-foreground: var(--color-solarized-blue);
+	--color-light-badge-background: transparent;
+	--color-light-badge-foreground: var(--color-solarized-blue);
 }
 
 .body {
-  background-color: var(--color-dark-background);
-  color: var(--color-dark-foreground);
+	background-color: var(--color-dark-background);
+	color: var(--color-dark-foreground);
 }
 
 body.light-mode .body {
-  background-color: var(--color-light-background);
-  color: var(--color-light-foreground);
+	background-color: var(--color-light-background);
+	color: var(--color-light-foreground);
 }
 
 .anchor {
-  border: 2px solid transparent;
+	border: 2px solid transparent;
 }
 
 .anchor:hover {
-  border: 2px solid var(--color-dark-anchor);
+	border: 2px solid var(--color-dark-anchor);
 }
 
 body.light-mode .anchor:hover {
-  border: 2px solid var(--color-light-anchor);
+	border: 2px solid var(--color-light-anchor);
 }
 
 .border {
-  border: 1px solid var(--color-dark-foreground);
+	border: 1px solid var(--color-dark-foreground);
 }
 
 body.light-mode .border {
-  border: 1px solid var(--color-light-foreground);
+	border: 1px solid var(--color-light-foreground);
 }
 
 .component {
-  background-color: var(--color-dark-component-background);
-  color: var(--color-dark-component-foreground);
+	background-color: var(--color-dark-component-background);
+	color: var(--color-dark-component-foreground);
 }
 
 body.light-mode .component {
-  background-color: var(--color-light-component-background);
-  color: var(--color-light-component-foreground);
+	background-color: var(--color-light-component-background);
+	color: var(--color-light-component-foreground);
 }
 
 .highlightkeyword {
-  color: var(--color-dark-keyword);
-  font-weight: bold;
+	color: var(--color-dark-keyword);
+	font-weight: bold;
 }
 
 body.light-mode .highlightkeyword {
-  color: var(--color-light-keyword);
+	color: var(--color-light-keyword);
 }
 
 h1 {
-  padding-left: 5px;
-  padding-right: 5px;
-  border-bottom: 1px solid var(--color-dark-foreground);
-  font-weight: bold;
-  color: var(--color-dark-heading);
+	padding-left: 5px;
+	padding-right: 5px;
+	border-bottom: 1px solid var(--color-dark-foreground);
+	font-weight: bold;
+	color: var(--color-dark-heading);
 }
 
 body.light-mode h1 {
-  border-bottom: 1px solid var(--color-light-foreground);
-  color: var(--color-light-heading);
+	border-bottom: 1px solid var(--color-light-foreground);
+	color: var(--color-light-heading);
 }
 
 h2 {
-  padding-left: 5px;
-  padding-right: 5px;
-  font-weight: bold;
-  border-bottom: 1px solid var(--color-dark-foreground);
+	padding-left: 5px;
+	padding-right: 5px;
+	font-weight: bold;
+	border-bottom: 1px solid var(--color-dark-foreground);
 }
 
 body.light-mode h2 {
-  border-bottom: 1px solid var(--color-light-foreground);
+	border-bottom: 1px solid var(--color-light-foreground);
 }
 
 h3 {
-  text-align: center;
-  color: var(--color-dark-heading);
-  font-weight: bold;
+	text-align: center;
+	color: var(--color-dark-heading);
+	font-weight: bold;
 }
 
 body.light-mode h3 {
-  color: var(--color-light-heading);
+	color: var(--color-light-heading);
 }
 
 ul {
-  margin: 0px;
-  padding-left: 26px;
+	margin: 0px;
+	padding-left: 26px;
 }
 
 ul > li {
-  padding-left: 12px;
+	padding-left: 12px;
 }
 
 pre {
-  font-family: Roboto-Mono;
+	font-family: Roboto-Mono;
 }
 
 code {
-  font-family: Roboto-Mono;
+	font-family: Roboto-Mono;
 }
 
 .badge {
-  display: inline-block;
-  margin: 5px;
-  padding: 5px;
-  border-radius: 5px;
-  background-color: var(--color-dark-badge-background);
-  border: 2px solid var(--color-dark-badge-foreground);
-  color: var(--color-dark-badge-foreground);
+	display: inline-block;
+	margin: 5px;
+	padding: 5px;
+	border-radius: 5px;
+	background-color: var(--color-dark-badge-background);
+	border: 2px solid var(--color-dark-badge-foreground);
+	color: var(--color-dark-badge-foreground);
 }
 
 body.light-mode .badge {
-  background-color: var(--color-light-badge-background);
-  border: 2px solid var(--color-light-badge-foreground);
-  color: var(--color-light-badge-foreground);
+	background-color: var(--color-light-badge-background);
+	border: 2px solid var(--color-light-badge-foreground);
+	color: var(--color-light-badge-foreground);
 }
 
 hr {
-  border-top: 1px solid var(--color-dark-foreground);
-  border-left: 0px solid var(--color-dark-foreground);
-  border-right: 0px solid var(--color-dark-foreground);
-  border-bottom: 0px solid var(--color-dark-foreground);
+	border-top: 1px solid var(--color-dark-foreground);
+	border-left: 0px solid var(--color-dark-foreground);
+	border-right: 0px solid var(--color-dark-foreground);
+	border-bottom: 0px solid var(--color-dark-foreground);
 }
 
 body.light-mode hr {
-  border-top: 1px solid var(--color-light-foreground);
-  border-left: 0px solid var(--color-light-foreground);
-  border-right: 0px solid var(--color-light-foreground);
-  border-bottom: 0px solid var(--color-light-foreground);
+	border-top: 1px solid var(--color-light-foreground);
+	border-left: 0px solid var(--color-light-foreground);
+	border-right: 0px solid var(--color-light-foreground);
+	border-bottom: 0px solid var(--color-light-foreground);
 }

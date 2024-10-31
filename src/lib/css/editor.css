@@ -1,20 +1,20 @@
 .ace_scrollbar {
-  display: none !important;
+	display: none !important;
 }
 
 .ace_gutter-layer {
-  border-right: 1px solid var(--color-dark-component-background);
-  color: var(--color-dark-foreground);
+	border-right: 1px solid var(--color-dark-component-background);
+	color: var(--color-dark-foreground);
 }
 
 body.light-mode .ace_gutter-layer {
-  border-right: 1px solid var(--color-light-component-background);
-  color: var(--color-light-foreground);
+	border-right: 1px solid var(--color-light-component-background);
+	color: var(--color-light-foreground);
 }
 
 div.ace_editor {
-  font-family: Roboto-Mono;
-  font-size: 15px;
-  width: 100%;
-  height: calc(100% - 34px - 38px);
+	font-family: Roboto-Mono;
+	font-size: 15px;
+	width: 100%;
+	height: calc(100% - 34px - 38px);
 }

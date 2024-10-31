@@ -1,5 +1,5 @@
 #!/bin/bash
 
-# Different pre commit hooks to run.
 npm run lint
 npm run build
+npm run test
