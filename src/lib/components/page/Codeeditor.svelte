@@ -1,6 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
-	import ace from 'ace-code/src/ace';
+	import ace from 'ace-code';
 	import solarized_light from 'ace-code/src/theme/solarized_light';
 	import solarized_dark from 'ace-code/src/theme/solarized_dark';
 	import vim from 'ace-code/src/keyboard/vim';
