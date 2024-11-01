@@ -1,14 +1,6 @@
 <script>
 	import { onMount, onDestroy } from 'svelte';
 
-	/**
-	 * @typedef {Object} Props
-	 * @property {string} [title]
-	 * @property {string} [src]
-	 * @property {string} [srcdocStore]
-	 */
-
-	/** @type {Props} */
 	let { title = '', src = '', srcdocStore = '' } = $props();
 
 	let fullscreen = $state(false);

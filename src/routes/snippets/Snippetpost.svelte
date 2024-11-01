@@ -1,15 +1,6 @@
 <script>
 	import Accordion from '$lib/components/page/Accordion.svelte';
 
-	/**
-	 * @typedef {Object} Props
-	 * @property {string} [name]
-	 * @property {string} [url]
-	 * @property {any} [badges]
-	 * @property {string} [description]
-	 */
-
-	/** @type {Props} */
 	let { name = '', url = '', badges = [], description = '' } = $props();
 </script>
 

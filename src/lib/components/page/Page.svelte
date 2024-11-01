@@ -36,12 +36,6 @@
 			}
 		};
 
-		$effect(() => {
-			sections = document.querySelectorAll('div.page div.content h2');
-			sections = Array.from(sections);
-			sections.unshift(name);
-		});
-
 		onMount(() => {
 			content = document.querySelector('div.page div.content');
 			name = document.querySelector('div.page div.content h1');
@@ -54,6 +48,9 @@
 			content.style.paddingBottom = `calc(100vh - ${
 				document.querySelector('footer').offsetHeight
 			}px - ${document.querySelector('header').offsetHeight}px - ${breadcrumb.offsetHeight}px)`;
+			sections = document.querySelectorAll('div.page div.content h2');
+			sections = Array.from(sections);
+			sections.unshift(name);
 		});
 	}
 </script>

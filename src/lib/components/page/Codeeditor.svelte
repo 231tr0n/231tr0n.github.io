@@ -9,21 +9,6 @@
 	import { lightMode } from '$lib/store.svelte.js';
 	import '$lib/css/editor.css';
 
-	/**
-	 * @typedef {Object} Props
-	 * @property {string} [langName]
-	 * @property {Object} [mode]
-	 * @property {string} [filePath]
-	 * @property {string} [fileName]
-	 * @property {string} [output]
-	 * @property {boolean} [readOnly]
-	 * @property {Object} [codeStore]
-	 * @property {boolean} [vimMode]
-	 * @property {boolean} [fullscreen]
-	 * @property {string} [code]
-	 */
-
-	/** @type {Props} */
 	let {
 		langName = '',
 		mode = '',

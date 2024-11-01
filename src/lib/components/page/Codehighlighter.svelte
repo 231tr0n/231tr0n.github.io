@@ -3,17 +3,6 @@
 	import highlightjs from 'highlight.js/lib/core';
 	import 'highlight.js/styles/base16/solarized-dark.css';
 
-	/**
-	 * @typedef {Object} Props
-	 * @property {string} [code]
-	 * @property {string} [langDef]
-	 * @property {string} [langName]
-	 * @property {string} [filePath]
-	 * @property {string} [fileName]
-	 * @property {string} [output]
-	 */
-
-	/** @type {Props} */
 	let {
 		code = '',
 		langDef = '',
