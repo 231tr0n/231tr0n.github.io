@@ -220,7 +220,7 @@
 			</span>
 			<span>{langName}</span>
 		</div>
-		<div bind:this={editorDiv}></div>
+		<div class="editor-height" bind:this={editorDiv}></div>
 		{#if readOnly && output}
 			<div class="editor-context component"><span>Output</span></div>
 			<pre>{output}</pre>
@@ -229,6 +229,15 @@
 </div>
 
 <style>
+	.editor-height {
+		height: calc(100vh - 10vh - 45px - 45px);
+	}
+
+	pre {
+		margin: 0px;
+		padding: 3px;
+	}
+
 	.logo {
 		width: 16px;
 		height: 16px;
@@ -258,7 +267,6 @@
 		box-sizing: border-box;
 		border: 2px solid var(--color-dark-component-background);
 		overflow: auto;
-		height: calc(100vh - 10vh - 45px - 45px);
 	}
 
 	:global(body.light-mode) .editor-block {
