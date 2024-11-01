@@ -1,11 +1,11 @@
 <script>
 	import { onMount } from 'svelte';
-	import ace from 'ace-builds/src-min/ace';
-	import solarized_light from 'ace-builds/src-min/theme-solarized_light';
-	import solarized_dark from 'ace-builds/src-min/theme-solarized_dark';
-	import vim from 'ace-builds/src-min/keybinding-vim';
-	import vscode from 'ace-builds/src-min/keybinding-vscode';
-	import beautifier from 'ace-builds/src-min/ext-beautify';
+	import ace from 'ace-code/src/ace';
+	import solarized_light from 'ace-code/src/theme/solarized_light';
+	import solarized_dark from 'ace-code/src/theme/solarized_dark';
+	import vim from 'ace-code/src/keyboard/vim';
+	import vscode from 'ace-code/src/keyboard/vscode';
+	import beautifier from 'ace-code/src/ext/beautify';
 	import { lightMode } from '$lib/store.svelte.js';
 	import '$lib/css/editor.css';
 

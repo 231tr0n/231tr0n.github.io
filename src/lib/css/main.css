@@ -182,34 +182,6 @@ input {
 	align-items: center;
 }
 
-/* h1 { */
-/*   word-break: break-all; */
-/* } */
-/**/
-/* h2 { */
-/*   word-break: break-all; */
-/* } */
-/**/
-/* h3 { */
-/*   word-break: break-all; */
-/* } */
-/**/
-/* h4 { */
-/*   word-break: break-all; */
-/* } */
-/**/
-/* p { */
-/*   word-break: break-all; */
-/* } */
-/**/
-/* div { */
-/*   word-break: break-all; */
-/* } */
-/**/
-/* button { */
-/*   word-break: normal; */
-/* } */
-
 .error {
 	font-size: 30px;
 	padding: 1em;

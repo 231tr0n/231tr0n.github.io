@@ -1,7 +1,7 @@
 <script>
 	import Page from '$lib/components/page/Page.svelte';
 	import Codeeditor from '../../../lib/components/page/Codeeditor.svelte';
-	import luaMode from 'ace-builds/src-min/mode-lua';
+	import luaMode from 'ace-code/src/mode/lua';
 
 	let fetch_neovim_config = async (url) => {
 		let temp = await fetch(url);

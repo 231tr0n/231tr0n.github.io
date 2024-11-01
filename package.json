@@ -29,6 +29,6 @@
 		"vitest": "^2.1.4"
 	},
 	"dependencies": {
-		"ace-builds": "^1.36.3"
+		"ace-code": "^1.36.3"
 	}
 }

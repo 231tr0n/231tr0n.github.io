@@ -2,9 +2,9 @@
 	import Page from '$lib/components/page/Page.svelte';
 	import Codeeditor from '$lib/components/page/Codeeditor.svelte';
 	import Sandbox from '$lib/components/page/Sandbox.svelte';
-	import htmlMode from 'ace-builds/src-min/mode-html';
-	import cssMode from 'ace-builds/src-min/mode-css';
-	import javascriptMode from 'ace-builds/src-min/mode-javascript';
+	import htmlMode from 'ace-code/src/mode/html';
+	import cssMode from 'ace-code/src/mode/css';
+	import javascriptMode from 'ace-code/src/mode/javascript';
 
 	let fetch_url = async (url) => {
 		let data = await fetch(url);
