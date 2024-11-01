@@ -1,7 +1,7 @@
 <script>
 	import Page from '$lib/components/page/Page.svelte';
-	import Codehighlighter from '$lib/components/page/Codehighlighter.svelte';
-	import highlightLua from 'highlight.js/lib/languages/lua';
+	import Codeeditor from '../../../lib/components/page/Codeeditor.svelte';
+	import luaMode from 'ace-builds/src-min/mode-lua';
 
 	let fetch_neovim_config = async (url) => {
 		let temp = await fetch(url);
@@ -178,12 +178,7 @@
 		<ol>
 			{#each Object.entries(get_sections_in_config(res)) as [heading, block]}
 				<li>{heading}</li>
-				<Codehighlighter
-					code={block}
-					langDef={highlightLua}
-					langName={'lua'}
-					fileName={'init.lua'}
-				/>
+				<Codeeditor code={block} mode={luaMode} langName={'lua'} readOnly={true} />
 			{/each}
 		</ol>
 	{:catch error}

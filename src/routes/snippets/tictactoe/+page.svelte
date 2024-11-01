@@ -1,10 +1,10 @@
 <script>
 	import Page from '$lib/components/page/Page.svelte';
-	import Codehighlighter from '$lib/components/page/Codehighlighter.svelte';
+	import Codeeditor from '$lib/components/page/Codeeditor.svelte';
 	import Sandbox from '$lib/components/page/Sandbox.svelte';
-	import highlightJs from 'highlight.js/lib/languages/javascript';
-	import highlightCss from 'highlight.js/lib/languages/css';
-	import highlightXml from 'highlight.js/lib/languages/xml';
+	import htmlMode from 'ace-builds/src-min/mode-html';
+	import cssMode from 'ace-builds/src-min/mode-css';
+	import javascriptMode from 'ace-builds/src-min/mode-javascript';
 
 	let fetch_url = async (url) => {
 		let data = await fetch(url);
@@ -17,22 +17,17 @@
 
 	<h2>Source Code</h2>
 	{#await fetch_url('/resources/snippets/tictactoe/index.js') then res}
-		<Codehighlighter
-			code={res}
-			langDef={highlightJs}
-			langName={'javascript'}
-			fileName={'index.js'}
-		/>
+		<Codeeditor code={res} mode={javascriptMode} langName={'javascript'} readOnly={true} />
 	{:catch error}
 		<div class="error">{error}</div>
 	{/await}
 	{#await fetch_url('/resources/snippets/tictactoe/style.css') then res}
-		<Codehighlighter code={res} langDef={highlightCss} langName={'css'} fileName={'style.css'} />
+		<Codeeditor code={res} mode={cssMode} langName={'css'} readOnly={true} />
 	{:catch error}
 		<div class="error">{error}</div>
 	{/await}
 	{#await fetch_url('/resources/snippets/tictactoe/index.html') then res}
-		<Codehighlighter code={res} langDef={highlightXml} langName={'html'} fileName={'index.html'} />
+		<Codeeditor code={res} mode={htmlMode} langName={'html'} readOnly={true} />
 	{:catch error}
 		<div class="error">{error}</div>
 	{/await}

@@ -29,7 +29,6 @@
 		"vitest": "^2.1.4"
 	},
 	"dependencies": {
-		"ace-code": "^1.36.3",
-		"highlight.js": "^11.10.0"
+		"ace-builds": "^1.36.3"
 	}
 }
