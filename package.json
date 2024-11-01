@@ -13,7 +13,6 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-static": "^3.0.6",
-		"@sveltejs/enhanced-img": "^0.4.0",
 		"@sveltejs/kit": "^2.7.4",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"@types/eslint": "^9.6.1",
