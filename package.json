@@ -23,7 +23,7 @@
 		"npm-check-updates": "^17.1.10",
 		"prettier": "^3.3.3",
 		"prettier-plugin-svelte": "^3.2.7",
-		"svelte": "^5.1.11",
+		"svelte": "^5.1.12",
 		"vite": "^5.4.10",
 		"vitest": "^2.1.4"
 	},
