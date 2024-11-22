@@ -37,7 +37,7 @@
 		<div class="badge">Solving rubik's cubes</div>
 	</div>
 
-	<h2>Hacking stuff on my name</h2>
+	<h2>Hacker stuff on my name</h2>
 	<ol>
 		<li>
 			<a target="_blank" href="https://huntr.com/bounties/001d1c29-805a-4035-93bb-71a0e81da3e5">
