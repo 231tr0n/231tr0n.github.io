@@ -10,14 +10,14 @@
 		<img src="/images/zeltron.avif" alt="Logo" class="zeltron" />
 	</div>
 
-	<h2>Stuff about me</h2>
+	<h2>Introduction</h2>
 	<ul>
 		<li>
 			Hello, my name is <span class="highlightkeyword">Srikar</span>
 			also known as <span class="highlightkeyword">231tr0n</span>.
 		</li>
 		<li>I learn web development and security.</li>
-		<li>I enjoy programming in go, python and javascript.</li>
+		<li>I enjoy programming in go, java, python and javascript.</li>
 		<li>I am a linux user who enjoys hacking it to the core.</li>
 		<li>
 			Ex team lead of <a target="_blank" href="https://bi0s.in">Bi0s</a>
@@ -25,7 +25,7 @@
 		</li>
 	</ul>
 
-	<h2>Stuff I usually do</h2>
+	<h2>Hobbies</h2>
 	<div class="center">
 		<div class="badge">Badminton</div>
 		<div class="badge">Programming</div>
@@ -37,17 +37,13 @@
 		<div class="badge">Solving rubik's cubes</div>
 	</div>
 
-	<h2>Hacker stuff on my name</h2>
+	<h2>Achievements</h2>
 	<ol>
 		<li>
 			<a target="_blank" href="https://huntr.com/bounties/001d1c29-805a-4035-93bb-71a0e81da3e5">
 				CVE-2022-0764
 			</a>
 		</li>
-	</ol>
-
-	<h2>Stuff on my name</h2>
-	<ol>
 		<li>
 			<a target="_blank" href="https://link.springer.com/chapter/10.1007/978-981-19-6088-8_32">
 				Robust and Scalable Network Monitoring System using Apache Spark</a
@@ -55,7 +51,7 @@
 		</li>
 	</ol>
 
-	<h2>Stuff I touched in my life</h2>
+	<h2>Tech Stack</h2>
 	<div class="center">
 		<a target="_blank" href="https://openjdk.org">
 			<img class="logo" alt="Java" src="/images/java.avif" />
@@ -125,7 +121,7 @@
 		</a>
 	</div>
 
-	<h2>Stuff in which I do stuff</h2>
+	<h2>Developer Tools</h2>
 	<h3>Operating systems</h3>
 	<div class="center">
 		<a target="_blank" href="https://archlinux.org">
@@ -155,15 +151,15 @@
 	</div>
 	<h3>Desktop Environments and Window Managers</h3>
 	<div class="center">
-		<a target="_blank" href="https://i3wm.org">
-			<img class="logo" alt="i3" src="/images/i3.avif" />
-		</a>
+		<!-- <a target="_blank" href="https://i3wm.org"> -->
+		<!-- 	<img class="logo" alt="i3" src="/images/i3.avif" /> -->
+		<!-- </a> -->
 		<a target="_blank" href="https://projects.linuxmint.com/cinnamon">
 			<img class="logo" alt="Cinnamon" src="/images/cinnamon.avif" />
 		</a>
-		<a target="_blank" href="https://github.com/baskerville/bspwm">
-			<img class="logo" alt="Bspwm" src="/images/bspwm.avif" />
-		</a>
+		<!-- <a target="_blank" href="https://github.com/baskerville/bspwm"> -->
+		<!-- 	<img class="logo" alt="Bspwm" src="/images/bspwm.avif" /> -->
+		<!-- </a> -->
 		<a target="_blank" href="https://github.com/swaywm/sway">
 			<img class="logo" alt="Sway" src="/images/sway.svg" />
 		</a>
