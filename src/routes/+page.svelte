@@ -14,7 +14,9 @@
 	<ul>
 		<li>
 			Hello, my name is <span class="highlightkeyword">Srikar</span>
-			also known as <span class="highlightkeyword">231tr0n</span>.
+			also known as
+			<span class="highlightkeyword">231tr0n</span>
+			.
 		</li>
 		<li>I learn web development and security.</li>
 		<li>I enjoy programming in go, java, python and javascript.</li>
@@ -46,8 +48,8 @@
 		</li>
 		<li>
 			<a target="_blank" href="https://link.springer.com/chapter/10.1007/978-981-19-6088-8_32">
-				Robust and Scalable Network Monitoring System using Apache Spark</a
-			>
+				Robust and Scalable Network Monitoring System using Apache Spark
+			</a>
 		</li>
 	</ol>
 
@@ -109,14 +111,14 @@
 		</a>
 		<a target="_blank" href="https://www.microsoft.com/en-us/windows">
 			<img class="logo" alt="Windows" src="/images/windows.avif" />
-		</a><br />
+		</a>
+		<br />
 		<a target="_blank" href="https://en.wikipedia.org/wiki/Application_security">
 			<img class="big-logo" alt="Application security" src="/images/webappsec.avif" />
 		</a>
 		<a
 			target="_blank"
-			href="https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning"
-		>
+			href="https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning">
 			<img class="big-logo" alt="AI/ML" src="/images/ai.avif" />
 		</a>
 	</div>

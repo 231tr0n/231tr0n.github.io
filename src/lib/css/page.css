@@ -94,8 +94,9 @@ ul {
 	padding-left: 26px;
 }
 
-ul > li {
-	padding-left: 12px;
+ol {
+	margin: 0px;
+	padding-left: 27px;
 }
 
 pre {

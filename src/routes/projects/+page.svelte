@@ -18,8 +18,7 @@
 						name={repo['name']}
 						badges={Object.keys(res)}
 						description={repo['description']}
-						url={repo['html_url']}
-					/>
+						url={repo['html_url']} />
 				{:catch error}
 					<div class="error">{error}</div>
 				{/await}
