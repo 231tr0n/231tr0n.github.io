@@ -216,7 +216,7 @@
 
 <style>
 	.editor-height {
-		height: calc(100vh - 10vh - 45px - 45px);
+		height: calc(100% - 65px);
 	}
 
 	pre {
@@ -253,6 +253,7 @@
 		box-sizing: border-box;
 		border: 2px solid var(--color-dark-component-background);
 		overflow: auto;
+		height: calc(100vh - 10vh - 45px - 45px);
 	}
 
 	:global(body.light-mode) .editor-block {
