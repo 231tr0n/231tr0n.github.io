@@ -28,7 +28,7 @@ jobs:
           node --version
           npm --version
       - name: Install dependencies
-        run: npm install
+        run: npm install --force
       - name: Lint
         run: npm run lint
       - name: Build
