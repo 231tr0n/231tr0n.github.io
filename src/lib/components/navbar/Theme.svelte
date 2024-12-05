@@ -8,35 +8,28 @@
 	let toggletheme = () => {
 		window.document.body.classList.toggle('light-mode');
 		src = window.document.body.classList.contains('light-mode') ? light : dark;
+		window.document.body.classList.contains('light-mode')
+			? lightMode.set(true)
+			: lightMode.set(false);
 		if (browser) {
 			localStorage.setItem(
 				'theme',
 				window.document.body.classList.contains('light-mode') ? 'light' : 'dark'
 			);
 		}
-		if (window.document.body.classList.contains('light-mode')) {
-			lightMode.set(true);
-		} else {
-			lightMode.set(false);
-		}
 	};
 
 	let theme = 'light';
 	if (browser) {
-		theme = localStorage.getItem('theme');
+		if (localStorage.getItem('theme')) {
+			theme = localStorage.getItem('theme');
+		}
 	}
-	if (theme) {
-		if (theme == 'light') {
-			lightMode.set(true);
-		} else {
-			lightMode.set(false);
-			toggletheme();
-		}
+	if (theme == 'light') {
+		localStorage.setItem('theme', 'light');
+		toggletheme();
 	} else {
-		if (browser) {
-			lightMode.set(true);
-			localStorage.setItem('theme', theme);
-		}
+		localStorage.setItem('theme', 'dark');
 	}
 </script>
 
