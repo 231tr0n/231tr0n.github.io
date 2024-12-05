@@ -28,9 +28,9 @@
 	if (theme) {
 		if (theme == 'light') {
 			lightMode.set(true);
-			toggletheme();
 		} else {
 			lightMode.set(false);
+			toggletheme();
 		}
 	} else {
 		if (browser) {
