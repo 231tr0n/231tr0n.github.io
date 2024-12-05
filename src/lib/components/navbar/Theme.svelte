@@ -21,7 +21,7 @@
 		}
 	};
 
-	let theme = 'dark';
+	let theme = 'light';
 	if (browser) {
 		theme = localStorage.getItem('theme');
 	}
@@ -34,7 +34,8 @@
 		}
 	} else {
 		if (browser) {
-			localStorage.setItem('theme', 'dark');
+			lightMode.set(true);
+			localStorage.setItem('theme', theme);
 		}
 	}
 </script>
