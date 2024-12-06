@@ -9,7 +9,6 @@
 	let page = null;
 	let selection = null;
 	let breadcrumb = null;
-	let content = null;
 	let scroller = $state(() => {});
 	let updateBreadcrumb = $state(() => {});
 
@@ -37,7 +36,6 @@
 		};
 
 		onMount(() => {
-			content = document.querySelector('div.page div.content');
 			name = document.querySelector('div.page div.content h1');
 			sections = document.querySelectorAll('div.page div.content h2');
 			sections = Array.from(sections);
@@ -45,9 +43,6 @@
 			page = document.querySelector('div.page');
 			breadcrumb = document.querySelector('div.page div.content h4');
 			selection = document.querySelector('div.page div.content h4 select');
-			content.style.paddingBottom = `calc(100vh - ${
-				document.querySelector('footer').offsetHeight
-			}px - ${document.querySelector('header').offsetHeight}px - ${breadcrumb.offsetHeight}px)`;
 			sections = document.querySelectorAll('div.page div.content h2');
 			sections = Array.from(sections);
 			sections.unshift(name);

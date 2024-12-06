@@ -1,9 +1,10 @@
 <script>
 	import { lightMode } from '$lib/store.svelte.js';
-	import { browser } from '$app/environment';
 	let dark = '/images/dark.svg';
 	let light = '/images/light.avif';
 	let src = $state(dark);
+
+	let { theme = 'light' } = $props();
 
 	let toggletheme = () => {
 		window.document.body.classList.toggle('light-mode');
@@ -11,20 +12,16 @@
 		window.document.body.classList.contains('light-mode')
 			? lightMode.set(true)
 			: lightMode.set(false);
-		if (browser) {
-			localStorage.setItem(
-				'theme',
-				window.document.body.classList.contains('light-mode') ? 'light' : 'dark'
-			);
-		}
+		localStorage.setItem(
+			'theme',
+			window.document.body.classList.contains('light-mode') ? 'light' : 'dark'
+		);
 	};
 
-	let theme = 'light';
-	if (browser) {
-		if (localStorage.getItem('theme')) {
-			theme = localStorage.getItem('theme');
-		}
+	if (localStorage.getItem('theme')) {
+		theme = localStorage.getItem('theme');
 	}
+
 	if (theme == 'light') {
 		localStorage.setItem('theme', 'light');
 		toggletheme();
