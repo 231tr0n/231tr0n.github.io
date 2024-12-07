@@ -28,6 +28,7 @@
 		"vitest": "^2.1.8"
 	},
 	"dependencies": {
+		"@pyscript/core": "^0.6.22",
 		"ace-code": "^1.36.5"
 	}
 }

@@ -26,8 +26,7 @@
 		<a href="/"><button>Home</button></a>
 		<a href="/blog"><button>Blog</button></a>
 		<a href="/projects"><button>Projects</button></a>
-		<a href="/snippets"><button>Snippets</button></a>
-		<a href="/utilities"><button>Utilities</button></a>
+		<a href="/misc"><button>Misc</button></a>
 	</div>
 	<button onclick={toggleDiv} class="toggler" aria-label="Menu">
 		{#if !toggled}
