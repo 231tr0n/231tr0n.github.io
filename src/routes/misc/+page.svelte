@@ -29,7 +29,7 @@
 </script>
 
 <Page>
-	<h1>Snippets</h1>
+	<h1>Miscellaneous</h1>
 
 	{#each miscPosts as miscPost}
 		<Miscpost {...miscPost} />
