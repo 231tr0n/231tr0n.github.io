@@ -34,6 +34,7 @@
 		if (srcdocStore) {
 			subscriber = srcdocStore.subscribe((value) => {
 				iframe.srcdoc = value;
+				// I guess this is used for triggering iframe reload by setting src.
 				iframe.src = iframe.src;
 			});
 		}
