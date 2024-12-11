@@ -1,5 +1,6 @@
 <script>
 	import Page from '$lib/components/page/Page.svelte';
+	import Loading from '$lib/components/page/Loading.svelte';
 	import Codeeditor from '$lib/components/page/Codeeditor.svelte';
 	import Sandbox from '$lib/components/page/Sandbox.svelte';
 	import htmlMode from 'ace-code/src/mode/html';
@@ -17,21 +18,21 @@
 
 	<h2>Source Code</h2>
 	{#await fetch_url('/resources/snippets/tictactoe/index.js')}
-		<img alt="Loader" src="/images/loading.svg" />
+		<Loading />
 	{:then res}
 		<Codeeditor code={res} mode={javascriptMode} langName={'javascript'} readOnly={true} />
 	{:catch error}
 		<div class="error">{error}</div>
 	{/await}
 	{#await fetch_url('/resources/snippets/tictactoe/style.css')}
-		<img alt="Loader" src="/images/loading.svg" />
+		<Loading />
 	{:then res}
 		<Codeeditor code={res} mode={cssMode} langName={'css'} readOnly={true} />
 	{:catch error}
 		<div class="error">{error}</div>
 	{/await}
 	{#await fetch_url('/resources/snippets/tictactoe/index.html')}
-		<img alt="Loader" src="/images/loading.svg" />
+		<Loading />
 	{:then res}
 		<Codeeditor code={res} mode={htmlMode} langName={'html'} readOnly={true} />
 	{:catch error}
