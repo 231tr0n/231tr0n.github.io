@@ -1,7 +1,7 @@
 <script>
 	import { lightMode } from '$lib/store.svelte.js';
 	let dark = '/images/dark.svg';
-	let light = '/images/light.avif';
+	let light = '/images/light.svg';
 	let src = $state(dark);
 
 	let { theme = 'light' } = $props();

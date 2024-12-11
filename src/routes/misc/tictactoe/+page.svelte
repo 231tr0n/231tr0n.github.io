@@ -16,17 +16,23 @@
 	<h1>TicTacToe</h1>
 
 	<h2>Source Code</h2>
-	{#await fetch_url('/resources/snippets/tictactoe/index.js') then res}
+	{#await fetch_url('/resources/snippets/tictactoe/index.js')}
+		<img alt="Loader" src="/images/loading.svg" />
+	{:then res}
 		<Codeeditor code={res} mode={javascriptMode} langName={'javascript'} readOnly={true} />
 	{:catch error}
 		<div class="error">{error}</div>
 	{/await}
-	{#await fetch_url('/resources/snippets/tictactoe/style.css') then res}
+	{#await fetch_url('/resources/snippets/tictactoe/style.css')}
+		<img alt="Loader" src="/images/loading.svg" />
+	{:then res}
 		<Codeeditor code={res} mode={cssMode} langName={'css'} readOnly={true} />
 	{:catch error}
 		<div class="error">{error}</div>
 	{/await}
-	{#await fetch_url('/resources/snippets/tictactoe/index.html') then res}
+	{#await fetch_url('/resources/snippets/tictactoe/index.html')}
+		<img alt="Loader" src="/images/loading.svg" />
+	{:then res}
 		<Codeeditor code={res} mode={htmlMode} langName={'html'} readOnly={true} />
 	{:catch error}
 		<div class="error">{error}</div>
