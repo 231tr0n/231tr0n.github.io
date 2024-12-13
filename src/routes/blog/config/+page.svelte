@@ -1,5 +1,6 @@
 <script>
 	import Page from '$lib/components/page/Page.svelte';
+	import Loading from '$lib/components/page/Loading.svelte';
 	import Codeeditor from '../../../lib/components/page/Codeeditor.svelte';
 	import luaMode from 'ace-code/src/mode/lua';
 
@@ -193,7 +194,9 @@
 		plugins.
 	</p>
 	<h2>Configuration</h2>
-	{#await fetch_neovim_config('https://raw.githubusercontent.com/231tr0n/config/main/nvim/init.lua') then res}
+	{#await fetch_neovim_config('https://raw.githubusercontent.com/231tr0n/config/main/nvim/init.lua')}
+		<Loading />
+	{:then res}
 		<h3>Plugins used in the configuration</h3>
 		<ol>
 			{#each Object.values(get_plugins_in_config(res)) as plugin}
