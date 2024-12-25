@@ -22,14 +22,34 @@
 	};
 
 	let get_plugins_in_config = (data) => {
-		let contents = data.split('\n');
 		let plugins = [];
-		for (const value of Object.values(contents)) {
-			let temp = value.trim();
-			if (temp.startsWith('add(') && temp.endsWith(')')) {
-				plugins.push(temp.match(/"(.*?)"/)[1]);
-			} else if (temp.startsWith('source = ') && temp.endsWith('",')) {
-				plugins.push(temp.match(/"(.*?)"/)[1]);
+		let matches = data.match(/add\s*\(([\s\S]*?)\)/g);
+		for (let i = 0; i < matches.length; i++) {
+			let directPlugin = matches[i].match(/add\s*\(\s*"(.*)?"\s*\)/);
+			if (directPlugin && directPlugin.length > 0) {
+				let plugin = {};
+				plugin.source = directPlugin[1];
+				plugin.depends = [];
+				plugins.push(plugin);
+				continue;
+			}
+			let indirectPlugin = matches[i].match(/source\s*=\s*"(.*?)"/);
+			let pluginDependsMatch = matches[i].match(/depends\s*=\s*\{([\s\r\t\n\S]*?)\}/);
+			if (indirectPlugin && indirectPlugin.length > 0) {
+				let plugin = {};
+				plugin.source = indirectPlugin[1];
+				if (pluginDependsMatch && pluginDependsMatch.length > 0) {
+					let lines = pluginDependsMatch[1].split('\n');
+					plugin.depends = [];
+					for (let i = 0; i < lines.length; i++) {
+						let line = lines[i].trim();
+						if (line.length > 0) {
+							plugin.depends.push(line.match(/"(.*?)"/)[1]);
+						}
+					}
+				}
+				plugins.push(plugin);
+				continue;
 			}
 		}
 		return plugins;
@@ -199,11 +219,22 @@
 	{:then res}
 		<h3>Plugins used in the configuration</h3>
 		<ol>
-			{#each Object.values(get_plugins_in_config(res)) as plugin}
+			{#each get_plugins_in_config(res) as plugin}
 				<li>
-					<a target="_blank" href="https://github.com/{plugin}">
-						{plugin}
+					<a target="_blank" href="https://github.com/{plugin.source}">
+						{plugin.source}
 					</a>
+					{#if plugin.depends}
+						<ul>
+							{#each plugin.depends as dependency}
+								<li>
+									<a target="_blank" href="https://github.com/{dependency}">
+										{dependency}
+									</a>
+								</li>
+							{/each}
+						</ul>
+					{/if}
 				</li>
 			{/each}
 		</ol>
