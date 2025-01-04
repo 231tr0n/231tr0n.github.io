@@ -27,6 +27,67 @@
 		</li>
 	</ul>
 
+	<h2>Work Experience</h2>
+	<ul>
+		<li>
+			<a target="_blank" href="https://www.opentext.com/">Opentext</a>
+			<ul>
+				<li>
+					<span class="highlightkeyword">Associate Software Engineer</span>
+					<br />
+					Sep 2023 - Present
+				</li>
+				<li>
+					<span class="highlightkeyword">Software Engineering Intern</span>
+					<br />
+					Feb 2023 - Aug 2023
+				</li>
+			</ul>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<a target="_blank" href="https://bi0s.in/">bi0s</a>
+			<ul>
+				<li>
+					<span class="highlightkeyword">Application Security Researcher</span>
+					<br />
+					Apr 2019 - Feb 2023
+				</li>
+			</ul>
+		</li>
+	</ul>
+	<ul>
+		<li>
+			<a target="_blank" href="https://www.amrita.edu/center/create/">AmritaCREATE</a>
+			<ul>
+				<li>
+					<span class="highlightkeyword">Machine Learning Intern</span>
+					<br />
+					May 2022 - Jun 2022
+				</li>
+			</ul>
+		</li>
+	</ul>
+
+	<h2>Education</h2>
+	<ul>
+		<li>
+			<a target="_blank" href="https://www.amrita.edu/campus/amritapuri/">
+				Amrita Vishwa Vidyapeetam
+			</a>
+			<ul>
+				<li>
+					<span class="highlightkeyword">
+						Bachelor of Technology in Computer Science and Engineering (Artificial Intelligence)
+					</span>
+					<br />
+					Jul 2019 - May 2023
+				</li>
+			</ul>
+		</li>
+	</ul>
+
 	<h2>Hobbies</h2>
 	<div class="center">
 		<div class="badge">Badminton</div>
