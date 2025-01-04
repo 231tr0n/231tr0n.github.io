@@ -88,18 +88,6 @@
 		</li>
 	</ul>
 
-	<h2>Hobbies</h2>
-	<div class="center">
-		<div class="badge">Badminton</div>
-		<div class="badge">Programming</div>
-		<div class="badge">Cycling</div>
-		<div class="badge">Chess</div>
-		<div class="badge">Gaming</div>
-		<div class="badge">Listening to music</div>
-		<div class="badge">Watching movies and anime</div>
-		<div class="badge">Solving rubik's cubes</div>
-	</div>
-
 	<h2>Achievements</h2>
 	<ol>
 		<li>
@@ -182,6 +170,18 @@
 			href="https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning">
 			<img class="big-logo" alt="AI/ML" src="/images/ai.avif" />
 		</a>
+	</div>
+
+	<h2>Hobbies</h2>
+	<div class="center">
+		<div class="badge">Badminton</div>
+		<div class="badge">Programming</div>
+		<div class="badge">Cycling</div>
+		<div class="badge">Chess</div>
+		<div class="badge">Gaming</div>
+		<div class="badge">Listening to music</div>
+		<div class="badge">Watching movies and anime</div>
+		<div class="badge">Solving rubik's cubes</div>
 	</div>
 
 	<h2>Developer Tools</h2>
