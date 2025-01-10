@@ -3,44 +3,44 @@ name: Upgrade dependencies
 on:
   workflow_dispatch:
   schedule:
-  - cron: '* * * * *'
+    - cron: '* * * * *'
 jobs:
   upgrade-packages:
     permissions:
       pull-requests: write
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-        check-latest: true
-    - name: Print versions
-      run: |
-        git --version
-        node --version
-        npm --version
-    - name: Upgrade packages
-      id: upgrade_deps
-      run: |
-        npx npm-check-updates -u
-    - name: Install dependencies
-      run: npm install
-    - name: Format
-      run: npm run format
-    - name: Lint
-      run: npm run lint
-    - name: Build
-      run: npm run build
-    - name: Create a separate branch and commit
-      run: |
-        git checkout -b upgrade_deps
-        git add -A
-        git commit -m "chore: upgrade deps"
-    - name: Create pull request
-      run: |
-        gh pr create --base main --head upgrade_deps --title 'Upgrade dependencies' --body '${{ steps.upgrade_deps.outputs.stdout }}'
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          check-latest: true
+      - name: Print versions
+        run: |
+          git --version
+          node --version
+          npm --version
+      - name: Upgrade packages
+        id: upgrade_deps
+        run: |
+          npx npm-check-updates -u
+      - name: Install dependencies
+        run: npm install
+      - name: Format
+        run: npm run format
+      - name: Lint
+        run: npm run lint
+      - name: Build
+        run: npm run build
+      - name: Create a separate branch and commit
+        run: |
+          git checkout -b upgrade_deps
+          git add -A
+          git commit -m "chore: upgrade deps"
+      - name: Create pull request
+        run: |
+          gh pr create --base main --head upgrade_deps --title 'Upgrade dependencies' --body '${{ steps.upgrade_deps.outputs.stdout }}'
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
