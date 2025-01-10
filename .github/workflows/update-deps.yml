@@ -22,6 +22,10 @@ jobs:
           git --version
           node --version
           npm --version
+      - name: Setup git config
+        run: |
+          git config user.name "231tr0n"
+          git config user.email "zeltronsrikar@gmail.com"
       - name: Upgrade packages
         id: upgrade_deps
         run: |
