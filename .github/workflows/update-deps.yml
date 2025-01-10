@@ -37,6 +37,7 @@ jobs:
         with:
           commit-message: |
             chore: upgrade deps
-          title: Update npm dependencies
+          title: |
+            chore: upgrade deps
           body: Updated dependencies
           branch: update-dependencies
