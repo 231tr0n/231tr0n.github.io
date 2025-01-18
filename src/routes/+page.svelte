@@ -4,9 +4,9 @@
 	import { onMount } from 'svelte';
 	let statsImg = $state('');
 	let darkStats =
-		'https://github-readme-stats.vercel.app/api/top-langs/?username=231tr0n&layout=compact&&langs_count=100&theme=solarized-dark&hide_border=true&border_radius=0&disable_animations=true';
+		'https://github-readme-stats.vercel.app/api/top-langs/?username=231tr0n&layout=compact&&langs_count=100&theme=solarized-dark&card_width=300&hide_border=true&border_radius=0&disable_animations=true';
 	let lightStats =
-		'https://github-readme-stats.vercel.app/api/top-langs/?username=231tr0n&layout=compact&&langs_count=100&theme=solarized-light&hide_border=true&border_radius=0&disable_animations=true';
+		'https://github-readme-stats.vercel.app/api/top-langs/?username=231tr0n&layout=compact&&langs_count=100&theme=solarized-light&card_width=300&hide_border=true&border_radius=0&disable_animations=true';
 	statsImg = window.document.body.classList.contains('light-mode') ? lightStats : darkStats;
 	onMount(() => {
 		lightMode.subscribe((value) => {
@@ -286,6 +286,8 @@
 
 	.stats-img {
 		background-color: var(--color-solarized-base03);
+		width: 250px;
+		height: 250px;
 	}
 
 	:global(body.light-mode) .stats-img {
