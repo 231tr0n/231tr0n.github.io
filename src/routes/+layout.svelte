@@ -11,7 +11,11 @@
 	<div class="opacity"></div>
 </div>
 <main>
-	{@render children?.()}
+	{#if children}
+		{@render children()}
+	{:else}
+		<div class="error">No children to render</div>
+	{/if}
 </main>
 <Footer />
 

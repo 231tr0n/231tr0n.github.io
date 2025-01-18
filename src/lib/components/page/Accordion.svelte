@@ -1,5 +1,5 @@
 <script>
-	let { name = '', url = '', external = '', children } = $props();
+	let { name = '', url = '', external = false, children } = $props();
 </script>
 
 {#if name}
@@ -38,7 +38,11 @@
 				{/if}
 			</div>
 		</summary>
-		{#if children}{@render children()}{:else}Accordion body empty.{/if}
+		{#if children}
+			{@render children()}
+		{:else}
+			<div class="error">No children to render</div>
+		{/if}
 	</details>
 {/if}
 

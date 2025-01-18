@@ -62,14 +62,22 @@
 					{/each}
 				</select>
 			</h4>
-			{@render children?.()}
+			{#if children}
+				{@render children()}
+			{:else}
+				<div class="error">No children to render</div>
+			{/if}
 		</div>
 		<div class="body border"></div>
 	</div>
 {:else}
 	<div class="page flex-center">
 		<div class="content justify">
-			{@render children?.()}
+			{#if children}
+				{@render children()}
+			{:else}
+				<div class="error">No children to render</div>
+			{/if}
 		</div>
 		<div class="body border"></div>
 	</div>

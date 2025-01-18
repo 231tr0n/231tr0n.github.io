@@ -1,6 +1,6 @@
 <script>
 	import Page from '$lib/components/page/Page.svelte';
-	import Blogpost from './Blogpost.svelte';
+	import Accordion from '../../lib/components/page/Accordion.svelte';
 
 	let blogPosts = [];
 
@@ -22,10 +22,33 @@
 	);
 </script>
 
+{#snippet blogPostSnippet(blogPost)}
+	{#if blogPost.name && blogPost.description}
+		<Accordion name={blogPost.name} url={blogPost.url}>
+			<div class="center">
+				{#each blogPost.badges as badge}
+					<span class="badge">{badge}</span>
+				{/each}
+				<div class="center">
+					{blogPost.description}
+				</div>
+			</div>
+		</Accordion>
+	{:else}
+		<div class="error">Blog post data is not accurate</div>
+	{/if}
+{/snippet}
+
 <Page>
 	<h1>Blogs</h1>
 
 	{#each blogPosts as blogPost}
-		<Blogpost {...blogPost} />
+		{@render blogPostSnippet(blogPost)}
 	{/each}
 </Page>
+
+<style>
+	div.center {
+		margin-top: 1em;
+	}
+</style>
