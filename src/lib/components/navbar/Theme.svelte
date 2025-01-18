@@ -94,9 +94,4 @@
 		width: 35px;
 		border-radius: 50%;
 	}
-
-	img {
-		height: 20px;
-		width: 20px;
-	}
 </style>
