@@ -108,6 +108,22 @@ body.light-mode a img:hover {
 	border: 2px solid var(--color-light-anchor);
 }
 
+a img.border-img {
+	border: 2px solid var(--color-dark-component-background);
+}
+
+body.light-mode a img.border-img {
+	border: 2px solid var(--color-light-component-background);
+}
+
+a img.border-img:hover {
+	border: 2px solid var(--color-dark-anchor);
+}
+
+body.light-mode a img.border-img:hover {
+	border: 2px solid var(--color-light-anchor);
+}
+
 body {
 	font-family: Roboto-Condensed;
 	background-color: var(--color-dark-background);

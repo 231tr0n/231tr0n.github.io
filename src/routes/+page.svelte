@@ -192,7 +192,7 @@
 	<h2>Github Language Statistics</h2>
 	<div class="center flex-center">
 		<a target="_blank" href="https://github.com/231tr0n">
-			<img alt="Github stats" class="stats-img" bind:this={statsImg} />
+			<img alt="Github stats" class="stats-img border-img" bind:this={statsImg} />
 		</a>
 	</div>
 
@@ -285,12 +285,10 @@
 	}
 
 	.stats-img {
-		border: 2px solid var(--color-dark-foreground);
 		background-color: var(--color-solarized-base03);
 	}
 
 	:global(body.light-mode) .stats-img {
-		border: 2px solid var(--color-light-foreground);
 		background-color: var(--color-solarized-base3);
 	}
 </style>
