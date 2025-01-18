@@ -1,9 +1,17 @@
 <script>
-	let { name = '', url = '', external = false, children } = $props();
+	import { onMount } from 'svelte';
+
+	let { name = '', url = '', external = false, open = false, children } = $props();
+	let details = $state('');
+	onMount(() => {
+		if (open) {
+			details.open = true;
+		}
+	});
 </script>
 
 {#if name}
-	<details>
+	<details bind:this={details}>
 		<summary>
 			<div class="spacer">
 				<h2>{name}</h2>
@@ -50,7 +58,6 @@
 	svg {
 		margin-right: 5px;
 		padding: 3px;
-		border-radius: 5px;
 		border: 2px solid transparent;
 	}
 

@@ -126,7 +126,6 @@ button {
 	background-color: var(--color-dark-button-background);
 	color: var(--color-dark-button-foreground);
 	border: 2px solid transparent;
-	border-radius: 5px;
 	outline: none;
 }
 

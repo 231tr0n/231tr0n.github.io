@@ -120,10 +120,8 @@
 		padding: 5px;
 		position: sticky;
 		top: 0px;
-		border-radius: 5px;
 	}
 
 	select {
-		border-radius: 5px;
 	}
 </style>

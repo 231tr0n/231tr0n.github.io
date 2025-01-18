@@ -114,7 +114,6 @@
 		max-width: 85vw;
 		margin-top: 1em;
 		margin-bottom: 1em;
-		border-radius: 5px;
 		border: 2px solid var(--color-dark-component-background);
 		box-sizing: border-box;
 		height: calc(100vh - 10vh - 45px - 45px);

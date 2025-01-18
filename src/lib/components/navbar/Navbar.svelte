@@ -86,7 +86,6 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		border-radius: 5px;
 		width: 35px;
 		height: 35px;
 	}
@@ -96,7 +95,6 @@
 		justify-content: center;
 		align-items: center;
 		width: 100%;
-		border-radius: 5px;
 	}
 
 	a {

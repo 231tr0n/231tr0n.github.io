@@ -247,7 +247,6 @@
 	.editor-block {
 		margin-top: 1em;
 		margin-bottom: 1em;
-		border-radius: 5px;
 		width: 100%;
 		max-width: 85vw;
 		box-sizing: border-box;

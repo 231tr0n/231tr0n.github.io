@@ -1,5 +1,22 @@
 <script>
 	import Page from '$lib/components/page/Page.svelte';
+	import { lightMode } from '$lib/store.svelte.js';
+	import { onMount } from 'svelte';
+	let statsImg = $state('');
+	let darkStats =
+		'https://github-readme-stats.vercel.app/api/top-langs/?username=231tr0n&layout=compact&&langs_count=100&theme=solarized-dark&hide_border=true&border_radius=0&disable_animations=true';
+	let lightStats =
+		'https://github-readme-stats.vercel.app/api/top-langs/?username=231tr0n&layout=compact&&langs_count=100&theme=solarized-light&hide_border=true&border_radius=0&disable_animations=true';
+	statsImg = window.document.body.classList.contains('light-mode') ? lightStats : darkStats;
+	onMount(() => {
+		lightMode.subscribe((value) => {
+			if (value) {
+				statsImg.src = lightStats;
+			} else {
+				statsImg.src = darkStats;
+			}
+		});
+	});
 </script>
 
 <Page scrollspy="true">
@@ -172,6 +189,11 @@
 		</a>
 	</div>
 
+	<h2>Github Language Statistics</h2>
+	<div class="center flex-center">
+		<img alt="Github stats" class="stats-img" bind:this={statsImg} />
+	</div>
+
 	<h2>Hobbies</h2>
 	<div class="center">
 		<div class="badge">Badminton</div>
@@ -185,7 +207,7 @@
 	</div>
 
 	<h2>Developer Tools</h2>
-	<h3>Operating systems</h3>
+	<h3>Operating Systems</h3>
 	<div class="center">
 		<a target="_blank" href="https://archlinux.org">
 			<img class="logo" alt="Archlinux" src="/images/archlinux.avif" />
@@ -245,7 +267,6 @@
 	.zeltron {
 		height: 100px;
 		width: 100px;
-		border-radius: 50%;
 		margin-bottom: 1em;
 	}
 
@@ -259,5 +280,15 @@
 		padding: 2px;
 		height: 80px;
 		width: auto;
+	}
+
+	.stats-img {
+		border: 1px solid var(--color-dark-foreground);
+		background-color: var(--color-solarized-base03);
+	}
+
+	:global(body.light-mode) .stats-img {
+		border: 1px solid var(--color-light-foreground);
+		background-color: var(--color-solarized-base3);
 	}
 </style>

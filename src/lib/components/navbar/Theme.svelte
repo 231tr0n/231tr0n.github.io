@@ -92,6 +92,5 @@
 		align-items: center;
 		height: 35px;
 		width: 35px;
-		border-radius: 50%;
 	}
 </style>
