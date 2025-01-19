@@ -52,9 +52,3 @@
 		{@render miscPostSnippet(miscPost)}
 	{/each}
 </Page>
-
-<style>
-	div.center {
-		margin-top: 1em;
-	}
-</style>

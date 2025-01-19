@@ -47,7 +47,7 @@
 
 {#if title}
 	<div class="flex-middle">
-		<div bind:this={iframeElement} class="iframe body">
+		<div bind:this={iframeElement} class="iframe thick-component-border body">
 			<div class="filename iframe-context component">
 				{title}
 			</div>
@@ -114,13 +114,8 @@
 		max-width: 85vw;
 		margin-top: 1em;
 		margin-bottom: 1em;
-		border: 2px solid var(--color-dark-component-background);
 		box-sizing: border-box;
 		height: calc(100vh - 10vh - 45px - 45px);
-	}
-
-	:global(body.light-mode) .iframe {
-		border: 2px solid var(--color-light-component-background);
 	}
 
 	iframe {
@@ -128,8 +123,6 @@
 		overflow: auto;
 		width: 100%;
 		height: calc(100% - 34px - 31px);
-		border-bottom-left-radius: 5px;
-		border-bottom-right-radius: 5px;
 	}
 
 	button {

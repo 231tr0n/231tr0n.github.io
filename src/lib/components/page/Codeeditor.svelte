@@ -102,7 +102,7 @@
 </script>
 
 <div class="flex-middle">
-	<div bind:this={editorElement} class="editor-block body">
+	<div bind:this={editorElement} class="editor-block thick-component-border body">
 		<div class="filename editor-context component">
 			<span>
 				{readOnly ? 'Snippet' : 'Editor'}
@@ -250,13 +250,8 @@
 		width: 100%;
 		max-width: 85vw;
 		box-sizing: border-box;
-		border: 2px solid var(--color-dark-component-background);
 		overflow: auto;
 		height: calc(100vh - 10vh - 45px - 45px);
-	}
-
-	:global(body.light-mode) .editor-block {
-		border: 2px solid var(--color-light-component-background);
 	}
 
 	.editor-context {

@@ -1,6 +1,5 @@
 <script>
 	import { onMount } from 'svelte';
-	import '$lib/css/page.css';
 
 	let { scrollspy = false, children } = $props();
 
@@ -120,8 +119,5 @@
 		padding: 5px;
 		position: sticky;
 		top: 0px;
-	}
-
-	select {
 	}
 </style>

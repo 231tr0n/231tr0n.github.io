@@ -249,13 +249,3 @@
 		<div class="error">{error}</div>
 	{/await}
 </Page>
-
-<style>
-	li {
-		text-align: justify;
-	}
-
-	p {
-		text-align: justify;
-	}
-</style>

@@ -56,7 +56,6 @@
 
 <style>
 	svg {
-		margin-right: 5px;
 		padding: 3px;
 		border: 2px solid transparent;
 	}
@@ -80,6 +79,7 @@
 	}
 
 	a > button {
+		margin-left: 5px;
 		padding: 2px;
 		font-size: 14px;
 	}

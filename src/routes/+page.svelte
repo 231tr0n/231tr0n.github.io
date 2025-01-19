@@ -1,22 +1,5 @@
 <script>
 	import Page from '$lib/components/page/Page.svelte';
-	import { lightMode } from '$lib/store.svelte.js';
-	import { onMount } from 'svelte';
-	let statsImg = $state('');
-	let darkStats =
-		'https://github-readme-stats.vercel.app/api/top-langs/?username=231tr0n&layout=compact&&langs_count=100&theme=solarized-dark&card_width=300&hide_border=true&border_radius=0&disable_animations=true';
-	let lightStats =
-		'https://github-readme-stats.vercel.app/api/top-langs/?username=231tr0n&layout=compact&&langs_count=100&theme=solarized-light&card_width=300&hide_border=true&border_radius=0&disable_animations=true';
-	statsImg = window.document.body.classList.contains('light-mode') ? lightStats : darkStats;
-	onMount(() => {
-		lightMode.subscribe((value) => {
-			if (value) {
-				statsImg.src = lightStats;
-			} else {
-				statsImg.src = darkStats;
-			}
-		});
-	});
 </script>
 
 <Page scrollspy="true">
@@ -189,13 +172,6 @@
 		</a>
 	</div>
 
-	<h2>Github Language Statistics</h2>
-	<div class="center flex-center">
-		<a target="_blank" href="https://github.com/231tr0n">
-			<img alt="Github stats" class="stats-img border-img" bind:this={statsImg} />
-		</a>
-	</div>
-
 	<h2>Hobbies</h2>
 	<div class="center">
 		<div class="badge">Badminton</div>
@@ -282,15 +258,5 @@
 		padding: 2px;
 		height: 80px;
 		width: auto;
-	}
-
-	.stats-img {
-		background-color: var(--color-solarized-base03);
-		width: 250px;
-		height: 250px;
-	}
-
-	:global(body.light-mode) .stats-img {
-		background-color: var(--color-solarized-base3);
 	}
 </style>

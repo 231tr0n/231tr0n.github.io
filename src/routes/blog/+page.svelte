@@ -46,9 +46,3 @@
 		{@render blogPostSnippet(blogPost)}
 	{/each}
 </Page>
-
-<style>
-	div.center {
-		margin-top: 1em;
-	}
-</style>
