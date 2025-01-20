@@ -1,7 +1,7 @@
 <script>
 	import Page from '$lib/components/Page.svelte';
-	import Accordion from '../../lib/components/Accordion.svelte';
-	import Progress from '../../lib/components/Progress.svelte';
+	import Accordion from '$lib/components/Accordion.svelte';
+	import Progress from '$lib/components/Progress.svelte';
 
 	let progress_length = $state(0);
 	let full_completion_length = $state(0);
