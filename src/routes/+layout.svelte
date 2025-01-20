@@ -8,7 +8,7 @@
 
 <Navbar />
 <div class="background">
-	<div class="opacity"></div>
+	<div class="body opacity"></div>
 </div>
 <main>
 	{#if children}
@@ -24,13 +24,8 @@
 		position: fixed;
 		width: 100%;
 		height: 100%;
-		background-color: var(--color-dark-background);
 		opacity: 80%;
 		z-index: 2;
-	}
-
-	:global(body.light-mode) .opacity {
-		background-color: var(--color-light-background);
 	}
 
 	.background {
