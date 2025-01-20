@@ -1,7 +1,7 @@
 <script>
-	import Page from '$lib/components/page/Page.svelte';
-	import Codeeditor from '$lib/components/page/Codeeditor.svelte';
-	import Sandbox from '$lib/components/page/Sandbox.svelte';
+	import Page from '$lib/components/Page.svelte';
+	import Codeeditor from '$lib/components/Codeeditor.svelte';
+	import Sandbox from '$lib/components/Sandbox.svelte';
 	import htmlMode from 'ace-code/src/mode/html';
 	import { htmlPlayground } from '$lib/store.svelte.js';
 </script>

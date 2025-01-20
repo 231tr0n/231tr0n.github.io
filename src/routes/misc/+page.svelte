@@ -1,6 +1,6 @@
 <script>
-	import Page from '$lib/components/page/Page.svelte';
-	import Accordion from '../../lib/components/page/Accordion.svelte';
+	import Page from '$lib/components/Page.svelte';
+	import Accordion from '$lib/components/Accordion.svelte';
 
 	let miscPosts = [];
 

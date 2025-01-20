@@ -1,5 +1,5 @@
 <script>
-	import Page from '$lib/components/page/Page.svelte';
+	import Page from '$lib/components/Page.svelte';
 </script>
 
 <Page scrollspy="true">
