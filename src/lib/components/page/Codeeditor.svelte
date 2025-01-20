@@ -22,7 +22,9 @@
 	let editor = '';
 	let fullscreen = $state(false);
 	let editorElement = $state('');
+	let editorBlock = $state('');
 	let copied = $state(false);
+	let stored_height = '';
 
 	let copy = () => {
 		navigator.clipboard.writeText(editor.session.getValue());
@@ -38,7 +40,6 @@
 		} else {
 			editorElement.requestFullscreen();
 		}
-		editor.resize();
 	};
 
 	let execute = () => {
@@ -92,16 +93,20 @@
 
 		editorElement.onfullscreenchange = () => {
 			if (document.fullscreenElement) {
+				stored_height = editorBlock.style.height;
+				editorBlock.style.height = '100vh';
 				fullscreen = true;
 			} else {
+				editorBlock.style.height = stored_height;
 				fullscreen = false;
 			}
+			editor.resize();
 		};
 	});
 </script>
 
 <div bind:this={editorElement} class="flex-middle">
-	<div class="editor-block thick-component-border body">
+	<div bind:this={editorBlock} class="editor-block thick-component-border body">
 		<div class="filename editor-context component">
 			<span>
 				{readOnly ? 'Snippet' : 'Editor'}
@@ -268,7 +273,7 @@
 		width: 100%;
 		box-sizing: border-box;
 		overflow: auto;
-		height: 100vh;
+		height: calc(100vh - 10vh - 50px - 50px);
 	}
 
 	.editor-context {
