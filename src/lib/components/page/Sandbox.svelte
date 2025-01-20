@@ -109,6 +109,11 @@
 		justify-content: space-between;
 	}
 
+	svg {
+		width: 16px;
+		height: 16px;
+	}
+
 	.iframe {
 		width: 100%;
 		max-width: 85vw;

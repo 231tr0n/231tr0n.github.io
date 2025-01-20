@@ -7,7 +7,6 @@
 	import vscode from 'ace-code/src/keyboard/vscode';
 	import beautifier from 'ace-code/src/ext/beautify';
 	import { lightMode } from '$lib/store.svelte.js';
-	import '$lib/css/editor.css';
 
 	let {
 		langName = '',
@@ -219,6 +218,11 @@
 		height: calc(100% - 65px);
 	}
 
+	svg {
+		width: 16px;
+		height: 16px;
+	}
+
 	pre {
 		margin: 0px;
 		padding: 3px;
@@ -259,5 +263,22 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
+	}
+
+	:global(.ace_gutter-layer) {
+		border-right: 1px solid var(--color-dark-component-background);
+		color: var(--color-dark-foreground);
+	}
+
+	:global(body.light-mode .ace_gutter-layer) {
+		border-right: 1px solid var(--color-light-component-background);
+		color: var(--color-light-foreground);
+	}
+
+	:global(div.ace_editor) {
+		font-family: Roboto-Mono;
+		font-size: 15px;
+		width: 100%;
+		height: calc(100% - 34px - 38px);
 	}
 </style>
