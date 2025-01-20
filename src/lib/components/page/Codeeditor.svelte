@@ -15,12 +15,12 @@
 		readOnly = false,
 		codeStore = '',
 		vimMode = false,
-		fullscreen = false,
 		code = ''
 	} = $props();
 
 	let editorDiv = $state('');
 	let editor = '';
+	let fullscreen = $state(false);
 	let editorElement = $state('');
 	let copied = $state(false);
 
@@ -100,8 +100,8 @@
 	});
 </script>
 
-<div class="flex-middle">
-	<div bind:this={editorElement} class="editor-block thick-component-border body">
+<div bind:this={editorElement} class="flex-middle">
+	<div class="editor-block thick-component-border body">
 		<div class="filename editor-context component">
 			<span>
 				{readOnly ? 'Snippet' : 'Editor'}
@@ -206,16 +206,30 @@
 			<span>{langName}</span>
 		</div>
 		<div class="editor-height" bind:this={editorDiv}></div>
-		{#if readOnly && output}
+	</div>
+	{#if readOnly && output}
+		<div class="output body component-border">
 			<div class="editor-context component"><span>Output</span></div>
 			<pre>{output}</pre>
-		{/if}
-	</div>
+		</div>
+	{/if}
 </div>
 
 <style>
+	.output {
+		box-sizing: border-box;
+		width: 100%;
+	}
+
+	div.flex-middle {
+		box-sizing: border-box;
+		margin-top: 1em;
+		margin-bottom: 1em;
+		flex-direction: column;
+	}
+
 	.editor-height {
-		height: calc(100% - 65px);
+		height: calc(100% - 66px);
 	}
 
 	svg {
@@ -226,6 +240,8 @@
 	pre {
 		margin: 0px;
 		padding: 3px;
+		height: 100px;
+		overflow: auto;
 	}
 
 	.logo {
@@ -249,13 +265,10 @@
 	}
 
 	.editor-block {
-		margin-top: 1em;
-		margin-bottom: 1em;
 		width: 100%;
-		max-width: 85vw;
 		box-sizing: border-box;
 		overflow: auto;
-		height: calc(100vh - 10vh - 45px - 45px);
+		height: 100vh;
 	}
 
 	.editor-context {
@@ -278,7 +291,5 @@
 	:global(div.ace_editor) {
 		font-family: Roboto-Mono;
 		font-size: 15px;
-		width: 100%;
-		height: calc(100% - 34px - 38px);
 	}
 </style>

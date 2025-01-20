@@ -142,6 +142,7 @@ body {
 	padding: 0px;
 	scrollbar-color: var(--color-dark-keyword) transparent;
 	scrollbar-width: thin;
+	overflow: auto;
 }
 
 body.light-mode {
