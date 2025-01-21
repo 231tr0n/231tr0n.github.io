@@ -22,8 +22,8 @@
 		<li>I enjoy programming in go, java, python and javascript.</li>
 		<li>I am a linux user who enjoys hacking it to the core.</li>
 		<li>
-			Ex team lead of <a target="_blank" href="https://bi0s.in">Bi0s</a>
-			team's pentesting category.
+			I also dabble with <span class="highlightkeyword">AI/ML</span>
+			every now and then.
 		</li>
 	</ul>
 

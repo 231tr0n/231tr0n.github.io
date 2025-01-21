@@ -81,7 +81,7 @@
 				<defs>
 					<style>
 						.cls-1 {
-							fill: #fcdb33;
+							fill: #cb4b16;
 						}
 					</style>
 				</defs>

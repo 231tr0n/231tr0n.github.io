@@ -364,6 +364,7 @@ code {
 	display: inline-block;
 	margin: 5px;
 	padding: 5px;
+	border-radius: 35px;
 	background-color: var(--color-dark-badge-background);
 	border: 2px solid var(--color-dark-badge-foreground);
 	color: var(--color-dark-badge-foreground);
