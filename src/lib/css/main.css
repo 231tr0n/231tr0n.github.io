@@ -363,7 +363,7 @@ code {
 .badge {
 	display: inline-block;
 	margin: 5px;
-	padding: 5px;
+	padding: 5px 10px;
 	border-radius: 35px;
 	background-color: var(--color-dark-badge-background);
 	border: 2px solid var(--color-dark-badge-foreground);
