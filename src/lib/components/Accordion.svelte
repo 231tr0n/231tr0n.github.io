@@ -3,6 +3,11 @@
 
 	let { name = '', url = '', external = false, open = false, children } = $props();
 	let details = $state('');
+
+	let summaryToggler = () => {
+		details.open = details.open ? false : true;
+	};
+
 	onMount(() => {
 		if (open) {
 			details.open = true;
@@ -15,28 +20,33 @@
 		<summary>
 			<div class="spacer">
 				<h2>{name}</h2>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="15"
-					height="15"
-					fill="currentColor"
-					class="bi bi-chevron-down component"
-					viewBox="0 0 16 16">
-					<path
-						fill-rule="evenodd"
-						d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-				</svg>
-				<svg
-					xmlns="http://www.w3.org/2000/svg"
-					width="15"
-					height="15"
-					fill="currentColor"
-					class="bi bi-chevron-up component"
-					viewBox="0 0 16 16">
-					<path
-						fill-rule="evenodd"
-						d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
-				</svg>
+				<button
+					onclick={summaryToggler}
+					class="summary-toggler"
+					aria-label="Accordion summary toggler">
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="15"
+						height="15"
+						fill="currentColor"
+						class="bi bi-chevron-down"
+						viewBox="0 0 16 16">
+						<path
+							fill-rule="evenodd"
+							d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+					</svg>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="15"
+						height="15"
+						fill="currentColor"
+						class="bi bi-chevron-up"
+						viewBox="0 0 16 16">
+						<path
+							fill-rule="evenodd"
+							d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
+					</svg>
+				</button>
 				{#if url}
 					{#if external}
 						<a target="_blank" href={url}><button>Open</button></a>
@@ -55,17 +65,12 @@
 {/if}
 
 <style>
-	svg {
-		padding: 3px;
-		border: 2px solid transparent;
-	}
-
-	svg:hover {
-		border: 2px solid var(--color-dark-anchor);
-	}
-
-	:global(body.light-mode) svg:hover {
-		border: 2px solid var(--color-light-anchor);
+	.summary-toggler {
+		width: 24px;
+		height: 24px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 	}
 
 	details {
