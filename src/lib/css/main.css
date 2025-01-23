@@ -182,6 +182,11 @@ select {
 	outline: none;
 }
 
+select > option {
+	font-family: Roboto-Condensed;
+	outline: none;
+}
+
 option {
 	font-family: Roboto-Condensed;
 	outline: none;

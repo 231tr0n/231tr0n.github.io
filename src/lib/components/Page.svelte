@@ -5,9 +5,9 @@
 
 	let name = '';
 	let sections = $state([]);
-	let page = null;
-	let selection = null;
-	let breadcrumb = null;
+	let page = $state(null);
+	let selection = $state(null);
+	let breadcrumb = $state(null);
 	let scroller = $state(() => {});
 	let updateBreadcrumb = $state(() => {});
 
@@ -39,21 +39,15 @@
 			sections = document.querySelectorAll('div.page div.content h2');
 			sections = Array.from(sections);
 			sections.unshift(name);
-			page = document.querySelector('div.page');
-			breadcrumb = document.querySelector('div.page div.content h4');
-			selection = document.querySelector('div.page div.content h4 select');
-			sections = document.querySelectorAll('div.page div.content h2');
-			sections = Array.from(sections);
-			sections.unshift(name);
 		});
 	}
 </script>
 
 {#if scrollspy}
-	<div class="page flex-center" onscroll={updateBreadcrumb}>
+	<div bind:this={page} class="page flex-center" onscroll={updateBreadcrumb}>
 		<div class="content justify">
-			<h4 class="component center flex-middle">
-				<select class="anchor body" onchange={scroller}>
+			<h4 bind:this={breadcrumb} class="component center flex-middle">
+				<select bind:this={selection} class="anchor body" onchange={scroller}>
 					{#each sections as section, index}
 						<option value={index}>{section.innerText}</option>
 					{:else}
