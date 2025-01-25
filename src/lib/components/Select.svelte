@@ -37,7 +37,6 @@
 	$effect(() => {
 		let largestItem = '';
 		for (const item of items) {
-			console.log(item);
 			if (largestItem.length < item.length) {
 				largestItem = item;
 			}
