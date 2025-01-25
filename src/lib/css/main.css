@@ -134,19 +134,25 @@ body.light-mode a img.border-img:hover {
 	border: 2px solid var(--color-light-anchor);
 }
 
+* {
+	scrollbar-color: var(--color-dark-keyword) transparent;
+	scrollbar-width: thin;
+}
+
+body.light-mode * {
+	scrollbar-color: var(--color-light-keyword) transparent;
+}
+
 body {
 	font-family: Roboto-Condensed;
 	background-color: var(--color-dark-background);
 	color: var(--color-dark-foreground);
 	margin: 0px;
 	padding: 0px;
-	scrollbar-color: var(--color-dark-keyword) transparent;
-	scrollbar-width: thin;
 	overflow: auto;
 }
 
 body.light-mode {
-	scrollbar-color: var(--color-light-keyword) transparent;
 	background-color: var(--color-light-background);
 	color: var(--color-light-foreground);
 }
