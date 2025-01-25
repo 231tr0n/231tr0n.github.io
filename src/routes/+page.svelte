@@ -1,8 +1,9 @@
 <script>
 	import Page from '$lib/components/Page.svelte';
+	import { pageSelectStore } from '$lib/store.svelte.js';
 </script>
 
-<Page scrollspy="true">
+<Page scrollspy="true" {pageSelectStore}>
 	<h1>Home</h1>
 
 	<div class="center">

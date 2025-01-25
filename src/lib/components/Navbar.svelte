@@ -43,8 +43,6 @@
 				fill="#FDF6E3"
 				version="1.1"
 				id="Capa_1"
-				width="800px"
-				height="800px"
 				viewBox="0 0 45.74 45.74"
 				xml:space="preserve">
 				<g>
@@ -145,5 +143,6 @@
 		align-items: center;
 		height: 30px;
 		width: 30px;
+		padding: 5px;
 	}
 </style>

@@ -3,68 +3,68 @@
 	import Accordion from '$lib/components/Accordion.svelte';
 	import Progress from '$lib/components/Progress.svelte';
 
-	let progress_length = $state(0);
-	let full_completion_length = $state(0);
-	let languages_list = {};
-	let languages_percentage_list = [];
+	let progressLength = $state(0);
+	let fullCompletionLength = $state(0);
+	let languagesList = {};
+	let languagesPercentageList = [];
 
-	let fetch_github_repo_data = async (url) => {
+	let fetchGithubRepoData = async (url) => {
 		const temp = await fetch(url);
 		const repos = await temp.json();
 		if (repos['message']) {
 			throw 'Github api rate limit exceeded';
 		}
 
-		const non_forked_repos = [];
+		const nonForkedRepos = [];
 		for (const repo of repos) {
 			if (!repo['fork']) {
-				non_forked_repos.push(repo);
-				full_completion_length += 1;
+				nonForkedRepos.push(repo);
+				fullCompletionLength += 1;
 			}
 		}
 
-		const return_data = [];
-		for (const repo of non_forked_repos) {
+		const returnData = [];
+		for (const repo of nonForkedRepos) {
 			const temp = await fetch(repo['languages_url']);
 			const languages = await temp.json();
 			if (languages['message']) {
 				throw 'Github api rate limit exceeded';
 			}
 
-			const repo_data = {};
-			repo_data.name = repo['name'];
-			repo_data.url = repo['html_url'];
-			repo_data.description = repo['description'];
-			repo_data.badges = [];
+			const repoData = {};
+			repoData.name = repo['name'];
+			repoData.url = repo['html_url'];
+			repoData.description = repo['description'];
+			repoData.badges = [];
 
 			for (const [key, value] of Object.entries(languages)) {
-				repo_data.badges.push(key);
-				if (languages_list[key]) {
-					languages_list[key] += parseInt(value);
+				repoData.badges.push(key);
+				if (languagesList[key]) {
+					languagesList[key] += parseInt(value);
 				} else {
-					languages_list[key] = parseInt(value);
+					languagesList[key] = parseInt(value);
 				}
 			}
 
-			return_data.push(repo_data);
+			returnData.push(repoData);
 
-			progress_length += 1;
+			progressLength += 1;
 		}
 
 		let total = 0;
-		for (const value of Object.values(languages_list)) {
+		for (const value of Object.values(languagesList)) {
 			total += value;
 		}
 
-		for (const [key, value] of Object.entries(languages_list)) {
-			languages_percentage_list.push([key, parseFloat((value / total) * 100).toFixed(2)]);
+		for (const [key, value] of Object.entries(languagesList)) {
+			languagesPercentageList.push([key, parseFloat((value / total) * 100).toFixed(2)]);
 		}
 
-		languages_percentage_list.sort((a, b) => {
+		languagesPercentageList.sort((a, b) => {
 			return b[1] - a[1];
 		});
 
-		return return_data;
+		return returnData;
 	};
 </script>
 
@@ -87,14 +87,14 @@
 
 <Page>
 	<h1>Projects</h1>
-	{#await fetch_github_repo_data('https://api.github.com/users/231tr0n/repos')}
+	{#await fetchGithubRepoData('https://api.github.com/users/231tr0n/repos')}
 		<br />
-		<Progress value={progress_length} max={full_completion_length}></Progress>
+		<Progress value={progressLength} max={fullCompletionLength}></Progress>
 	{:then res}
 		<Accordion name={'Github Language Statistics'} open={true}>
 			<div class="center">
 				<div class="center"></div>
-				{#each languages_percentage_list as value}
+				{#each languagesPercentageList as value}
 					<span class="badge">{value[0] + ' - ' + value[1] + '%'}</span>
 				{/each}
 			</div>

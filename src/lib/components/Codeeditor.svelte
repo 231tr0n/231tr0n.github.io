@@ -24,7 +24,7 @@
 	let editorElement = $state('');
 	let editorBlock = $state('');
 	let copied = $state(false);
-	let stored_height = '';
+	let storedHeight = '';
 
 	let copy = () => {
 		navigator.clipboard.writeText(editor.session.getValue());
@@ -93,11 +93,11 @@
 
 		editorElement.onfullscreenchange = () => {
 			if (document.fullscreenElement) {
-				stored_height = editorBlock.style.height;
+				storedHeight = editorBlock.style.height;
 				editorBlock.style.height = '100vh';
 				fullscreen = true;
 			} else {
-				editorBlock.style.height = stored_height;
+				editorBlock.style.height = storedHeight;
 				fullscreen = false;
 			}
 			editor.resize();

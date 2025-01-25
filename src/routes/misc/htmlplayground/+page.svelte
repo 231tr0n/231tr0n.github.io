@@ -13,5 +13,5 @@
 	<Codeeditor langName={'html'} mode={htmlMode} codeStore={htmlPlayground} />
 
 	<h2>Output</h2>
-	<Sandbox title="Output" srcdocStore={htmlPlayground} />
+	<Sandbox title="Output" srcDocStore={htmlPlayground} />
 </Page>

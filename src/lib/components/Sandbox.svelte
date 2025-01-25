@@ -1,12 +1,11 @@
 <script>
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount } from 'svelte';
 
-	let { title = '', src = '', srcdocStore = '' } = $props();
+	let { title = '', src = '', srcDocStore = '' } = $props();
 
 	let fullscreen = $state(false);
 	let iframeElement = $state('');
 	let iframe = $state('');
-	let subscriber = () => {};
 
 	let toggleFullscreen = () => {
 		if (document.fullscreenElement) {
@@ -31,17 +30,13 @@
 			};
 		}
 
-		if (srcdocStore) {
-			subscriber = srcdocStore.subscribe((value) => {
+		if (srcDocStore) {
+			srcDocStore.subscribe((value) => {
 				iframe.srcdoc = value;
 				// Below line is used for triggering iframe reload by resetting src.
 				iframe.src = iframe.src;
 			});
 		}
-	});
-
-	onDestroy(() => {
-		subscriber();
 	});
 </script>
 

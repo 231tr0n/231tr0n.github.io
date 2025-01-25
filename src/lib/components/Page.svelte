@@ -1,44 +1,52 @@
 <script>
 	import { onMount } from 'svelte';
+	import Select from './Select.svelte';
 
-	let { scrollspy = false, children } = $props();
+	let { scrollspy = false, pageSelectStore = '', children } = $props();
 
 	let name = '';
 	let sections = $state([]);
 	let page = $state(null);
-	let selection = $state(null);
+	let currentItem = $state(0);
 	let breadcrumb = $state(null);
-	let scroller = $state(() => {});
-	let updateBreadcrumb = $state(() => {});
+	let updateBreadcrumb = $state(null);
+	let selectionMenuArray = $state([]);
 
 	if (scrollspy) {
-		scroller = () => {
-			sections[selection.value].scrollIntoView();
-			page.scrollBy(0, -breadcrumb.offsetHeight - 2);
-		};
-
 		updateBreadcrumb = () => {
 			let prev = null;
 			for (const [index, section] of sections.entries()) {
 				if (breadcrumb.offsetTop + breadcrumb.offsetHeight + 5 < section.offsetTop) {
 					if (prev) {
-						selection.value = index - 1;
+						currentItem = index - 1;
 					} else {
-						selection.value = index;
+						currentItem = index;
 					}
 					break;
 				} else {
-					selection.value = index;
+					currentItem = index;
 				}
 				prev = section;
 			}
 		};
+
+		if (pageSelectStore) {
+			pageSelectStore.subscribe((value) => {
+				if (value >= 0 && value < sections.length) {
+					sections[value].scrollIntoView();
+					page.scrollBy(0, -breadcrumb.offsetHeight - 2);
+				}
+			});
+		}
 
 		onMount(() => {
 			name = document.querySelector('div.page div.content h1');
 			sections = document.querySelectorAll('div.page div.content h2');
 			sections = Array.from(sections);
 			sections.unshift(name);
+			for (const section of sections) {
+				selectionMenuArray.push(section.innerText);
+			}
 		});
 	}
 </script>
@@ -47,13 +55,11 @@
 	<div bind:this={page} class="page flex-center" onscroll={updateBreadcrumb}>
 		<div class="content justify">
 			<h4 bind:this={breadcrumb} class="component center flex-middle">
-				<select bind:this={selection} class="anchor body" onchange={scroller}>
-					{#each sections as section, index}
-						<option value={index}>{section.innerText}</option>
-					{:else}
-						<option value=""></option>
-					{/each}
-				</select>
+				<Select
+					items={selectionMenuArray}
+					transparent={true}
+					{currentItem}
+					selectedItemStore={pageSelectStore} />
 			</h4>
 			{#if children}
 				{@render children()}
