@@ -1,16 +1,18 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onMount, onDestroy } from 'svelte';
 	import Select from './Select.svelte';
+	import { selectedItemStore } from '$lib/store.svelte.js';
 
-	let { scrollspy = false, pageSelectStore = '', children } = $props();
+	let { scrollspy = false, children } = $props();
 
 	let name = '';
-	let sections = $state([]);
+	let sections = [];
 	let page = $state(null);
 	let currentItem = $state(0);
 	let breadcrumb = $state(null);
 	let updateBreadcrumb = $state(null);
 	let selectionMenuArray = $state([]);
+	let subscriber = '';
 
 	if (scrollspy) {
 		updateBreadcrumb = () => {
@@ -30,8 +32,8 @@
 			}
 		};
 
-		if (pageSelectStore) {
-			pageSelectStore.subscribe((value) => {
+		if (selectedItemStore) {
+			subscriber = selectedItemStore.subscribe((value) => {
 				if (value >= 0 && value < sections.length) {
 					sections[value].scrollIntoView();
 					page.scrollBy(0, -breadcrumb.offsetHeight - 2);
@@ -48,6 +50,10 @@
 				selectionMenuArray.push(section.innerText);
 			}
 		});
+
+		onDestroy(() => {
+			subscriber();
+		});
 	}
 </script>
 
@@ -55,11 +61,7 @@
 	<div bind:this={page} class="page flex-center" onscroll={updateBreadcrumb}>
 		<div class="content justify">
 			<h4 bind:this={breadcrumb} class="component center flex-middle">
-				<Select
-					items={selectionMenuArray}
-					transparent={true}
-					{currentItem}
-					selectedItemStore={pageSelectStore} />
+				<Select items={selectionMenuArray} transparent={true} {currentItem} {selectedItemStore} />
 			</h4>
 			{#if children}
 				{@render children()}

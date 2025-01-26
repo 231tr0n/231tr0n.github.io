@@ -1,5 +1,5 @@
 <script>
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import ace from 'ace-code';
 	import solarized_light from 'ace-code/src/theme/solarized_light';
 	import solarized_dark from 'ace-code/src/theme/solarized_dark';
@@ -26,6 +26,7 @@
 	let editorBlock = $state('');
 	let copied = $state(false);
 	let storedHeight = '';
+	let subscriber = '';
 
 	let copy = () => {
 		navigator.clipboard.writeText(editor.session.getValue());
@@ -84,7 +85,7 @@
 		editor.session.setTabSize(2);
 		editor.session.setUseSoftTabs(true);
 		editor.setShowPrintMargin(false);
-		lightMode.subscribe((value) => {
+		subscriber = lightMode.subscribe((value) => {
 			if (value) {
 				editor.setTheme(solarized_light);
 			} else {
@@ -103,6 +104,10 @@
 			}
 			editor.resize();
 		};
+	});
+
+	onDestroy(() => {
+		subscriber();
 	});
 </script>
 
