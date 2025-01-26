@@ -242,7 +242,12 @@
 		<ol>
 			{#each Object.entries(get_sections_in_config(res)) as [heading, block]}
 				<li>{heading}</li>
-				<Codeeditor code={block} mode={luaMode} langName={'lua'} readOnly={true} />
+				<Codeeditor
+					code={block}
+					mode={luaMode}
+					langName={'lua'}
+					readOnly={true}
+					fileName={'init.lua'} />
 			{/each}
 		</ol>
 	{:catch error}

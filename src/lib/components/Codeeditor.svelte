@@ -13,6 +13,7 @@
 		mode = '',
 		output = '',
 		readOnly = false,
+		fileName = '',
 		codeStore = '',
 		vimMode = false,
 		code = ''
@@ -111,6 +112,11 @@
 			<span>
 				{readOnly ? 'Snippet' : 'Editor'}
 			</span>
+			{#if readOnly && fileName != ''}
+				<span>
+					{fileName}
+				</span>
+			{/if}
 		</div>
 		<div class="editor-context component">
 			<span>

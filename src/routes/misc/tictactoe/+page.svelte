@@ -20,21 +20,31 @@
 	{#await fetch_url('/resources/snippets/tictactoe/index.js')}
 		<Loading />
 	{:then res}
-		<Codeeditor code={res} mode={javascriptMode} langName={'javascript'} readOnly={true} />
+		<Codeeditor
+			code={res}
+			mode={javascriptMode}
+			langName={'javascript'}
+			readOnly={true}
+			fileName={'index.js'} />
 	{:catch error}
 		<div class="error">{error}</div>
 	{/await}
 	{#await fetch_url('/resources/snippets/tictactoe/style.css')}
 		<Loading />
 	{:then res}
-		<Codeeditor code={res} mode={cssMode} langName={'css'} readOnly={true} />
+		<Codeeditor code={res} mode={cssMode} langName={'css'} readOnly={true} fileName={'style.css'} />
 	{:catch error}
 		<div class="error">{error}</div>
 	{/await}
 	{#await fetch_url('/resources/snippets/tictactoe/index.html')}
 		<Loading />
 	{:then res}
-		<Codeeditor code={res} mode={htmlMode} langName={'html'} readOnly={true} />
+		<Codeeditor
+			code={res}
+			mode={htmlMode}
+			langName={'html'}
+			readOnly={true}
+			fileName={'index.html'} />
 	{:catch error}
 		<div class="error">{error}</div>
 	{/await}
