@@ -137,6 +137,9 @@ body.light-mode a img.border-img:hover {
 * {
 	scrollbar-color: var(--color-dark-keyword) transparent;
 	scrollbar-width: thin;
+	transition:
+		color 300ms linear,
+		background-color 300ms linear;
 }
 
 body.light-mode * {
