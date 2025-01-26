@@ -1,5 +1,6 @@
 <script>
 	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 
 	let {
 		items = [],
@@ -84,7 +85,7 @@
 		{/if}
 	</button>
 	{#if open}
-		<div class="select-menu component thick-component-border">
+		<div class="select-menu component thick-component-border" transition:fade>
 			{#each items.entries() as [index, item]}
 				<button onclick={() => selectItem(index)} class="items">
 					{item}

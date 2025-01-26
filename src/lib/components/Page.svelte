@@ -2,6 +2,7 @@
 	import { onMount, onDestroy } from 'svelte';
 	import Select from './Select.svelte';
 	import { selectedItemStore } from '$lib/store.svelte.js';
+	import { animationDelay, animationDuration } from '$lib/animation.constants.js';
 
 	let { scrollspy = false, children } = $props();
 
@@ -42,13 +43,15 @@
 		}
 
 		onMount(() => {
-			name = document.querySelector('div.page div.content h1');
-			sections = document.querySelectorAll('div.page div.content h2');
-			sections = Array.from(sections);
-			sections.unshift(name);
-			for (const section of sections) {
-				selectionMenuArray.push(section.innerText);
-			}
+			setTimeout(() => {
+				name = document.querySelector('div.page div.content h1');
+				sections = document.querySelectorAll('div.page div.content h2');
+				sections = Array.from(sections);
+				sections.unshift(name);
+				for (const section of sections) {
+					selectionMenuArray.push(section.innerText);
+				}
+			}, animationDelay + animationDuration);
 		});
 
 		onDestroy(() => {

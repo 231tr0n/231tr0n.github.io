@@ -1,51 +1,47 @@
 <script>
-	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 
 	let { name = '', url = '', external = false, open = false, children } = $props();
-	let details = $state('');
 
 	let summaryToggler = () => {
-		details.open = details.open ? false : true;
+		open = open ? false : true;
 	};
-
-	onMount(() => {
-		if (open) {
-			details.open = true;
-		}
-	});
 </script>
 
 {#if name}
-	<details bind:this={details}>
-		<summary>
+	<div class="details">
+		<div class="summary">
 			<div class="spacer">
 				<h2>{name}</h2>
 				<button
 					onclick={summaryToggler}
 					class="summary-toggler"
 					aria-label="Accordion summary toggler">
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="15"
-						height="15"
-						fill="currentColor"
-						class="bi bi-chevron-down"
-						viewBox="0 0 16 16">
-						<path
-							fill-rule="evenodd"
-							d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-					</svg>
-					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="15"
-						height="15"
-						fill="currentColor"
-						class="bi bi-chevron-up"
-						viewBox="0 0 16 16">
-						<path
-							fill-rule="evenodd"
-							d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
-					</svg>
+					{#if open}
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="15"
+							height="15"
+							fill="currentColor"
+							class="bi bi-chevron-up"
+							viewBox="0 0 16 16">
+							<path
+								fill-rule="evenodd"
+								d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
+						</svg>
+					{:else}
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="15"
+							height="15"
+							fill="currentColor"
+							class="bi bi-chevron-down"
+							viewBox="0 0 16 16">
+							<path
+								fill-rule="evenodd"
+								d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+						</svg>
+					{/if}
 				</button>
 				{#if url}
 					{#if external}
@@ -55,13 +51,17 @@
 					{/if}
 				{/if}
 			</div>
-		</summary>
-		{#if children}
-			{@render children()}
-		{:else}
-			<div class="error">No children to render</div>
+		</div>
+		{#if open}
+			<div transition:fade>
+				{#if children}
+					{@render children()}
+				{:else}
+					<div class="error">No children to render</div>
+				{/if}
+			</div>
 		{/if}
-	</details>
+	</div>
 {/if}
 
 <style>
@@ -73,11 +73,11 @@
 		justify-content: center;
 	}
 
-	details {
+	.details {
 		margin-top: 5px;
 	}
 
-	summary {
+	.summary {
 		list-style: none;
 		border-bottom: 1px solid var(--color-dark-foreground);
 		margin-bottom: 5px;
@@ -87,30 +87,6 @@
 		margin-left: 5px;
 		padding: 2px;
 		font-size: 14px;
-	}
-
-	details > summary::-webkit-details-marker {
-		display: none;
-	}
-
-	:global(body.light-mode) summary {
-		border-bottom: 1px solid var(--color-light-foreground);
-	}
-
-	details > summary svg.bi-chevron-down {
-		display: inline;
-	}
-
-	details > summary svg.bi-chevron-up {
-		display: none;
-	}
-
-	details[open] > summary svg.bi-chevron-down {
-		display: none;
-	}
-
-	details[open] > summary svg.bi-chevron-up {
-		display: inline;
 	}
 
 	.spacer {

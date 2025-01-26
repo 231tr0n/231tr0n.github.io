@@ -1,6 +1,14 @@
 <script>
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import { page } from '$app/state';
+	import { fly } from 'svelte/transition';
+	import {
+		animationDelay,
+		animationDuration,
+		animationX,
+		animationY
+	} from '$lib/animation.constants.js';
 	import '$lib/css/main.css';
 
 	let { children } = $props();
@@ -10,13 +18,17 @@
 <div class="background">
 	<div class="body opacity"></div>
 </div>
-<main>
-	{#if children}
-		{@render children()}
-	{:else}
-		<div class="error">No children to render</div>
-	{/if}
-</main>
+{#key page.url.pathname}
+	<main
+		in:fly={{ y: animationY, duration: animationDuration, delay: animationDelay }}
+		out:fly={{ x: animationX, duration: animationDuration }}>
+		{#if children}
+			{@render children()}
+		{:else}
+			<div class="error">No children to render</div>
+		{/if}
+	</main>
+{/key}
 <Footer />
 
 <style>
