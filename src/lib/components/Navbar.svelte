@@ -79,7 +79,7 @@
 				<defs>
 					<style>
 						.cls-1 {
-							fill: #cb4b16;
+							fill: #ffff00;
 						}
 					</style>
 				</defs>
