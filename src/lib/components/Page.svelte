@@ -13,6 +13,7 @@
 	let updateBreadcrumb = $state(null);
 	let selectionMenuArray = $state([]);
 	let subscriber = '';
+	let pageDiv = $state('');
 
 	if (scrollspy) {
 		updateBreadcrumb = () => {
@@ -35,9 +36,15 @@
 		if (selectedItemStore) {
 			subscriber = selectedItemStore.subscribe((value) => {
 				if (value >= 0 && value < sections.length) {
-					sections[value].scrollIntoView({
-						block: 'center'
-					});
+					let currentDiv = sections[value];
+					let currentDivBoundingClientRect = currentDiv.getBoundingClientRect();
+					pageDiv.scrollBy(
+						0,
+						currentDivBoundingClientRect.top -
+							currentDivBoundingClientRect.height -
+							breadcrumb.offsetHeight -
+							15
+					);
 				}
 			});
 		}
@@ -61,7 +68,7 @@
 </script>
 
 {#if scrollspy}
-	<div class="page flex-center" onscroll={updateBreadcrumb}>
+	<div bind:this={pageDiv} class="page flex-center" onscroll={updateBreadcrumb}>
 		<div class="content justify">
 			<h4 bind:this={breadcrumb} class="component center flex-middle">
 				<Select items={selectionMenuArray} transparent={true} {currentItem} {selectedItemStore} />
