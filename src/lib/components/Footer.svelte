@@ -2,7 +2,7 @@
 	<a target="_blank" href="mailto:zeltronsrikar@gmail.com">
 		<img alt="Gmail" src="/images/gmail.svg" />
 	</a>
-	<a href="https://www.github.com/231tr0n">
+	<a target="_blank" href="https://www.github.com/231tr0n">
 		<img alt="Github" class="github" src="/images/github-dark.svg" />
 	</a>
 	<a target="_blank" href="https://www.gitlab.com/231tr0n">
