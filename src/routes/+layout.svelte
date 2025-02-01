@@ -43,7 +43,7 @@
 	.background {
 		background-image: url('/images/background.avif');
 		background-position: center;
-		background-repeat: no-repeat;
+		background-repeat: repeat;
 		filter: blur(0px);
 		position: fixed;
 		top: 45px;
