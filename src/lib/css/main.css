@@ -139,9 +139,7 @@ body.light-mode a img.border-img:hover {
 	scrollbar-width: thin;
 	transition:
 		background-color 300ms linear,
-		color 300ms linear,
-		width 300ms linear,
-		height 300ms linear;
+		color 300ms linear;
 }
 
 body.light-mode * {
