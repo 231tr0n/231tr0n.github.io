@@ -40,7 +40,7 @@
 {/snippet}
 
 <Page>
-	<h1>Blogs</h1>
+	<h1>Blog</h1>
 
 	{#each blogPosts as blogPost}
 		{@render blogPostSnippet(blogPost)}
