@@ -62,7 +62,7 @@
 		});
 
 		onDestroy(() => {
-			subscriber();
+			subscriber?.();
 		});
 	}
 </script>

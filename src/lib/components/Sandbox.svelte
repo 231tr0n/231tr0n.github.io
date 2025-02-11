@@ -41,7 +41,7 @@
 	});
 
 	onDestroy(() => {
-		subscriber();
+		subscriber?.();
 	});
 </script>
 
