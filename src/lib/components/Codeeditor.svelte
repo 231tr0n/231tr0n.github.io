@@ -26,7 +26,7 @@
 	let editorBlock = $state('');
 	let copied = $state(false);
 	let storedHeight = '';
-	let subscriber = '';
+	let subscriber = null;
 
 	let copy = () => {
 		navigator.clipboard.writeText(editor.session.getValue());

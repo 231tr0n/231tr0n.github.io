@@ -12,7 +12,7 @@
 	let breadcrumb = $state(null);
 	let updateBreadcrumb = $state(null);
 	let selectionMenuArray = $state([]);
-	let subscriber = '';
+	let subscriber = null;
 	let pageDiv = $state('');
 
 	if (scrollspy) {

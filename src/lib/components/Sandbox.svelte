@@ -6,7 +6,7 @@
 	let fullscreen = $state(false);
 	let iframeElement = $state('');
 	let iframe = $state('');
-	let subscriber = '';
+	let subscriber = null;
 
 	let toggleFullscreen = () => {
 		if (document.fullscreenElement) {
