@@ -1,14 +1,18 @@
-<script>
+<script lang="ts">
 	import { lightMode } from '$lib/store.svelte.js';
 
-	let { theme = 'light' } = $props();
+	let defaultTheme = 'light';
+
+	let { theme = defaultTheme } = $props();
 
 	let toggletheme = () => {
 		window.document.body.classList.toggle('light-mode');
 		theme = window.document.body.classList.contains('light-mode') ? 'light' : 'dark';
-		window.document.body.classList.contains('light-mode')
-			? lightMode.set(true)
-			: lightMode.set(false);
+		if (window.document.body.classList.contains('light-mode')) {
+			lightMode.set(true);
+		} else {
+			lightMode.set(false);
+		}
 		localStorage.setItem(
 			'theme',
 			window.document.body.classList.contains('light-mode') ? 'light' : 'dark'
@@ -16,7 +20,7 @@
 	};
 
 	if (localStorage.getItem('theme')) {
-		theme = localStorage.getItem('theme');
+		theme = localStorage.getItem('theme') || defaultTheme;
 	}
 
 	if (theme == 'light') {

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 
@@ -7,17 +7,17 @@
 		emptyItem = false,
 		currentItem = 0,
 		transparent = false,
-		selectedItemStore = ''
+		selectedItemStore = null
 	} = $props();
 
 	let open = $state(false);
-	let selectContext = $state('');
+	let selectContext = $state() as HTMLElement;
 
 	if (emptyItem) {
 		items.unshift('');
 	}
 
-	let selectItem = (item) => {
+	let selectItem = (item: number) => {
 		currentItem = item;
 		if (selectedItemStore) {
 			selectedItemStore.set(currentItem);

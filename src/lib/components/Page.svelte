@@ -1,19 +1,20 @@
-<script>
+<script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
 	import Select from './Select.svelte';
 	import { selectedItemStore } from '$lib/store.svelte.js';
 	import { animationDelay, animationDuration } from '$lib/animation.constants.js';
+	import type { Unsubscriber } from 'svelte/store';
 
 	let { scrollspy = false, children } = $props();
 
-	let name = '';
-	let sections = [];
+	let name: HTMLElement;
+	let sections: HTMLElement[] = [];
 	let currentItem = $state(0);
-	let breadcrumb = $state(null);
-	let updateBreadcrumb = $state(null);
-	let selectionMenuArray = $state([]);
-	let subscriber = null;
-	let pageDiv = $state('');
+	let breadcrumb = $state() as HTMLElement;
+	let updateBreadcrumb = $state(() => {});
+	let selectionMenuArray: string[] = $state([]);
+	let subscriber: Unsubscriber = () => {};
+	let pageDiv = $state() as HTMLElement;
 
 	if (scrollspy) {
 		updateBreadcrumb = () => {
@@ -51,8 +52,8 @@
 
 		onMount(() => {
 			setTimeout(() => {
-				name = document.querySelector('div.page div.content h1');
-				sections = document.querySelectorAll('div.page div.content h2');
+				name = document.querySelector('div.page div.content h1') || document.createElement('div');
+				sections = Array.from(document.querySelectorAll('div.page div.content h2'));
 				sections = Array.from(sections);
 				sections.unshift(name);
 				for (const section of sections) {

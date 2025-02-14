@@ -1,8 +1,8 @@
-<script>
+<script lang="ts">
 	import Page from '$lib/components/Page.svelte';
 </script>
 
-<Page scrollspy="true">
+<Page scrollspy={true}>
 	<h1>Home</h1>
 
 	<div class="center">

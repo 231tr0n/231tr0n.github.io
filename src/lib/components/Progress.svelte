@@ -1,5 +1,5 @@
-<script>
-	let { value = 0, max = 100, children } = $props();
+<script lang="ts">
+	let { value = 0, max = 100, children = null } = $props();
 </script>
 
 <br />

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { fade } from 'svelte/transition';
 
 	let { name = '', url = '', external = false, open = false, children } = $props();

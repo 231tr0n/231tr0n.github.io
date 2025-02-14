@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import Page from '$lib/components/Page.svelte';
 	import Loading from '$lib/components/Loading.svelte';
 	import Codeeditor from '$lib/components/Codeeditor.svelte';
@@ -7,13 +7,13 @@
 	import cssMode from 'ace-code/src/mode/css';
 	import javascriptMode from 'ace-code/src/mode/javascript';
 
-	let fetch_url = async (url) => {
+	let fetch_url = async (url: string) => {
 		let data = await fetch(url);
 		return await data.text();
 	};
 </script>
 
-<Page scrollspy="true">
+<Page scrollspy={true}>
 	<h1>TicTacToe</h1>
 
 	<h2>Source Code</h2>

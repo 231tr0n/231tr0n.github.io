@@ -1,14 +1,34 @@
-<script>
+<script lang="ts">
 	import Page from '$lib/components/Page.svelte';
 	import Accordion from '$lib/components/Accordion.svelte';
 	import Progress from '$lib/components/Progress.svelte';
 
+	interface post {
+		name: string;
+		badges: string[];
+		description: string;
+		url: string;
+	}
+
+	interface repo {
+		name: string;
+		url: string;
+		description: string;
+		badges: string[];
+	}
+
+	interface githubError {
+		message: string;
+	}
+
+	type languages = Record<string, number>;
+
 	let progressLength = $state(0);
 	let fullCompletionLength = $state(0);
-	let languagesList = {};
-	let languagesPercentageList = [];
+	let languagesList: Record<string, number> = {};
+	let languagesPercentageList: Array<[string, number]> = [];
 
-	let fetchGithubRepoData = async (url) => {
+	let fetchGithubRepoData = async (url: string) => {
 		const temp = await fetch(url);
 		const repos = await temp.json();
 		if (repos['message']) {
@@ -26,16 +46,17 @@
 		const returnData = [];
 		for (const repo of nonForkedRepos) {
 			const temp = await fetch(repo['languages_url']);
-			const languages = await temp.json();
+			const languages: languages | githubError = await temp.json();
 			if (languages['message']) {
 				throw 'Github api rate limit exceeded';
 			}
 
-			const repoData = {};
-			repoData.name = repo['name'];
-			repoData.url = repo['html_url'];
-			repoData.description = repo['description'];
-			repoData.badges = [];
+			const repoData: repo = {
+				name: repo['name'],
+				url: repo['html_url'],
+				description: repo['description'],
+				badges: []
+			};
 
 			for (const [key, value] of Object.entries(languages)) {
 				repoData.badges.push(key);
@@ -57,7 +78,7 @@
 		}
 
 		for (const [key, value] of Object.entries(languagesList)) {
-			languagesPercentageList.push([key, parseFloat((value / total) * 100).toFixed(2)]);
+			languagesPercentageList.push([key, parseFloat(((value / total) * 100).toFixed(2))]);
 		}
 
 		languagesPercentageList.sort((a, b) => {
@@ -68,7 +89,7 @@
 	};
 </script>
 
-{#snippet projectPostSnippet(projectPost)}
+{#snippet projectPostSnippet(projectPost: post)}
 	{#if projectPost.name && projectPost.description}
 		<Accordion name={projectPost.name} url={projectPost.url} external={true}>
 			<div class="center">

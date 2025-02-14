@@ -1,10 +1,22 @@
-<script>
+<script lang="ts">
 	import Page from '$lib/components/Page.svelte';
 	import Accordion from '$lib/components/Accordion.svelte';
 
+	interface post {
+		name: string;
+		badges: string[];
+		description: string;
+		url: string;
+	}
+
 	let blogPosts = [];
 
-	let blogPostCreator = (name, badges, description, url) => {
+	let blogPostCreator = (
+		name: string,
+		badges: string[],
+		description: string,
+		url: string
+	): post => {
 		return {
 			name,
 			badges,
@@ -22,7 +34,7 @@
 	);
 </script>
 
-{#snippet blogPostSnippet(blogPost)}
+{#snippet blogPostSnippet(blogPost: post)}
 	{#if blogPost.name && blogPost.description}
 		<Accordion name={blogPost.name} url={blogPost.url}>
 			<div class="center">

@@ -1,4 +1,4 @@
-<script>
+<script lang="ts">
 	import { onDestroy, onMount } from 'svelte';
 	import ace from 'ace-code';
 	import solarized_light from 'ace-code/src/theme/solarized_light';
@@ -7,26 +7,27 @@
 	import vscode from 'ace-code/src/keyboard/vscode';
 	import beautifier from 'ace-code/src/ext/beautify';
 	import { lightMode } from '$lib/store.svelte.js';
+	import { type Unsubscriber } from 'svelte/store';
 
 	let {
 		langName = '',
-		mode = '',
+		mode = null,
 		output = '',
 		readOnly = false,
 		fileName = '',
-		codeStore = '',
+		codeStore = null,
 		vimMode = false,
 		code = ''
 	} = $props();
 
-	let editorDiv = $state('');
-	let editor = '';
+	let editorDiv = $state() as HTMLElement;
+	let editor: ace.Editor;
 	let fullscreen = $state(false);
-	let editorElement = $state('');
-	let editorBlock = $state('');
+	let editorElement = $state() as HTMLElement;
+	let editorBlock = $state() as HTMLElement;
 	let copied = $state(false);
 	let storedHeight = '';
-	let subscriber = null;
+	let subscriber: Unsubscriber = () => {};
 
 	let copy = () => {
 		navigator.clipboard.writeText(editor.session.getValue());
@@ -73,7 +74,6 @@
 			editor.setValue(code, -1);
 			editor.setHighlightActiveLine(false);
 			editor.setHighlightGutterLine(false);
-			editor.renderer.$cursorLayer.element.style.display = 'none';
 		} else {
 			if (vimMode) {
 				editor.setKeyboardHandler(vim.handler);

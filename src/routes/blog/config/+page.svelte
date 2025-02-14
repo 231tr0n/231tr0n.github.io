@@ -1,17 +1,22 @@
-<script>
+<script lang="ts">
 	import Page from '$lib/components/Page.svelte';
 	import Loading from '$lib/components/Loading.svelte';
 	import Codeeditor from '$lib/components/Codeeditor.svelte';
 	import luaMode from 'ace-code/src/mode/lua';
 
-	let fetch_neovim_config = async (url) => {
+	interface plugin {
+		source: string;
+		depends: string[];
+	}
+
+	let fetch_neovim_config = async (url: string) => {
 		let temp = await fetch(url);
 		return await temp.text();
 	};
 
-	let get_sections_in_config = (data) => {
+	let get_sections_in_config = (data: string) => {
 		let contents = data.split('\n\n');
-		let contentMap = {};
+		let contentMap: Record<string, string> = {};
 		for (const value of Object.values(contents)) {
 			let temp = value.split('\n');
 			let heading = temp[0].substring(3);
@@ -21,33 +26,39 @@
 		return contentMap;
 	};
 
-	let get_plugins_in_config = (data) => {
+	let get_plugins_in_config = (data: string) => {
 		let plugins = [];
-		let matches = data.match(/add\s*\(([\s\S]*?)\)/g);
+		let matches = data.match(/add\s*\(([\s\S]*?)\)/g) || [];
 		for (let i = 0; i < matches.length; i++) {
 			let directPlugin = matches[i].match(/add\s*\(\s*"(.*)?"\s*\)/);
 			if (directPlugin && directPlugin.length > 0) {
-				let plugin = {};
-				plugin.source = directPlugin[1];
-				plugin.depends = [];
+				let plugin: plugin = {
+					source: directPlugin[1],
+					depends: []
+				};
 				plugins.push(plugin);
 				continue;
 			}
 			let indirectPlugin = matches[i].match(/source\s*=\s*"(.*?)"/);
 			let pluginDependsMatch = matches[i].match(/depends\s*=\s*\{([\s\r\t\n\S]*?)\}/);
 			if (indirectPlugin && indirectPlugin.length > 0) {
-				let plugin = {};
-				plugin.source = indirectPlugin[1];
+				let depends = [];
 				if (pluginDependsMatch && pluginDependsMatch.length > 0) {
 					let lines = pluginDependsMatch[1].split('\n');
-					plugin.depends = [];
 					for (let i = 0; i < lines.length; i++) {
 						let line = lines[i].trim();
 						if (line.length > 0) {
-							plugin.depends.push(line.match(/"(.*?)"/)[1]);
+							let dependency = line.match(/"(.*?)"/);
+							if (dependency) {
+								depends.push(dependency[1]);
+							}
 						}
 					}
 				}
+				let plugin: plugin = {
+					source: indirectPlugin[1],
+					depends: depends
+				};
 				plugins.push(plugin);
 				continue;
 			}
@@ -56,7 +67,7 @@
 	};
 </script>
 
-<Page scrollspy="true">
+<Page scrollspy={true}>
 	<h1>Neovim configuration</h1>
 	<h2>Introduction</h2>
 	<ul>
