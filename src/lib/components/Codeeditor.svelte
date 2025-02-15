@@ -27,7 +27,7 @@
 	let editorBlock = $state() as HTMLElement;
 	let copied = $state(false);
 	let storedHeight = '';
-	let subscriber: Unsubscriber = () => {};
+	let unsubscriber: Unsubscriber = () => {};
 
 	let copy = () => {
 		navigator.clipboard.writeText(editor.session.getValue());
@@ -85,7 +85,7 @@
 		editor.session.setTabSize(2);
 		editor.session.setUseSoftTabs(true);
 		editor.setShowPrintMargin(false);
-		subscriber = lightMode.subscribe((value) => {
+		unsubscriber = lightMode.subscribe((value) => {
 			if (value) {
 				editor.setTheme(solarized_light);
 			} else {
@@ -107,7 +107,7 @@
 	});
 
 	onDestroy(() => {
-		subscriber?.();
+		unsubscriber?.();
 	});
 </script>
 

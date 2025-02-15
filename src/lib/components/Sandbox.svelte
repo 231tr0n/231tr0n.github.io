@@ -8,7 +8,7 @@
 	let fullscreen = $state(false);
 	let iframeElement = $state() as HTMLElement;
 	let iframe = $state() as HTMLIFrameElement;
-	let subscriber: Unsubscriber = () => {};
+	let unsubscriber: Unsubscriber = () => {};
 
 	let toggleFullscreen = () => {
 		if (document.fullscreenElement) {
@@ -34,7 +34,7 @@
 		}
 
 		if (srcDocStore) {
-			subscriber = srcDocStore.subscribe((value: string) => {
+			unsubscriber = srcDocStore.subscribe((value: string) => {
 				iframe.srcdoc = value;
 				// Below line is used for triggering iframe reload by resetting src.
 				iframe.src = iframe.src;
@@ -43,7 +43,7 @@
 	});
 
 	onDestroy(() => {
-		subscriber?.();
+		unsubscriber?.();
 	});
 </script>
 

@@ -13,7 +13,7 @@
 	let breadcrumb = $state() as HTMLElement;
 	let updateBreadcrumb = $state(() => {});
 	let selectionMenuArray: string[] = $state([]);
-	let subscriber: Unsubscriber = () => {};
+	let unsubscriber: Unsubscriber = () => {};
 	let pageDiv = $state() as HTMLElement;
 
 	if (scrollspy) {
@@ -35,7 +35,7 @@
 		};
 
 		if (selectedItemStore) {
-			subscriber = selectedItemStore.subscribe((value) => {
+			unsubscriber = selectedItemStore.subscribe((value) => {
 				if (value >= 0 && value < sections.length) {
 					let currentDiv = sections[value];
 					let currentDivBoundingClientRect = currentDiv.getBoundingClientRect();
@@ -63,7 +63,7 @@
 		});
 
 		onDestroy(() => {
-			subscriber?.();
+			unsubscriber?.();
 		});
 	}
 </script>
