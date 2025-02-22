@@ -19,7 +19,7 @@
 		"@sveltejs/kit": "^2.17.2",
 		"@sveltejs/vite-plugin-svelte": "^5.0.3",
 		"@types/eslint": "^9.6.1",
-		"eslint": "^9.20.1",
+		"eslint": "^9.21.0",
 		"eslint-config-prettier": "^10.0.1",
 		"eslint-plugin-svelte": "^2.46.1",
 		"globals": "^16.0.0",
@@ -29,8 +29,8 @@
 		"svelte": "^5.20.2",
 		"vite": "^6.1.1",
 		"vitest": "^3.0.6",
-		"@eslint/compat": "^1.2.6",
-		"@eslint/js": "^9.20.0",
+		"@eslint/compat": "^1.2.7",
+		"@eslint/js": "^9.21.0",
 		"@testing-library/jest-dom": "^6.6.3",
 		"@testing-library/svelte": "^5.2.7",
 		"jsdom": "^26.0.0",
@@ -39,6 +39,6 @@
 		"typescript-eslint": "^8.24.1"
 	},
 	"dependencies": {
-		"ace-code": "^1.38.0"
+		"ace-code": "^1.39.0"
 	}
 }
