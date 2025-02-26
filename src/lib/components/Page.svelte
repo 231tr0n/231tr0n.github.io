@@ -35,6 +35,8 @@
 		};
 
 		if (selectedItemStore) {
+			// Below line is used to reset the value of the store to 0 which is set to the last value since store contains the last set value.
+			selectedItemStore.set(0);
 			unsubscriber = selectedItemStore.subscribe((value) => {
 				if (value >= 0 && value < sections.length) {
 					let currentDiv = sections[value];
