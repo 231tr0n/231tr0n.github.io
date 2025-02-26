@@ -38,7 +38,7 @@
 	{#if blogPost.name && blogPost.description}
 		<Accordion name={blogPost.name} url={blogPost.url}>
 			<div class="center">
-				{#each blogPost.badges as badge}
+				{#each blogPost.badges as badge, _ (_)}
 					<span class="badge">{badge}</span>
 				{/each}
 				<div class="center">
@@ -54,7 +54,7 @@
 <Page>
 	<h1>Blog</h1>
 
-	{#each blogPosts as blogPost}
+	{#each blogPosts as blogPost, _ (_)}
 		{@render blogPostSnippet(blogPost)}
 	{/each}
 </Page>

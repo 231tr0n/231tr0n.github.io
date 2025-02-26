@@ -44,7 +44,7 @@
 	{#if miscPost.name && miscPost.description}
 		<Accordion name={miscPost.name} url={miscPost.url}>
 			<div class="center">
-				{#each miscPost.badges as badge}
+				{#each miscPost.badges as badge, _ (_)}
 					<span class="badge">{badge}</span>
 				{/each}
 				<div class="center">
@@ -60,7 +60,7 @@
 <Page>
 	<h1>Miscellaneous</h1>
 
-	{#each miscPosts as miscPost}
+	{#each miscPosts as miscPost, _ (_)}
 		{@render miscPostSnippet(miscPost)}
 	{/each}
 </Page>

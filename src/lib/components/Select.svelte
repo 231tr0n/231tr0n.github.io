@@ -86,7 +86,7 @@
 	</button>
 	{#if open}
 		<div class="select-menu component thick-component-border" transition:fade>
-			{#each items.entries() as [index, item]}
+			{#each items.entries() as [index, item] (index)}
 				<button onclick={() => selectItem(index)} class="items">
 					{item}
 				</button>

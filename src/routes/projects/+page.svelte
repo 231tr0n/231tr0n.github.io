@@ -93,7 +93,7 @@
 	{#if projectPost.name && projectPost.description}
 		<Accordion name={projectPost.name} url={projectPost.url} external={true}>
 			<div class="center">
-				{#each projectPost.badges as badge}
+				{#each projectPost.badges as badge, _ (_)}
 					<span class="badge">{badge}</span>
 				{/each}
 				<div class="center">
@@ -115,13 +115,13 @@
 		<Accordion name="Github Language Statistics" open={true}>
 			<div class="center">
 				<div class="center"></div>
-				{#each languagesPercentageList as value}
+				{#each languagesPercentageList as value, _ (_)}
 					<span class="badge">{value[0] + ' - ' + value[1] + '%'}</span>
 				{/each}
 			</div>
 		</Accordion>
 		<br />
-		{#each Object.values(res) as repo}
+		{#each Object.values(res) as repo, _ (_)}
 			{@render projectPostSnippet(repo)}
 		{/each}
 	{:catch error}

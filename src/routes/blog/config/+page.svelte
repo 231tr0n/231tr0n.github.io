@@ -230,14 +230,14 @@
 	{:then res}
 		<h3>Plugins used in the configuration</h3>
 		<ol>
-			{#each get_plugins_in_config(res) as plugin}
+			{#each get_plugins_in_config(res) as plugin, _ (_)}
 				<li>
 					<a target="_blank" href="https://github.com/{plugin.source}">
 						{plugin.source}
 					</a>
 					{#if plugin.depends}
 						<ul>
-							{#each plugin.depends as dependency}
+							{#each plugin.depends as dependency, _ (_)}
 								<li>
 									<a target="_blank" href="https://github.com/{dependency}">
 										{dependency}
@@ -251,7 +251,7 @@
 		</ol>
 		<h3>Configuration split into meaningful chunks</h3>
 		<ol>
-			{#each Object.entries(get_sections_in_config(res)) as [heading, block]}
+			{#each Object.entries(get_sections_in_config(res)) as [heading, block] (heading)}
 				<li>{heading}</li>
 				<Codeeditor
 					code={block}
