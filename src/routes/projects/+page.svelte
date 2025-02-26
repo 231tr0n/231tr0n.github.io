@@ -112,7 +112,7 @@
 		<br />
 		<Progress value={progressLength} max={fullCompletionLength}></Progress>
 	{:then res}
-		<Accordion name={'Github Language Statistics'} open={true}>
+		<Accordion name="Github Language Statistics" open={true}>
 			<div class="center">
 				<div class="center"></div>
 				{#each languagesPercentageList as value}

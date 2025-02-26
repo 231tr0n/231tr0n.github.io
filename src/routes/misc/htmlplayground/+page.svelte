@@ -10,7 +10,7 @@
 	<h1>HTML Playground</h1>
 
 	<h2>Editor</h2>
-	<Codeeditor langName={'html'} mode={htmlMode} codeStore={htmlPlayground} />
+	<Codeeditor langName="html" mode={htmlMode} codeStore={htmlPlayground} />
 
 	<h2>Output</h2>
 	<Sandbox title="Output" srcDocStore={htmlPlayground} />

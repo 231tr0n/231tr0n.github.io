@@ -256,9 +256,9 @@
 				<Codeeditor
 					code={block}
 					mode={luaMode}
-					langName={'lua'}
+					langName="lua"
 					readOnly={true}
-					fileName={'init.lua'} />
+					fileName="init.lua" />
 			{/each}
 		</ol>
 	{:catch error}
