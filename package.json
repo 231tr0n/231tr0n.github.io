@@ -24,7 +24,7 @@
 		"eslint-plugin-svelte": "^3.0.2",
 		"globals": "^16.0.0",
 		"npm-check-updates": "^17.1.15",
-		"prettier": "^3.5.2",
+		"prettier": "^3.5.3",
 		"prettier-plugin-svelte": "^3.3.3",
 		"svelte": "^5.20.5",
 		"vite": "^6.2.0",
