@@ -26,7 +26,7 @@
 		"npm-check-updates": "^17.1.15",
 		"prettier": "^3.5.3",
 		"prettier-plugin-svelte": "^3.3.3",
-		"svelte": "^5.22.2",
+		"svelte": "^5.22.4",
 		"vite": "^6.2.0",
 		"vitest": "^3.0.7",
 		"@eslint/compat": "^1.2.7",
