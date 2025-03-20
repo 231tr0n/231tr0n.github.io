@@ -21,7 +21,7 @@
 		"@types/eslint": "^9.6.1",
 		"eslint": "^9.22.0",
 		"eslint-config-prettier": "^10.1.1",
-		"eslint-plugin-svelte": "^3.3.2",
+		"eslint-plugin-svelte": "^3.3.3",
 		"globals": "^16.0.0",
 		"npm-check-updates": "^17.1.15",
 		"prettier": "^3.5.3",
@@ -36,7 +36,7 @@
 		"jsdom": "^26.0.0",
 		"svelte-check": "^4.1.5",
 		"typescript": "^5.8.2",
-		"typescript-eslint": "^8.26.1"
+		"typescript-eslint": "^8.27.0"
 	},
 	"dependencies": {
 		"ace-code": "^1.39.0"
