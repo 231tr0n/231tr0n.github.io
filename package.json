@@ -39,6 +39,6 @@
 		"typescript-eslint": "^8.27.0"
 	},
 	"dependencies": {
-		"ace-code": "^1.39.0"
+		"ace-code": "^1.39.1"
 	}
 }
