@@ -21,14 +21,14 @@
 		"@types/eslint": "^9.6.1",
 		"eslint": "^9.23.0",
 		"eslint-config-prettier": "^10.1.1",
-		"eslint-plugin-svelte": "^3.4.0",
+		"eslint-plugin-svelte": "^3.4.1",
 		"globals": "^16.0.0",
 		"npm-check-updates": "^17.1.16",
 		"prettier": "^3.5.3",
 		"prettier-plugin-svelte": "^3.3.3",
-		"svelte": "^5.25.3",
+		"svelte": "^5.25.5",
 		"vite": "^6.2.4",
-		"vitest": "^3.0.9",
+		"vitest": "^3.1.1",
 		"@eslint/compat": "^1.2.7",
 		"@eslint/js": "^9.23.0",
 		"@testing-library/jest-dom": "^6.6.3",
@@ -36,7 +36,7 @@
 		"jsdom": "^26.0.0",
 		"svelte-check": "^4.1.5",
 		"typescript": "^5.8.2",
-		"typescript-eslint": "^8.28.0"
+		"typescript-eslint": "^8.29.0"
 	},
 	"dependencies": {
 		"ace-code": "^1.39.1"
