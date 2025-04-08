@@ -30,12 +30,24 @@
 	<h2>Work Experience</h2>
 	<ul>
 		<li>
+			<a target="_blank" href="https://www.visa.co.in/">Visa</a>
+			<ul>
+				<li>
+					<span class="highlightkeyword">Data Engineer</span>
+					<br />
+					Apr 2025 - Present
+				</li>
+			</ul>
+		</li>
+	</ul>
+	<ul>
+		<li>
 			<a target="_blank" href="https://www.opentext.com/">Opentext</a>
 			<ul>
 				<li>
 					<span class="highlightkeyword">Associate Software Engineer</span>
 					<br />
-					Sep 2023 - Present
+					Sep 2023 - Mar 2025
 				</li>
 				<li>
 					<span class="highlightkeyword">Software Engineering Intern</span>
