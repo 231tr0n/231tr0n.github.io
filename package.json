@@ -16,7 +16,7 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-static": "^3.0.8",
-		"@sveltejs/kit": "^2.21.2",
+		"@sveltejs/kit": "^2.21.3",
 		"@sveltejs/vite-plugin-svelte": "^5.1.0",
 		"@types/eslint": "^9.6.1",
 		"eslint": "^9.28.0",
@@ -26,7 +26,7 @@
 		"npm-check-updates": "^18.0.1",
 		"prettier": "^3.5.3",
 		"prettier-plugin-svelte": "^3.4.0",
-		"svelte": "^5.33.17",
+		"svelte": "^5.33.18",
 		"vite": "^6.3.5",
 		"vitest": "^3.2.2",
 		"@eslint/compat": "^1.2.9",
