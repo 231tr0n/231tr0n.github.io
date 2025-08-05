@@ -18,8 +18,8 @@
 			<span class="highlightkeyword">231tr0n</span>
 			.
 		</li>
-		<li>I learn web development and security.</li>
-		<li>I enjoy programming in go, java, python and javascript.</li>
+		<li>I am proficient at data engineering, web development and security.</li>
+		<li>I enjoy programming in Go.</li>
 		<li>I am a linux user who enjoys hacking it to the core.</li>
 		<li>
 			I also dabble with <span class="highlightkeyword">AI/ML</span>
@@ -114,7 +114,7 @@
 		</li>
 	</ol>
 
-	<h2>Tech Stack</h2>
+	<h2>Technologies</h2>
 	<div class="center">
 		<a target="_blank" href="https://openjdk.org">
 			<img class="logo" alt="Java" src="/images/java.avif" />
@@ -127,6 +127,9 @@
 		</a>
 		<a target="_blank" href="https://nodejs.org/en">
 			<img class="logo" alt="Nodejs" src="/images/nodejs.avif" />
+		</a>
+		<a target="_blank" href="https://www.scala-lang.org">
+			<img class="logo" alt="Scala" src="/images/scala.svg" />
 		</a>
 		<a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">
 			<img class="logo" alt="Javascript" src="/images/javascript.avif" />
@@ -174,8 +177,24 @@
 			<img class="logo" alt="Windows" src="/images/windows.avif" />
 		</a>
 		<br />
+		<a target="_blank" href="https://hadoop.apache.org">
+			<img class="logo" alt="Hadoop" src="/images/hadoop.svg" />
+		</a>
+		<a target="_blank" href="https://hive.apache.org">
+			<img class="logo" alt="Hive" src="/images/hive.svg" />
+		</a>
+		<a target="_blank" href="https://spark.apache.org">
+			<img class="logo" alt="Spark" src="/images/spark.svg" />
+		</a>
+		<br />
+		<a target="_blank" href="https://en.wikipedia.org/wiki/Data_engineering">
+			<img class="big-logo" alt="Data Engineering" src="/images/dataengineering.avif" />
+		</a>
+		<a target="_blank" href="https://en.wikipedia.org/wiki/Web_development">
+			<img class="big-logo" alt="Web Application development" src="/images/webappdev.avif" />
+		</a>
 		<a target="_blank" href="https://en.wikipedia.org/wiki/Application_security">
-			<img class="big-logo" alt="Application security" src="/images/webappsec.avif" />
+			<img class="big-logo" alt="Web Application security" src="/images/webappsec.avif" />
 		</a>
 		<a
 			target="_blank"
