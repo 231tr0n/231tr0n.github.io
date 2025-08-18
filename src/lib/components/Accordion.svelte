@@ -10,16 +10,14 @@
 
 {#if name}
 	<div class="details">
-		<div
-			class="summary"
-			aria-label="Accordion summary toggler"
-			tabindex="0"
-			role="button"
-			onclick={summaryToggler}
-			onkeypress={summaryToggler}>
+		<div class="summary">
 			<div class="spacer">
 				<h2>{name}</h2>
-				<div class="component summary-toggler">
+				<button
+					class="summary-toggler"
+					aria-label="Accordion summary toggler"
+					onclick={summaryToggler}
+					onkeypress={summaryToggler}>
 					{#if open}
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -45,7 +43,7 @@
 								d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
 						</svg>
 					{/if}
-				</div>
+				</button>
 				{#if url}
 					{#if external}
 						<a target="_blank" href={url}><button>Open</button></a>
