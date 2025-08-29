@@ -49,7 +49,7 @@
 <div bind:this={chartDiv} class="flex-middle">
 	<div class="thick-component-border body overflow">
 		<div class="filename context component">
-			<span>Bar Chart</span>
+			<span>Bar Graph</span>
 			<span>{context}</span>
 		</div>
 		<div class="context component">
