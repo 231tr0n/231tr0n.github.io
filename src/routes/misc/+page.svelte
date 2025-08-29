@@ -43,11 +43,11 @@
 {#snippet miscPostSnippet(miscPost: post)}
 	{#if miscPost.name && miscPost.description}
 		<Accordion name={miscPost.name} url={miscPost.url}>
-			<div class="center">
+			<div>
 				{#each miscPost.badges as badge, _ (_)}
 					<span class="badge">{badge}</span>
 				{/each}
-				<div class="center">
+				<div>
 					{miscPost.description}
 				</div>
 			</div>
@@ -64,3 +64,9 @@
 		{@render miscPostSnippet(miscPost)}
 	{/each}
 </Page>
+
+<style>
+	div {
+		text-align: center;
+	}
+</style>

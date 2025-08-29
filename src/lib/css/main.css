@@ -45,42 +45,6 @@
 	--color-light-badge-foreground: var(--color-solarized-blue);
 }
 
-progress {
-	background-color: var(--color-dark-foreground);
-	width: 90%;
-	padding: 0px;
-	height: 5px;
-	border: 0px;
-}
-
-body.light-mode progress {
-	background-color: var(--color-light-foreground);
-}
-
-progress::-moz-progress-bar {
-	background-color: var(--color-light-background);
-}
-
-body.light-mode progress::-moz-progress-bar {
-	background-color: var(--color-dark-background);
-}
-
-progress::-webkit-progress-value {
-	background-color: var(--color-light-background);
-}
-
-body.light-mode progress::-webkit-progress-value {
-	background-color: var(--color-dark-background);
-}
-
-progress::-webkit-progress-bar {
-	background-color: var(--color-dark-foreground);
-}
-
-body.light-mode progress::-webkit-progress-bar {
-	background-color: var(--color-light-foreground);
-}
-
 @font-face {
 	font-family: Roboto-Condensed;
 	src: url('/fonts/roboto-condensed.woff2') format('woff2');
@@ -93,13 +57,61 @@ body.light-mode progress::-webkit-progress-bar {
 	font-display: swap;
 }
 
-a {
-	text-decoration: none;
-	color: var(--color-dark-anchor);
+* {
+	scrollbar-color: var(--color-light-keyword) transparent;
+	scrollbar-width: thin;
+	transition:
+		background-color 300ms linear,
+		color 300ms linear;
 }
 
-body.light-mode a {
+body.dark * {
+	scrollbar-color: var(--color-dark-keyword) transparent;
+}
+
+progress {
+	background-color: var(--color-light-foreground);
+	width: 90%;
+	padding: 0px;
+	height: 5px;
+	border: 0px;
+}
+
+body.dark progress {
+	background-color: var(--color-dark-foreground);
+}
+
+progress::-moz-progress-bar {
+	background-color: var(--color-dark-background);
+}
+
+body.dark progress::-moz-progress-bar {
+	background-color: var(--color-light-background);
+}
+
+progress::-webkit-progress-value {
+	background-color: var(--color-dark-background);
+}
+
+body.dark progress::-webkit-progress-value {
+	background-color: var(--color-light-background);
+}
+
+progress::-webkit-progress-bar {
+	background-color: var(--color-light-foreground);
+}
+
+body.dark progress::-webkit-progress-bar {
+	background-color: var(--color-dark-foreground);
+}
+
+a {
+	text-decoration: none;
 	color: var(--color-light-anchor);
+}
+
+body.dark a {
+	color: var(--color-dark-anchor);
 }
 
 a:hover {
@@ -111,74 +123,62 @@ a img {
 }
 
 a img:hover {
-	border: 2px solid var(--color-dark-anchor);
+	border: 2px solid var(--color-light-anchor);
 }
 
-body.light-mode a img:hover {
-	border: 2px solid var(--color-light-anchor);
+body.dark a img:hover {
+	border: 2px solid var(--color-dark-anchor);
 }
 
 a img.border-img {
-	border: 2px solid var(--color-dark-component-background);
-}
-
-body.light-mode a img.border-img {
 	border: 2px solid var(--color-light-component-background);
 }
 
-a img.border-img:hover {
-	border: 2px solid var(--color-dark-anchor);
+body.dark a img.border-img {
+	border: 2px solid var(--color-dark-component-background);
 }
 
-body.light-mode a img.border-img:hover {
+a img.border-img:hover {
 	border: 2px solid var(--color-light-anchor);
 }
 
-* {
-	scrollbar-color: var(--color-dark-keyword) transparent;
-	scrollbar-width: thin;
-	transition:
-		background-color 300ms linear,
-		color 300ms linear;
-}
-
-body.light-mode * {
-	scrollbar-color: var(--color-light-keyword) transparent;
+body.dark a img.border-img:hover {
+	border: 2px solid var(--color-dark-anchor);
 }
 
 body {
 	font-family: Roboto-Condensed;
-	background-color: var(--color-dark-background);
-	color: var(--color-dark-foreground);
+	background-color: var(--color-light-background);
+	color: var(--color-light-foreground);
 	margin: 0px;
 	padding: 0px;
 	overflow: auto;
 }
 
-body.light-mode {
-	background-color: var(--color-light-background);
-	color: var(--color-light-foreground);
+body.dark {
+	background-color: var(--color-dark-background);
+	color: var(--color-dark-foreground);
 }
 
 button {
 	font-family: Roboto-Condensed;
-	background-color: var(--color-dark-button-background);
-	color: var(--color-dark-button-foreground);
+	background-color: var(--color-light-button-background);
+	color: var(--color-light-button-foreground);
 	border: 2px solid transparent;
 	outline: none;
 }
 
-body.light-mode button {
-	background-color: var(--color-light-button-background);
-	color: var(--color-light-button-foreground);
+body.dark button {
+	background-color: var(--color-dark-button-background);
+	color: var(--color-dark-button-foreground);
 }
 
 button:hover {
-	border: 2px solid var(--color-dark-anchor);
+	border: 2px solid var(--color-light-anchor);
 }
 
-body.light-mode button:hover {
-	border: 2px solid var(--color-light-anchor);
+body.dark button:hover {
+	border: 2px solid var(--color-dark-anchor);
 }
 
 img {
@@ -206,121 +206,18 @@ input {
 	outline: none;
 }
 
-.center {
-	text-align: center;
-}
-
-.justify {
-	text-align: justify;
-}
-
-.flex-center {
-	display: flex;
-	justify-content: center;
-}
-
-.flex-middle {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-}
-
-.error {
-	font-size: 30px;
-	padding: 1em;
-	text-align: center;
-	color: var(--color-dark-error);
-}
-
-:global(body.light-mode) .error {
-	color: var(--color-light-error);
-}
-
-.body {
-	background-color: var(--color-dark-background);
-	color: var(--color-dark-foreground);
-}
-
-body.light-mode .body {
-	background-color: var(--color-light-background);
-	color: var(--color-light-foreground);
-}
-
-.anchor {
-	border: 2px solid transparent;
-}
-
-.anchor:hover {
-	border: 2px solid var(--color-dark-anchor);
-}
-
-body.light-mode .anchor:hover {
-	border: 2px solid var(--color-light-anchor);
-}
-
-.border {
-	border: 1px solid var(--color-dark-foreground);
-}
-
-body.light-mode .border {
-	border: 1px solid var(--color-light-foreground);
-}
-
-.component-border {
-	border: 1px solid var(--color-dark-component-background);
-}
-
-body.light-mode .component-border {
-	border: 1px solid var(--color-light-component-background);
-}
-
-.thick-border {
-	border: 2px solid var(--color-dark-foreground);
-}
-
-body.light-mode .thick-border {
-	border: 2px solid var(--color-light-foreground);
-}
-
-.thick-component-border {
-	border: 2px solid var(--color-dark-component-background);
-}
-
-body.light-mode .thick-component-border {
-	border: 2px solid var(--color-light-component-background);
-}
-
-.component {
-	background-color: var(--color-dark-component-background);
-	color: var(--color-dark-component-foreground);
-}
-
-body.light-mode .component {
-	background-color: var(--color-light-component-background);
-	color: var(--color-light-component-foreground);
-}
-
-.highlightkeyword {
-	color: var(--color-dark-keyword);
-	font-weight: bold;
-}
-
-body.light-mode .highlightkeyword {
-	color: var(--color-light-keyword);
-}
-
 h1 {
 	margin-bottom: 15px;
 	padding-left: 5px;
 	padding-right: 5px;
-	border-bottom: 1px solid var(--color-dark-foreground);
 	font-weight: bold;
-	color: var(--color-dark-heading);
-}
-
-body.light-mode h1 {
 	border-bottom: 1px solid var(--color-light-foreground);
 	color: var(--color-light-heading);
+}
+
+body.dark h1 {
+	border-bottom: 1px solid var(--color-dark-foreground);
+	color: var(--color-dark-heading);
 }
 
 h2 {
@@ -328,22 +225,22 @@ h2 {
 	padding-left: 5px;
 	padding-right: 5px;
 	font-weight: bold;
-	border-bottom: 1px solid var(--color-dark-foreground);
+	border-bottom: 1px solid var(--color-light-foreground);
 }
 
-body.light-mode h2 {
-	border-bottom: 1px solid var(--color-light-foreground);
+body.dark h2 {
+	border-bottom: 1px solid var(--color-dark-foreground);
 }
 
 h3 {
 	margin-bottom: 10px;
 	text-align: center;
-	color: var(--color-dark-heading);
 	font-weight: bold;
+	color: var(--color-light-heading);
 }
 
-body.light-mode h3 {
-	color: var(--color-light-heading);
+body.dark h3 {
+	color: var(--color-dark-heading);
 }
 
 ul {
@@ -374,32 +271,129 @@ code {
 	font-family: Roboto-Mono;
 }
 
-.badge {
-	display: inline-block;
-	margin: 5px;
-	padding: 5px 10px;
-	border-radius: 35px;
-	background-color: var(--color-dark-badge-background);
-	border: 2px solid var(--color-dark-badge-foreground);
-	color: var(--color-dark-badge-foreground);
-}
-
-body.light-mode .badge {
-	background-color: var(--color-light-badge-background);
-	border: 2px solid var(--color-light-badge-foreground);
-	color: var(--color-light-badge-foreground);
-}
-
 hr {
+	border-top: 1px solid var(--color-light-foreground);
+	border-left: 0px solid var(--color-light-foreground);
+	border-right: 0px solid var(--color-light-foreground);
+	border-bottom: 0px solid var(--color-light-foreground);
+}
+
+body.dark hr {
 	border-top: 1px solid var(--color-dark-foreground);
 	border-left: 0px solid var(--color-dark-foreground);
 	border-right: 0px solid var(--color-dark-foreground);
 	border-bottom: 0px solid var(--color-dark-foreground);
 }
 
-body.light-mode hr {
-	border-top: 1px solid var(--color-light-foreground);
-	border-left: 0px solid var(--color-light-foreground);
-	border-right: 0px solid var(--color-light-foreground);
-	border-bottom: 0px solid var(--color-light-foreground);
+/* Helper css */
+.flex-middle {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.inline-flex-middle {
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+}
+
+/* Generic css */
+.error {
+	font-size: 30px;
+	padding: 1em;
+	text-align: center;
+	color: var(--color-light-error);
+}
+
+body.dark .error {
+	color: var(--color-dark-error);
+}
+
+.body {
+	background-color: var(--color-light-background);
+	color: var(--color-light-foreground);
+}
+
+body.dark .body {
+	background-color: var(--color-dark-background);
+	color: var(--color-dark-foreground);
+}
+
+.anchor {
+	border: 2px solid transparent;
+}
+
+.anchor:hover {
+	border: 2px solid var(--color-light-anchor);
+}
+
+body.dark .anchor:hover {
+	border: 2px solid var(--color-dark-anchor);
+}
+
+.border {
+	border: 1px solid var(--color-light-foreground);
+}
+
+body.dark .border {
+	border: 1px solid var(--color-dark-foreground);
+}
+
+.component-border {
+	border: 1px solid var(--color-light-component-background);
+}
+
+body.dark .component-border {
+	border: 1px solid var(--color-dark-component-background);
+}
+
+.thick-border {
+	border: 2px solid var(--color-light-foreground);
+}
+
+body.dark .thick-border {
+	border: 2px solid var(--color-dark-foreground);
+}
+
+.thick-component-border {
+	border: 2px solid var(--color-light-component-background);
+}
+
+body.dark .thick-component-border {
+	border: 2px solid var(--color-dark-component-background);
+}
+
+.component {
+	background-color: var(--color-light-component-background);
+	color: var(--color-light-component-foreground);
+}
+
+body.dark .component {
+	background-color: var(--color-dark-component-background);
+	color: var(--color-dark-component-foreground);
+}
+
+.highlightkeyword {
+	color: var(--color-light-keyword);
+	font-weight: bold;
+}
+
+body.dark .highlightkeyword {
+	color: var(--color-dark-keyword);
+}
+
+.badge {
+	display: inline-block;
+	margin: 5px;
+	padding: 5px 10px;
+	background-color: var(--color-light-badge-background);
+	border: 2px solid var(--color-light-badge-foreground);
+	color: var(--color-light-badge-foreground);
+}
+
+body.dark .badge {
+	background-color: var(--color-dark-badge-background);
+	border: 2px solid var(--color-dark-badge-foreground);
+	color: var(--color-dark-badge-foreground);
 }

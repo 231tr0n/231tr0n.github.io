@@ -1,5 +1,5 @@
 <br />
-<div>
+<div class="flex-middle">
 	<svg
 		width="24"
 		height="24"
@@ -45,11 +45,3 @@
 	</svg>
 </div>
 <br />
-
-<style>
-	div {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-</style>

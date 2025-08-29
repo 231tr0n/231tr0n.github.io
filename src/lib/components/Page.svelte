@@ -71,9 +71,9 @@
 </script>
 
 {#if scrollspy}
-	<div bind:this={pageDiv} class="page flex-center" onscroll={updateBreadcrumb}>
-		<div class="content justify">
-			<h4 bind:this={breadcrumb} class="component center flex-middle">
+	<div bind:this={pageDiv} class="page" onscroll={updateBreadcrumb}>
+		<div class="content">
+			<h4 bind:this={breadcrumb} class="component flex-middle">
 				<Select items={selectionMenuArray} transparent={true} {currentItem} {selectedItemStore} />
 			</h4>
 			{#if children}
@@ -85,8 +85,8 @@
 		<div class="body border"></div>
 	</div>
 {:else}
-	<div class="page flex-center">
-		<div class="content justify">
+	<div class="page">
+		<div class="content">
 			{#if children}
 				{@render children()}
 			{:else}
@@ -106,6 +106,12 @@
 		padding: 0px;
 		margin: 0px;
 		scroll-behavior: smooth;
+		display: flex;
+		justify-content: center;
+	}
+
+	h4 {
+		display: flex;
 	}
 
 	.content {
@@ -116,7 +122,7 @@
 		max-width: 85vw;
 		width: 900px;
 		height: max-content;
-		text-align: left;
+		text-align: justify;
 	}
 
 	div.body {

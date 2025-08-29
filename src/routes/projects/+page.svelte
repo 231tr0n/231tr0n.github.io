@@ -2,6 +2,7 @@
 	import Page from '$lib/components/Page.svelte';
 	import Accordion from '$lib/components/Accordion.svelte';
 	import Progress from '$lib/components/Progress.svelte';
+	import BarGraph from '$lib/components/BarGraph.svelte';
 
 	interface post {
 		name: string;
@@ -25,10 +26,11 @@
 
 	let progressLength = $state(0);
 	let fullCompletionLength = $state(0);
-	let languagesList: Record<string, number> = {};
-	let languagesPercentageList: Array<[string, number]> = [];
 
 	let fetchGithubRepoData = async (url: string) => {
+		let languagesList: Record<string, number> = {};
+		let languagesPercentageList: Record<string, number> = {};
+
 		const temp = await fetch(url);
 		const repos = await temp.json();
 		if (repos['message']) {
@@ -43,7 +45,7 @@
 			}
 		}
 
-		const returnData = [];
+		const reposData = [];
 		for (const repo of nonForkedRepos) {
 			const temp = await fetch(repo['languages_url']);
 			const languages: languages | githubError = await temp.json();
@@ -67,7 +69,7 @@
 				}
 			}
 
-			returnData.push(repoData);
+			reposData.push(repoData);
 
 			progressLength += 1;
 		}
@@ -78,25 +80,21 @@
 		}
 
 		for (const [key, value] of Object.entries(languagesList)) {
-			languagesPercentageList.push([key, parseFloat(((value / total) * 100).toFixed(2))]);
+			languagesPercentageList[key] = parseFloat(((value / total) * 100).toFixed(2));
 		}
 
-		languagesPercentageList.sort((a, b) => {
-			return b[1] - a[1];
-		});
-
-		return returnData;
+		return { reposData, languagesPercentageList };
 	};
 </script>
 
 {#snippet projectPostSnippet(projectPost: post)}
 	{#if projectPost.name && projectPost.description}
 		<Accordion name={projectPost.name} url={projectPost.url} external={true}>
-			<div class="center">
+			<div>
 				{#each projectPost.badges as badge, _ (_)}
 					<span class="badge">{badge}</span>
 				{/each}
-				<div class="center">
+				<div>
 					{projectPost.description}
 				</div>
 			</div>
@@ -113,18 +111,24 @@
 		<Progress value={progressLength} max={fullCompletionLength}></Progress>
 	{:then res}
 		<Accordion name="Github Language Statistics" open={true}>
-			<div class="center">
-				<div class="center"></div>
-				{#each languagesPercentageList as value, _ (_)}
-					<span class="badge">{value[0] + ' - ' + value[1] + '%'}</span>
-				{/each}
-			</div>
+			<BarGraph
+				data={res.languagesPercentageList}
+				sort={true}
+				height="10"
+				context="Github"
+				title="Language Statistics"></BarGraph>
 		</Accordion>
 		<br />
-		{#each Object.values(res) as repo, _ (_)}
+		{#each Object.values(res.reposData) as repo, _ (_)}
 			{@render projectPostSnippet(repo)}
 		{/each}
 	{:catch error}
 		<div class="error">{error}</div>
 	{/await}
 </Page>
+
+<style>
+	div {
+		text-align: center;
+	}
+</style>

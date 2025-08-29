@@ -3,17 +3,9 @@
 </script>
 
 <br />
-<div>
+<div class="flex-middle">
 	<progress {value} {max}>
 		{@render children?.()}
 	</progress>
 </div>
 <br />
-
-<style>
-	div {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-</style>

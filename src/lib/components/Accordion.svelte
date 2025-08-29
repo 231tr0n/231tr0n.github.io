@@ -8,70 +8,65 @@
 	};
 </script>
 
-{#if name}
-	<div class="details">
-		<div class="summary">
-			<div class="spacer">
-				<h2>{name}</h2>
-				<button
-					class="summary-toggler"
-					aria-label="Accordion summary toggler"
-					onclick={summaryToggler}
-					onkeypress={summaryToggler}>
-					{#if open}
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="15"
-							height="15"
-							fill="currentColor"
-							class="bi bi-chevron-up"
-							viewBox="0 0 16 16">
-							<path
-								fill-rule="evenodd"
-								d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
-						</svg>
-					{:else}
-						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="15"
-							height="15"
-							fill="currentColor"
-							class="bi bi-chevron-down"
-							viewBox="0 0 16 16">
-							<path
-								fill-rule="evenodd"
-								d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-						</svg>
-					{/if}
-				</button>
-				{#if url}
-					{#if external}
-						<a target="_blank" href={url}><button>Open</button></a>
-					{:else}
-						<a href={url}><button>Open</button></a>
-					{/if}
-				{/if}
-			</div>
-		</div>
-		{#if open}
-			<div transition:fade>
-				{#if children}
-					{@render children()}
+<div class="details">
+	<div class="summary">
+		<div class="spacer">
+			<h2>{name}</h2>
+			<button
+				class="summary-toggler flex-middle"
+				aria-label="Accordion summary toggler"
+				onclick={summaryToggler}
+				onkeypress={summaryToggler}>
+				{#if open}
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="15"
+						height="15"
+						fill="currentColor"
+						class="bi bi-chevron-up"
+						viewBox="0 0 16 16">
+						<path
+							fill-rule="evenodd"
+							d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
+					</svg>
 				{:else}
-					<div class="error">No children to render</div>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						width="15"
+						height="15"
+						fill="currentColor"
+						class="bi bi-chevron-down"
+						viewBox="0 0 16 16">
+						<path
+							fill-rule="evenodd"
+							d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+					</svg>
 				{/if}
-			</div>
-		{/if}
+			</button>
+			{#if url}
+				{#if external}
+					<a target="_blank" href={url}><button>Open</button></a>
+				{:else}
+					<a href={url}><button>Open</button></a>
+				{/if}
+			{/if}
+		</div>
 	</div>
-{/if}
+	{#if open}
+		<div transition:fade>
+			{#if children}
+				{@render children()}
+			{:else}
+				<div class="error">No children to render</div>
+			{/if}
+		</div>
+	{/if}
+</div>
 
 <style>
 	.summary-toggler {
 		width: 24px;
 		height: 24px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
 	}
 
 	.details {
@@ -103,7 +98,7 @@
 		margin: 0px;
 	}
 
-	:global(body.light-mode) h2 {
+	:global(body.dark) h2 {
 		border: 0px;
 	}
 </style>

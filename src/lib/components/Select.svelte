@@ -11,7 +11,7 @@
 	} = $props();
 
 	let open = $state(false);
-	let selectContext = $state() as HTMLElement;
+	let selectContext: HTMLElement;
 
 	if (emptyItem) {
 		items.unshift('');
@@ -85,7 +85,7 @@
 		{/if}
 	</button>
 	{#if open}
-		<div class="select-menu component thick-component-border" transition:fade>
+		<div class="select-menu flex-middle component thick-component-border" transition:fade>
 			{#each items.entries() as [index, item] (index)}
 				<button onclick={() => selectItem(index)} class="items">
 					{item}
@@ -110,9 +110,6 @@
 	}
 
 	.select-menu {
-		display: flex;
-		justify-content: center;
-		align-items: center;
 		flex-direction: column;
 		width: fit-content;
 		position: absolute;

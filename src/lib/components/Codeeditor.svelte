@@ -6,7 +6,7 @@
 	import vim from 'ace-code/src/keyboard/vim';
 	import vscode from 'ace-code/src/keyboard/vscode';
 	import beautifier from 'ace-code/src/ext/beautify';
-	import { lightMode } from '$lib/store.svelte.js';
+	import { darkMode } from '$lib/store.svelte.js';
 	import { type Unsubscriber } from 'svelte/store';
 
 	let {
@@ -20,11 +20,11 @@
 		code = ''
 	} = $props();
 
-	let editorDiv = $state() as HTMLElement;
+	let editorDiv: HTMLElement;
 	let editor: ace.Editor;
 	let fullscreen = $state(false);
-	let editorElement = $state() as HTMLElement;
-	let editorBlock = $state() as HTMLElement;
+	let editorElement: HTMLElement;
+	let editorBlock: HTMLElement;
 	let copied = $state(false);
 	let storedHeight = '';
 	let unsubscriber: Unsubscriber = () => {};
@@ -85,11 +85,11 @@
 		editor.session.setTabSize(2);
 		editor.session.setUseSoftTabs(true);
 		editor.setShowPrintMargin(false);
-		unsubscriber = lightMode.subscribe((value) => {
+		unsubscriber = darkMode.subscribe((value) => {
 			if (value) {
-				editor.setTheme(solarized_light);
-			} else {
 				editor.setTheme(solarized_dark);
+			} else {
+				editor.setTheme(solarized_light);
 			}
 		});
 
@@ -113,7 +113,7 @@
 
 <div bind:this={editorElement} class="flex-middle">
 	<div bind:this={editorBlock} class="editor-block thick-component-border body">
-		<div class="filename editor-context component">
+		<div class="filename context component">
 			<span>
 				{readOnly ? 'Snippet' : 'Editor'}
 			</span>
@@ -123,9 +123,9 @@
 				</span>
 			{/if}
 		</div>
-		<div class="editor-context component">
+		<div class="context component">
 			<span>
-				<button onclick={copy} aria-label="Copy">
+				<button onclick={copy} class="inline-flex-middle" aria-label="Copy">
 					{#if !copied}
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -157,7 +157,10 @@
 						</svg>
 					{/if}
 				</button>
-				<button onclick={toggleFullscreen} aria-label="Toggle fullscreen">
+				<button
+					onclick={toggleFullscreen}
+					class="inline-flex-middle"
+					aria-label="Toggle fullscreen">
 					{#if !fullscreen}
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
@@ -183,14 +186,17 @@
 					{/if}
 				</button>
 				{#if !readOnly}
-					<button onclick={toggleKeybinds} aria-label="Toggle keybindings">
+					<button
+						onclick={toggleKeybinds}
+						class="inline-flex-middle"
+						aria-label="Toggle keybindings">
 						{#if vimMode}
 							<img class="logo" alt="Vim" src="/images/vim.avif" />
 						{:else}
 							<img class="logo" alt="Vscode" src="/images/vscode.avif" />
 						{/if}
 					</button>
-					<button onclick={beautify} aria-label="Format">
+					<button onclick={beautify} class="inline-flex-middle" aria-label="Format">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							width="16"
@@ -204,7 +210,7 @@
 								d="M6.854 4.646a.5.5 0 0 1 0 .708L4.207 8l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0zm2.292 0a.5.5 0 0 0 0 .708L11.793 8l-2.647 2.646a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708 0z" />
 						</svg>
 					</button>
-					<button onclick={execute} aria-label="Run">
+					<button onclick={execute} class="inline-flex-middle" aria-label="Run">
 						<svg
 							xmlns="http://www.w3.org/2000/svg"
 							width="16"
@@ -225,7 +231,7 @@
 	</div>
 	{#if readOnly && output}
 		<div class="output body component-border">
-			<div class="editor-context component"><span>Output</span></div>
+			<div class="context component"><span>Output</span></div>
 			<pre>{output}</pre>
 		</div>
 	{/if}
@@ -267,17 +273,14 @@
 
 	button {
 		padding: 3px;
-		display: inline-flex;
-		justify-content: center;
-		align-items: center;
 	}
 
 	.filename {
-		border-bottom: 1px solid var(--color-dark-component-foreground);
+		border-bottom: 1px solid var(--color-light-component-foreground);
 	}
 
-	:global(body.light-mode) .filename {
-		border-bottom: 1px solid var(--color-light-component-foreground);
+	:global(body.dark) .filename {
+		border-bottom: 1px solid var(--color-dark-component-foreground);
 	}
 
 	.editor-block {
@@ -287,7 +290,7 @@
 		height: calc(100vh - 10vh - 50px - 50px);
 	}
 
-	.editor-context {
+	.context {
 		padding: 5px;
 		display: flex;
 		align-items: center;
@@ -295,13 +298,13 @@
 	}
 
 	:global(.ace_gutter-layer) {
-		border-right: 1px solid var(--color-dark-component-background);
-		color: var(--color-dark-foreground);
-	}
-
-	:global(body.light-mode .ace_gutter-layer) {
 		border-right: 1px solid var(--color-light-component-background);
 		color: var(--color-light-foreground);
+	}
+
+	:global(body.dark .ace_gutter-layer) {
+		border-right: 1px solid var(--color-dark-component-background);
+		color: var(--color-dark-foreground);
 	}
 
 	:global(div.ace_editor) {

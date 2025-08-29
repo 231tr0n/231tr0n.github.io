@@ -5,7 +5,7 @@
 <Page scrollspy={true}>
 	<h1>Home</h1>
 
-	<div class="center">
+	<div>
 		<img src="/images/logo.avif" alt="Logo" class="zeltron" />
 		<img src="/images/zeltron.avif" alt="Logo" class="zeltron" />
 	</div>
@@ -115,7 +115,7 @@
 	</ol>
 
 	<h2>Technologies</h2>
-	<div class="center">
+	<div>
 		<a target="_blank" href="https://openjdk.org">
 			<img class="logo" alt="Java" src="/images/java.avif" />
 		</a>
@@ -130,6 +130,9 @@
 		</a>
 		<a target="_blank" href="https://www.scala-lang.org">
 			<img class="logo" alt="Scala" src="/images/scala.svg" />
+		</a>
+		<a target="_blank" href="https://www.typescriptlang.org">
+			<img class="logo" alt="Typescript" src="/images/typescript.svg" />
 		</a>
 		<a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/JavaScript">
 			<img class="logo" alt="Javascript" src="/images/javascript.avif" />
@@ -173,9 +176,9 @@
 		<a target="_blank" href="https://www.lua.org">
 			<img class="logo" alt="Lua" src="/images/lua.svg" />
 		</a>
-		<a target="_blank" href="https://www.microsoft.com/en-us/windows">
-			<img class="logo" alt="Windows" src="/images/windows.avif" />
-		</a>
+		<!-- <a target="_blank" href="https://www.microsoft.com/en-us/windows"> -->
+		<!-- 	<img class="logo" alt="Windows" src="/images/windows.avif" /> -->
+		<!-- </a> -->
 		<br />
 		<a target="_blank" href="https://hadoop.apache.org">
 			<img class="logo" alt="Hadoop" src="/images/hadoop.svg" />
@@ -204,20 +207,20 @@
 	</div>
 
 	<h2>Hobbies</h2>
-	<div class="center">
-		<div class="badge">Badminton</div>
-		<div class="badge">Programming</div>
-		<div class="badge">Cycling</div>
-		<div class="badge">Chess</div>
-		<div class="badge">Gaming</div>
-		<div class="badge">Listening to music</div>
-		<div class="badge">Watching movies and anime</div>
-		<div class="badge">Solving rubik's cubes</div>
+	<div>
+		<span class="badge">Badminton</span>
+		<span class="badge">Programming</span>
+		<span class="badge">Cycling</span>
+		<span class="badge">Chess</span>
+		<span class="badge">Gaming</span>
+		<span class="badge">Listening to music</span>
+		<span class="badge">Watching movies and anime</span>
+		<span class="badge">Solving rubik's cubes</span>
 	</div>
 
 	<h2>Developer Tools</h2>
 	<h3>Operating Systems</h3>
-	<div class="center">
+	<div>
 		<a target="_blank" href="https://archlinux.org">
 			<img class="logo" alt="Archlinux" src="/images/archlinux.avif" />
 		</a>
@@ -232,7 +235,7 @@
 		</a>
 	</div>
 	<h3>Text Editors</h3>
-	<div class="center">
+	<div>
 		<a target="_blank" href="https://neovim.io">
 			<img class="logo" alt="Neovim" src="/images/neovim.avif" />
 		</a>
@@ -244,7 +247,7 @@
 		</a>
 	</div>
 	<h3>Desktop Environments and Window Managers</h3>
-	<div class="center">
+	<div>
 		<!-- <a target="_blank" href="https://i3wm.org"> -->
 		<!-- 	<img class="logo" alt="i3" src="/images/i3.avif" /> -->
 		<!-- </a> -->
@@ -262,7 +265,7 @@
 		</a>
 	</div>
 	<h3>Shells</h3>
-	<div class="center">
+	<div>
 		<a target="_blank" href="https://www.gnu.org/software/bash">
 			<img class="logo" alt="Bash" src="/images/bash.avif" />
 		</a>
@@ -273,6 +276,10 @@
 </Page>
 
 <style>
+	div {
+		text-align: center;
+	}
+
 	.zeltron {
 		height: 100px;
 		width: 100px;

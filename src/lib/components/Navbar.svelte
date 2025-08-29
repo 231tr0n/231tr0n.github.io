@@ -1,21 +1,21 @@
 <script lang="ts">
-	import { lightMode } from '$lib/store.svelte.js';
+	import { darkMode } from '$lib/store.svelte.js';
 
-	let defaultTheme = 'light';
+	let defaultTheme = 'dark';
 
 	let { theme = defaultTheme } = $props();
 
 	let toggletheme = () => {
-		window.document.body.classList.toggle('light-mode');
-		theme = window.document.body.classList.contains('light-mode') ? 'light' : 'dark';
-		if (window.document.body.classList.contains('light-mode')) {
-			lightMode.set(true);
+		window.document.body.classList.toggle('dark');
+		theme = window.document.body.classList.contains('dark') ? 'dark' : 'light';
+		if (window.document.body.classList.contains('dark')) {
+			darkMode.set(true);
 		} else {
-			lightMode.set(false);
+			darkMode.set(false);
 		}
 		localStorage.setItem(
 			'theme',
-			window.document.body.classList.contains('light-mode') ? 'light' : 'dark'
+			window.document.body.classList.contains('dark') ? 'dark' : 'light'
 		);
 	};
 
@@ -25,14 +25,14 @@
 
 	if (theme == 'light') {
 		localStorage.setItem('theme', 'light');
-		toggletheme();
 	} else {
+		toggletheme();
 		localStorage.setItem('theme', 'dark');
 	}
 </script>
 
 <header>
-	<div class="main">
+	<div class="flex-middle">
 		<a href="/"><button class="strong">231tr0n</button></a>
 		<a href="/"><button>Home</button></a>
 		<a href="/blog"><button>Blog</button></a>
@@ -97,20 +97,14 @@
 </header>
 
 <style>
-	div.main {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-	}
-
 	button.strong {
 		font-size: 15px;
 		height: 30px;
-		background-color: var(--color-dark-badge-foreground);
+		background-color: var(--color-light-badge-foreground);
 	}
 
-	:global(body.light-mode) button.strong {
-		background-color: var(--color-light-badge-foreground);
+	:global(body.dark) button.strong {
+		background-color: var(--color-dark-badge-foreground);
 	}
 
 	a {
@@ -132,13 +126,13 @@
 		justify-content: space-between;
 		align-items: center;
 		z-index: 100;
-		border-bottom: 1px solid var(--color-dark-foreground);
-		background-color: var(--color-dark-strong-background);
-	}
-
-	:global(body.light-mode) header {
 		border-bottom: 1px solid var(--color-light-foreground);
 		background-color: var(--color-light-strong-background);
+	}
+
+	:global(body.dark) header {
+		border-bottom: 1px solid var(--color-dark-foreground);
+		background-color: var(--color-dark-strong-background);
 	}
 
 	button.theme-changer {

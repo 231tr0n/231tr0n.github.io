@@ -18,11 +18,11 @@
 
 <style>
 	.github {
-		content: url('/images/github-light.svg');
+		content: url('/images/github-dark.svg');
 	}
 
-	:global(body.light-mode) .github {
-		content: url('/images/github-dark.svg');
+	:global(body.dark) .github {
+		content: url('/images/github-light.svg');
 	}
 
 	footer {
@@ -33,13 +33,13 @@
 		height: 45px;
 		box-sizing: border-box;
 		z-index: 100;
-		border-top: 1px solid var(--color-dark-foreground);
-		background-color: var(--color-dark-strong-background);
-	}
-
-	:global(body.light-mode) footer {
 		border-top: 1px solid var(--color-light-foreground);
 		background-color: var(--color-light-strong-background);
+	}
+
+	:global(body.dark) footer {
+		border-top: 1px solid var(--color-dark-foreground);
+		background-color: var(--color-dark-strong-background);
 	}
 
 	img {

@@ -37,11 +37,11 @@
 {#snippet blogPostSnippet(blogPost: post)}
 	{#if blogPost.name && blogPost.description}
 		<Accordion name={blogPost.name} url={blogPost.url}>
-			<div class="center">
+			<div>
 				{#each blogPost.badges as badge, _ (_)}
 					<span class="badge">{badge}</span>
 				{/each}
-				<div class="center">
+				<div>
 					{blogPost.description}
 				</div>
 			</div>
@@ -58,3 +58,9 @@
 		{@render blogPostSnippet(blogPost)}
 	{/each}
 </Page>
+
+<style>
+	div {
+		text-align: center;
+	}
+</style>
