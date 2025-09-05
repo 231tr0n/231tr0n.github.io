@@ -1,6 +1,7 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
+	import { slide, fade } from 'svelte/transition';
 	import { resolve } from '$app/paths';
+	import { animationDelay, animationDuration } from '$lib/animation.constants';
 
 	let { name = '', url = '', external = false, open = false, internal = true, children } = $props();
 
@@ -66,12 +67,19 @@
 		</div>
 	</div>
 	{#if open}
-		<div transition:fade>
-			{#if children}
-				{@render children()}
-			{:else}
-				<div class="error">No children to render</div>
-			{/if}
+		<div
+			in:slide={{ duration: animationDuration }}
+			out:slide={{ delay: animationDelay, duration: animationDuration }}>
+			<div
+				class="transition"
+				in:fade={{ duration: animationDelay + animationDuration }}
+				out:fade={{ duration: animationDuration }}>
+				{#if children}
+					{@render children()}
+				{:else}
+					<div class="error">No children to render</div>
+				{/if}
+			</div>
 		</div>
 	{/if}
 </div>

@@ -103,7 +103,6 @@
 		box-sizing: border-box;
 		padding: 0px;
 		margin: 0px;
-		scroll-behavior: smooth;
 		display: flex;
 		justify-content: center;
 	}
