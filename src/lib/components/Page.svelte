@@ -74,22 +74,14 @@
 			<h4 bind:this={breadcrumb} class="component flex-middle">
 				<Select items={selectionMenuArray} transparent={true} {currentItem} {setSelectedItem} />
 			</h4>
-			{#if children}
-				{@render children()}
-			{:else}
-				<div class="error">No children to render</div>
-			{/if}
+			{@render children?.()}
 		</div>
 		<div class="body border"></div>
 	</div>
 {:else}
 	<div class="page">
 		<div class="content">
-			{#if children}
-				{@render children()}
-			{:else}
-				<div class="error">No children to render</div>
-			{/if}
+			{@render children?.()}
 		</div>
 		<div class="body border"></div>
 	</div>

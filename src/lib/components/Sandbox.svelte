@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import type { UIEventHandler } from 'svelte/elements';
 
-	let { title = '', src = '', srcDoc = '' } = $props();
+	let { title = '', description = '', src = '', srcDoc = '' } = $props();
 
 	let fullscreen = $state(false);
 	let iframeElement = $state() as HTMLElement;
@@ -44,7 +44,8 @@
 <div class="flex-middle">
 	<div bind:this={iframeElement} class="iframe thick-component-border body">
 		<div class="filename context component">
-			{title}
+			<span>Sandbox</span>
+			<span>{title}</span>
 		</div>
 		<div class="context component">
 			<span>
@@ -77,7 +78,7 @@
 					{/if}
 				</button>
 			</span>
-			<span>sandbox</span>
+			<span>{description}</span>
 		</div>
 		<iframe
 			bind:this={iframe}

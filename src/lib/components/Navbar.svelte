@@ -1,13 +1,18 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { darkMode } from '$lib/DarkModeRune.svelte.js';
+	import { onMount } from 'svelte';
+
+	let dark = $state(false);
 
 	let toggletheme = () => {
 		window.document.body.classList.toggle('dark');
 		if (window.document.body.classList.contains('dark')) {
 			darkMode().dark = true;
+			dark = true;
 		} else {
 			darkMode().dark = false;
+			dark = false;
 		}
 		localStorage.setItem(
 			'theme',
@@ -15,11 +20,13 @@
 		);
 	};
 
-	if (localStorage.getItem('theme') === null && darkMode().dark) {
-		toggletheme();
-	} else if (localStorage.getItem('theme') == 'dark') {
-		toggletheme();
-	}
+	onMount(() => {
+		if (localStorage.getItem('theme') === null && darkMode().dark) {
+			toggletheme();
+		} else if (localStorage.getItem('theme') == 'dark') {
+			toggletheme();
+		}
+	});
 </script>
 
 <header>
@@ -31,7 +38,7 @@
 		<a href={resolve('/misc')}><button>Misc</button></a>
 	</div>
 	<button onclick={toggletheme} class="theme-changer">
-		{#if darkMode().dark}
+		{#if dark}
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				xmlns:xlink="http://www.w3.org/1999/xlink"

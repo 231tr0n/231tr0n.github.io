@@ -74,11 +74,7 @@
 				class="transition"
 				in:fade={{ duration: animationDelay + animationDuration }}
 				out:fade={{ duration: animationDuration }}>
-				{#if children}
-					{@render children()}
-				{:else}
-					<div class="error">No children to render</div>
-				{/if}
+				{@render children?.()}
 			</div>
 		</div>
 	{/if}

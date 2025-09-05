@@ -5,20 +5,16 @@
 	let { post = { name: '', url: '', description: '', badges: [] } }: { post: PostData } = $props();
 </script>
 
-{#if post['name'] && post['description']}
-	<Accordion name={post['name']} url={post['url']}>
+<Accordion name={post['name']} url={post['url']}>
+	<div>
+		{#each post['badges'] as badge, _ (_)}
+			<span class="badge">{badge}</span>
+		{/each}
 		<div>
-			{#each post['badges'] as badge, _ (_)}
-				<span class="badge">{badge}</span>
-			{/each}
-			<div>
-				{post['description']}
-			</div>
+			{post['description']}
 		</div>
-	</Accordion>
-{:else}
-	<div class="error">Blog post data is not accurate</div>
-{/if}
+	</div>
+</Accordion>
 
 <style>
 	div {

@@ -22,11 +22,7 @@
 	<main
 		in:fly={{ y: animationY, duration: animationDuration, delay: animationDelay }}
 		out:fly={{ x: animationX, duration: animationDuration }}>
-		{#if children}
-			{@render children()}
-		{:else}
-			<div class="error">No children to render</div>
-		{/if}
+		{@render children?.()}
 	</main>
 {/key}
 <Footer />
