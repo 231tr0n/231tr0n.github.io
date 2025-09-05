@@ -1,14 +1,12 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import type { UIEventHandler } from 'svelte/elements';
-	import { type Unsubscriber } from 'svelte/store';
 
-	let { title = '', src = '', srcDocStore = null } = $props();
+	let { title = '', src = '', srcDoc = '' } = $props();
 
 	let fullscreen = $state(false);
 	let iframeElement = $state() as HTMLElement;
 	let iframe = $state() as HTMLIFrameElement;
-	let unsubscriber: Unsubscriber = () => {};
 
 	let toggleFullscreen = () => {
 		if (document.fullscreenElement) {
@@ -33,17 +31,13 @@
 			};
 		}
 
-		if (srcDocStore) {
-			unsubscriber = srcDocStore.subscribe((value: string) => {
-				iframe.srcdoc = value;
+		$effect(() => {
+			if (srcDoc) {
+				iframe.srcdoc = srcDoc;
 				// Below line is used for triggering iframe reload by resetting src.
 				iframe.src = iframe.src;
-			});
-		}
-	});
-
-	onDestroy(() => {
-		unsubscriber?.();
+			}
+		});
 	});
 </script>
 

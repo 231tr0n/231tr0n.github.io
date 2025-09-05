@@ -1,18 +1,13 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { darkMode } from '$lib/store.svelte.js';
-
-	let defaultTheme = 'dark';
-
-	let { theme = defaultTheme } = $props();
+	import { darkMode } from '$lib/DarkModeRune.svelte.js';
 
 	let toggletheme = () => {
 		window.document.body.classList.toggle('dark');
-		theme = window.document.body.classList.contains('dark') ? 'dark' : 'light';
 		if (window.document.body.classList.contains('dark')) {
-			darkMode.set(true);
+			darkMode().dark = true;
 		} else {
-			darkMode.set(false);
+			darkMode().dark = false;
 		}
 		localStorage.setItem(
 			'theme',
@@ -20,15 +15,10 @@
 		);
 	};
 
-	if (localStorage.getItem('theme')) {
-		theme = localStorage.getItem('theme') || defaultTheme;
-	}
-
-	if (theme == 'light') {
-		localStorage.setItem('theme', 'light');
-	} else {
+	if (localStorage.getItem('theme') == 'dark') {
 		toggletheme();
-		localStorage.setItem('theme', 'dark');
+	} else if (darkMode().dark) {
+		toggletheme();
 	}
 </script>
 
@@ -41,7 +31,7 @@
 		<a href={resolve('/misc')}><button>Misc</button></a>
 	</div>
 	<button onclick={toggletheme} class="theme-changer">
-		{#if theme == 'dark'}
+		{#if darkMode().dark}
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
 				xmlns:xlink="http://www.w3.org/1999/xlink"

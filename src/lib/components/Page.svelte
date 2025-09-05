@@ -1,9 +1,7 @@
 <script lang="ts">
-	import { onMount, onDestroy } from 'svelte';
+	import { onMount } from 'svelte';
 	import Select from './Select.svelte';
-	import { selectedItemStore } from '$lib/store.svelte.js';
 	import { animationDelay, animationDuration } from '$lib/animation.constants.js';
-	import type { Unsubscriber } from 'svelte/store';
 
 	let { scrollspy = false, children } = $props();
 
@@ -13,8 +11,12 @@
 	let breadcrumb = $state() as HTMLElement;
 	let updateBreadcrumb = $state(() => {});
 	let selectionMenuArray: string[] = $state([]);
-	let unsubscriber: Unsubscriber = () => {};
 	let pageDiv = $state() as HTMLElement;
+
+	let selectedItem = $state(0);
+	function setSelectedItem(value: number) {
+		selectedItem = value;
+	}
 
 	if (scrollspy) {
 		updateBreadcrumb = () => {
@@ -34,23 +36,23 @@
 			}
 		};
 
-		if (selectedItemStore) {
-			// Below line is used to reset the value of the store to 0 which is set to the last value since store contains the last set value.
-			selectedItemStore.set(0);
-			unsubscriber = selectedItemStore.subscribe((value) => {
-				if (value >= 0 && value < sections.length) {
-					let currentDiv = sections[value];
-					let currentDivBoundingClientRect = currentDiv.getBoundingClientRect();
-					pageDiv.scrollBy(
-						0,
-						currentDivBoundingClientRect.top -
-							currentDivBoundingClientRect.height -
-							breadcrumb.offsetHeight -
-							15
-					);
-				}
-			});
+		if (setSelectedItem) {
+			setSelectedItem(0);
 		}
+
+		$effect(() => {
+			if (selectedItem >= 0 && selectedItem < sections.length) {
+				let currentDiv = sections[selectedItem];
+				let currentDivBoundingClientRect = currentDiv.getBoundingClientRect();
+				pageDiv.scrollBy(
+					0,
+					currentDivBoundingClientRect.top -
+						currentDivBoundingClientRect.height -
+						breadcrumb.offsetHeight -
+						15
+				);
+			}
+		});
 
 		onMount(() => {
 			setTimeout(() => {
@@ -63,10 +65,6 @@
 				}
 			}, animationDelay + animationDuration);
 		});
-
-		onDestroy(() => {
-			unsubscriber?.();
-		});
 	}
 </script>
 
@@ -74,7 +72,7 @@
 	<div bind:this={pageDiv} class="page" onscroll={updateBreadcrumb}>
 		<div class="content">
 			<h4 bind:this={breadcrumb} class="component flex-middle">
-				<Select items={selectionMenuArray} transparent={true} {currentItem} {selectedItemStore} />
+				<Select items={selectionMenuArray} transparent={true} {currentItem} {setSelectedItem} />
 			</h4>
 			{#if children}
 				{@render children()}

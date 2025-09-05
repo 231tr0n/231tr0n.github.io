@@ -7,7 +7,7 @@
 		emptyItem = false,
 		currentItem = 0,
 		transparent = false,
-		selectedItemStore = null
+		setSelectedItem = null
 	} = $props();
 
 	let open = $state(false);
@@ -19,8 +19,8 @@
 
 	let selectItem = (item: number) => {
 		currentItem = item;
-		if (selectedItemStore) {
-			selectedItemStore.set(currentItem);
+		if (setSelectedItem) {
+			setSelectedItem(currentItem);
 		}
 		toggleSelectionMenu();
 	};

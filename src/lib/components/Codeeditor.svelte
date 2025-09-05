@@ -1,13 +1,12 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import ace from 'ace-code';
 	import solarized_light from 'ace-code/src/theme/solarized_light';
 	import solarized_dark from 'ace-code/src/theme/solarized_dark';
 	import vim from 'ace-code/src/keyboard/vim';
 	import vscode from 'ace-code/src/keyboard/vscode';
 	import beautifier from 'ace-code/src/ext/beautify';
-	import { darkMode } from '$lib/store.svelte.js';
-	import { type Unsubscriber } from 'svelte/store';
+	import { darkMode } from '$lib/DarkModeRune.svelte.js';
 
 	let {
 		langName = '',
@@ -15,7 +14,7 @@
 		output = '',
 		readOnly = false,
 		fileName = '',
-		codeStore = null,
+		setCode = null,
 		vimMode = false,
 		code = ''
 	} = $props();
@@ -27,14 +26,15 @@
 	let editorBlock: HTMLElement;
 	let copied = $state(false);
 	let storedHeight = '';
-	let unsubscriber: Unsubscriber = () => {};
 
 	let copy = () => {
-		navigator.clipboard.writeText(editor.session.getValue());
-		copied = true;
-		setTimeout(() => {
-			copied = false;
-		}, 2000);
+		if (editor) {
+			navigator.clipboard.writeText(editor.session.getValue());
+			copied = true;
+			setTimeout(() => {
+				copied = false;
+			}, 2000);
+		}
 	};
 
 	let toggleFullscreen = () => {
@@ -46,13 +46,15 @@
 	};
 
 	let execute = () => {
-		if (codeStore) {
-			codeStore.set(editor.session.getValue());
+		if (setCode && editor) {
+			setCode(editor.session.getValue());
 		}
 	};
 
 	let beautify = () => {
-		beautifier.beautify(editor.session);
+		if (editor) {
+			beautifier.beautify(editor.session);
+		}
 	};
 
 	let toggleKeybinds = () => {
@@ -66,7 +68,6 @@
 
 	onMount(() => {
 		editor = ace.edit(editorDiv);
-		editor.setTheme(solarized_dark);
 		if (mode) {
 			editor.session.setMode(new mode.Mode());
 		}
@@ -85,8 +86,8 @@
 		editor.session.setTabSize(2);
 		editor.session.setUseSoftTabs(true);
 		editor.setShowPrintMargin(false);
-		unsubscriber = darkMode.subscribe((value) => {
-			if (value) {
+		$effect(() => {
+			if (darkMode().dark) {
 				editor.setTheme(solarized_dark);
 			} else {
 				editor.setTheme(solarized_light);
@@ -104,10 +105,6 @@
 			}
 			editor.resize();
 		};
-	});
-
-	onDestroy(() => {
-		unsubscriber?.();
 	});
 </script>
 

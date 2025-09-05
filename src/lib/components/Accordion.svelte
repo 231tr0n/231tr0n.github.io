@@ -4,8 +4,12 @@
 
 	let { name = '', url = '', external = false, open = false, internal = true, children } = $props();
 
-	// @ts-expect-error - resolve will accept a string variable which will always be from the defined routes
-	const resolvedUrl = resolve(url);
+	let resolvedUrl = $state('');
+
+	if (internal) {
+		// @ts-expect-error - resolve will accept a string variable which will always be from the defined routes
+		resolvedUrl = resolve(url);
+	}
 
 	let summaryToggler = () => {
 		open = open ? false : true;
