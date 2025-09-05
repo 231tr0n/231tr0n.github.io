@@ -15,9 +15,11 @@
 		);
 	};
 
-	if (localStorage.getItem('theme') == 'dark') {
-		toggletheme();
-	} else if (darkMode().dark) {
+	if (localStorage.getItem('theme') === null) {
+		if (darkMode().dark) {
+			toggletheme();
+		}
+	} else if (localStorage.getItem('theme') == 'dark') {
 		toggletheme();
 	}
 </script>
