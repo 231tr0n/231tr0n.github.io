@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { darkMode } from '$lib/store.svelte.js';
 
 	let defaultTheme = 'dark';
@@ -33,11 +34,11 @@
 
 <header>
 	<div class="flex-middle">
-		<a href="/"><button class="strong">231tr0n</button></a>
-		<a href="/"><button>Home</button></a>
-		<a href="/blog"><button>Blog</button></a>
-		<a href="/projects"><button>Projects</button></a>
-		<a href="/misc"><button>Misc</button></a>
+		<a href={resolve('/')}><button class="strong">231tr0n</button></a>
+		<a href={resolve('/')}><button>Home</button></a>
+		<a href={resolve('/blog')}><button>Blog</button></a>
+		<a href={resolve('/projects')}><button>Projects</button></a>
+		<a href={resolve('/misc')}><button>Misc</button></a>
 	</div>
 	<button onclick={toggletheme} class="theme-changer">
 		{#if theme == 'dark'}

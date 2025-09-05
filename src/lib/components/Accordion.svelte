@@ -1,7 +1,11 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
+	import { resolve } from '$app/paths';
 
-	let { name = '', url = '', external = false, open = false, children } = $props();
+	let { name = '', url = '', external = false, open = false, internal = true, children } = $props();
+
+	// @ts-expect-error - resolve will accept a string variable which will always be from the defined routes
+	const resolvedUrl = resolve(url);
 
 	let summaryToggler = () => {
 		open = open ? false : true;
@@ -45,8 +49,13 @@
 			</button>
 			{#if url}
 				{#if external}
+					<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 					<a target="_blank" href={url}><button>Open</button></a>
+				{:else if internal}
+					<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+					<a href={resolvedUrl}><button>Open</button></a>
 				{:else}
+					<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 					<a href={url}><button>Open</button></a>
 				{/if}
 			{/if}
