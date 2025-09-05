@@ -9,9 +9,11 @@
 		title = '',
 		height = '50vh'
 	} = $props();
+
 	if (sort) {
 		data = Object.fromEntries(Object.entries(data).sort(([, a], [, b]) => (desc ? b - a : a - b)));
 	}
+
 	let chartDiv: HTMLDivElement;
 	let table: HTMLTableElement;
 	let fullscreen = $state(false);

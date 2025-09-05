@@ -3,20 +3,8 @@
 	import Accordion from '$lib/components/Accordion.svelte';
 	import Progress from '$lib/components/Progress.svelte';
 	import BarGraph from '$lib/components/BarGraph.svelte';
-
-	interface post {
-		name: string;
-		badges: string[];
-		description: string;
-		url: string;
-	}
-
-	interface repo {
-		name: string;
-		url: string;
-		description: string;
-		badges: string[];
-	}
+	import Post from '$lib/components/Post.svelte';
+	import type { PostData } from '$lib/types';
 
 	interface githubError {
 		message: string;
@@ -53,7 +41,7 @@
 				throw 'Github api rate limit exceeded';
 			}
 
-			const repoData: repo = {
+			const repoData: PostData = {
 				name: repo['name'],
 				url: repo['html_url'],
 				description: repo['description'],
@@ -87,25 +75,9 @@
 	};
 </script>
 
-{#snippet projectPostSnippet(projectPost: post)}
-	{#if projectPost.name && projectPost.description}
-		<Accordion name={projectPost.name} url={projectPost.url} external={true}>
-			<div>
-				{#each projectPost.badges as badge, _ (_)}
-					<span class="badge">{badge}</span>
-				{/each}
-				<div>
-					{projectPost.description}
-				</div>
-			</div>
-		</Accordion>
-	{:else}
-		<div class="error">Project post data is not accurate</div>
-	{/if}
-{/snippet}
-
 <Page>
 	<h1>Projects</h1>
+
 	{#await fetchGithubRepoData('https://api.github.com/users/231tr0n/repos')}
 		<br />
 		<Progress value={progressLength} max={fullCompletionLength}></Progress>
@@ -120,15 +92,9 @@
 		</Accordion>
 		<br />
 		{#each Object.values(res.reposData) as repo, _ (_)}
-			{@render projectPostSnippet(repo)}
+			<Post post={repo} />
 		{/each}
 	{:catch error}
 		<div class="error">{error}</div>
 	{/await}
 </Page>
-
-<style>
-	div {
-		text-align: center;
-	}
-</style>

@@ -1,2 +1,6 @@
-declare module 'ace-code/src/keyboard/vim';
-declare module 'ace-code/src/keyboard/vscode';
+export interface PostData {
+	name: string;
+	url: string;
+	description: string;
+	badges: string[];
+}

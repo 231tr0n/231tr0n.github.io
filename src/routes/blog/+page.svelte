@@ -1,66 +1,22 @@
 <script lang="ts">
 	import Page from '$lib/components/Page.svelte';
-	import Accordion from '$lib/components/Accordion.svelte';
+	import Post from '$lib/components/Post.svelte';
+	import type { PostData } from '$lib/types';
 
-	interface post {
-		name: string;
-		badges: string[];
-		description: string;
-		url: string;
-	}
-
-	let blogPosts = [];
-
-	let blogPostCreator = (
-		name: string,
-		badges: string[],
-		description: string,
-		url: string
-	): post => {
-		return {
-			name,
-			badges,
-			description,
-			url
-		};
-	};
-	blogPosts.push(
-		blogPostCreator(
-			'Neovim configuration',
-			['neovim', 'configuration', 'lua'],
-			'Brief introduction about my neovim configuration.',
-			'/blog/config'
-		)
-	);
+	let blogPosts: PostData[] = [
+		{
+			name: 'Neovim configuration',
+			badges: ['neovim', 'configuration', 'lua'],
+			description: 'Brief introduction about my neovim configuration.',
+			url: '/blog/config'
+		}
+	];
 </script>
-
-{#snippet blogPostSnippet(blogPost: post)}
-	{#if blogPost.name && blogPost.description}
-		<Accordion name={blogPost.name} url={blogPost.url}>
-			<div>
-				{#each blogPost.badges as badge, _ (_)}
-					<span class="badge">{badge}</span>
-				{/each}
-				<div>
-					{blogPost.description}
-				</div>
-			</div>
-		</Accordion>
-	{:else}
-		<div class="error">Blog post data is not accurate</div>
-	{/if}
-{/snippet}
 
 <Page>
 	<h1>Blog</h1>
 
 	{#each blogPosts as blogPost, _ (_)}
-		{@render blogPostSnippet(blogPost)}
+		<Post post={blogPost} />
 	{/each}
 </Page>
-
-<style>
-	div {
-		text-align: center;
-	}
-</style>
