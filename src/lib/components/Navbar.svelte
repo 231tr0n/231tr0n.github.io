@@ -15,10 +15,8 @@
 		);
 	};
 
-	if (localStorage.getItem('theme') === null) {
-		if (darkMode().dark) {
-			toggletheme();
-		}
+	if (localStorage.getItem('theme') === null && darkMode().dark) {
+		toggletheme();
 	} else if (localStorage.getItem('theme') == 'dark') {
 		toggletheme();
 	}
