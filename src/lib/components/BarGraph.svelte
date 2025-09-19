@@ -34,12 +34,14 @@
 		table.style.height = height.toString() + 'vh';
 		chartDiv.onfullscreenchange = () => {
 			if (document.fullscreenElement) {
+				table.style.height = 'calc(100vh - 76px)';
 				storedHeight = chartDiv.style.height;
 				storedWidth = chartDiv.style.width;
 				chartDiv.style.height = '100vh';
 				chartDiv.style.width = '100vw';
 				fullscreen = true;
 			} else {
+				table.style.height = height.toString() + 'vh';
 				chartDiv.style.height = storedHeight;
 				chartDiv.style.width = storedWidth;
 				fullscreen = false;
