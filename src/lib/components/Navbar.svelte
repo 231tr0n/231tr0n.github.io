@@ -21,10 +21,15 @@
 	};
 
 	onMount(() => {
-		if (localStorage.getItem('theme') === null && darkMode().dark) {
+		if (localStorage.getItem('theme') == null && darkMode().dark) {
 			toggletheme();
 		} else if (localStorage.getItem('theme') == 'dark') {
 			toggletheme();
+		} else {
+			localStorage.setItem(
+				'theme',
+				window.document.body.classList.contains('dark') ? 'dark' : 'light'
+			);
 		}
 	});
 </script>
