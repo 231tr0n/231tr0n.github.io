@@ -21,15 +21,16 @@
 	};
 
 	onMount(() => {
-		if (localStorage.getItem('theme') == null && darkMode().dark) {
-			toggletheme();
-		} else if (localStorage.getItem('theme') == 'dark') {
-			toggletheme();
-		} else {
+		if (localStorage.getItem('theme') == null) {
+			if (darkMode().dark) {
+				toggletheme();
+			}
 			localStorage.setItem(
 				'theme',
 				window.document.body.classList.contains('dark') ? 'dark' : 'light'
 			);
+		} else if (localStorage.getItem('theme') == 'dark') {
+			toggletheme();
 		}
 	});
 </script>
