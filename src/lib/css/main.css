@@ -58,7 +58,6 @@
 }
 
 * {
-	scroll-behavior: smooth;
 	scrollbar-color: var(--color-light-keyword) transparent;
 	scrollbar-width: thin;
 	transition:

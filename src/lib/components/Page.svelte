@@ -97,6 +97,7 @@
 		margin: 0px;
 		display: flex;
 		justify-content: center;
+		scroll-behavior: smooth;
 	}
 
 	h4 {
