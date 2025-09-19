@@ -1,4 +1,4 @@
-let dark = $state(true);
+let dark = $state(false);
 
 export function darkMode() {
 	return {
