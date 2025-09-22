@@ -232,16 +232,30 @@
 		<ol>
 			{#each get_plugins_in_config(res) as plugin, _ (_)}
 				<li>
-					<a target="_blank" href="https://github.com/{plugin.source}">
-						{plugin.source}
-					</a>
+					{#if plugin.source.match('https://*')}
+						<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+						<a target="_blank" href={plugin.source}>
+							{plugin.source}
+						</a>
+					{:else}
+						<a target="_blank" href="https://github.com/{plugin.source}">
+							{plugin.source}
+						</a>
+					{/if}
 					{#if plugin.depends}
 						<ul>
 							{#each plugin.depends as dependency, _ (_)}
 								<li>
-									<a target="_blank" href="https://github.com/{dependency}">
-										{dependency}
-									</a>
+									{#if dependency.match('https://*')}
+										<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
+										<a target="_blank" href={dependency}>
+											{dependency}
+										</a>
+									{:else}
+										<a target="_blank" href="https://github.com/{dependency}">
+											{dependency}
+										</a>
+									{/if}
 								</li>
 							{/each}
 						</ul>
