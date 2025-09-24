@@ -8,7 +8,9 @@
 			name: 'Neovim configuration',
 			badges: ['neovim', 'configuration', 'lua'],
 			description: 'Brief introduction about my neovim configuration.',
-			url: '/blog/config'
+			url: '/blog/config',
+			open: false,
+			external: false
 		}
 	];
 </script>

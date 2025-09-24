@@ -45,7 +45,9 @@
 				name: repo['name'],
 				url: repo['html_url'],
 				description: repo['description'],
-				badges: []
+				badges: [],
+				open: false,
+				external: true
 			};
 
 			for (const [key, value] of Object.entries(languages)) {

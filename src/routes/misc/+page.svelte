@@ -8,13 +8,17 @@
 			name: 'TicTacToe',
 			badges: ['javascript', 'html', 'css'],
 			description: 'Creating TicTacToe game in browser with html, css and javascript.',
-			url: '/misc/tictactoe'
+			url: '/misc/tictactoe',
+			open: false,
+			external: false
 		},
 		{
 			name: 'HTML Playground',
 			badges: ['html', 'css', 'javascript', 'browser'],
 			description: 'A simple playground to play with html, css and javascript.',
-			url: '/misc/htmlplayground'
+			url: '/misc/htmlplayground',
+			open: false,
+			external: false
 		}
 	];
 </script>

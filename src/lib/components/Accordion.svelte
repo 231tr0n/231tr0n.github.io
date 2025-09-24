@@ -1,16 +1,8 @@
 <script lang="ts">
 	import { slide, fade } from 'svelte/transition';
-	import { resolve } from '$app/paths';
 	import { animationDelay, animationDuration } from '$lib/animation.constants';
 
-	let { name = '', url = '', external = false, open = false, internal = true, children } = $props();
-
-	let resolvedUrl = $state('');
-
-	if (internal) {
-		// @ts-expect-error - resolve will accept a string variable which will always be from the defined routes
-		resolvedUrl = resolve(url);
-	}
+	let { name = '', url = '', external = false, open = false, children } = $props();
 
 	let summaryToggler = () => {
 		open = open ? false : true;
@@ -56,9 +48,6 @@
 				{#if external}
 					<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 					<a target="_blank" href={url}><button>Open</button></a>
-				{:else if internal}
-					<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-					<a href={resolvedUrl}><button>Open</button></a>
 				{:else}
 					<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
 					<a href={url}><button>Open</button></a>

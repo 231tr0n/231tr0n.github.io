@@ -3,4 +3,6 @@ export interface PostData {
 	url: string;
 	description: string;
 	badges: string[];
+	external: boolean;
+	open: boolean;
 }
