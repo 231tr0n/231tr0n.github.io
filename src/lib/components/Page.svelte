@@ -9,7 +9,6 @@
 	let sections: HTMLElement[] = [];
 	let currentItem = $state(0);
 	let breadcrumb = $state() as HTMLElement;
-	let updateBreadcrumb = $state(() => {});
 	let selectionMenuArray: string[] = $state([]);
 	let pageDiv = $state() as HTMLElement;
 
@@ -19,23 +18,6 @@
 	}
 
 	if (scrollspy) {
-		updateBreadcrumb = () => {
-			let prev = null;
-			for (const [index, section] of sections.entries()) {
-				if (breadcrumb.offsetTop + breadcrumb.offsetHeight + 5 < section.offsetTop) {
-					if (prev) {
-						currentItem = index - 1;
-					} else {
-						currentItem = index;
-					}
-					break;
-				} else {
-					currentItem = index;
-				}
-				prev = section;
-			}
-		};
-
 		if (setSelectedItem) {
 			setSelectedItem(0);
 		}
@@ -55,6 +37,23 @@
 		});
 
 		onMount(() => {
+			pageDiv.onscroll = () => {
+				let prev = null;
+				for (const [index, section] of sections.entries()) {
+					if (breadcrumb.offsetTop + breadcrumb.offsetHeight + 5 < section.offsetTop) {
+						if (prev) {
+							currentItem = index - 1;
+						} else {
+							currentItem = index;
+						}
+						break;
+					} else {
+						currentItem = index;
+					}
+					prev = section;
+				}
+			};
+
 			setTimeout(() => {
 				name = document.querySelector('div.page div.content h1') || document.createElement('div');
 				sections = Array.from(document.querySelectorAll('div.page div.content h2'));
@@ -68,24 +67,17 @@
 	}
 </script>
 
-{#if scrollspy}
-	<div bind:this={pageDiv} class="page" onscroll={updateBreadcrumb}>
-		<div class="content">
+<div bind:this={pageDiv} class="page">
+	<div class="content">
+		{#if scrollspy}
 			<h4 bind:this={breadcrumb} class="component flex-middle">
 				<Select items={selectionMenuArray} transparent={true} {currentItem} {setSelectedItem} />
 			</h4>
-			{@render children?.()}
-		</div>
-		<div class="body border"></div>
+		{/if}
+		{@render children?.()}
 	</div>
-{:else}
-	<div class="page">
-		<div class="content">
-			{@render children?.()}
-		</div>
-		<div class="body border"></div>
-	</div>
-{/if}
+	<div class="body border"></div>
+</div>
 
 <style>
 	.page {
