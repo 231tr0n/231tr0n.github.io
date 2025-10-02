@@ -1,4 +1,4 @@
-<footer class="flex-middle">
+<footer class="flex-middle blur">
 	<a target="_blank" href="mailto:zeltronsrikar@gmail.com">
 		<img alt="Gmail" src="/images/gmail.svg" />
 	</a>
@@ -32,14 +32,12 @@
 		right: 0px;
 		height: 45px;
 		box-sizing: border-box;
-		z-index: 100;
+		z-index: 7;
 		border-top: 1px solid var(--color-light-foreground);
-		background-color: var(--color-light-strong-background);
 	}
 
 	:global(body.dark) footer {
 		border-top: 1px solid var(--color-dark-foreground);
-		background-color: var(--color-dark-strong-background);
 	}
 
 	img {

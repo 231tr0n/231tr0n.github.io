@@ -98,9 +98,11 @@
 			if (document.fullscreenElement) {
 				storedHeight = editorBlock.style.height;
 				editorBlock.style.height = '100vh';
+				editorElement.classList.add('body');
 				fullscreen = true;
 			} else {
 				editorBlock.style.height = storedHeight;
+				editorElement.classList.remove('body');
 				fullscreen = false;
 			}
 			editor.resize();
@@ -109,7 +111,7 @@
 </script>
 
 <div bind:this={editorElement} class="flex-middle">
-	<div bind:this={editorBlock} class="editor-block thick-component-border body">
+	<div bind:this={editorBlock} class="editor-block thick-component-border">
 		<div class="filename context component">
 			<span>
 				{readOnly ? 'Snippet' : 'Editor'}
@@ -227,7 +229,7 @@
 		<div class="editor-height" bind:this={editorDiv}></div>
 	</div>
 	{#if readOnly && output}
-		<div class="output body component-border">
+		<div class="output component-border">
 			<div class="context component"><span>Output</span></div>
 			<pre>{output}</pre>
 		</div>
@@ -294,18 +296,69 @@
 		justify-content: space-between;
 	}
 
-	:global(.ace_gutter-layer) {
+	:global(.ace_editor) {
+		font-family: Roboto-Mono;
+		font-size: 15px;
+		background-color: unset;
+	}
+
+	:global(.ace-solarized-light .ace_gutter-layer) {
 		border-right: 1px solid var(--color-light-component-background);
 		color: var(--color-light-foreground);
 	}
 
-	:global(body.dark .ace_gutter-layer) {
+	:global(.ace-solarized-dark .ace_gutter-layer) {
 		border-right: 1px solid var(--color-dark-component-background);
 		color: var(--color-dark-foreground);
 	}
 
-	:global(div.ace_editor) {
-		font-family: Roboto-Mono;
-		font-size: 15px;
+	:global(.ace-solarized-light .ace_indent-guide) {
+		background: unset;
+		border-right: 1px solid var(--color-light-component-background);
+	}
+
+	:global(.ace-solarized-light .ace_indent-guide-active) {
+		border-right: 1px solid var(--color-light-component-background);
+		background: unset;
+	}
+
+	:global(.ace-solarized-dark .ace_indent-guide) {
+		border-right: 1px solid var(--color-dark-component-background);
+		background: unset;
+	}
+
+	:global(.ace-solarized-dark .ace_indent-guide-active) {
+		border-right: 1px solid var(--color-dark-component-background);
+		background: unset;
+	}
+
+	:global(.ace-solarized-dark .ace_gutter) {
+		background-color: unset;
+	}
+
+	:global(.ace-solarized-light .ace_gutter) {
+		background-color: unset;
+	}
+
+	:global(.ace-solarized-dark .ace_fold) {
+		background-color: var(--color-dark-keyword);
+		border: 1px solid var(--color-dark-component-background);
+	}
+
+	:global(.ace-solarized-light .ace_fold) {
+		background-color: var(--color-light-keyword);
+		border: 1px solid var(--color-light-component-background);
+	}
+
+	:global(.ace_fold-widget:hover) {
+		box-shadow: unset;
+		border: 1px solid var(--color-light-anchor);
+		background-color: unset;
+	}
+
+	:global(.ace_dark .ace_fold-widget:hover) {
+		box-shadow: unset;
+		border: 1px solid var(--color-dark-anchor);
+		background-color: unset;
 	}
 </style>

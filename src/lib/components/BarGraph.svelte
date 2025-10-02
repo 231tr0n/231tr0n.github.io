@@ -37,11 +37,13 @@
 				table.style.height = 'calc(100vh - 76px)';
 				storedHeight = chartDiv.style.height;
 				storedWidth = chartDiv.style.width;
+				chartDiv.classList.add('body');
 				chartDiv.style.height = '100vh';
 				chartDiv.style.width = '100vw';
 				fullscreen = true;
 			} else {
 				table.style.height = height.toString() + 'vh';
+				chartDiv.classList.remove('body');
 				chartDiv.style.height = storedHeight;
 				chartDiv.style.width = storedWidth;
 				fullscreen = false;
@@ -51,7 +53,7 @@
 </script>
 
 <div bind:this={chartDiv} class="flex-middle">
-	<div class="thick-component-border body overflow">
+	<div class="thick-component-border overflow">
 		<div class="filename context component">
 			<span>Bar Graph</span>
 			<span>{context}</span>

@@ -60,6 +60,7 @@
 * {
 	scrollbar-color: var(--color-light-keyword) transparent;
 	scrollbar-width: thin;
+	cursor: none !important;
 	transition:
 		background-color 300ms linear,
 		color 300ms linear;
@@ -171,6 +172,14 @@ button {
 body.dark button {
 	background-color: var(--color-dark-button-background);
 	color: var(--color-dark-button-foreground);
+}
+
+.strong-component {
+	background-color: var(--color-light-badge-foreground);
+}
+
+body.dark .strong-component {
+	background-color: var(--color-dark-badge-foreground);
 }
 
 button:hover {
@@ -299,6 +308,22 @@ body.dark hr {
 }
 
 /* Generic css */
+.blur {
+	backdrop-filter: blur(7px);
+}
+
+body.dark .blur {
+	backdrop-filter: blur(10px);
+}
+
+.box-shadow {
+	box-shadow: 0px 0px 5px var(--color-light-foreground);
+}
+
+body.dark .box-shadow {
+	box-shadow: 0px 0px 5px var(--color-dark-foreground);
+}
+
 .error {
 	font-size: 30px;
 	padding: 1em;

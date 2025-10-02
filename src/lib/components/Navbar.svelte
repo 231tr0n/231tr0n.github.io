@@ -35,15 +35,15 @@
 	});
 </script>
 
-<header>
+<header class="blur">
 	<div class="flex-middle">
-		<a href={resolve('/')}><button class="strong">231tr0n</button></a>
+		<a href={resolve('/')}><button class="strong-component">231tr0n</button></a>
 		<a href={resolve('/')}><button>Home</button></a>
 		<a href={resolve('/blog')}><button>Blog</button></a>
 		<a href={resolve('/projects')}><button>Projects</button></a>
 		<a href={resolve('/misc')}><button>Misc</button></a>
 	</div>
-	<button onclick={toggletheme} class="theme-changer">
+	<button onclick={toggletheme} class="theme-changer strong-component">
 		{#if dark}
 			<svg
 				xmlns="http://www.w3.org/2000/svg"
@@ -101,14 +101,9 @@
 </header>
 
 <style>
-	button.strong {
+	button.strong-component {
 		font-size: 15px;
 		height: 30px;
-		background-color: var(--color-light-badge-foreground);
-	}
-
-	:global(body.dark) button.strong {
-		background-color: var(--color-dark-badge-foreground);
 	}
 
 	a {
@@ -129,14 +124,12 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		z-index: 100;
+		z-index: 7;
 		border-bottom: 1px solid var(--color-light-foreground);
-		background-color: var(--color-light-strong-background);
 	}
 
 	:global(body.dark) header {
 		border-bottom: 1px solid var(--color-dark-foreground);
-		background-color: var(--color-dark-strong-background);
 	}
 
 	button.theme-changer {

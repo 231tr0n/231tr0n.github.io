@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { fade } from 'svelte/transition';
+	import { slide } from 'svelte/transition';
 
 	let {
 		items = [],
 		emptyItem = false,
 		currentItem = 0,
-		transparent = false,
+		colored = false,
 		setSelectedItem = null
 	} = $props();
 
@@ -30,8 +30,8 @@
 	};
 
 	onMount(() => {
-		if (transparent) {
-			selectContext.classList.add('body');
+		if (colored) {
+			selectContext.classList.add('strong-component');
 		}
 	});
 
@@ -85,7 +85,7 @@
 		{/if}
 	</button>
 	{#if open}
-		<div class="select-menu flex-middle component thick-component-border" transition:fade>
+		<div class="select-menu flex-middle component thick-component-border" transition:slide>
 			{#each items.entries() as [index, item] (index)}
 				<button onclick={() => selectItem(index)} class="items">
 					{item}

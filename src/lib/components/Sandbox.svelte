@@ -24,8 +24,10 @@
 		if (title) {
 			iframeElement.onfullscreenchange = () => {
 				if (document.fullscreenElement) {
+					iframeElement.classList.add('body');
 					fullscreen = true;
 				} else {
+					iframeElement.classList.remove('body');
 					fullscreen = false;
 				}
 			};
@@ -42,7 +44,7 @@
 </script>
 
 <div class="flex-middle">
-	<div bind:this={iframeElement} class="iframe thick-component-border body">
+	<div bind:this={iframeElement} class="iframe thick-component-border">
 		<div class="filename context component">
 			<span>Sandbox</span>
 			<span>{title}</span>

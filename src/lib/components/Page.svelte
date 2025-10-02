@@ -71,12 +71,12 @@
 	<div class="content">
 		{#if scrollspy}
 			<h4 bind:this={breadcrumb} class="component flex-middle">
-				<Select items={selectionMenuArray} transparent={true} {currentItem} {setSelectedItem} />
+				<Select items={selectionMenuArray} colored={true} {currentItem} {setSelectedItem} />
 			</h4>
 		{/if}
 		{@render children?.()}
 	</div>
-	<div class="body border"></div>
+	<div class="body blur border"></div>
 </div>
 
 <style>
@@ -108,11 +108,10 @@
 	}
 
 	div.body {
-		filter: blur(0px);
-		opacity: 85%;
+		background-color: unset;
 		position: fixed;
-		top: 0px;
-		bottom: 0px;
+		top: 44px;
+		bottom: 44px;
 		z-index: 4;
 		width: 950px;
 		max-width: 90vw;
