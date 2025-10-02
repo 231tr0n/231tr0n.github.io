@@ -66,6 +66,10 @@
 		color 300ms linear;
 }
 
+body.full-screen * {
+	cursor: auto !important;
+}
+
 body.dark * {
 	scrollbar-color: var(--color-dark-keyword) transparent;
 }

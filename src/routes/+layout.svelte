@@ -20,6 +20,13 @@
 	let cursorSize = new Tween(defaultCursorSize, { duration: 0, delay: 0, easing: linear });
 
 	onMount(() => {
+		document.onfullscreenchange = () => {
+			if (document.fullscreenElement) {
+				document.body.classList.add('full-screen');
+			} else {
+				document.body.classList.remove('full-screen');
+			}
+		};
 		document.onmousemove = (event) => {
 			cursor.target = { x: event.clientX, y: event.clientY };
 		};
