@@ -62,7 +62,7 @@
 		cx={outerCursor.current.x}
 		cy={outerCursor.current.y}
 		r={cursorSize.current}
-		stroke-width={cursorSize.current - innerCircleSizeDifference} />
+		stroke-width={innerCircleSizeDifference} />
 	<circle
 		class="inner-circle"
 		cx={innerCursor.current.x}
