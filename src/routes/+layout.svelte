@@ -16,8 +16,12 @@
 	let defaultCursorClickSize = 15;
 	let innerCircleSizeDifference = 5;
 
-	let cursor = new Tween({ x: 0, y: 0 }, { duration: 0, delay: 0, easing: linear });
 	let cursorSize = new Tween(defaultCursorSize, { duration: 0, delay: 0, easing: linear });
+	let innerCursor = new Tween({ x: 0, y: 0 }, { duration: 0, delay: 0, easing: linear });
+	let outerCursor = new Tween(
+		{ x: 0, y: 0 },
+		{ duration: animationDuration, delay: 0, easing: linear }
+	);
 
 	onMount(() => {
 		document.onfullscreenchange = () => {
@@ -28,7 +32,8 @@
 			}
 		};
 		document.onmousemove = (event) => {
-			cursor.target = { x: event.clientX, y: event.clientY };
+			innerCursor.target = { x: event.clientX, y: event.clientY };
+			outerCursor.target = { x: event.clientX, y: event.clientY };
 		};
 		document.onmouseleave = () => {
 			cursorSize.target = 0;
@@ -52,11 +57,16 @@
 </script>
 
 <svg>
-	<circle class="outer-circle" cx={cursor.current.x} cy={cursor.current.y} r={cursorSize.current} />
+	<circle
+		class="outer-circle"
+		cx={outerCursor.current.x}
+		cy={outerCursor.current.y}
+		r={cursorSize.current}
+		stroke-width={cursorSize.current - innerCircleSizeDifference} />
 	<circle
 		class="inner-circle"
-		cx={cursor.current.x}
-		cy={cursor.current.y}
+		cx={innerCursor.current.x}
+		cy={innerCursor.current.y}
 		r={cursorSize.current - innerCircleSizeDifference} />
 </svg>
 <Navbar />
@@ -121,19 +131,20 @@
 		pointer-events: none;
 	}
 
-	.outer-circle {
+	.inner-circle {
 		fill: var(--color-light-error);
 	}
 
-	:global(body.dark) .outer-circle {
+	:global(body.dark) .inner-circle {
 		fill: var(--color-dark-error);
 	}
 
-	.inner-circle {
-		fill: var(--color-light-badge-foreground);
+	.outer-circle {
+		fill: none;
+		stroke: var(--color-light-badge-foreground);
 	}
 
-	:global(body.dark) .inner-circle {
-		fill: var(--color-dark-badge-foreground);
+	:global(body.dark) .outer-circle {
+		stroke: var(--color-dark-badge-foreground);
 	}
 </style>
