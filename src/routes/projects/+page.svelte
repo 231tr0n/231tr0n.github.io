@@ -5,6 +5,7 @@
 	import BarGraph from '$lib/components/BarGraph.svelte';
 	import Post from '$lib/components/Post.svelte';
 	import type { PostData } from '$lib/types';
+	import { animationDuration } from '$lib/animation.constants';
 
 	interface githubError {
 		message: string;
@@ -72,6 +73,8 @@
 		for (const [key, value] of Object.entries(languagesList)) {
 			languagesPercentageList[key] = parseFloat(((value / total) * 100).toFixed(2));
 		}
+
+		await new Promise((f) => setTimeout(f, animationDuration));
 
 		return { reposData, languagesPercentageList };
 	};

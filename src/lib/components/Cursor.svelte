@@ -112,19 +112,21 @@
 	});
 </script>
 
-<svg>
-	<circle
-		class="outer-circle"
-		cx={outerCursor.current.x}
-		cy={outerCursor.current.y}
-		r={cursorSize.current}
-		stroke-width={outerCircleStrokeWidth} />
-	<circle
-		class="inner-circle"
-		cx={innerCursor.current.x}
-		cy={innerCursor.current.y}
-		r={cursorSize.current - innerCircleSizeDifference} />
-</svg>
+{#if innerCursor.target.x !== 0 && innerCursor.target.y !== 0}
+	<svg>
+		<circle
+			class="outer-circle"
+			cx={outerCursor.current.x}
+			cy={outerCursor.current.y}
+			r={cursorSize.current}
+			stroke-width={outerCircleStrokeWidth} />
+		<circle
+			class="inner-circle"
+			cx={innerCursor.current.x}
+			cy={innerCursor.current.y}
+			r={cursorSize.current - innerCircleSizeDifference} />
+	</svg>
+{/if}
 
 <style>
 	svg {
