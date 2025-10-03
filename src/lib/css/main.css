@@ -1,4 +1,21 @@
 :root {
+	/* --color-solarized-base03: #1e2326; */
+	/* --color-solarized-base02: #2e383c; */
+	/* --color-solarized-base01: #414b50; */
+	/* --color-solarized-base00: #4f5b58; */
+	/* --color-solarized-base0: #839496; */
+	/* --color-solarized-base1: #93a1a1; */
+	/* --color-solarized-base2: #f4f0d9; */
+	/* --color-solarized-base3: #fdf6e3; */
+	/* --color-solarized-yellow: #dfa000; */
+	/* --color-solarized-orange: #f57d26; */
+	/* --color-solarized-red: #f85552; */
+	/* --color-solarized-magenta: #d469ba; */
+	/* --color-solarized-violet: #6c71c4; */
+	/* --color-solarized-blue: #3a94c5; */
+	/* --color-solarized-cyan: #35a773; */
+	/* --color-solarized-green: #8da101; */
+
 	--color-solarized-base03: #002b36;
 	--color-solarized-base02: #073642;
 	--color-solarized-base01: #586e75;
@@ -20,6 +37,7 @@
 	--color-dark-background: var(--color-solarized-base03);
 	--color-dark-foreground: var(--color-solarized-base0);
 	--color-dark-component-background: var(--color-solarized-base01);
+	/* --color-dark-component-background: var(--color-solarized-base00); */
 	--color-dark-component-foreground: var(--color-solarized-base3);
 	--color-dark-heading: var(--color-solarized-base3);
 	--color-dark-keyword: var(--color-solarized-yellow);
@@ -34,6 +52,7 @@
 	--color-light-background: var(--color-solarized-base3);
 	--color-light-foreground: var(--color-solarized-base00);
 	--color-light-component-background: var(--color-solarized-base1);
+	/* --color-light-component-background: var(--color-solarized-base0); */
 	--color-light-component-foreground: var(--color-solarized-base03);
 	--color-light-heading: var(--color-solarized-base03);
 	--color-light-keyword: var(--color-solarized-violet);
