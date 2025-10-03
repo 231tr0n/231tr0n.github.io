@@ -7,6 +7,7 @@
 	import vscode from 'ace-code/src/keyboard/vscode';
 	import beautifier from 'ace-code/src/ext/beautify';
 	import { darkMode } from '$lib/DarkModeRune.svelte.js';
+	import Cursor from './Cursor.svelte';
 
 	let {
 		langName = '',
@@ -111,6 +112,9 @@
 </script>
 
 <div bind:this={editorElement} class="flex-middle">
+	{#if fullscreen}
+		<Cursor />
+	{/if}
 	<div bind:this={editorBlock} class="editor-block thick-component-border">
 		<div class="filename context component">
 			<span>

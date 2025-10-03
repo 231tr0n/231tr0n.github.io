@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type { UIEventHandler } from 'svelte/elements';
+	import Cursor from './Cursor.svelte';
 
 	let { title = '', description = '', src = '', srcDoc = '' } = $props();
 
@@ -45,6 +46,9 @@
 
 <div class="flex-middle">
 	<div bind:this={iframeElement} class="iframe thick-component-border">
+		{#if fullscreen}
+			<Cursor />
+		{/if}
 		<div class="filename context component">
 			<span>Sandbox</span>
 			<span>{title}</span>
