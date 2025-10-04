@@ -17,6 +17,7 @@
 		fileName = '',
 		setCode = null,
 		vimMode = false,
+		wrap = false,
 		code = ''
 	} = $props();
 
@@ -43,6 +44,13 @@
 			document.exitFullscreen();
 		} else {
 			editorElement.requestFullscreen();
+		}
+	};
+
+	let toggleWrap = () => {
+		if (editor) {
+			editor.session.setUseWrapMode(!wrap);
+			wrap = !wrap;
 		}
 	};
 
@@ -83,6 +91,8 @@
 				editor.setKeyboardHandler(vscode.handler);
 			}
 		}
+		editor.setFontSize(11);
+		editor.session.setUseWrapMode(wrap);
 		editor.setReadOnly(readOnly);
 		editor.session.setTabSize(2);
 		editor.session.setUseSoftTabs(true);
@@ -185,6 +195,34 @@
 							viewBox="0 0 16 16">
 							<path
 								d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5zM0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zm10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4z" />
+						</svg>
+					{/if}
+				</button>
+				<button onclick={toggleWrap} class="inline-flex-middle" aria-label="Wrap">
+					{#if wrap}
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="16"
+							height="16"
+							fill="currentColor"
+							class="bi bi-text-wrap"
+							viewBox="0 0 16 16">
+							<line x1="0" y1="0" x2="16" y2="16" style="stroke:currentColor;stroke-width:1" />
+							<path
+								fill-rule="evenodd"
+								d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h9a2.5 2.5 0 0 1 0 5h-1.293l.647.646a.5.5 0 0 1-.708.708l-1.5-1.5a.5.5 0 0 1 0-.708l1.5-1.5a.5.5 0 0 1 .708.708l-.647.646H11.5a1.5 1.5 0 0 0 0-3h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5" />
+						</svg>
+					{:else}
+						<svg
+							xmlns="http://www.w3.org/2000/svg"
+							width="16"
+							height="16"
+							fill="currentColor"
+							class="bi bi-text-wrap"
+							viewBox="0 0 16 16">
+							<path
+								fill-rule="evenodd"
+								d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h9a2.5 2.5 0 0 1 0 5h-1.293l.647.646a.5.5 0 0 1-.708.708l-1.5-1.5a.5.5 0 0 1 0-.708l1.5-1.5a.5.5 0 0 1 .708.708l-.647.646H11.5a1.5 1.5 0 0 0 0-3h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5" />
 						</svg>
 					{/if}
 				</button>
@@ -307,12 +345,12 @@
 	}
 
 	:global(.ace-solarized-light .ace_gutter-layer) {
-		border-right: 1px solid var(--color-light-component-background);
+		border-right: 2px solid var(--color-light-component-background);
 		color: var(--color-light-foreground);
 	}
 
 	:global(.ace-solarized-dark .ace_gutter-layer) {
-		border-right: 1px solid var(--color-dark-component-background);
+		border-right: 2px solid var(--color-dark-component-background);
 		color: var(--color-dark-foreground);
 	}
 
