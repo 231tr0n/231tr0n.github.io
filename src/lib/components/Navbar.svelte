@@ -2,6 +2,7 @@
 	import { resolve } from '$app/paths';
 	import { darkMode } from '$lib/DarkModeRune.svelte.js';
 	import { onMount } from 'svelte';
+	import { slide } from 'svelte/transition';
 
 	let dark = $state(false);
 
@@ -46,6 +47,7 @@
 	<button onclick={toggletheme} class="theme-changer strong-component">
 		{#if dark}
 			<svg
+				transition:slide
 				xmlns="http://www.w3.org/2000/svg"
 				xmlns:xlink="http://www.w3.org/1999/xlink"
 				fill="#FDF6E3"
@@ -80,6 +82,7 @@
 			</svg>
 		{:else}
 			<svg
+				transition:slide
 				xmlns="http://www.w3.org/2000/svg"
 				id="Layer_1"
 				data-name="Layer 1"
