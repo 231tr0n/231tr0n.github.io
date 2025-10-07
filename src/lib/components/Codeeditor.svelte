@@ -292,7 +292,7 @@
 	}
 
 	.editor-height {
-		height: calc(100% - 66px);
+		height: calc(100% - 65px);
 	}
 
 	svg {
@@ -328,7 +328,7 @@
 		width: 100%;
 		box-sizing: border-box;
 		overflow: auto;
-		height: calc(100vh - 10vh - 50px - 50px);
+		height: calc(100vh - 20vh - 50px - 50px);
 	}
 
 	.context {
