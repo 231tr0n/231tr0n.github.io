@@ -1,7 +1,7 @@
 (() => {
 	const xobox = [];
-	const x = 'x';
-	const o = 'o';
+	const x = 'X';
+	const o = 'O';
 	let turn = x;
 	const steps = [];
 	const grid = document.getElementById('game-board');
@@ -85,7 +85,7 @@
 		restart.blur();
 		grid.focus();
 		steps.length = 0;
-		message.innerText = 'Best of Luck!';
+		message.innerText = 'Best of Luck';
 		for (let i = 0; i < 3; i++) {
 			for (let j = 0; j < 3; j++) {
 				setter(i, j, '');
@@ -96,11 +96,11 @@
 
 	const predict_winner = () => {
 		if (check()) {
-			message.innerText = `Congratulations! '${turn}' won.`;
+			message.innerText = `'${turn}' won`;
 			return true;
 		}
 		if (steps.length == 9) {
-			message.innerText = "It's a tie!";
+			message.innerText = "It's a tie";
 			return true;
 		}
 		return false;
