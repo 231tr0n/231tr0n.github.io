@@ -6,24 +6,18 @@
 
 	let controller = new AbortController();
 
-	let defaultCursorSize = 10;
-	let defaultCursorClickSize = 15;
-	let innerCircleSizeDifference = 5;
-	let outerCircleStrokeWidth = 3;
+	let circleRadius = 50;
+	let circleClickRadius = 100;
+	let strokeWidth = 10;
 
-	let cursorSize = new Tween(defaultCursorSize, { duration: 0, delay: 0, easing: linear });
-	let innerCursor = new Tween({ x: 0, y: 0 }, { duration: 0, delay: 0, easing: linear });
-	let outerCursor = new Tween(
-		{ x: 0, y: 0 },
-		{ duration: animationDuration, delay: 0, easing: linear }
-	);
+	let radius = new Tween(circleRadius, { duration: animationDuration, delay: 0, easing: linear });
+	let cursor = new Tween({ x: 0, y: 0 }, { duration: animationDuration, delay: 0, easing: linear });
 
 	onMount(() => {
 		document.addEventListener(
 			'mousemove',
 			(event) => {
-				innerCursor.target = { x: event.clientX, y: event.clientY };
-				outerCursor.target = { x: event.clientX, y: event.clientY };
+				cursor.target = { x: event.clientX, y: event.clientY };
 			},
 			{ signal: controller.signal }
 		);
@@ -31,11 +25,7 @@
 			'touchmove',
 			(event) => {
 				if (event.touches.length === 0) return;
-				innerCursor.target = {
-					x: event.touches[event.touches.length - 1].clientX,
-					y: event.touches[event.touches.length - 1].clientY
-				};
-				outerCursor.target = {
+				cursor.target = {
 					x: event.touches[event.touches.length - 1].clientX,
 					y: event.touches[event.touches.length - 1].clientY
 				};
@@ -45,63 +35,63 @@
 		document.addEventListener(
 			'mouseleave',
 			() => {
-				cursorSize.target = 0;
+				radius.target = 0;
 			},
 			{ signal: controller.signal }
 		);
 		document.addEventListener(
 			'mouseout',
 			() => {
-				cursorSize.target = 0;
+				radius.target = 0;
 			},
 			{ signal: controller.signal }
 		);
 		document.addEventListener(
 			'mouseover',
 			() => {
-				cursorSize.target = defaultCursorSize;
+				radius.target = circleRadius;
 			},
 			{ signal: controller.signal }
 		);
 		document.addEventListener(
 			'mouseenter',
 			() => {
-				cursorSize.target = defaultCursorSize;
+				radius.target = circleRadius;
 			},
 			{ signal: controller.signal }
 		);
 		document.addEventListener(
 			'mouseup',
 			() => {
-				cursorSize.target = defaultCursorSize;
+				radius.target = circleRadius;
 			},
 			{ signal: controller.signal }
 		);
 		document.addEventListener(
 			'mousedown',
 			() => {
-				cursorSize.target = defaultCursorClickSize;
+				radius.target = circleClickRadius;
 			},
 			{ signal: controller.signal }
 		);
 		document.addEventListener(
 			'touchcancel',
 			() => {
-				cursorSize.target = defaultCursorSize;
+				radius.target = circleRadius;
 			},
 			{ signal: controller.signal }
 		);
 		document.addEventListener(
 			'touchstart',
 			() => {
-				cursorSize.target = defaultCursorClickSize;
+				radius.target = circleClickRadius;
 			},
 			{ signal: controller.signal }
 		);
 		document.addEventListener(
 			'touchend',
 			() => {
-				cursorSize.target = defaultCursorSize;
+				radius.target = circleRadius;
 			},
 			{ signal: controller.signal }
 		);
@@ -112,25 +102,20 @@
 	});
 </script>
 
-{#if innerCursor.target.x !== 0 && innerCursor.target.y !== 0}
+{#if cursor.target.x !== 0 && cursor.target.y !== 0}
 	<svg>
 		<circle
-			class="outer-circle"
-			cx={outerCursor.current.x}
-			cy={outerCursor.current.y}
-			r={cursorSize.current}
-			stroke-width={outerCircleStrokeWidth} />
-		<circle
-			class="inner-circle"
-			cx={innerCursor.current.x}
-			cy={innerCursor.current.y}
-			r={cursorSize.current - innerCircleSizeDifference} />
+			class="circle"
+			cx={cursor.current.x}
+			cy={cursor.current.y}
+			r={radius.current}
+			stroke-width={strokeWidth} />
 	</svg>
 {/if}
 
 <style>
 	svg {
-		z-index: 8;
+		z-index: 2;
 		width: 100%;
 		height: 100%;
 		position: fixed;
@@ -141,20 +126,12 @@
 		pointer-events: none;
 	}
 
-	.inner-circle {
-		fill: var(--color-light-error);
-	}
-
-	:global(body.dark) .inner-circle {
-		fill: var(--color-dark-error);
-	}
-
-	.outer-circle {
+	.circle {
 		fill: none;
-		stroke: var(--color-light-badge-foreground);
+		stroke: var(--color-light-component-background);
 	}
 
-	:global(body.dark) .outer-circle {
-		stroke: var(--color-dark-badge-foreground);
+	:global(body.dark) .circle {
+		stroke: var(--color-dark-component-background);
 	}
 </style>

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import Cursor from './Cursor.svelte';
 
 	let {
 		data = {},
@@ -54,9 +53,6 @@
 </script>
 
 <div bind:this={chartDiv} class="flex-middle">
-	{#if fullscreen}
-		<Cursor />
-	{/if}
 	<div class="thick-component-border overflow">
 		<div class="filename context component">
 			<span>Bar Graph</span>
