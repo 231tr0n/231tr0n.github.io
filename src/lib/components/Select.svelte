@@ -86,11 +86,13 @@
 	</button>
 	{#if open}
 		<div class="select-menu flex-middle component thick-component-border" transition:slide>
-			{#each items.entries() as [index, item] (index)}
-				<button onclick={() => selectItem(index)} class="items">
-					{item}
-				</button>
-			{/each}
+			<div class="content">
+				{#each items.entries() as [index, item] (index)}
+					<button onclick={() => selectItem(index)} class="items">
+						{item}
+					</button>
+				{/each}
+			</div>
 		</div>
 	{/if}
 </div>
@@ -110,11 +112,17 @@
 	}
 
 	.select-menu {
-		flex-direction: column;
-		width: fit-content;
 		position: absolute;
 		left: 50%;
 		transform: translate(-50%, 0%);
+	}
+
+	.content {
+		width: fit-content;
+		display: flex;
+		flex-direction: column;
+		max-height: 250px;
+		overflow: auto;
 	}
 
 	div.select-menu button {
