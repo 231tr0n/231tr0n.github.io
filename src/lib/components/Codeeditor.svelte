@@ -288,7 +288,7 @@
 	}
 
 	.editor-height {
-		height: calc(100% - 65px);
+		height: calc(100% - 66px);
 	}
 
 	svg {
