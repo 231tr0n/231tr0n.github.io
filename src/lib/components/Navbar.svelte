@@ -38,11 +38,11 @@
 
 <header class="blur">
 	<div class="flex-middle">
-		<a href={resolve('/')}><button class="strong-component">231tr0n</button></a>
-		<a href={resolve('/')}><button>Home</button></a>
+		<a href={resolve('/')}><button class="strong-component">Home</button></a>
 		<a href={resolve('/blog')}><button>Blog</button></a>
 		<a href={resolve('/projects')}><button>Projects</button></a>
 		<a href={resolve('/misc')}><button>Misc</button></a>
+		<a href={resolve('/games')}><button>Games</button></a>
 	</div>
 	<button onclick={toggletheme} class="theme-changer strong-component">
 		{#if dark}

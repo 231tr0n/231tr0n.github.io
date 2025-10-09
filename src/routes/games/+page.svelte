@@ -5,10 +5,10 @@
 
 	let miscPosts: PostData[] = [
 		{
-			name: 'HTML Playground',
-			badges: ['html', 'css', 'javascript', 'browser'],
-			description: 'A simple playground to play with html, css and javascript.',
-			url: '/misc/htmlplayground',
+			name: 'TicTacToe',
+			badges: ['javascript', 'html', 'css'],
+			description: 'Creating TicTacToe game in browser with html, css and javascript.',
+			url: '/games/tictactoe',
 			open: false,
 			external: false
 		}
@@ -16,7 +16,7 @@
 </script>
 
 <Page>
-	<h1>Miscellaneous</h1>
+	<h1>Games</h1>
 
 	{#each miscPosts as miscPost, _ (_)}
 		<Post post={miscPost} />
