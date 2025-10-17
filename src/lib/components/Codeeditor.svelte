@@ -379,13 +379,21 @@
 	}
 
 	:global(.ace-solarized-dark .ace_fold) {
-		background-color: var(--color-dark-keyword);
-		border: 1px solid var(--color-dark-component-background);
+		background-color: var(--color-dark-component-background);
+		border: 0px;
 	}
 
 	:global(.ace-solarized-light .ace_fold) {
-		background-color: var(--color-light-keyword);
-		border: 1px solid var(--color-light-component-background);
+		background-color: var(--color-light-component-background);
+		border: 0px;
+	}
+
+	:global(.ace-solarized-dark .ace_fold:hover) {
+		border: 2px solid var(--color-dark-anchor);
+	}
+
+	:global(.ace-solarized-light .ace_fold:hover) {
+		border: 2px solid var(--color-light-anchor);
 	}
 
 	:global(.ace_fold-widget:hover) {
