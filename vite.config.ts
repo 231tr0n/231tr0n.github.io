@@ -1,9 +1,11 @@
 import devtoolsJson from 'vite-plugin-devtools-json';
 import { defineConfig } from 'vitest/config';
+import { type PluginOption } from 'vite';
 import { sveltekit } from '@sveltejs/kit/vite';
+import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
-	plugins: [sveltekit(), devtoolsJson()],
+	plugins: [sveltekit(), devtoolsJson(), visualizer() as PluginOption],
 	test: {
 		expect: { requireAssertions: true },
 		projects: [
