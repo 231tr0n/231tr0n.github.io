@@ -17,58 +17,58 @@
 
 	const check = () => {
 		if (
-			xobox[0][0].innerText != '' &&
-			xobox[0][0].innerText == xobox[0][1].innerText &&
-			xobox[0][0].innerText == xobox[0][2].innerText
+			xobox[0][0].innerText !== '' &&
+			xobox[0][0].innerText === xobox[0][1].innerText &&
+			xobox[0][0].innerText === xobox[0][2].innerText
 		) {
 			return true;
 		}
 		if (
-			xobox[1][0].innerText != '' &&
-			xobox[1][0].innerText == xobox[1][1].innerText &&
-			xobox[1][0].innerText == xobox[1][2].innerText
+			xobox[1][0].innerText !== '' &&
+			xobox[1][0].innerText === xobox[1][1].innerText &&
+			xobox[1][0].innerText === xobox[1][2].innerText
 		) {
 			return true;
 		}
 		if (
-			xobox[2][0].innerText != '' &&
-			xobox[2][0].innerText == xobox[2][1].innerText &&
-			xobox[2][0].innerText == xobox[2][2].innerText
+			xobox[2][0].innerText !== '' &&
+			xobox[2][0].innerText === xobox[2][1].innerText &&
+			xobox[2][0].innerText === xobox[2][2].innerText
 		) {
 			return true;
 		}
 		if (
-			xobox[0][0].innerText != '' &&
-			xobox[0][0].innerText == xobox[1][0].innerText &&
-			xobox[0][0].innerText == xobox[2][0].innerText
+			xobox[0][0].innerText !== '' &&
+			xobox[0][0].innerText === xobox[1][0].innerText &&
+			xobox[0][0].innerText === xobox[2][0].innerText
 		) {
 			return true;
 		}
 		if (
-			xobox[0][1].innerText != '' &&
-			xobox[0][1].innerText == xobox[1][1].innerText &&
-			xobox[0][1].innerText == xobox[2][1].innerText
+			xobox[0][1].innerText !== '' &&
+			xobox[0][1].innerText === xobox[1][1].innerText &&
+			xobox[0][1].innerText === xobox[2][1].innerText
 		) {
 			return true;
 		}
 		if (
-			xobox[0][2].innerText != '' &&
-			xobox[0][2].innerText == xobox[1][2].innerText &&
-			xobox[0][2].innerText == xobox[2][2].innerText
+			xobox[0][2].innerText !== '' &&
+			xobox[0][2].innerText === xobox[1][2].innerText &&
+			xobox[0][2].innerText === xobox[2][2].innerText
 		) {
 			return true;
 		}
 		if (
-			xobox[0][0].innerText != '' &&
-			xobox[0][0].innerText == xobox[1][1].innerText &&
-			xobox[0][0].innerText == xobox[2][2].innerText
+			xobox[0][0].innerText !== '' &&
+			xobox[0][0].innerText === xobox[1][1].innerText &&
+			xobox[0][0].innerText === xobox[2][2].innerText
 		) {
 			return true;
 		}
 		if (
-			xobox[2][0].innerText != '' &&
-			xobox[2][0].innerText == xobox[1][1].innerText &&
-			xobox[2][0].innerText == xobox[0][2].innerText
+			xobox[2][0].innerText !== '' &&
+			xobox[2][0].innerText === xobox[1][1].innerText &&
+			xobox[2][0].innerText === xobox[0][2].innerText
 		) {
 			return true;
 		}
@@ -94,12 +94,12 @@
 		turn = x;
 	};
 
-	const predict_winner = () => {
+	const predictWinner = () => {
 		if (check()) {
 			message.innerText = `'${turn}' won`;
 			return true;
 		}
-		if (steps.length == 9) {
+		if (steps.length === 9) {
 			message.innerText = "It's a tie";
 			return true;
 		}
@@ -107,16 +107,16 @@
 	};
 
 	const next = (i, j) => {
-		if (getter(i, j) == '') {
-			if (predict_winner()) {
+		if (getter(i, j) === '') {
+			if (predictWinner()) {
 				return;
 			}
 			setter(i, j, turn);
 			steps.push([i, j, turn]);
-			if (predict_winner()) {
+			if (predictWinner()) {
 				return;
 			}
-			if (turn == x) {
+			if (turn === x) {
 				turn = o;
 			} else {
 				turn = x;

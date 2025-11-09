@@ -6,7 +6,7 @@
 
 	let dark = $state(false);
 
-	let toggletheme = () => {
+	const toggletheme = () => {
 		window.document.body.classList.toggle('dark');
 		if (window.document.body.classList.contains('dark')) {
 			darkMode().dark = true;
@@ -36,24 +36,24 @@
 	});
 </script>
 
-<header class="blur">
-	<div class="flex-middle">
-		<a href={resolve('/')}><button class="strong-component">Home</button></a>
+<header class="zeltron-blur">
+	<div class="zeltron-flex-middle">
+		<a href={resolve('/')}><button class="zeltron-strong-component">Home</button></a>
 		<a href={resolve('/blog')}><button>Blog</button></a>
 		<a href={resolve('/projects')}><button>Projects</button></a>
 		<a href={resolve('/misc')}><button>Misc</button></a>
 		<a href={resolve('/games')}><button>Games</button></a>
 	</div>
-	<button onclick={toggletheme} class="theme-changer strong-component">
+	<button class="theme-changer zeltron-strong-component" onclick={toggletheme}>
 		{#if dark}
 			<svg
-				transition:slide
-				xmlns="http://www.w3.org/2000/svg"
-				xmlns:xlink="http://www.w3.org/1999/xlink"
+				id="Capa_1"
 				fill="#FDF6E3"
 				version="1.1"
-				id="Capa_1"
 				viewBox="0 0 45.74 45.74"
+				xmlns="http://www.w3.org/2000/svg"
+				transition:slide
+				xmlns:xlink="http://www.w3.org/1999/xlink"
 				xml:space="preserve">
 				<g>
 					<g>
@@ -82,11 +82,11 @@
 			</svg>
 		{:else}
 			<svg
-				transition:slide
-				xmlns="http://www.w3.org/2000/svg"
 				id="Layer_1"
 				data-name="Layer 1"
-				viewBox="0 0 122.88 122.88">
+				viewBox="0 0 122.88 122.88"
+				xmlns="http://www.w3.org/2000/svg"
+				transition:slide>
 				<defs>
 					<style>
 						.cls-1 {
@@ -104,7 +104,7 @@
 </header>
 
 <style>
-	button.strong-component {
+	button.zeltron-strong-component {
 		font-size: 15px;
 		height: 30px;
 	}

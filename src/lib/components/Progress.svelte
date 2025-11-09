@@ -5,7 +5,7 @@
 
 	let { value = 0, max = 100, children = null } = $props();
 
-	let progress = new Tween(value, { duration: animationDuration, easing: linear });
+	const progress = new Tween(value, { duration: animationDuration, easing: linear });
 
 	$effect(() => {
 		progress.target = value;
@@ -13,8 +13,8 @@
 </script>
 
 <br />
-<div class="flex-middle">
-	<progress value={progress.current} {max}>
+<div class="zeltron-flex-middle">
+	<progress {max} value={progress.current}>
 		{@render children?.()}
 	</progress>
 </div>

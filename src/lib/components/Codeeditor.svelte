@@ -28,7 +28,7 @@
 	let copied = $state(false);
 	let storedHeight = '';
 
-	let copy = () => {
+	const copy = () => {
 		if (editor) {
 			navigator.clipboard.writeText(editor.session.getValue());
 			copied = true;
@@ -38,7 +38,7 @@
 		}
 	};
 
-	let toggleFullscreen = () => {
+	const toggleFullscreen = () => {
 		if (document.fullscreenElement) {
 			document.exitFullscreen();
 		} else {
@@ -46,26 +46,26 @@
 		}
 	};
 
-	let toggleWrap = () => {
+	const toggleWrap = () => {
 		if (editor) {
 			editor.session.setUseWrapMode(!wrap);
 			wrap = !wrap;
 		}
 	};
 
-	let execute = () => {
+	const execute = () => {
 		if (setCode && editor) {
 			setCode(editor.session.getValue());
 		}
 	};
 
-	let beautify = () => {
+	const beautify = () => {
 		if (editor) {
 			beautifier.beautify(editor.session);
 		}
 	};
 
-	let toggleKeybinds = () => {
+	const toggleKeybinds = () => {
 		if (vimMode && editor) {
 			editor.setKeyboardHandler(vscode.handler);
 		} else {
@@ -108,11 +108,11 @@
 			if (document.fullscreenElement) {
 				storedHeight = editorBlock.style.height;
 				editorBlock.style.height = '100vh';
-				editorElement.classList.add('body');
+				editorElement.classList.add('zeltron-body-background');
 				fullscreen = true;
 			} else {
 				editorBlock.style.height = storedHeight;
-				editorElement.classList.remove('body');
+				editorElement.classList.remove('zeltron-body-background');
 				fullscreen = false;
 			}
 			editor.resize();
@@ -120,9 +120,9 @@
 	});
 </script>
 
-<div bind:this={editorElement} class="flex-middle">
-	<div bind:this={editorBlock} class="editor-block thick-component-border">
-		<div class="filename context component">
+<div bind:this={editorElement} class="zeltron-flex-middle">
+	<div bind:this={editorBlock} class="editor-block zeltron-thick-component-border">
+		<div class="filename context zeltron-component">
 			<span>
 				{readOnly ? 'Snippet' : 'Editor'}
 			</span>
@@ -132,17 +132,17 @@
 				</span>
 			{/if}
 		</div>
-		<div class="context component">
+		<div class="context zeltron-component">
 			<span>
-				<button onclick={copy} class="inline-flex-middle" aria-label="Copy">
+				<button class="zeltron-inline-flex-middle" aria-label="Copy" onclick={copy}>
 					{#if !copied}
 						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
-							fill="currentColor"
 							class="bi bi-clipboard"
-							viewBox="0 0 16 16">
+							fill="currentColor"
+							height="16"
+							viewBox="0 0 16 16"
+							width="16"
+							xmlns="http://www.w3.org/2000/svg">
 							<path
 								d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
 							<path
@@ -150,15 +150,15 @@
 						</svg>
 					{:else}
 						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
-							fill="currentColor"
 							class="bi bi-clipboard-check"
-							viewBox="0 0 16 16">
+							fill="currentColor"
+							height="16"
+							viewBox="0 0 16 16"
+							width="16"
+							xmlns="http://www.w3.org/2000/svg">
 							<path
-								fill-rule="evenodd"
-								d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z" />
+								d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z"
+								fill-rule="evenodd" />
 							<path
 								d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
 							<path
@@ -167,94 +167,94 @@
 					{/if}
 				</button>
 				<button
-					onclick={toggleFullscreen}
-					class="inline-flex-middle"
-					aria-label="Toggle fullscreen">
+					class="zeltron-inline-flex-middle"
+					aria-label="Toggle fullscreen"
+					onclick={toggleFullscreen}>
 					{#if !fullscreen}
 						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
-							fill="currentColor"
 							class="bi bi-fullscreen"
-							viewBox="0 0 16 16">
+							fill="currentColor"
+							height="16"
+							viewBox="0 0 16 16"
+							width="16"
+							xmlns="http://www.w3.org/2000/svg">
 							<path
 								d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z" />
 						</svg>
 					{:else}
 						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
-							fill="currentColor"
 							class="bi bi-fullscreen-exit"
-							viewBox="0 0 16 16">
+							fill="currentColor"
+							height="16"
+							viewBox="0 0 16 16"
+							width="16"
+							xmlns="http://www.w3.org/2000/svg">
 							<path
 								d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5zM0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zm10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4z" />
 						</svg>
 					{/if}
 				</button>
-				<button onclick={toggleWrap} class="inline-flex-middle" aria-label="Wrap">
+				<button class="zeltron-inline-flex-middle" aria-label="Wrap" onclick={toggleWrap}>
 					{#if wrap}
 						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
-							fill="currentColor"
 							class="bi bi-text-wrap"
-							viewBox="0 0 16 16">
-							<line x1="0" y1="0" x2="16" y2="16" style="stroke:currentColor;stroke-width:1" />
+							fill="currentColor"
+							height="16"
+							viewBox="0 0 16 16"
+							width="16"
+							xmlns="http://www.w3.org/2000/svg">
+							<line style:stroke="currentColor" style:stroke-width="1" x1="0" x2="16" y1="0" y2="16" />
 							<path
-								fill-rule="evenodd"
-								d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h9a2.5 2.5 0 0 1 0 5h-1.293l.647.646a.5.5 0 0 1-.708.708l-1.5-1.5a.5.5 0 0 1 0-.708l1.5-1.5a.5.5 0 0 1 .708.708l-.647.646H11.5a1.5 1.5 0 0 0 0-3h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5" />
+								d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h9a2.5 2.5 0 0 1 0 5h-1.293l.647.646a.5.5 0 0 1-.708.708l-1.5-1.5a.5.5 0 0 1 0-.708l1.5-1.5a.5.5 0 0 1 .708.708l-.647.646H11.5a1.5 1.5 0 0 0 0-3h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5"
+								fill-rule="evenodd" />
 						</svg>
 					{:else}
 						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
-							fill="currentColor"
 							class="bi bi-text-wrap"
-							viewBox="0 0 16 16">
+							fill="currentColor"
+							height="16"
+							viewBox="0 0 16 16"
+							width="16"
+							xmlns="http://www.w3.org/2000/svg">
 							<path
-								fill-rule="evenodd"
-								d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h9a2.5 2.5 0 0 1 0 5h-1.293l.647.646a.5.5 0 0 1-.708.708l-1.5-1.5a.5.5 0 0 1 0-.708l1.5-1.5a.5.5 0 0 1 .708.708l-.647.646H11.5a1.5 1.5 0 0 0 0-3h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5" />
+								d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h9a2.5 2.5 0 0 1 0 5h-1.293l.647.646a.5.5 0 0 1-.708.708l-1.5-1.5a.5.5 0 0 1 0-.708l1.5-1.5a.5.5 0 0 1 .708.708l-.647.646H11.5a1.5 1.5 0 0 0 0-3h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5"
+								fill-rule="evenodd" />
 						</svg>
 					{/if}
 				</button>
 				{#if !readOnly}
 					<button
-						onclick={toggleKeybinds}
-						class="inline-flex-middle"
-						aria-label="Toggle keybindings">
+						class="zeltron-inline-flex-middle"
+						aria-label="Toggle keybindings"
+						onclick={toggleKeybinds}>
 						{#if vimMode}
 							<img class="logo" alt="Vim" src="/images/vim.avif" />
 						{:else}
 							<img class="logo" alt="Vscode" src="/images/vscode.avif" />
 						{/if}
 					</button>
-					<button onclick={beautify} class="inline-flex-middle" aria-label="Format">
+					<button class="zeltron-inline-flex-middle" aria-label="Format" onclick={beautify}>
 						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
-							fill="currentColor"
 							class="bi bi-code-square"
-							viewBox="0 0 16 16">
+							fill="currentColor"
+							height="16"
+							viewBox="0 0 16 16"
+							width="16"
+							xmlns="http://www.w3.org/2000/svg">
 							<path
 								d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
 							<path
 								d="M6.854 4.646a.5.5 0 0 1 0 .708L4.207 8l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0zm2.292 0a.5.5 0 0 0 0 .708L11.793 8l-2.647 2.646a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708 0z" />
 						</svg>
 					</button>
-					<button onclick={execute} class="inline-flex-middle" aria-label="Run">
+					<button class="zeltron-inline-flex-middle" aria-label="Run" onclick={execute}>
 						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
-							fill="currentColor"
 							class="bi bi-play-circle"
-							viewBox="0 0 16 16">
+							fill="currentColor"
+							height="16"
+							viewBox="0 0 16 16"
+							width="16"
+							xmlns="http://www.w3.org/2000/svg">
 							<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
 							<path
 								d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z" />
@@ -264,11 +264,11 @@
 			</span>
 			<span>{langName}</span>
 		</div>
-		<div class="editor-height" bind:this={editorDiv}></div>
+		<div bind:this={editorDiv} class="editor-height"></div>
 	</div>
 	{#if readOnly && output}
-		<div class="output component-border">
-			<div class="context component"><span>Output</span></div>
+		<div class="output zeltron-component-border">
+			<div class="context zeltron-component"><span>Output</span></div>
 			<pre>{output}</pre>
 		</div>
 	{/if}
@@ -280,7 +280,7 @@
 		width: 100%;
 	}
 
-	div.flex-middle {
+	div.zeltron-flex-middle {
 		box-sizing: border-box;
 		margin-top: 1em;
 		margin-bottom: 1em;

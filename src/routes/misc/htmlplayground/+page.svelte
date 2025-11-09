@@ -17,5 +17,5 @@
 	<Codeeditor langName="html" mode={htmlMode} setCode={setHtmlPlayground} />
 
 	<h2>Output</h2>
-	<Sandbox title="Output" srcDoc={htmlPlayground} />
+	<Sandbox srcDoc={htmlPlayground} title="Output" />
 </Page>

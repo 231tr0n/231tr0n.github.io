@@ -1,17 +1,17 @@
-<footer class="flex-middle blur">
-	<a target="_blank" href="mailto:zeltronsrikar@gmail.com">
+<footer class="zeltron-flex-middle zeltron-blur">
+	<a href="mailto:zeltronsrikar@gmail.com" target="_blank">
 		<img alt="Gmail" src="/images/gmail.svg" />
 	</a>
-	<a target="_blank" href="https://www.github.com/231tr0n">
-		<img alt="Github" class="github" src="/images/github-dark.svg" />
+	<a href="https://www.github.com/231tr0n" target="_blank">
+		<img class="github" alt="Github" src="/images/github-dark.svg" />
 	</a>
-	<a target="_blank" href="https://www.gitlab.com/231tr0n">
+	<a href="https://www.gitlab.com/231tr0n" target="_blank">
 		<img alt="Gitlab" src="/images/gitlab.svg" />
 	</a>
-	<a target="_blank" href="https://www.linkedin.com/in/231tr0n">
+	<a href="https://www.linkedin.com/in/231tr0n" target="_blank">
 		<img alt="LinkedIn" src="/images/linkedin.svg" />
 	</a>
-	<a target="_blank" href="https://www.twitter.com/231tr0n">
+	<a href="https://www.twitter.com/231tr0n" target="_blank">
 		<img alt="Twitter" src="/images/twitter.svg" />
 	</a>
 </footer>

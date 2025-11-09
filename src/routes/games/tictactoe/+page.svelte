@@ -7,8 +7,8 @@
 	import cssMode from 'ace-code/src/mode/css';
 	import javascriptMode from 'ace-code/src/mode/javascript';
 
-	let fetch_url = async (url: string) => {
-		let data = await fetch(url);
+	const fetch_url = async (url: string) => {
+		const data = await fetch(url);
 		return await data.text();
 	};
 </script>
@@ -22,28 +22,28 @@
 	{:then res}
 		<Codeeditor
 			code={res}
-			mode={javascriptMode}
+			fileName="index.js"
 			langName="javascript"
-			readOnly={true}
-			fileName="index.js" />
+			mode={javascriptMode}
+			readOnly={true} />
 	{:catch error}
-		<div class="error">{error}</div>
+		<div class="zeltron-error">{error}</div>
 	{/await}
 	{#await fetch_url('/resources/snippets/tictactoe/style.css')}
 		<Loading />
 	{:then res}
-		<Codeeditor code={res} mode={cssMode} langName="css" readOnly={true} fileName="style.css" />
+		<Codeeditor code={res} fileName="style.css" langName="css" mode={cssMode} readOnly={true} />
 	{:catch error}
-		<div class="error">{error}</div>
+		<div class="zeltron-error">{error}</div>
 	{/await}
 	{#await fetch_url('/resources/snippets/tictactoe/index.html')}
 		<Loading />
 	{:then res}
-		<Codeeditor code={res} mode={htmlMode} langName="html" readOnly={true} fileName="index.html" />
+		<Codeeditor code={res} fileName="index.html" langName="html" mode={htmlMode} readOnly={true} />
 	{:catch error}
-		<div class="error">{error}</div>
+		<div class="zeltron-error">{error}</div>
 	{/await}
 
 	<h2>Output</h2>
-	<Sandbox title="tic-tac-toe" src="/resources/snippets/tictactoe/index.html" />
+	<Sandbox src="/resources/snippets/tictactoe/index.html" title="tic-tac-toe" />
 </Page>

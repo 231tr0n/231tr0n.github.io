@@ -16,19 +16,19 @@
 	let progressLength = $state(0);
 	let fullCompletionLength = $state(0);
 
-	let fetchGithubRepoData = async (url: string) => {
-		let languagesList: Record<string, number> = {};
-		let languagesPercentageList: Record<string, number> = {};
+	const fetchGithubRepoData = async (url: string) => {
+		const languagesList: Record<string, number> = {};
+		const languagesPercentageList: Record<string, number> = {};
 
 		const temp = await fetch(url);
 		const repos = await temp.json();
-		if (repos['message']) {
+		if (repos.message) {
 			throw 'Github api rate limit exceeded';
 		}
 
 		const nonForkedRepos = [];
 		for (const repo of repos) {
-			if (!repo['fork']) {
+			if (!repo.fork) {
 				nonForkedRepos.push(repo);
 				fullCompletionLength += 1;
 			}
@@ -36,16 +36,16 @@
 
 		const reposData = [];
 		for (const repo of nonForkedRepos) {
-			const temp = await fetch(repo['languages_url']);
+			const temp = await fetch(repo.languages_url);
 			const languages: languages | githubError = await temp.json();
-			if (languages['message']) {
+			if (languages.message) {
 				throw 'Github api rate limit exceeded';
 			}
 
 			const repoData: PostData = {
-				name: repo['name'],
-				url: repo['html_url'],
-				description: repo['description'],
+				name: repo.name,
+				url: repo.html_url,
+				description: repo.description,
 				badges: [],
 				open: false,
 				external: true
@@ -85,14 +85,14 @@
 
 	{#await fetchGithubRepoData('https://api.github.com/users/231tr0n/repos')}
 		<br />
-		<Progress value={progressLength} max={fullCompletionLength}></Progress>
+		<Progress max={fullCompletionLength} value={progressLength}></Progress>
 	{:then res}
 		<Accordion name="Github Language Statistics" open={true}>
 			<BarGraph
-				data={res.languagesPercentageList}
-				sort={true}
-				height="10"
 				context="Github"
+				data={res.languagesPercentageList}
+				height="10"
+				sort={true}
 				title="Language Statistics"></BarGraph>
 		</Accordion>
 		<br />
@@ -100,6 +100,6 @@
 			<Post post={repo} />
 		{/each}
 	{:catch error}
-		<div class="error">{error}</div>
+		<div class="zeltron-error">{error}</div>
 	{/await}
 </Page>

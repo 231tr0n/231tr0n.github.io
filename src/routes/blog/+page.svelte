@@ -3,7 +3,7 @@
 	import Post from '$lib/components/Post.svelte';
 	import type { PostData } from '$lib/types';
 
-	let blogPosts: PostData[] = [
+	const blogPosts: PostData[] = [
 		{
 			name: 'Neovim configuration',
 			badges: ['neovim', 'configuration', 'lua'],

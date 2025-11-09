@@ -4,14 +4,14 @@
 	import { linear } from 'svelte/easing';
 	import { onDestroy, onMount } from 'svelte';
 
-	let controller = new AbortController();
+	const controller = new AbortController();
 
-	let circleRadius = 50;
-	let circleClickRadius = 100;
-	let strokeWidth = 10;
+	const circleRadius = 50;
+	const circleClickRadius = 100;
+	const strokeWidth = 10;
 
-	let radius = new Tween(circleRadius, { duration: animationDuration, delay: 0, easing: linear });
-	let cursor = new Tween({ x: 0, y: 0 }, { duration: animationDuration, delay: 0, easing: linear });
+	const radius = new Tween(circleRadius, { duration: animationDuration, delay: 0, easing: linear });
+	const cursor = new Tween({ x: 0, y: 0 }, { duration: animationDuration, delay: 0, easing: linear });
 
 	onMount(() => {
 		document.addEventListener(

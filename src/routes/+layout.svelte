@@ -25,7 +25,7 @@
 <Cursor />
 <Navbar />
 <div class="background">
-	<div class="body opacity"></div>
+	<div class="zeltron-body-background opacity"></div>
 </div>
 {#key page.url.pathname}
 	<main

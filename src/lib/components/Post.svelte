@@ -14,13 +14,13 @@
 	}: { post: PostData } = $props();
 </script>
 
-<Accordion name={post['name']} url={post['url']} external={post['external']} open={post['open']}>
+<Accordion name={post.name} external={post.external} open={post.open} url={post.url}>
 	<div>
-		{#each post['badges'] as badge, _ (_)}
-			<span class="badge">{badge}</span>
+		{#each post.badges as badge, _ (_)}
+			<span class="zeltron-badge">{badge}</span>
 		{/each}
 		<div>
-			{post['description']}
+			{post.description}
 		</div>
 	</div>
 </Accordion>

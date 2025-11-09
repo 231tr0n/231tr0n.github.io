@@ -8,9 +8,9 @@
 	let name: HTMLElement;
 	let sections: HTMLElement[] = [];
 	let currentItem = $state(0);
-	let breadcrumb = $state() as HTMLElement;
-	let selectionMenuArray: string[] = $state([]);
-	let pageDiv = $state() as HTMLElement;
+	let breadcrumb = $state()!;
+	const selectionMenuArray: string[] = $state([]);
+	let pageDiv = $state()!;
 
 	let selectedItem = $state(0);
 	function setSelectedItem(value: number) {
@@ -24,8 +24,8 @@
 
 		$effect(() => {
 			if (selectedItem >= 0 && selectedItem < sections.length) {
-				let currentDiv = sections[selectedItem];
-				let currentDivBoundingClientRect = currentDiv.getBoundingClientRect();
+				const currentDiv = sections[selectedItem];
+				const currentDivBoundingClientRect = currentDiv.getBoundingClientRect();
 				pageDiv.scrollBy(
 					0,
 					currentDivBoundingClientRect.top -
@@ -70,13 +70,13 @@
 <div bind:this={pageDiv} class="page">
 	<div class="content">
 		{#if scrollspy}
-			<h4 bind:this={breadcrumb} class="component flex-middle">
-				<Select items={selectionMenuArray} colored={true} {currentItem} {setSelectedItem} />
+			<h4 bind:this={breadcrumb} class="zeltron-component zeltron-flex-middle">
+				<Select colored={true} {currentItem} items={selectionMenuArray} {setSelectedItem} />
 			</h4>
 		{/if}
 		{@render children?.()}
 	</div>
-	<div class="body blur border"></div>
+	<div class="zeltron-body-background zeltron-blur zeltron-border"></div>
 </div>
 
 <style>
@@ -107,7 +107,7 @@
 		text-align: justify;
 	}
 
-	div.body {
+	div.zeltron-body-background {
 		background-color: unset;
 		position: fixed;
 		top: 44px;
