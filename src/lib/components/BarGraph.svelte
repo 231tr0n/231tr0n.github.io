@@ -26,7 +26,7 @@
 	let fullscreen = $state(false);
 	let storedHeight = '';
 	let storedWidth = '';
-	const bars: Record<string, HTMLDivElement> = {};
+	const bars: Record<string, HTMLDivElement> = $state({});
 
 	const toggleFullscreen = async () => {
 		if (document.fullscreenElement) {

@@ -166,7 +166,7 @@ body.dark a img.border-img:hover {
 }
 
 body {
-	font-family: Roboto-Condensed monospace;
+	font-family: Roboto-Condensed, monospace;
 	background-color: var(--color-light-background);
 	color: var(--color-light-foreground);
 	margin: 0px;
@@ -180,7 +180,7 @@ body.dark {
 }
 
 button {
-	font-family: Roboto-Condensed monospace;
+	font-family: Roboto-Condensed, monospace;
 	background-color: var(--color-light-button-background);
 	color: var(--color-light-button-foreground);
 	border: 2px solid transparent;
@@ -206,22 +206,22 @@ img {
 }
 
 select {
-	font-family: Roboto-Condensed monospace;
+	font-family: Roboto-Condensed, monospace;
 	outline: none;
 }
 
 select > option {
-	font-family: Roboto-Condensed monospace;
+	font-family: Roboto-Condensed, monospace;
 	outline: none;
 }
 
 option {
-	font-family: Roboto-Condensed monospace;
+	font-family: Roboto-Condensed, monospace;
 	outline: none;
 }
 
 input {
-	font-family: Roboto-Condensed monospace;
+	font-family: Roboto-Condensed, monospace;
 	outline: none;
 }
 
@@ -283,11 +283,11 @@ p {
 }
 
 pre {
-	font-family: Roboto-Mono monospace;
+	font-family: Roboto-Mono, monospace;
 }
 
 code {
-	font-family: Roboto-Mono monospace;
+	font-family: Roboto-Mono, monospace;
 }
 
 hr {
