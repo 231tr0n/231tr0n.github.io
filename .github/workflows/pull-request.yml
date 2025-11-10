@@ -23,9 +23,5 @@ jobs:
           npm --version
       - name: Install dependencies
         run: npm install
-      - name: Check
-        run: npm run check
-      - name: Lint
-        run: npm run lint
-      - name: Build
-        run: npm run build
+      - name: CI
+        run: npm run ci

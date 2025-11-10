@@ -42,6 +42,7 @@
 		};
 
 		$effect(() => {
+			if (!srcDoc) return;
 			iframe.srcdoc = srcDoc;
 			// Below line is used for triggering iframe reload by resetting src.
 			iframe.src = iframe.src;
