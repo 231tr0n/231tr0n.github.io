@@ -52,7 +52,6 @@ export default defineConfig(
 		},
 		rules: {
 			'no-undef': 'off',
-			// 'jsdoc/require-jsdoc': 'off',
 			'prefer-const': 'off',
 			'svelte/block-lang': [
 				'error',
