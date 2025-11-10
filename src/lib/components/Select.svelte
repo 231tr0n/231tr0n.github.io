@@ -2,12 +2,20 @@
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 
+	type onSetSelectedItemType = (item: number) => void;
+
 	let {
 		items = [],
 		emptyItem = false,
 		currentItem = 0,
 		colored = false,
-		setSelectedItem = null
+		onSetSelectedItem = null
+	}: {
+		items: string[];
+		emptyItem: boolean;
+		currentItem: number;
+		colored: boolean;
+		onSetSelectedItem: onSetSelectedItemType | null;
 	} = $props();
 
 	let open = $state(false);
@@ -19,9 +27,7 @@
 
 	const selectItem = (item: number) => {
 		currentItem = item;
-		if (setSelectedItem) {
-			setSelectedItem(currentItem);
-		}
+		onSetSelectedItem?.(currentItem);
 		toggleSelectionMenu();
 	};
 
@@ -46,7 +52,7 @@
 		const button = document.createElement('button');
 		button.innerText = largestItem;
 		document.body.appendChild(button);
-		selectContext.style.width = Math.ceil(button.clientWidth) + 30 + 'px';
+		selectContext.style.width = (Math.ceil(button.clientWidth) + 30).toString() + 'px';
 		document.body.removeChild(button);
 	});
 </script>
@@ -56,11 +62,11 @@
 		bind:this={selectContext}
 		class="select-context"
 		aria-label="Select menu toggler"
-		onclick={toggleSelectionMenu}>
+		onclick={toggleSelectionMenu}
+		type="button">
 		{items[currentItem]}
 		{#if open}
 			<svg
-				class="bi bi-chevron-up"
 				fill="currentColor"
 				height="15"
 				viewBox="0 0 16 16"
@@ -72,7 +78,6 @@
 			</svg>
 		{:else}
 			<svg
-				class="bi bi-chevron-down"
 				fill="currentColor"
 				height="15"
 				viewBox="0 0 16 16"
@@ -85,10 +90,16 @@
 		{/if}
 	</button>
 	{#if open}
-		<div class="select-menu zeltron-flex-middle zeltron-component zeltron-thick-component-border" transition:slide>
+		<div
+			class="select-menu zeltron-flex-middle zeltron-component zeltron-thick-component-border"
+			transition:slide>
 			<div class="content">
 				{#each items.entries() as [index, item] (index)}
-					<button class="items" onclick={() => { selectItem(index); }}>
+					<button
+						onclick={() => {
+							selectItem(index);
+						}}
+						type="button">
 						{item}
 					</button>
 				{/each}

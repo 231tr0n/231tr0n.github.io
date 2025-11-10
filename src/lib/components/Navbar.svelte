@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { darkMode } from '$lib/DarkModeRune.svelte.js';
+	import { darkMode } from '$lib/dark.svelte.js';
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 
@@ -38,16 +38,15 @@
 
 <header class="zeltron-blur">
 	<div class="zeltron-flex-middle">
-		<a href={resolve('/')}><button class="zeltron-strong-component">Home</button></a>
-		<a href={resolve('/blog')}><button>Blog</button></a>
-		<a href={resolve('/projects')}><button>Projects</button></a>
-		<a href={resolve('/misc')}><button>Misc</button></a>
-		<a href={resolve('/games')}><button>Games</button></a>
+		<a href={resolve('/')}><button class="zeltron-strong-component" type="button">Home</button></a>
+		<a href={resolve('/blog')}><button type="button">Blog</button></a>
+		<a href={resolve('/projects')}><button type="button">Projects</button></a>
+		<a href={resolve('/misc')}><button type="button">Misc</button></a>
+		<a href={resolve('/games')}><button type="button">Games</button></a>
 	</div>
-	<button class="theme-changer zeltron-strong-component" onclick={toggletheme}>
+	<button class="theme-changer zeltron-strong-component" onclick={toggletheme} type="button">
 		{#if dark}
 			<svg
-				id="Capa_1"
 				fill="#FDF6E3"
 				version="1.1"
 				viewBox="0 0 45.74 45.74"
@@ -81,19 +80,7 @@
 				</g>
 			</svg>
 		{:else}
-			<svg
-				id="Layer_1"
-				data-name="Layer 1"
-				viewBox="0 0 122.88 122.88"
-				xmlns="http://www.w3.org/2000/svg"
-				transition:slide>
-				<defs>
-					<style>
-						.cls-1 {
-							fill: #ffff00;
-						}
-					</style>
-				</defs>
+			<svg viewBox="0 0 122.88 122.88" xmlns="http://www.w3.org/2000/svg" transition:slide>
 				<title>sun-color</title>
 				<path
 					class="cls-1"
@@ -104,6 +91,10 @@
 </header>
 
 <style>
+	.cls-1 {
+		fill: #ffff00;
+	}
+
 	button.zeltron-strong-component {
 		font-size: 15px;
 		height: 30px;

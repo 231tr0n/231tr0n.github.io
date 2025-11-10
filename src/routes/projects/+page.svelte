@@ -11,7 +11,15 @@
 		message: string;
 	}
 
-	type languages = Record<string, number>;
+	interface githubRepo {
+		fork: boolean;
+		languages_url: string;
+		name: string;
+		html_url: string;
+		description: string;
+	}
+
+	type githubLanguages = Record<string, number>;
 
 	let progressLength = $state(0);
 	let fullCompletionLength = $state(0);
@@ -21,13 +29,13 @@
 		const languagesPercentageList: Record<string, number> = {};
 
 		const temp = await fetch(url);
-		const repos = await temp.json();
-		if (repos.message) {
-			throw 'Github api rate limit exceeded';
+		const repos = (await temp.json()) as githubRepo[] | githubError;
+		if ((repos as githubError).message) {
+			throw new Error('Github api rate limit exceeded');
 		}
 
 		const nonForkedRepos = [];
-		for (const repo of repos) {
+		for (const repo of repos as githubRepo[]) {
 			if (!repo.fork) {
 				nonForkedRepos.push(repo);
 				fullCompletionLength += 1;
@@ -37,9 +45,11 @@
 		const reposData = [];
 		for (const repo of nonForkedRepos) {
 			const temp = await fetch(repo.languages_url);
-			const languages: languages | githubError = await temp.json();
-			if (languages.message) {
-				throw 'Github api rate limit exceeded';
+			const languages: githubLanguages | githubError = (await temp.json()) as
+				| githubLanguages
+				| githubError;
+			if ((languages as githubError).message) {
+				throw new Error('Github api rate limit exceeded');
 			}
 
 			const repoData: PostData = {
@@ -51,12 +61,12 @@
 				external: true
 			};
 
-			for (const [key, value] of Object.entries(languages)) {
+			for (const [key, value] of Object.entries(languages as githubLanguages)) {
 				repoData.badges.push(key);
 				if (languagesList[key]) {
-					languagesList[key] += parseInt(value);
+					languagesList[key] += value;
 				} else {
-					languagesList[key] = parseInt(value);
+					languagesList[key] = value;
 				}
 			}
 

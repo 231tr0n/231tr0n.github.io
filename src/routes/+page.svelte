@@ -30,7 +30,7 @@
 	<h2>Work Experience</h2>
 	<ul>
 		<li>
-			<a href="https://www.visa.co.in/" target="_blank">Visa</a>
+			<a href="https://www.visa.co.in/" rel="noopener noreferrer" target="_blank">Visa</a>
 			<ul>
 				<li>
 					<span class="zeltron-highlightkeyword">Data Engineer</span>
@@ -42,7 +42,7 @@
 	</ul>
 	<ul>
 		<li>
-			<a href="https://www.opentext.com/" target="_blank">Opentext</a>
+			<a href="https://www.opentext.com/" rel="noopener noreferrer" target="_blank">Opentext</a>
 			<ul>
 				<li>
 					<span class="zeltron-highlightkeyword">Associate Software Engineer</span>
@@ -59,7 +59,7 @@
 	</ul>
 	<ul>
 		<li>
-			<a href="https://bi0s.in/" target="_blank">bi0s</a>
+			<a href="https://bi0s.in/" rel="noopener noreferrer" target="_blank">bi0s</a>
 			<ul>
 				<li>
 					<span class="zeltron-highlightkeyword">Application Security Researcher</span>
@@ -71,7 +71,9 @@
 	</ul>
 	<ul>
 		<li>
-			<a href="https://www.amrita.edu/center/create/" target="_blank">AmritaCREATE</a>
+			<a href="https://www.amrita.edu/center/create/" rel="noopener noreferrer" target="_blank">
+				AmritaCREATE
+			</a>
 			<ul>
 				<li>
 					<span class="zeltron-highlightkeyword">Machine Learning Intern</span>
@@ -85,7 +87,7 @@
 	<h2>Education</h2>
 	<ul>
 		<li>
-			<a href="https://www.amrita.edu/campus/amritapuri/" target="_blank">
+			<a href="https://www.amrita.edu/campus/amritapuri/" rel="noopener noreferrer" target="_blank">
 				Amrita Vishwa Vidyapeetam
 			</a>
 			<ul>
@@ -103,12 +105,18 @@
 	<h2>Achievements</h2>
 	<ol>
 		<li>
-			<a href="https://huntr.com/bounties/001d1c29-805a-4035-93bb-71a0e81da3e5" target="_blank">
+			<a
+				href="https://huntr.com/bounties/001d1c29-805a-4035-93bb-71a0e81da3e5"
+				rel="noopener noreferrer"
+				target="_blank">
 				CVE-2022-0764
 			</a>
 		</li>
 		<li>
-			<a href="https://link.springer.com/chapter/10.1007/978-981-19-6088-8_32" target="_blank">
+			<a
+				href="https://link.springer.com/chapter/10.1007/978-981-19-6088-8_32"
+				rel="noopener noreferrer"
+				target="_blank">
 				Robust and Scalable Network Monitoring System using Apache Spark
 			</a>
 		</li>
@@ -116,91 +124,104 @@
 
 	<h2>Technologies</h2>
 	<div>
-		<a href="https://openjdk.org" target="_blank">
+		<a href="https://openjdk.org" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Java" src="/images/java.avif" />
 		</a>
-		<a href="https://go.dev" target="_blank">
+		<a href="https://go.dev" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Golang" src="/images/go.avif" />
 		</a>
-		<a href="https://www.python.org" target="_blank">
+		<a href="https://www.python.org" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Python" src="/images/python.avif" />
 		</a>
-		<a href="https://nodejs.org/en" target="_blank">
+		<a href="https://nodejs.org/en" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Nodejs" src="/images/nodejs.avif" />
 		</a>
-		<a href="https://www.scala-lang.org" target="_blank">
+		<a href="https://www.scala-lang.org" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Scala" src="/images/scala.svg" />
 		</a>
-		<a href="https://www.typescriptlang.org" target="_blank">
+		<a href="https://www.typescriptlang.org" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Typescript" src="/images/typescript.svg" />
 		</a>
-		<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank">
+		<a
+			href="https://developer.mozilla.org/en-US/docs/Web/JavaScript"
+			rel="noopener noreferrer"
+			target="_blank">
 			<img class="logo" alt="Javascript" src="/images/javascript.avif" />
 		</a>
-		<a href="https://developer.mozilla.org/en-US/docs/Web/HTML" target="_blank">
+		<a
+			href="https://developer.mozilla.org/en-US/docs/Web/HTML"
+			rel="noopener noreferrer"
+			target="_blank">
 			<img class="logo" alt="Html" src="/images/html.avif" />
 		</a>
-		<a href="https://developer.mozilla.org/en-US/docs/Web/CSS" target="_blank">
+		<a
+			href="https://developer.mozilla.org/en-US/docs/Web/CSS"
+			rel="noopener noreferrer"
+			target="_blank">
 			<img class="logo" alt="Css" src="/images/css.avif" />
 		</a>
-		<!-- <a target="_blank" href="https://gcc.gnu.org"> -->
-		<!--   <img class="logo" alt="C" src="/images/c.avif" /> -->
+		<!-- <a href="https://gcc.gnu.org" rel="noopener noreferrer" target="_blank"> -->
+		<!-- 	<img class="logo" alt="C" src="/images/c.avif" /> -->
 		<!-- </a> -->
-		<a href="https://www.docker.com" target="_blank">
+		<a href="https://www.docker.com" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Docker" src="/images/docker.svg" />
 		</a>
-		<a href="https://git-scm.com" target="_blank">
+		<a href="https://git-scm.com" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Git" src="/images/git.avif" />
 		</a>
-		<!-- <a target="_blank" href="https://www.php.net"> -->
-		<!--   <img class="logo" alt="Php" src="/images/php.avif" /> -->
-		<!-- </a> -->
-		<a href="https://en.wikipedia.org/wiki/SQL" target="_blank">
+		<a href="https://en.wikipedia.org/wiki/SQL" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Sql" src="/images/sql.avif" />
 		</a>
-		<a href="https://kit.svelte.dev" target="_blank">
+		<a href="https://kit.svelte.dev" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Sveltekit" src="/images/sveltekit.avif" />
 		</a>
-		<a href="https://angular.dev" target="_blank">
+		<a href="https://angular.dev" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Angular" src="/images/angular.svg" />
 		</a>
-		<a href="https://www.gnu.org/software/bash" target="_blank">
+		<a href="https://www.gnu.org/software/bash" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Bash" src="/images/bash.avif" />
 		</a>
-		<a href="https://en.wikipedia.org/wiki/Linux" target="_blank">
+		<a href="https://en.wikipedia.org/wiki/Linux" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Linux" src="/images/linux.avif" />
 		</a>
-		<a href="https://vimdoc.sourceforge.net/htmldoc" target="_blank">
+		<a href="https://vimdoc.sourceforge.net/htmldoc" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Vim" src="/images/vim.avif" />
 		</a>
-		<a href="https://www.lua.org" target="_blank">
+		<a href="https://www.lua.org" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Lua" src="/images/lua.svg" />
 		</a>
-		<!-- <a target="_blank" href="https://www.microsoft.com/en-us/windows"> -->
-		<!-- 	<img class="logo" alt="Windows" src="/images/windows.avif" /> -->
-		<!-- </a> -->
 		<br />
-		<a href="https://hadoop.apache.org" target="_blank">
+		<a href="https://hadoop.apache.org" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Hadoop" src="/images/hadoop.svg" />
 		</a>
-		<a href="https://hive.apache.org" target="_blank">
+		<a href="https://hive.apache.org" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Hive" src="/images/hive.svg" />
 		</a>
-		<a href="https://spark.apache.org" target="_blank">
+		<a href="https://spark.apache.org" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Spark" src="/images/spark.svg" />
 		</a>
 		<br />
-		<a href="https://en.wikipedia.org/wiki/Data_engineering" target="_blank">
+		<a
+			href="https://en.wikipedia.org/wiki/Data_engineering"
+			rel="noopener noreferrer"
+			target="_blank">
 			<img class="big-logo" alt="Data Engineering" src="/images/dataengineering.avif" />
 		</a>
-		<a href="https://en.wikipedia.org/wiki/Web_development" target="_blank">
+		<a
+			href="https://en.wikipedia.org/wiki/Web_development"
+			rel="noopener noreferrer"
+			target="_blank">
 			<img class="big-logo" alt="Web Application development" src="/images/webappdev.avif" />
 		</a>
-		<a href="https://en.wikipedia.org/wiki/Application_security" target="_blank">
+		<a
+			href="https://en.wikipedia.org/wiki/Application_security"
+			rel="noopener noreferrer"
+			target="_blank">
 			<img class="big-logo" alt="Web Application security" src="/images/webappsec.avif" />
 		</a>
 		<a
 			href="https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning"
+			rel="noopener noreferrer"
 			target="_blank">
 			<img class="big-logo" alt="AI/ML" src="/images/ai.avif" />
 		</a>
@@ -221,55 +242,49 @@
 	<h2>Developer Tools</h2>
 	<h3>Operating Systems</h3>
 	<div>
-		<a href="https://archlinux.org" target="_blank">
+		<a href="https://archlinux.org" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Archlinux" src="/images/archlinux.avif" />
 		</a>
-		<a href="https://linuxmint.com" target="_blank">
+		<a href="https://linuxmint.com" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Linuxmint" src="/images/linuxmint.avif" />
 		</a>
-		<a href="https://ubuntu.com/download/desktop" target="_blank">
+		<a href="https://ubuntu.com/download/desktop" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Ubuntu" src="/images/ubuntu.avif" />
 		</a>
-		<a href="https://www.microsoft.com/en-us/windows" target="_blank">
+		<a href="https://www.microsoft.com/en-us/windows" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Windows" src="/images/windows.avif" />
 		</a>
 	</div>
 	<h3>Text Editors</h3>
 	<div>
-		<a href="https://neovim.io" target="_blank">
+		<a href="https://neovim.io" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Neovim" src="/images/neovim.avif" />
 		</a>
-		<a href="https://www.vim.org" target="_blank">
+		<a href="https://www.vim.org" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Vim" src="/images/vim.avif" />
 		</a>
-		<a href="https://code.visualstudio.com" target="_blank">
+		<a href="https://code.visualstudio.com" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Vscode" src="/images/vscode.avif" />
 		</a>
 	</div>
 	<h3>Desktop Environments and Window Managers</h3>
 	<div>
-		<!-- <a target="_blank" href="https://i3wm.org"> -->
-		<!-- 	<img class="logo" alt="i3" src="/images/i3.avif" /> -->
-		<!-- </a> -->
-		<a href="https://projects.linuxmint.com/cinnamon" target="_blank">
+		<a href="https://projects.linuxmint.com/cinnamon" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Cinnamon" src="/images/cinnamon.avif" />
 		</a>
-		<!-- <a target="_blank" href="https://github.com/baskerville/bspwm"> -->
-		<!-- 	<img class="logo" alt="Bspwm" src="/images/bspwm.avif" /> -->
-		<!-- </a> -->
-		<a href="https://github.com/swaywm/sway" target="_blank">
+		<a href="https://github.com/swaywm/sway" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Sway" src="/images/sway.svg" />
 		</a>
-		<a href="https://www.gnome.org" target="_blank">
+		<a href="https://www.gnome.org" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Gnome" src="/images/gnome.svg" />
 		</a>
 	</div>
 	<h3>Shells</h3>
 	<div>
-		<a href="https://www.gnu.org/software/bash" target="_blank">
+		<a href="https://www.gnu.org/software/bash" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Bash" src="/images/bash.avif" />
 		</a>
-		<a href="https://fishshell.com" target="_blank">
+		<a href="https://fishshell.com" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Fish" src="/images/fish.avif" />
 		</a>
 	</div>

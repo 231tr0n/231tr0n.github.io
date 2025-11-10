@@ -7,9 +7,9 @@
 	import { fade } from 'svelte/transition';
 	import { animationDelay, animationDuration } from '$lib/animation.constants';
 	import Cursor from '$lib/components/Cursor.svelte';
-	import { onMount } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 
-	let { children } = $props();
+	let { children }: { children: Snippet | null } = $props();
 
 	onMount(() => {
 		document.onfullscreenchange = () => {

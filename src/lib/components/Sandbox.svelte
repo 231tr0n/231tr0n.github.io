@@ -5,14 +5,14 @@
 	let { title = '', description = '', src = '', srcDoc = '' } = $props();
 
 	let fullscreen = $state(false);
-	let iframeElement = $state()!;
-	let iframe = $state()!;
+	let iframeElement: HTMLDivElement | undefined = $state();
+	let iframe: HTMLIFrameElement | undefined = $state();
 
-	const toggleFullscreen = () => {
+	const toggleFullscreen = async () => {
 		if (document.fullscreenElement) {
-			document.exitFullscreen();
+			await document.exitFullscreen();
 		} else {
-			iframeElement.requestFullscreen();
+			await iframeElement?.requestFullscreen();
 		}
 	};
 
@@ -21,7 +21,7 @@
 	};
 
 	onMount(() => {
-		if (title) {
+		if (title && iframeElement) {
 			iframeElement.onfullscreenchange = () => {
 				if (document.fullscreenElement) {
 					iframeElement.classList.add('zeltron-body-background');
@@ -34,7 +34,7 @@
 		}
 
 		$effect(() => {
-			if (srcDoc) {
+			if (srcDoc && iframe) {
 				iframe.srcdoc = srcDoc;
 				// Below line is used for triggering iframe reload by resetting src.
 				iframe.src = iframe.src;
@@ -54,10 +54,10 @@
 				<button
 					class="zeltron-inline-flex-middle"
 					aria-label="Toggle fullscreen"
-					onclick={toggleFullscreen}>
+					onclick={toggleFullscreen}
+					type="button">
 					{#if !fullscreen}
 						<svg
-							class="bi bi-fullscreen"
 							fill="currentColor"
 							height="16"
 							viewBox="0 0 16 16"
@@ -68,7 +68,6 @@
 						</svg>
 					{:else}
 						<svg
-							class="bi bi-fullscreen-exit"
 							fill="currentColor"
 							height="16"
 							viewBox="0 0 16 16"

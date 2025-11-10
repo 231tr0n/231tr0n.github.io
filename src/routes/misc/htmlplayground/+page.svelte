@@ -5,9 +5,9 @@
 	import htmlMode from 'ace-code/src/mode/html';
 
 	let htmlPlayground = $state('');
-	function setHtmlPlayground(value: string) {
+	const setHtmlPlayground = (value: string) => {
 		htmlPlayground = value;
-	}
+	};
 </script>
 
 <Page scrollspy={true}>
