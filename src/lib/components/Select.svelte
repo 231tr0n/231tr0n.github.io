@@ -12,7 +12,7 @@
 		onSetSelectedItem = null
 	}: {
 		items: string[];
-		emptyItem: boolean;
+		emptyItem?: boolean;
 		currentItem: number;
 		colored: boolean;
 		onSetSelectedItem: onSetSelectedItemType | null;

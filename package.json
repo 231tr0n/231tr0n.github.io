@@ -10,9 +10,9 @@
 		"prepare": "svelte-kit sync || echo ''",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"format": "prettier --write .",
+		"format": "prettier --list-different --write .",
 		"lint": "prettier --check . && eslint .",
-		"lint-fix": "eslint --fix . && prettier --write .",
+		"lint-fix": "eslint --fix . && prettier --list-different --write .",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run"
 	},

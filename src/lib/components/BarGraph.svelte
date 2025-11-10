@@ -7,7 +7,14 @@
 		desc = true,
 		context = '',
 		title = '',
-		height = '50vh'
+		height = 50
+	}: {
+		sort: boolean;
+		desc: boolean;
+		context: string;
+		title: string;
+		height: number;
+		data: Record<string, number>;
 	} = $props();
 
 	if (sort) {
@@ -19,18 +26,24 @@
 	let fullscreen = $state(false);
 	let storedHeight = '';
 	let storedWidth = '';
+	const bars: Record<string, HTMLDivElement> = {};
 
-	const toggleFullscreen = () => {
+	const toggleFullscreen = async () => {
 		if (document.fullscreenElement) {
-			document.exitFullscreen();
+			await document.exitFullscreen();
 			fullscreen = false;
 		} else {
-			chartDiv.requestFullscreen();
+			await chartDiv.requestFullscreen();
 			fullscreen = true;
 		}
 	};
 
+	// <!-- <div style={'height: ' + value.toString() + '%;'} class="bar zeltron-component"> -->
 	onMount(() => {
+		for (const [key, value] of Object.entries(data)) {
+			bars[key].style.height = value.toString() + '%';
+		}
+
 		table.style.height = height.toString() + 'vh';
 		chartDiv.onfullscreenchange = () => {
 			if (document.fullscreenElement) {
@@ -62,10 +75,10 @@
 			<button
 				class="zeltron-inline-flex-middle"
 				aria-label="Toggle fullscreen"
-				onclick={toggleFullscreen}>
+				onclick={toggleFullscreen}
+				type="button">
 				{#if !fullscreen}
 					<svg
-						class="bi bi-fullscreen"
 						fill="currentColor"
 						height="16"
 						viewBox="0 0 16 16"
@@ -76,7 +89,6 @@
 					</svg>
 				{:else}
 					<svg
-						class="bi bi-fullscreen-exit"
 						fill="currentColor"
 						height="16"
 						viewBox="0 0 16 16"
@@ -94,16 +106,16 @@
 				<table bind:this={table}>
 					<tbody>
 						<tr>
-							{#each Object.values(data) as value, _ (_)}
+							{#each Object.keys(data) as key, _ (_)}
 								<td class="plot">
-									<div style={'height: ' + value + '%;'} class="bar zeltron-component"></div>
+									<div bind:this={bars[key]} class="bar zeltron-component"></div>
 								</td>
 							{/each}
 						</tr>
 						<tr>
 							{#each Object.entries(data) as [key, value], _ (_)}
 								<td class="label">
-									<span class="zeltron-badge">{key} - {value + '%'}</span>
+									<span class="zeltron-badge">{key} - {value.toString() + '%'}</span>
 								</td>
 							{/each}
 						</tr>

@@ -36,6 +36,7 @@ export default defineConfig(
 			ts.configs.eslintRecommended,
 			ts.configs.strictTypeChecked,
 			ts.configs.stylisticTypeChecked,
+			// svelte.configs.recommended,
 			svelte.configs.all,
 			prettier,
 			svelte.configs.prettier
@@ -51,7 +52,7 @@ export default defineConfig(
 		},
 		rules: {
 			'no-undef': 'off',
-			'jsdoc/require-jsdoc': 'off',
+			// 'jsdoc/require-jsdoc': 'off',
 			'prefer-const': 'off',
 			'svelte/block-lang': [
 				'error',
@@ -67,7 +68,11 @@ export default defineConfig(
 				}
 			],
 			'svelte/consistent-selector-style': 'off',
-			// Remove below rule after it is removed in eslint-plugin-svelte
+			'@typescript-eslint/non-nullable-type-assertion-style': 'off',
+			'svelte/no-target-blank': 'error',
+			'svelte/no-at-debug-tags': 'warn',
+			'svelte/button-has-type': 'error',
+			// Remove below line after below rule is removed
 			'svelte/no-navigation-without-base': 'off'
 		}
 	},

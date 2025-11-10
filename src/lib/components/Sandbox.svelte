@@ -2,17 +2,27 @@
 	import { onMount } from 'svelte';
 	import type { UIEventHandler } from 'svelte/elements';
 
-	let { title = '', description = '', src = '', srcDoc = '' } = $props();
+	let {
+		title = '',
+		description = '',
+		src = '',
+		srcDoc = ''
+	}: {
+		title: string;
+		description: string;
+		src: string;
+		srcDoc: string;
+	} = $props();
 
 	let fullscreen = $state(false);
-	let iframeElement: HTMLDivElement | undefined = $state();
-	let iframe: HTMLIFrameElement | undefined = $state();
+	let iframeElement: HTMLDivElement;
+	let iframe: HTMLIFrameElement;
 
 	const toggleFullscreen = async () => {
 		if (document.fullscreenElement) {
 			await document.exitFullscreen();
 		} else {
-			await iframeElement?.requestFullscreen();
+			await iframeElement.requestFullscreen();
 		}
 	};
 
@@ -21,24 +31,20 @@
 	};
 
 	onMount(() => {
-		if (title && iframeElement) {
-			iframeElement.onfullscreenchange = () => {
-				if (document.fullscreenElement) {
-					iframeElement.classList.add('zeltron-body-background');
-					fullscreen = true;
-				} else {
-					iframeElement.classList.remove('zeltron-body-background');
-					fullscreen = false;
-				}
-			};
-		}
+		iframeElement.onfullscreenchange = () => {
+			if (document.fullscreenElement) {
+				iframeElement.classList.add('zeltron-body-background');
+				fullscreen = true;
+			} else {
+				iframeElement.classList.remove('zeltron-body-background');
+				fullscreen = false;
+			}
+		};
 
 		$effect(() => {
-			if (srcDoc && iframe) {
-				iframe.srcdoc = srcDoc;
-				// Below line is used for triggering iframe reload by resetting src.
-				iframe.src = iframe.src;
-			}
+			iframe.srcdoc = srcDoc;
+			// Below line is used for triggering iframe reload by resetting src.
+			iframe.src = iframe.src;
 		});
 	});
 </script>

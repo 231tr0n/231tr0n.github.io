@@ -1,8 +1,23 @@
 <script lang="ts">
 	import { slide, fade } from 'svelte/transition';
 	import { animationDelay, animationDuration } from '$lib/animation.constants';
+	import { resolve } from '$app/paths';
+	import type { Snippet } from 'svelte';
+	import type { RouteId } from '$app/types';
 
-	let { name = '', url = '', external = false, open = false, children } = $props();
+	let {
+		name = '',
+		url = '',
+		external = false,
+		open = false,
+		children
+	}: {
+		name: string;
+		url: string;
+		external: boolean;
+		open: boolean;
+		children: Snippet | null;
+	} = $props();
 
 	const summaryToggler = () => {
 		open = open ? false : true;
@@ -17,10 +32,10 @@
 				class="summary-toggler zeltron-flex-middle"
 				aria-label="Accordion summary toggler"
 				onclick={summaryToggler}
-				onkeypress={summaryToggler}>
+				onkeypress={summaryToggler}
+				type="button">
 				{#if open}
 					<svg
-						class="bi bi-chevron-up"
 						fill="currentColor"
 						height="15"
 						viewBox="0 0 16 16"
@@ -32,7 +47,6 @@
 					</svg>
 				{:else}
 					<svg
-						class="bi bi-chevron-down"
 						fill="currentColor"
 						height="15"
 						viewBox="0 0 16 16"
@@ -47,10 +61,11 @@
 			{#if url}
 				{#if external}
 					<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-					<a href={url} target="_blank"><button>Open</button></a>
+					<a href={url} rel="noopener noreferrer" target="_blank">
+						<button type="button">Open</button>
+					</a>
 				{:else}
-					<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-					<a href={url}><button>Open</button></a>
+					<a href={resolve(url as RouteId)}><button type="button">Open</button></a>
 				{/if}
 			{/if}
 		</div>
@@ -60,7 +75,6 @@
 			in:slide={{ duration: animationDuration }}
 			out:slide={{ delay: animationDelay, duration: animationDuration }}>
 			<div
-				class="transition"
 				in:fade={{ duration: animationDelay + animationDuration }}
 				out:fade={{ duration: animationDuration }}>
 				{@render children?.()}

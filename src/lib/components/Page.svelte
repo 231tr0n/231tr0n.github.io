@@ -1,26 +1,30 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 	import Select from './Select.svelte';
 	import { animationDelay, animationDuration } from '$lib/animation.constants.js';
 
-	let { scrollspy = false, children } = $props();
+	let {
+		scrollspy = false,
+		children
+	}: {
+		scrollspy: boolean;
+		children: Snippet | null;
+	} = $props();
 
 	let name: HTMLElement;
 	let sections: HTMLElement[] = [];
 	let currentItem = $state(0);
-	let breadcrumb = $state()!;
+	let breadcrumb: HTMLHeadingElement | undefined = $state();
 	const selectionMenuArray: string[] = $state([]);
-	let pageDiv = $state()!;
+	let pageDiv: HTMLDivElement;
 
 	let selectedItem = $state(0);
-	function setSelectedItem(value: number) {
+	const onSetSelectedItem = (value: number) => {
 		selectedItem = value;
-	}
+	};
 
 	if (scrollspy) {
-		if (setSelectedItem) {
-			setSelectedItem(0);
-		}
+		onSetSelectedItem(0);
 
 		$effect(() => {
 			if (selectedItem >= 0 && selectedItem < sections.length) {
@@ -30,7 +34,7 @@
 					0,
 					currentDivBoundingClientRect.top -
 						currentDivBoundingClientRect.height -
-						breadcrumb.offsetHeight -
+						(breadcrumb as HTMLHeadingElement).offsetHeight -
 						15
 				);
 			}
@@ -40,7 +44,12 @@
 			pageDiv.onscroll = () => {
 				let prev = null;
 				for (const [index, section] of sections.entries()) {
-					if (breadcrumb.offsetTop + breadcrumb.offsetHeight + 5 < section.offsetTop) {
+					if (
+						(breadcrumb as HTMLHeadingElement).offsetTop +
+							(breadcrumb as HTMLHeadingElement).offsetHeight +
+							5 <
+						section.offsetTop
+					) {
 						if (prev) {
 							currentItem = index - 1;
 						} else {
@@ -55,7 +64,7 @@
 			};
 
 			setTimeout(() => {
-				name = document.querySelector('div.page div.content h1') || document.createElement('div');
+				name = document.querySelector('div.page div.content h1') ?? document.createElement('div');
 				sections = Array.from(document.querySelectorAll('div.page div.content h2'));
 				sections = Array.from(sections);
 				sections.unshift(name);
@@ -71,7 +80,7 @@
 	<div class="content">
 		{#if scrollspy}
 			<h4 bind:this={breadcrumb} class="zeltron-component zeltron-flex-middle">
-				<Select colored={true} {currentItem} items={selectionMenuArray} {setSelectedItem} />
+				<Select colored={true} {currentItem} items={selectionMenuArray} {onSetSelectedItem} />
 			</h4>
 		{/if}
 		{@render children?.()}

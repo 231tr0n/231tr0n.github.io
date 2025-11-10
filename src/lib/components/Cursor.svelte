@@ -3,6 +3,7 @@
 	import { animationDuration } from '$lib/animation.constants';
 	import { linear } from 'svelte/easing';
 	import { onDestroy, onMount } from 'svelte';
+	import { on } from 'svelte/events';
 
 	const controller = new AbortController();
 
@@ -11,17 +12,22 @@
 	const strokeWidth = 10;
 
 	const radius = new Tween(circleRadius, { duration: animationDuration, delay: 0, easing: linear });
-	const cursor = new Tween({ x: 0, y: 0 }, { duration: animationDuration, delay: 0, easing: linear });
+	const cursor = new Tween(
+		{ x: 0, y: 0 },
+		{ duration: animationDuration, delay: 0, easing: linear }
+	);
 
 	onMount(() => {
-		document.addEventListener(
+		on(
+			document,
 			'mousemove',
 			(event) => {
 				cursor.target = { x: event.clientX, y: event.clientY };
 			},
 			{ signal: controller.signal }
 		);
-		document.addEventListener(
+		on(
+			document,
 			'touchmove',
 			(event) => {
 				if (event.touches.length === 0) return;
@@ -32,63 +38,72 @@
 			},
 			{ signal: controller.signal }
 		);
-		document.addEventListener(
+		on(
+			document,
 			'mouseleave',
 			() => {
 				radius.target = 0;
 			},
 			{ signal: controller.signal }
 		);
-		document.addEventListener(
+		on(
+			document,
 			'mouseout',
 			() => {
 				radius.target = 0;
 			},
 			{ signal: controller.signal }
 		);
-		document.addEventListener(
+		on(
+			document,
 			'mouseover',
 			() => {
 				radius.target = circleRadius;
 			},
 			{ signal: controller.signal }
 		);
-		document.addEventListener(
+		on(
+			document,
 			'mouseenter',
 			() => {
 				radius.target = circleRadius;
 			},
 			{ signal: controller.signal }
 		);
-		document.addEventListener(
+		on(
+			document,
 			'mouseup',
 			() => {
 				radius.target = circleRadius;
 			},
 			{ signal: controller.signal }
 		);
-		document.addEventListener(
+		on(
+			document,
 			'mousedown',
 			() => {
 				radius.target = circleClickRadius;
 			},
 			{ signal: controller.signal }
 		);
-		document.addEventListener(
+		on(
+			document,
 			'touchcancel',
 			() => {
 				radius.target = circleRadius;
 			},
 			{ signal: controller.signal }
 		);
-		document.addEventListener(
+		on(
+			document,
 			'touchstart',
 			() => {
 				radius.target = circleClickRadius;
 			},
 			{ signal: controller.signal }
 		);
-		document.addEventListener(
+		on(
+			document,
 			'touchend',
 			() => {
 				radius.target = circleRadius;

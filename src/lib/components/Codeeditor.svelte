@@ -7,6 +7,18 @@
 	import vscode from 'ace-code/src/keyboard/vscode';
 	import beautifier from 'ace-code/src/ext/beautify';
 	import { darkMode } from '$lib/dark.svelte.js';
+	import type { KeyboardHandler } from 'ace-code/src/keyboard/keybinding';
+	import type { SyntaxMode } from 'ace-code/src/edit_session';
+
+	interface aceKeyboardHandler {
+		handler: KeyboardHandler;
+	}
+
+	type setCode = (code: string) => void;
+
+	interface aceMode {
+		Mode: new () => SyntaxMode;
+	}
 
 	let {
 		langName = '',
@@ -18,6 +30,16 @@
 		vimMode = false,
 		wrap = false,
 		code = ''
+	}: {
+		langName: string;
+		mode?: aceMode | null;
+		output?: string;
+		readOnly: boolean;
+		fileName: string;
+		setCode?: setCode | null;
+		vimMode?: boolean;
+		wrap?: boolean;
+		code: string;
 	} = $props();
 
 	let editorDiv: HTMLElement;
@@ -28,48 +50,42 @@
 	let copied = $state(false);
 	let storedHeight = '';
 
-	const copy = () => {
-		if (editor) {
-			navigator.clipboard.writeText(editor.session.getValue());
-			copied = true;
-			setTimeout(() => {
-				copied = false;
-			}, 2000);
-		}
+	const copy = async () => {
+		await navigator.clipboard.writeText(editor.session.getValue());
+		copied = true;
+		setTimeout(() => {
+			copied = false;
+		}, 2000);
 	};
 
-	const toggleFullscreen = () => {
+	const toggleFullscreen = async () => {
 		if (document.fullscreenElement) {
-			document.exitFullscreen();
+			await document.exitFullscreen();
 		} else {
-			editorElement.requestFullscreen();
+			await editorElement.requestFullscreen();
 		}
 	};
 
 	const toggleWrap = () => {
-		if (editor) {
-			editor.session.setUseWrapMode(!wrap);
-			wrap = !wrap;
-		}
+		editor.session.setUseWrapMode(!wrap);
+		wrap = !wrap;
 	};
 
 	const execute = () => {
-		if (setCode && editor) {
+		if (setCode) {
 			setCode(editor.session.getValue());
 		}
 	};
 
 	const beautify = () => {
-		if (editor) {
-			beautifier.beautify(editor.session);
-		}
+		beautifier.beautify(editor.session);
 	};
 
 	const toggleKeybinds = () => {
-		if (vimMode && editor) {
-			editor.setKeyboardHandler(vscode.handler);
+		if (vimMode) {
+			editor.setKeyboardHandler((vscode as aceKeyboardHandler).handler);
 		} else {
-			editor.setKeyboardHandler(vim.handler);
+			editor.setKeyboardHandler((vim as aceKeyboardHandler).handler);
 		}
 		vimMode = !vimMode;
 	};
@@ -85,9 +101,9 @@
 			editor.setHighlightGutterLine(false);
 		} else {
 			if (vimMode) {
-				editor.setKeyboardHandler(vim.handler);
+				editor.setKeyboardHandler((vim as aceKeyboardHandler).handler);
 			} else {
-				editor.setKeyboardHandler(vscode.handler);
+				editor.setKeyboardHandler((vscode as aceKeyboardHandler).handler);
 			}
 		}
 		editor.setFontSize(11);
@@ -134,10 +150,9 @@
 		</div>
 		<div class="context zeltron-component">
 			<span>
-				<button class="zeltron-inline-flex-middle" aria-label="Copy" onclick={copy}>
+				<button class="zeltron-inline-flex-middle" aria-label="Copy" onclick={copy} type="button">
 					{#if !copied}
 						<svg
-							class="bi bi-clipboard"
 							fill="currentColor"
 							height="16"
 							viewBox="0 0 16 16"
@@ -150,7 +165,6 @@
 						</svg>
 					{:else}
 						<svg
-							class="bi bi-clipboard-check"
 							fill="currentColor"
 							height="16"
 							viewBox="0 0 16 16"
@@ -169,10 +183,10 @@
 				<button
 					class="zeltron-inline-flex-middle"
 					aria-label="Toggle fullscreen"
-					onclick={toggleFullscreen}>
+					onclick={toggleFullscreen}
+					type="button">
 					{#if !fullscreen}
 						<svg
-							class="bi bi-fullscreen"
 							fill="currentColor"
 							height="16"
 							viewBox="0 0 16 16"
@@ -183,7 +197,6 @@
 						</svg>
 					{:else}
 						<svg
-							class="bi bi-fullscreen-exit"
 							fill="currentColor"
 							height="16"
 							viewBox="0 0 16 16"
@@ -194,29 +207,25 @@
 						</svg>
 					{/if}
 				</button>
-				<button class="zeltron-inline-flex-middle" aria-label="Wrap" onclick={toggleWrap}>
+				<button
+					class="zeltron-inline-flex-middle"
+					aria-label="Wrap"
+					onclick={toggleWrap}
+					type="button">
 					{#if wrap}
 						<svg
-							class="bi bi-text-wrap"
 							fill="currentColor"
 							height="16"
 							viewBox="0 0 16 16"
 							width="16"
 							xmlns="http://www.w3.org/2000/svg">
-							<line
-								style:stroke="currentColor"
-								style:stroke-width="1"
-								x1="0"
-								x2="16"
-								y1="0"
-								y2="16" />
+							<line x1="0" x2="16" y1="0" y2="16" />
 							<path
 								d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h9a2.5 2.5 0 0 1 0 5h-1.293l.647.646a.5.5 0 0 1-.708.708l-1.5-1.5a.5.5 0 0 1 0-.708l1.5-1.5a.5.5 0 0 1 .708.708l-.647.646H11.5a1.5 1.5 0 0 0 0-3h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5"
 								fill-rule="evenodd" />
 						</svg>
 					{:else}
 						<svg
-							class="bi bi-text-wrap"
 							fill="currentColor"
 							height="16"
 							viewBox="0 0 16 16"
@@ -232,16 +241,20 @@
 					<button
 						class="zeltron-inline-flex-middle"
 						aria-label="Toggle keybindings"
-						onclick={toggleKeybinds}>
+						onclick={toggleKeybinds}
+						type="button">
 						{#if vimMode}
 							<img class="logo" alt="Vim" src="/images/vim.avif" />
 						{:else}
 							<img class="logo" alt="Vscode" src="/images/vscode.avif" />
 						{/if}
 					</button>
-					<button class="zeltron-inline-flex-middle" aria-label="Format" onclick={beautify}>
+					<button
+						class="zeltron-inline-flex-middle"
+						aria-label="Format"
+						onclick={beautify}
+						type="button">
 						<svg
-							class="bi bi-code-square"
 							fill="currentColor"
 							height="16"
 							viewBox="0 0 16 16"
@@ -253,9 +266,12 @@
 								d="M6.854 4.646a.5.5 0 0 1 0 .708L4.207 8l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0zm2.292 0a.5.5 0 0 0 0 .708L11.793 8l-2.647 2.646a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708 0z" />
 						</svg>
 					</button>
-					<button class="zeltron-inline-flex-middle" aria-label="Run" onclick={execute}>
+					<button
+						class="zeltron-inline-flex-middle"
+						aria-label="Run"
+						onclick={execute}
+						type="button">
 						<svg
-							class="bi bi-play-circle"
 							fill="currentColor"
 							height="16"
 							viewBox="0 0 16 16"
@@ -412,5 +428,10 @@
 		box-shadow: unset;
 		border: 1px solid var(--color-dark-anchor);
 		background-color: unset;
+	}
+
+	line {
+		stroke: currentColor;
+		stroke-width: '1';
 	}
 </style>
