@@ -13,10 +13,10 @@
 		children
 	}: {
 		name: string;
-		url: string;
-		external: boolean;
+		url?: string;
+		external?: boolean;
 		open: boolean;
-		children: Snippet | null;
+		children?: Snippet;
 	} = $props();
 
 	const summaryToggler = () => {

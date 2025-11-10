@@ -34,12 +34,12 @@
 		langName: string;
 		mode?: aceMode | null;
 		output?: string;
-		readOnly: boolean;
+		readOnly?: boolean;
 		fileName: string;
 		setCode?: setCode | null;
 		vimMode?: boolean;
 		wrap?: boolean;
-		code: string;
+		code?: string;
 	} = $props();
 
 	let editorDiv: HTMLElement;

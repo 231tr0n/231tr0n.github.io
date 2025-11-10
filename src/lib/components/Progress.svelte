@@ -7,11 +7,11 @@
 	let {
 		value = 0,
 		max = 100,
-		children = null
+		children
 	}: {
 		value: number;
 		max: number;
-		children: Snippet | null;
+		children?: Snippet;
 	} = $props();
 
 	const progress = new Tween(value, { duration: animationDuration, easing: linear });

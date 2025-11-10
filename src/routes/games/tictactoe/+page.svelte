@@ -45,5 +45,5 @@
 	{/await}
 
 	<h2>Output</h2>
-	<Sandbox src="/resources/snippets/tictactoe/index.html" title="tic-tac-toe" />
+	<Sandbox description="Game" src="/resources/snippets/tictactoe/index.html" title="tic-tac-toe" />
 </Page>

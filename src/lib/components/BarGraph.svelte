@@ -10,7 +10,7 @@
 		height = 50
 	}: {
 		sort: boolean;
-		desc: boolean;
+		desc?: boolean;
 		context: string;
 		title: string;
 		height: number;

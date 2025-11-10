@@ -101,7 +101,7 @@
 			<BarGraph
 				context="Github"
 				data={res.languagesPercentageList}
-				height="10"
+				height={10}
 				sort={true}
 				title="Language Statistics"></BarGraph>
 		</Accordion>

@@ -14,8 +14,8 @@
 	<h1>HTML Playground</h1>
 
 	<h2>Editor</h2>
-	<Codeeditor langName="html" mode={htmlMode} setCode={setHtmlPlayground} />
+	<Codeeditor fileName="" langName="html" mode={htmlMode} setCode={setHtmlPlayground} />
 
 	<h2>Output</h2>
-	<Sandbox srcDoc={htmlPlayground} title="Output" />
+	<Sandbox srcDoc={htmlPlayground} title="Output" description="" />
 </Page>

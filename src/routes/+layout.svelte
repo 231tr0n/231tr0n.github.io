@@ -9,7 +9,7 @@
 	import Cursor from '$lib/components/Cursor.svelte';
 	import { onMount, type Snippet } from 'svelte';
 
-	let { children }: { children: Snippet | null } = $props();
+	let { children }: { children?: Snippet } = $props();
 
 	onMount(() => {
 		document.onfullscreenchange = () => {

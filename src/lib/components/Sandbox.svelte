@@ -10,8 +10,8 @@
 	}: {
 		title: string;
 		description: string;
-		src: string;
-		srcDoc: string;
+		src?: string;
+		srcDoc?: string;
 	} = $props();
 
 	let fullscreen = $state(false);

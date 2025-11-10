@@ -7,8 +7,8 @@
 		scrollspy = false,
 		children
 	}: {
-		scrollspy: boolean;
-		children: Snippet | null;
+		scrollspy?: boolean;
+		children?: Snippet;
 	} = $props();
 
 	let name: HTMLElement;
