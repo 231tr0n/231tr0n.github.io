@@ -3,7 +3,7 @@
 	import Post from '$lib/components/Post.svelte';
 	import type { PostData } from '$lib/types';
 
-	let miscPosts: PostData[] = [
+	const miscPosts: PostData[] = [
 		{
 			name: 'TicTacToe',
 			badges: ['javascript', 'html', 'css'],

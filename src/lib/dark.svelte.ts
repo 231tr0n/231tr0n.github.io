@@ -1,6 +1,6 @@
 let dark = $state(false);
 
-export function darkMode() {
+export const darkMode = () => {
 	return {
 		get dark() {
 			return dark;
@@ -9,4 +9,4 @@ export function darkMode() {
 			dark = value;
 		}
 	};
-}
+};

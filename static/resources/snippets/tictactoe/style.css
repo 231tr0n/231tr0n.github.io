@@ -17,7 +17,7 @@
 }
 
 * {
-	font-family: Roboto-Condensed;
+	font-family: Roboto-Condensed, monospace;
 	user-select: none;
 }
 

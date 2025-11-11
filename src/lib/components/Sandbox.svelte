@@ -2,78 +2,84 @@
 	import { onMount } from 'svelte';
 	import type { UIEventHandler } from 'svelte/elements';
 
-	let { title = '', description = '', src = '', srcDoc = '' } = $props();
+	let {
+		title = '',
+		description = '',
+		src = '',
+		srcDoc = ''
+	}: {
+		title: string;
+		description: string;
+		src?: string;
+		srcDoc?: string;
+	} = $props();
 
 	let fullscreen = $state(false);
-	let iframeElement = $state() as HTMLElement;
-	let iframe = $state() as HTMLIFrameElement;
+	let iframeElement: HTMLDivElement;
+	let iframe: HTMLIFrameElement;
 
-	let toggleFullscreen = () => {
+	const toggleFullscreen = async () => {
 		if (document.fullscreenElement) {
-			document.exitFullscreen();
+			await document.exitFullscreen();
 		} else {
-			iframeElement.requestFullscreen();
+			await iframeElement.requestFullscreen();
 		}
 	};
 
-	let resized: UIEventHandler<HTMLIFrameElement> = (element) => {
+	const resized: UIEventHandler<HTMLIFrameElement> = (element) => {
 		element.currentTarget.style.height = '100%';
 	};
 
 	onMount(() => {
-		if (title) {
-			iframeElement.onfullscreenchange = () => {
-				if (document.fullscreenElement) {
-					iframeElement.classList.add('body');
-					fullscreen = true;
-				} else {
-					iframeElement.classList.remove('body');
-					fullscreen = false;
-				}
-			};
-		}
+		iframeElement.onfullscreenchange = () => {
+			if (document.fullscreenElement) {
+				iframeElement.classList.add('zeltron-body-background');
+				fullscreen = true;
+			} else {
+				iframeElement.classList.remove('zeltron-body-background');
+				fullscreen = false;
+			}
+		};
 
 		$effect(() => {
-			if (srcDoc) {
-				iframe.srcdoc = srcDoc;
-				// Below line is used for triggering iframe reload by resetting src.
-				iframe.src = iframe.src;
-			}
+			if (!srcDoc) return;
+			iframe.srcdoc = srcDoc;
+			// Below line is used for triggering iframe reload by resetting src.
+			iframe.src = iframe.src;
 		});
 	});
 </script>
 
-<div class="flex-middle">
-	<div bind:this={iframeElement} class="iframe thick-component-border">
-		<div class="filename context component">
+<div class="zeltron-flex-middle">
+	<div bind:this={iframeElement} class="iframe zeltron-thick-component-border">
+		<div class="filename context zeltron-component">
 			<span>Sandbox</span>
 			<span>{title}</span>
 		</div>
-		<div class="context component">
+		<div class="context zeltron-component">
 			<span>
 				<button
+					class="zeltron-inline-flex-middle"
+					aria-label="Toggle fullscreen"
 					onclick={toggleFullscreen}
-					class="inline-flex-middle"
-					aria-label="Toggle fullscreen">
+					type="button">
 					{#if !fullscreen}
 						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
 							fill="currentColor"
-							class="bi bi-fullscreen"
-							viewBox="0 0 16 16">
+							height="16"
+							viewBox="0 0 16 16"
+							width="16"
+							xmlns="http://www.w3.org/2000/svg">
 							<path
 								d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z" />
 						</svg>
 					{:else}
 						<svg
-							xmlns="http://www.w3.org/2000/svg"
-							width="16"
-							height="16"
 							fill="currentColor"
-							class="bi bi-fullscreen-exit"
-							viewBox="0 0 16 16">
+							height="16"
+							viewBox="0 0 16 16"
+							width="16"
+							xmlns="http://www.w3.org/2000/svg">
 							<path
 								d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5zM0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zm10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4z" />
 						</svg>
@@ -84,11 +90,11 @@
 		</div>
 		<iframe
 			bind:this={iframe}
-			onresize={resized}
-			{title}
 			allowfullscreen
+			onresize={resized}
 			sandbox="allow-forms allow-modals allow-popups allow-scripts allow-downloads"
-			{src}>
+			{src}
+			{title}>
 		</iframe>
 	</div>
 </div>

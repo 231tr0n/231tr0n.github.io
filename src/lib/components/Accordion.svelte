@@ -1,10 +1,25 @@
 <script lang="ts">
 	import { slide, fade } from 'svelte/transition';
 	import { animationDelay, animationDuration } from '$lib/animation.constants';
+	import { resolve } from '$app/paths';
+	import type { Snippet } from 'svelte';
+	import type { RouteId } from '$app/types';
 
-	let { name = '', url = '', external = false, open = false, children } = $props();
+	let {
+		name = '',
+		url = '',
+		external = false,
+		open = false,
+		children
+	}: {
+		name: string;
+		url?: string;
+		external?: boolean;
+		open: boolean;
+		children?: Snippet;
+	} = $props();
 
-	let summaryToggler = () => {
+	const summaryToggler = () => {
 		open = open ? false : true;
 	};
 </script>
@@ -14,43 +29,43 @@
 		<div class="spacer">
 			<h2>{name}</h2>
 			<button
-				class="summary-toggler flex-middle"
+				class="summary-toggler zeltron-flex-middle"
 				aria-label="Accordion summary toggler"
 				onclick={summaryToggler}
-				onkeypress={summaryToggler}>
+				onkeypress={summaryToggler}
+				type="button">
 				{#if open}
 					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="15"
-						height="15"
 						fill="currentColor"
-						class="bi bi-chevron-up"
-						viewBox="0 0 16 16">
+						height="15"
+						viewBox="0 0 16 16"
+						width="15"
+						xmlns="http://www.w3.org/2000/svg">
 						<path
-							fill-rule="evenodd"
-							d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
+							d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"
+							fill-rule="evenodd" />
 					</svg>
 				{:else}
 					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="15"
-						height="15"
 						fill="currentColor"
-						class="bi bi-chevron-down"
-						viewBox="0 0 16 16">
+						height="15"
+						viewBox="0 0 16 16"
+						width="15"
+						xmlns="http://www.w3.org/2000/svg">
 						<path
-							fill-rule="evenodd"
-							d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+							d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+							fill-rule="evenodd" />
 					</svg>
 				{/if}
 			</button>
 			{#if url}
 				{#if external}
 					<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-					<a target="_blank" href={url}><button>Open</button></a>
+					<a href={url} rel="noopener noreferrer" target="_blank">
+						<button type="button">Open</button>
+					</a>
 				{:else}
-					<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-					<a href={url}><button>Open</button></a>
+					<a href={resolve(url as RouteId)}><button type="button">Open</button></a>
 				{/if}
 			{/if}
 		</div>
@@ -60,7 +75,6 @@
 			in:slide={{ duration: animationDuration }}
 			out:slide={{ delay: animationDelay, duration: animationDuration }}>
 			<div
-				class="transition"
 				in:fade={{ duration: animationDelay + animationDuration }}
 				out:fade={{ duration: animationDuration }}>
 				{@render children?.()}

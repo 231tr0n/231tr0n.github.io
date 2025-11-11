@@ -2,12 +2,20 @@
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 
+	type onSetSelectedItemType = (item: number) => void;
+
 	let {
 		items = [],
 		emptyItem = false,
 		currentItem = 0,
 		colored = false,
-		setSelectedItem = null
+		onSetSelectedItem = null
+	}: {
+		items: string[];
+		emptyItem?: boolean;
+		currentItem: number;
+		colored: boolean;
+		onSetSelectedItem: onSetSelectedItemType | null;
 	} = $props();
 
 	let open = $state(false);
@@ -17,21 +25,19 @@
 		items.unshift('');
 	}
 
-	let selectItem = (item: number) => {
+	const selectItem = (item: number) => {
 		currentItem = item;
-		if (setSelectedItem) {
-			setSelectedItem(currentItem);
-		}
+		onSetSelectedItem?.(currentItem);
 		toggleSelectionMenu();
 	};
 
-	let toggleSelectionMenu = () => {
+	const toggleSelectionMenu = () => {
 		open = open ? false : true;
 	};
 
 	onMount(() => {
 		if (colored) {
-			selectContext.classList.add('strong-component');
+			selectContext.classList.add('zeltron-strong-component');
 		}
 	});
 
@@ -43,10 +49,10 @@
 			}
 		}
 
-		let button = document.createElement('button');
+		const button = document.createElement('button');
 		button.innerText = largestItem;
 		document.body.appendChild(button);
-		selectContext.style.width = Math.ceil(button.clientWidth) + 30 + 'px';
+		selectContext.style.width = (Math.ceil(button.clientWidth) + 30).toString() + 'px';
 		document.body.removeChild(button);
 	});
 </script>
@@ -56,39 +62,44 @@
 		bind:this={selectContext}
 		class="select-context"
 		aria-label="Select menu toggler"
-		onclick={toggleSelectionMenu}>
+		onclick={toggleSelectionMenu}
+		type="button">
 		{items[currentItem]}
 		{#if open}
 			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="15"
-				height="15"
 				fill="currentColor"
-				class="bi bi-chevron-up"
-				viewBox="0 0 16 16">
+				height="15"
+				viewBox="0 0 16 16"
+				width="15"
+				xmlns="http://www.w3.org/2000/svg">
 				<path
-					fill-rule="evenodd"
-					d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z" />
+					d="M7.646 4.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1-.708.708L8 5.707l-5.646 5.647a.5.5 0 0 1-.708-.708l6-6z"
+					fill-rule="evenodd" />
 			</svg>
 		{:else}
 			<svg
-				xmlns="http://www.w3.org/2000/svg"
-				width="15"
-				height="15"
 				fill="currentColor"
-				class="bi bi-chevron-down"
-				viewBox="0 0 16 16">
+				height="15"
+				viewBox="0 0 16 16"
+				width="15"
+				xmlns="http://www.w3.org/2000/svg">
 				<path
-					fill-rule="evenodd"
-					d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+					d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z"
+					fill-rule="evenodd" />
 			</svg>
 		{/if}
 	</button>
 	{#if open}
-		<div class="select-menu flex-middle component thick-component-border" transition:slide>
+		<div
+			class="select-menu zeltron-flex-middle zeltron-component zeltron-thick-component-border"
+			transition:slide>
 			<div class="content">
 				{#each items.entries() as [index, item] (index)}
-					<button onclick={() => selectItem(index)} class="items">
+					<button
+						onclick={() => {
+							selectItem(index);
+						}}
+						type="button">
 						{item}
 					</button>
 				{/each}

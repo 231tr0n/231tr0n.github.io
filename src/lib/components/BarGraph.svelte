@@ -7,7 +7,14 @@
 		desc = true,
 		context = '',
 		title = '',
-		height = '50vh'
+		height = 50
+	}: {
+		sort: boolean;
+		desc?: boolean;
+		context: string;
+		title: string;
+		height: number;
+		data: Record<string, number>;
 	} = $props();
 
 	if (sort) {
@@ -19,31 +26,37 @@
 	let fullscreen = $state(false);
 	let storedHeight = '';
 	let storedWidth = '';
+	const bars: Record<string, HTMLDivElement> = $state({});
 
-	let toggleFullscreen = () => {
+	const toggleFullscreen = async () => {
 		if (document.fullscreenElement) {
-			document.exitFullscreen();
+			await document.exitFullscreen();
 			fullscreen = false;
 		} else {
-			chartDiv.requestFullscreen();
+			await chartDiv.requestFullscreen();
 			fullscreen = true;
 		}
 	};
 
+	// <!-- <div style={'height: ' + value.toString() + '%;'} class="bar zeltron-component"> -->
 	onMount(() => {
+		for (const [key, value] of Object.entries(data)) {
+			bars[key].style.height = value.toString() + '%';
+		}
+
 		table.style.height = height.toString() + 'vh';
 		chartDiv.onfullscreenchange = () => {
 			if (document.fullscreenElement) {
 				table.style.height = 'calc(100vh - 76px)';
 				storedHeight = chartDiv.style.height;
 				storedWidth = chartDiv.style.width;
-				chartDiv.classList.add('body');
+				chartDiv.classList.add('zeltron-body-background');
 				chartDiv.style.height = '100vh';
 				chartDiv.style.width = '100vw';
 				fullscreen = true;
 			} else {
 				table.style.height = height.toString() + 'vh';
-				chartDiv.classList.remove('body');
+				chartDiv.classList.remove('zeltron-body-background');
 				chartDiv.style.height = storedHeight;
 				chartDiv.style.width = storedWidth;
 				fullscreen = false;
@@ -52,33 +65,35 @@
 	});
 </script>
 
-<div bind:this={chartDiv} class="flex-middle">
-	<div class="thick-component-border overflow">
-		<div class="filename context component">
+<div bind:this={chartDiv} class="zeltron-flex-middle">
+	<div class="zeltron-thick-component-border overflow">
+		<div class="filename context zeltron-component">
 			<span>Bar Graph</span>
 			<span>{context}</span>
 		</div>
-		<div class="context component">
-			<button onclick={toggleFullscreen} class="inline-flex-middle" aria-label="Toggle fullscreen">
+		<div class="context zeltron-component">
+			<button
+				class="zeltron-inline-flex-middle"
+				aria-label="Toggle fullscreen"
+				onclick={toggleFullscreen}
+				type="button">
 				{#if !fullscreen}
 					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="16"
-						height="16"
 						fill="currentColor"
-						class="bi bi-fullscreen"
-						viewBox="0 0 16 16">
+						height="16"
+						viewBox="0 0 16 16"
+						width="16"
+						xmlns="http://www.w3.org/2000/svg">
 						<path
 							d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z" />
 					</svg>
 				{:else}
 					<svg
-						xmlns="http://www.w3.org/2000/svg"
-						width="16"
-						height="16"
 						fill="currentColor"
-						class="bi bi-fullscreen-exit"
-						viewBox="0 0 16 16">
+						height="16"
+						viewBox="0 0 16 16"
+						width="16"
+						xmlns="http://www.w3.org/2000/svg">
 						<path
 							d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5zM0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zm10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4z" />
 					</svg>
@@ -91,16 +106,16 @@
 				<table bind:this={table}>
 					<tbody>
 						<tr>
-							{#each Object.values(data) as value, _ (_)}
+							{#each Object.keys(data) as key, _ (_)}
 								<td class="plot">
-									<div class="bar component" style={'height: ' + value + '%;'}></div>
+									<div bind:this={bars[key]} class="bar zeltron-component"></div>
 								</td>
 							{/each}
 						</tr>
 						<tr>
 							{#each Object.entries(data) as [key, value], _ (_)}
 								<td class="label">
-									<span class="badge">{key} - {value + '%'}</span>
+									<span class="zeltron-badge">{key} - {value.toString() + '%'}</span>
 								</td>
 							{/each}
 						</tr>
@@ -112,7 +127,7 @@
 </div>
 
 <style>
-	div.thick-component-border {
+	div.zeltron-thick-component-border {
 		height: 100%;
 	}
 
@@ -127,7 +142,7 @@
 		padding-bottom: 5px;
 	}
 
-	div.flex-middle {
+	div.zeltron-flex-middle {
 		margin-top: 1em;
 		margin-bottom: 1em;
 	}
@@ -155,7 +170,7 @@
 		overflow: auto;
 	}
 
-	span.badge {
+	span.zeltron-badge {
 		margin: 0px;
 		display: inline;
 	}

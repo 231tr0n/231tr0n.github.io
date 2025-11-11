@@ -1,36 +1,40 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 	import Select from './Select.svelte';
 	import { animationDelay, animationDuration } from '$lib/animation.constants.js';
 
-	let { scrollspy = false, children } = $props();
+	let {
+		scrollspy = false,
+		children
+	}: {
+		scrollspy?: boolean;
+		children?: Snippet;
+	} = $props();
 
 	let name: HTMLElement;
 	let sections: HTMLElement[] = [];
 	let currentItem = $state(0);
-	let breadcrumb = $state() as HTMLElement;
-	let selectionMenuArray: string[] = $state([]);
-	let pageDiv = $state() as HTMLElement;
+	let breadcrumb: HTMLHeadingElement | undefined = $state();
+	const selectionMenuArray: string[] = $state([]);
+	let pageDiv: HTMLDivElement;
 
 	let selectedItem = $state(0);
-	function setSelectedItem(value: number) {
+	const onSetSelectedItem = (value: number) => {
 		selectedItem = value;
-	}
+	};
 
 	if (scrollspy) {
-		if (setSelectedItem) {
-			setSelectedItem(0);
-		}
+		onSetSelectedItem(0);
 
 		$effect(() => {
 			if (selectedItem >= 0 && selectedItem < sections.length) {
-				let currentDiv = sections[selectedItem];
-				let currentDivBoundingClientRect = currentDiv.getBoundingClientRect();
+				const currentDiv = sections[selectedItem];
+				const currentDivBoundingClientRect = currentDiv.getBoundingClientRect();
 				pageDiv.scrollBy(
 					0,
 					currentDivBoundingClientRect.top -
 						currentDivBoundingClientRect.height -
-						breadcrumb.offsetHeight -
+						(breadcrumb as HTMLHeadingElement).offsetHeight -
 						15
 				);
 			}
@@ -40,7 +44,12 @@
 			pageDiv.onscroll = () => {
 				let prev = null;
 				for (const [index, section] of sections.entries()) {
-					if (breadcrumb.offsetTop + breadcrumb.offsetHeight + 5 < section.offsetTop) {
+					if (
+						(breadcrumb as HTMLHeadingElement).offsetTop +
+							(breadcrumb as HTMLHeadingElement).offsetHeight +
+							5 <
+						section.offsetTop
+					) {
 						if (prev) {
 							currentItem = index - 1;
 						} else {
@@ -55,7 +64,7 @@
 			};
 
 			setTimeout(() => {
-				name = document.querySelector('div.page div.content h1') || document.createElement('div');
+				name = document.querySelector('div.page div.content h1') ?? document.createElement('div');
 				sections = Array.from(document.querySelectorAll('div.page div.content h2'));
 				sections = Array.from(sections);
 				sections.unshift(name);
@@ -70,13 +79,13 @@
 <div bind:this={pageDiv} class="page">
 	<div class="content">
 		{#if scrollspy}
-			<h4 bind:this={breadcrumb} class="component flex-middle">
-				<Select items={selectionMenuArray} colored={true} {currentItem} {setSelectedItem} />
+			<h4 bind:this={breadcrumb} class="zeltron-component zeltron-flex-middle">
+				<Select colored={true} {currentItem} items={selectionMenuArray} {onSetSelectedItem} />
 			</h4>
 		{/if}
 		{@render children?.()}
 	</div>
-	<div class="body blur border"></div>
+	<div class="zeltron-body-background zeltron-blur zeltron-border"></div>
 </div>
 
 <style>
@@ -107,7 +116,7 @@
 		text-align: justify;
 	}
 
-	div.body {
+	div.zeltron-body-background {
 		background-color: unset;
 		position: fixed;
 		top: 44px;

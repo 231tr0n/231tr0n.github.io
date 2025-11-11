@@ -2,10 +2,19 @@
 	import { Tween } from 'svelte/motion';
 	import { linear } from 'svelte/easing';
 	import { animationDuration } from '$lib/animation.constants';
+	import type { Snippet } from 'svelte';
 
-	let { value = 0, max = 100, children = null } = $props();
+	let {
+		value = 0,
+		max = 100,
+		children
+	}: {
+		value: number;
+		max: number;
+		children?: Snippet;
+	} = $props();
 
-	let progress = new Tween(value, { duration: animationDuration, easing: linear });
+	const progress = new Tween(value, { duration: animationDuration, easing: linear });
 
 	$effect(() => {
 		progress.target = value;
@@ -13,8 +22,8 @@
 </script>
 
 <br />
-<div class="flex-middle">
-	<progress value={progress.current} {max}>
+<div class="zeltron-flex-middle">
+	<progress {max} value={progress.current}>
 		{@render children?.()}
 	</progress>
 </div>

@@ -166,7 +166,7 @@ body.dark a img.border-img:hover {
 }
 
 body {
-	font-family: Roboto-Condensed;
+	font-family: Roboto-Condensed, monospace;
 	background-color: var(--color-light-background);
 	color: var(--color-light-foreground);
 	margin: 0px;
@@ -180,7 +180,7 @@ body.dark {
 }
 
 button {
-	font-family: Roboto-Condensed;
+	font-family: Roboto-Condensed, monospace;
 	background-color: var(--color-light-button-background);
 	color: var(--color-light-button-foreground);
 	border: 2px solid transparent;
@@ -190,14 +190,6 @@ button {
 body.dark button {
 	background-color: var(--color-dark-button-background);
 	color: var(--color-dark-button-foreground);
-}
-
-.strong-component {
-	background-color: var(--color-light-badge-foreground);
-}
-
-body.dark .strong-component {
-	background-color: var(--color-dark-badge-foreground);
 }
 
 button:hover {
@@ -214,22 +206,22 @@ img {
 }
 
 select {
-	font-family: Roboto-Condensed;
+	font-family: Roboto-Condensed, monospace;
 	outline: none;
 }
 
 select > option {
-	font-family: Roboto-Condensed;
+	font-family: Roboto-Condensed, monospace;
 	outline: none;
 }
 
 option {
-	font-family: Roboto-Condensed;
+	font-family: Roboto-Condensed, monospace;
 	outline: none;
 }
 
 input {
-	font-family: Roboto-Condensed;
+	font-family: Roboto-Condensed, monospace;
 	outline: none;
 }
 
@@ -291,11 +283,11 @@ p {
 }
 
 pre {
-	font-family: Roboto-Mono;
+	font-family: Roboto-Mono, monospace;
 }
 
 code {
-	font-family: Roboto-Mono;
+	font-family: Roboto-Mono, monospace;
 }
 
 hr {
@@ -313,120 +305,128 @@ body.dark hr {
 }
 
 /* Helper css */
-.flex-middle {
+.zeltron-flex-middle {
 	display: flex;
 	justify-content: center;
 	align-items: center;
 }
 
-.inline-flex-middle {
+.zeltron-inline-flex-middle {
 	display: inline-flex;
 	justify-content: center;
 	align-items: center;
 }
 
 /* Generic css */
-.blur {
+.zeltron-blur {
 	backdrop-filter: blur(7px);
 }
 
-body.dark .blur {
+body.dark .zeltron-blur {
 	backdrop-filter: blur(10px);
 }
 
-.box-shadow {
+.zeltron-box-shadow {
 	box-shadow: 0px 0px 5px var(--color-light-foreground);
 }
 
-body.dark .box-shadow {
+body.dark .zeltron-box-shadow {
 	box-shadow: 0px 0px 5px var(--color-dark-foreground);
 }
 
-.error {
+.zeltron-error {
 	font-size: 30px;
 	padding: 1em;
 	text-align: center;
 	color: var(--color-light-error);
 }
 
-body.dark .error {
+body.dark .zeltron-error {
 	color: var(--color-dark-error);
 }
 
-.body {
+.zeltron-body-background {
 	background-color: var(--color-light-background);
 	color: var(--color-light-foreground);
 }
 
-body.dark .body {
+body.dark .zeltron-body-background {
 	background-color: var(--color-dark-background);
 	color: var(--color-dark-foreground);
 }
 
-.anchor {
+.zeltron-anchor {
 	border: 2px solid transparent;
 }
 
-.anchor:hover {
+.zeltron-anchor:hover {
 	border: 2px solid var(--color-light-anchor);
 }
 
-body.dark .anchor:hover {
+body.dark .zeltron-anchor:hover {
 	border: 2px solid var(--color-dark-anchor);
 }
 
-.border {
+.zeltron-border {
 	border: 1px solid var(--color-light-foreground);
 }
 
-body.dark .border {
+body.dark .zeltron-border {
 	border: 1px solid var(--color-dark-foreground);
 }
 
-.component-border {
+.zeltron-component-border {
 	border: 1px solid var(--color-light-component-background);
 }
 
-body.dark .component-border {
+body.dark .zeltron-component-border {
 	border: 1px solid var(--color-dark-component-background);
 }
 
-.thick-border {
+.zeltron-thick-border {
 	border: 2px solid var(--color-light-foreground);
 }
 
-body.dark .thick-border {
+body.dark .zeltron-thick-border {
 	border: 2px solid var(--color-dark-foreground);
 }
 
-.thick-component-border {
+.zeltron-thick-component-border {
 	border: 2px solid var(--color-light-component-background);
 }
 
-body.dark .thick-component-border {
+body.dark .zeltron-thick-component-border {
 	border: 2px solid var(--color-dark-component-background);
 }
 
-.component {
+.zeltron-component {
 	background-color: var(--color-light-component-background);
 	color: var(--color-light-component-foreground);
 }
 
-body.dark .component {
+body.dark .zeltron-component {
 	background-color: var(--color-dark-component-background);
 	color: var(--color-dark-component-foreground);
 }
 
-.highlightkeyword {
+.zeltron-strong-component {
+	background-color: var(--color-light-badge-foreground);
+}
+
+body.dark .zeltron-strong-component {
+	background-color: var(--color-dark-badge-foreground);
+}
+
+.zeltron-highlightkeyword {
 	color: var(--color-light-keyword);
 	font-weight: bold;
 }
 
-body.dark .highlightkeyword {
+body.dark .zeltron-highlightkeyword {
 	color: var(--color-dark-keyword);
 }
 
-.badge {
+.zeltron-badge {
 	display: inline-block;
 	margin: 5px;
 	padding: 5px 10px;
@@ -435,7 +435,7 @@ body.dark .highlightkeyword {
 	color: var(--color-light-badge-foreground);
 }
 
-body.dark .badge {
+body.dark .zeltron-badge {
 	background-color: var(--color-dark-badge-background);
 	border: 2px solid var(--color-dark-badge-foreground);
 	color: var(--color-dark-badge-foreground);

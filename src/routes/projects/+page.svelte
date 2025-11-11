@@ -11,24 +11,32 @@
 		message: string;
 	}
 
-	type languages = Record<string, number>;
+	interface githubRepo {
+		fork: boolean;
+		languages_url: string;
+		name: string;
+		html_url: string;
+		description: string;
+	}
+
+	type githubLanguages = Record<string, number>;
 
 	let progressLength = $state(0);
 	let fullCompletionLength = $state(0);
 
-	let fetchGithubRepoData = async (url: string) => {
-		let languagesList: Record<string, number> = {};
-		let languagesPercentageList: Record<string, number> = {};
+	const fetchGithubRepoData = async (url: string) => {
+		const languagesList: Record<string, number> = {};
+		const languagesPercentageList: Record<string, number> = {};
 
 		const temp = await fetch(url);
-		const repos = await temp.json();
-		if (repos['message']) {
-			throw 'Github api rate limit exceeded';
+		const repos = (await temp.json()) as githubRepo[] | githubError;
+		if ((repos as githubError).message) {
+			throw new Error('Github api rate limit exceeded');
 		}
 
 		const nonForkedRepos = [];
-		for (const repo of repos) {
-			if (!repo['fork']) {
+		for (const repo of repos as githubRepo[]) {
+			if (!repo.fork) {
 				nonForkedRepos.push(repo);
 				fullCompletionLength += 1;
 			}
@@ -36,27 +44,29 @@
 
 		const reposData = [];
 		for (const repo of nonForkedRepos) {
-			const temp = await fetch(repo['languages_url']);
-			const languages: languages | githubError = await temp.json();
-			if (languages['message']) {
-				throw 'Github api rate limit exceeded';
+			const temp = await fetch(repo.languages_url);
+			const languages: githubLanguages | githubError = (await temp.json()) as
+				| githubLanguages
+				| githubError;
+			if ((languages as githubError).message) {
+				throw new Error('Github api rate limit exceeded');
 			}
 
 			const repoData: PostData = {
-				name: repo['name'],
-				url: repo['html_url'],
-				description: repo['description'],
+				name: repo.name,
+				url: repo.html_url,
+				description: repo.description,
 				badges: [],
 				open: false,
 				external: true
 			};
 
-			for (const [key, value] of Object.entries(languages)) {
+			for (const [key, value] of Object.entries(languages as githubLanguages)) {
 				repoData.badges.push(key);
 				if (languagesList[key]) {
-					languagesList[key] += parseInt(value);
+					languagesList[key] += value;
 				} else {
-					languagesList[key] = parseInt(value);
+					languagesList[key] = value;
 				}
 			}
 
@@ -85,14 +95,14 @@
 
 	{#await fetchGithubRepoData('https://api.github.com/users/231tr0n/repos')}
 		<br />
-		<Progress value={progressLength} max={fullCompletionLength}></Progress>
+		<Progress max={fullCompletionLength} value={progressLength}></Progress>
 	{:then res}
 		<Accordion name="Github Language Statistics" open={true}>
 			<BarGraph
-				data={res.languagesPercentageList}
-				sort={true}
-				height="10"
 				context="Github"
+				data={res.languagesPercentageList}
+				height={10}
+				sort={true}
 				title="Language Statistics"></BarGraph>
 		</Accordion>
 		<br />
@@ -100,6 +110,6 @@
 			<Post post={repo} />
 		{/each}
 	{:catch error}
-		<div class="error">{error}</div>
+		<div class="zeltron-error">{error}</div>
 	{/await}
 </Page>
