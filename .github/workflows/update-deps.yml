@@ -24,9 +24,7 @@ jobs:
           node --version
           npm --version
       - name: Upgrade packages
-        run: npx npm-check-updates -u
-      - name: Install dependencies
-        run: npm install
+        run: npm run update-deps
       - name: Fix Lint
         run: npm run lint-fix
       - name: CI
