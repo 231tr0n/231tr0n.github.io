@@ -13,17 +13,14 @@
 	<h2>Introduction</h2>
 	<ul>
 		<li>
-			Hello, my name is <span class="zeltron-highlightkeyword">Srikar</span>
-			also known as
-			<span class="zeltron-highlightkeyword">231tr0n</span>
-			.
+			Hello, my name is <span class="zeltron-highlightkeyword">Srikar</span> also known as
+			<span class="zeltron-highlightkeyword">231tr0n</span>.
 		</li>
 		<li>I am proficient at data engineering, web development and security.</li>
 		<li>I enjoy programming in Go.</li>
 		<li>I am a linux user who enjoys hacking it to the core.</li>
 		<li>
-			I also dabble with <span class="zeltron-highlightkeyword">AI/ML</span>
-			every now and then.
+			I also dabble with <span class="zeltron-highlightkeyword">AI/ML</span> every now and then.
 		</li>
 	</ul>
 

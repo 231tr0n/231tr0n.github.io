@@ -3,7 +3,6 @@
  */
 const config = {
 	bracketSameLine: true,
-	htmlWhitespaceSensitivity: 'ignore',
 	plugins: ['prettier-plugin-svelte'],
 	printWidth: 100,
 	singleQuote: true,

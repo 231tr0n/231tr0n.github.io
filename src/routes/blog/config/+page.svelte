@@ -72,25 +72,21 @@
 	<h2>Introduction</h2>
 	<ul>
 		<li>
-			I was facinated by <span class="zeltron-highlightkeyword">vim</span>
-			from the time I was introduced to it by one of my professors in my university during my first year
-			of bachelors.
+			I was facinated by <span class="zeltron-highlightkeyword">vim</span> from the time I was introduced
+			to it by one of my professors in my university during my first year of bachelors.
 		</li>
 		<li>
 			From not being able to <span class="zeltron-highlightkeyword">quit vim</span>
 			during my first time resulting in me closing the terminal directly to becoming good at
-			<span class="zeltron-highlightkeyword">vim keybinds</span>
-			, it was quite a journey for me where I learnt a lot about how text editors generally work.
+			<span class="zeltron-highlightkeyword">vim keybinds</span>, it was quite a journey for me
+			where I learnt a lot about how text editors generally work.
 		</li>
 		<li>
 			Getting used to <span class="zeltron-highlightkeyword">vim keybinds</span>
 			took me around one month of time and by the time I got good at it, I became intrested in creating
-			my own workflow using custom
-			<span class="zeltron-highlightkeyword">vim script</span>
-			and
-			<span class="zeltron-highlightkeyword">vim keybinds</span>
-			and wrote my first
-			<span class="zeltron-highlightkeyword">vim configuration</span>
+			my own workflow using custom <span class="zeltron-highlightkeyword">vim script</span>
+			and <span class="zeltron-highlightkeyword">vim keybinds</span>
+			and wrote my first <span class="zeltron-highlightkeyword">vim configuration</span>
 			using the
 			<a
 				href="https://github.com/231tr0n/config/blob/main/nvim/init.vim"
@@ -102,8 +98,7 @@
 		</li>
 		<li>
 			I made sure my entire configuration is stuffed in just a single file so that I have the
-			<span class="zeltron-highlightkeyword">flexibility to curl or wget</span>
-			it anywhere.
+			<span class="zeltron-highlightkeyword">flexibility to curl or wget</span> it anywhere.
 		</li>
 		<li>
 			A while after that, I found out <span class="zeltron-highlightkeyword">neovim</span>
@@ -111,13 +106,11 @@
 			single threaded.
 		</li>
 		<li>
-			<span class="zeltron-highlightkeyword">Neovim</span>
-			also supported
-			<span class="zeltron-highlightkeyword">lua</span>
-			for configuring itself altough I was a bit hesitant to learn a new language again after going through
-			the pain of learning
-			<span class="zeltron-highlightkeyword">vim script</span>
-			which I felt was cryptic than your regular languages at that time and hence migrated my
+			<span class="zeltron-highlightkeyword">Neovim</span> also supported
+			<span class="zeltron-highlightkeyword">lua</span> for configuring itself altough I was a bit
+			hesitant to learn a new language again after going through the pain of learning
+			<span class="zeltron-highlightkeyword">vim script</span> which I felt was cryptic than your
+			regular languages at that time and hence migrated my
 			<span class="zeltron-highlightkeyword">.vimrc</span>
 			to
 			<span class="zeltron-highlightkeyword">init.vim</span>
