@@ -27,7 +27,23 @@ export default defineConfig(
 	{
 		files: ['**/*.html'],
 		plugins: { html },
-		language: 'html/html'
+		language: 'html/html',
+		extends: [html.configs.recommended],
+		rules: {
+			'html/indent': ['error', 'tab'],
+			'html/no-extra-spacing-attrs': [
+				'error',
+				{
+					enforceBeforeSelfClose: true
+				}
+			],
+			'html/require-closing-tags': [
+				'error',
+				{
+					selfClosing: 'always'
+				}
+			]
+		}
 	},
 	{
 		files: ['**/*.js', '**/*.svelte', '**/*.svelte.js', '**/*.svelte.ts', '**/*.ts'],
