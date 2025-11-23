@@ -27,8 +27,6 @@ jobs:
         run: npm install
       - name: Upgrade packages
         run: npm run update-deps
-      - name: Install upgraded dependencies
-        run: npm install
       - name: Fix Lint
         run: npm run lint-fix
       - name: CI
