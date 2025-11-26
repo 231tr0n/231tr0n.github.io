@@ -11,6 +11,14 @@
 			url: '/misc/htmlplayground',
 			open: false,
 			external: false
+		},
+		{
+			name: 'Website Sourcemap',
+			badges: ['html', 'css', 'javascript', 'svelte', 'browser'],
+			description: 'Shows a source map of the website output bundle, useful for optimization.',
+			url: '/misc/sourcemap',
+			open: false,
+			external: false
 		}
 	];
 </script>
