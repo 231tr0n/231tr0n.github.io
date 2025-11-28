@@ -171,13 +171,13 @@
 		</li>
 		<li>
 			Now came the <span class="zeltron-highlightkeyword">problem of performance</span>
-			. On one hand I had 80+ plugins making my editor start with a delay of around one second since
-			I did not do lazy loading as I wrote my initial configuration using the plugin manager
+			. On one hand I had 80+ plugins making my editor start with a delay of around one second since I
+			did not do lazy loading as I wrote my initial configuration using the plugin manager
 			<a href="https://github.com/savq/paq-nvim" rel="noopener noreferrer" target="_blank">Paq</a>
 			for simplicity and it did not support lazy loading. On the other hand I had to deal with java files
 			whose source code was more than 50000+ lines and the file sizes crossed 2MB making treesitter and
-			plugins which depend on it very slow. Also most utility plugins I use were full of bloat which
-			I never used.
+			plugins which depend on it very slow. Also most utility plugins I use were full of bloat which I
+			never used.
 		</li>
 		<li>
 			Then comes <a
