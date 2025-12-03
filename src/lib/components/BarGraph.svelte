@@ -17,9 +17,11 @@
 		data: Record<string, number>;
 	} = $props();
 
-	if (sort) {
-		data = Object.fromEntries(Object.entries(data).sort(([, a], [, b]) => (desc ? b - a : a - b)));
-	}
+	const sortedData: Record<string, number> = $derived(
+		sort
+			? Object.fromEntries(Object.entries(data).sort(([, a], [, b]) => (desc ? b - a : a - b)))
+			: data
+	);
 
 	let chartDiv: HTMLDivElement;
 	let table: HTMLTableElement;
@@ -40,7 +42,7 @@
 
 	// <!-- <div style={'height: ' + value.toString() + '%;'} class="bar zeltron-component"> -->
 	onMount(() => {
-		for (const [key, value] of Object.entries(data)) {
+		for (const [key, value] of Object.entries(sortedData)) {
 			bars[key].style.height = value.toString() + '%';
 		}
 
@@ -106,14 +108,14 @@
 				<table bind:this={table}>
 					<tbody>
 						<tr>
-							{#each Object.keys(data) as key, _ (_)}
+							{#each Object.keys(sortedData) as key, _ (_)}
 								<td class="plot">
 									<div bind:this={bars[key]} class="bar zeltron-component"></div>
 								</td>
 							{/each}
 						</tr>
 						<tr>
-							{#each Object.entries(data) as [key, value], _ (_)}
+							{#each Object.entries(sortedData) as [key, value], _ (_)}
 								<td class="label">
 									<span class="zeltron-badge">{key} - {value.toString() + '%'}</span>
 								</td>

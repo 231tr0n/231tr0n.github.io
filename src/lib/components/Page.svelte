@@ -23,7 +23,7 @@
 		selectedItem = value;
 	};
 
-	if (scrollspy) {
+	if ((() => scrollspy)()) {
 		onSetSelectedItem(0);
 
 		$effect(() => {

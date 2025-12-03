@@ -14,7 +14,7 @@
 		children?: Snippet;
 	} = $props();
 
-	const progress = new Tween(value, { duration: animationDuration, easing: linear });
+	const progress = new Tween((() => value)(), { duration: animationDuration, easing: linear });
 
 	$effect(() => {
 		progress.target = value;

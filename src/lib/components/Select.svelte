@@ -21,9 +21,11 @@
 	let open = $state(false);
 	let selectContext: HTMLElement;
 
-	if (emptyItem) {
-		items.unshift('');
-	}
+	(() => {
+		if (emptyItem) {
+			items.unshift('');
+		}
+	})();
 
 	const selectItem = (item: number) => {
 		currentItem = item;
