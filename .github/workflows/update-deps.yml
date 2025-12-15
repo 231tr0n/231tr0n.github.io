@@ -34,7 +34,7 @@ jobs:
       - name: Count git status
         id: git-status
         run: echo "files=$(git status --porcelain | wc -l)" >>"$GITHUB_OUTPUT"
-      - uses: peter-evans/create-pull-request@v7
+      - uses: peter-evans/create-pull-request@v8
         if: steps.git-status.outputs.files != '1'
         with:
           commit-message: |
