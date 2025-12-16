@@ -2,16 +2,7 @@
 	import Accordion from '$lib/components/Accordion.svelte';
 	import type { PostData } from '$lib/types';
 
-	let {
-		post = {
-			name: '',
-			url: '',
-			description: '',
-			badges: [],
-			external: false,
-			open: false
-		}
-	}: { post: PostData } = $props();
+	let { post }: { post: PostData } = $props();
 </script>
 
 <Accordion name={post.name} external={post.external} open={post.open} url={post.url}>

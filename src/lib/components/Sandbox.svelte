@@ -3,8 +3,8 @@
 	import type { UIEventHandler } from 'svelte/elements';
 
 	let {
-		title = '',
-		description = '',
+		title,
+		description,
 		src = '',
 		srcDoc = ''
 	}: {
