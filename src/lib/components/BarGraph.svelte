@@ -2,12 +2,12 @@
 	import { onMount } from 'svelte';
 
 	let {
-		data = {},
-		sort = false,
+		data,
+		sort,
 		desc = true,
-		context = '',
-		title = '',
-		height = 50
+		context,
+		title,
+		height
 	}: {
 		sort: boolean;
 		desc?: boolean;

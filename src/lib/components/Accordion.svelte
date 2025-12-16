@@ -6,10 +6,10 @@
 	import type { RouteId } from '$app/types';
 
 	let {
-		name = '',
+		name,
 		url = '',
 		external = false,
-		open = false,
+		open,
 		children
 	}: {
 		name: string;

@@ -5,8 +5,8 @@
 	import type { Snippet } from 'svelte';
 
 	let {
-		value = 0,
-		max = 100,
+		value,
+		max,
 		children
 	}: {
 		value: number;

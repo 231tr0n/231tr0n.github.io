@@ -5,11 +5,11 @@
 	type onSetSelectedItemType = (item: number) => void;
 
 	let {
-		items = [],
+		items,
 		emptyItem = false,
-		currentItem = 0,
-		colored = false,
-		onSetSelectedItem = null
+		currentItem,
+		colored,
+		onSetSelectedItem
 	}: {
 		items: string[];
 		emptyItem?: boolean;

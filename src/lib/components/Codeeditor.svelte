@@ -21,11 +21,11 @@
 	}
 
 	let {
-		langName = '',
+		langName,
 		mode = null,
 		output = '',
 		readOnly = false,
-		fileName = '',
+		fileName,
 		setCode = null,
 		vimMode = false,
 		wrap = false,
