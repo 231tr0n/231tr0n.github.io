@@ -20,7 +20,7 @@
 		"ci": "npm run lint && npm run build && npm run test"
 	},
 	"devDependencies": {
-		"@eslint/compat": "^2.0.2",
+		"@eslint/compat": "^2.0.3",
 		"@eslint/css": "^0.14.1",
 		"@eslint/js": "^10.0.1",
 		"@html-eslint/eslint-plugin": "^0.58.1",
