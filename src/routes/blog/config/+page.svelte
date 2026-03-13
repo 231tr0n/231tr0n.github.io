@@ -4,11 +4,6 @@
 	import Codeeditor from '$lib/components/Codeeditor.svelte';
 	import luaMode from 'ace-code/src/mode/lua';
 
-	interface plugin {
-		source: string;
-		depends: string[];
-	}
-
 	const fetch_neovim_config = async (url: string) => {
 		const temp = await fetch(url);
 		return await temp.text();
@@ -27,41 +22,12 @@
 	};
 
 	const get_plugins_in_config = (data: string) => {
-		const plugins = [];
-		const matches = data.match(/add\s*\(([\s\S]*?)\)/g) ?? [];
+		const plugins: string[] = [];
+		const matches = data.match(/vim.pack.add\s*\(([\s\S]*?)\)/g) ?? [];
 		for (const match of matches) {
-			const directPlugin = /add\s*\(\s*"(.*)?"\s*\)/.exec(match);
-			if (directPlugin && directPlugin.length > 0) {
-				const plugin: plugin = {
-					source: directPlugin[1],
-					depends: []
-				};
-				plugins.push(plugin);
-				continue;
-			}
-			const indirectPlugin = /source\s*=\s*"(.*?)"/.exec(match);
-			const pluginDependsMatch = /depends\s*=\s*\{([\s\r\t\n\S]*?)\}/.exec(match);
-			if (indirectPlugin && indirectPlugin.length > 0) {
-				const depends = [];
-				if (pluginDependsMatch && pluginDependsMatch.length > 0) {
-					const lines = pluginDependsMatch[1].split('\n');
-					for (let line of lines) {
-						line = line.trim();
-						if (line.length > 0) {
-							const dependency = /"(.*?)"/.exec(line);
-							if (dependency) {
-								depends.push(dependency[1]);
-							}
-						}
-					}
-				}
-				const plugin: plugin = {
-					source: indirectPlugin[1],
-					depends: depends
-				};
-				plugins.push(plugin);
-				continue;
-			}
+			match.matchAll(/"([^"]*?)"/g).forEach((plugin) => {
+				plugins.push(plugin[1]);
+			});
 		}
 		return plugins;
 	};
@@ -244,36 +210,15 @@
 		<ol>
 			{#each get_plugins_in_config(res) as plugin, _ (_)}
 				<li>
-					{#if /https:\/\/*/.exec(plugin.source)}
+					{#if /https:\/\/*/.exec(plugin)}
 						<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-						<a href={plugin.source} rel="noopener noreferrer" target="_blank">
-							{plugin.source}
+						<a href={plugin} rel="noopener noreferrer" target="_blank">
+							{plugin}
 						</a>
 					{:else}
-						<a href="https://github.com/{plugin.source}" rel="noopener noreferrer" target="_blank">
-							{plugin.source}
+						<a href="https://github.com/{plugin}" rel="noopener noreferrer" target="_blank">
+							{plugin}
 						</a>
-					{/if}
-					{#if plugin.depends}
-						<ul>
-							{#each plugin.depends as dependency, _ (_)}
-								<li>
-									{#if /https:\/\/*/.exec(dependency)}
-										<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-										<a href={dependency} rel="noopener noreferrer" target="_blank">
-											{dependency}
-										</a>
-									{:else}
-										<a
-											href="https://github.com/{dependency}"
-											rel="noopener noreferrer"
-											target="_blank">
-											{dependency}
-										</a>
-									{/if}
-								</li>
-							{/each}
-						</ul>
 					{/if}
 				</li>
 			{/each}
