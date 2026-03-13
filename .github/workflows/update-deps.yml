@@ -23,8 +23,6 @@ jobs:
           git --version
           node --version
           npm --version
-      - name: Install dependencies
-        run: npm install
       - name: Upgrade packages
         run: npm run update-deps
       - name: Fix Lint
