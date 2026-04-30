@@ -3,8 +3,7 @@
 	"mcp": {
 		"svelte": {
 			"type": "local",
-			"command": "npx",
-			"args": ["-y", "@sveltejs/mcp"]
+			"command": ["npx", "-y", "@sveltejs/mcp"]
 		}
 	}
 }

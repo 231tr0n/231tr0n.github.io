@@ -31,7 +31,7 @@ export default defineConfig(
 		extends: [html.configs.recommended],
 		rules: {
 			'html/indent': ['error', 'tab'],
-			'html/no-extra-spacing-attrs': [
+			'html/no-extra-spacing-tags': [
 				'error',
 				{
 					enforceBeforeSelfClose: true
