@@ -21,7 +21,7 @@
 	},
 	"devDependencies": {
 		"@eslint/compat": "^2.0.5",
-		"@eslint/css": "^1.1.0",
+		"@eslint/css": "^1.2.0",
 		"@eslint/js": "^10.0.1",
 		"@html-eslint/eslint-plugin": "^0.60.0",
 		"@sveltejs/adapter-static": "^3.0.10",
@@ -37,7 +37,7 @@
 		"prettier-plugin-svelte": "^3.5.1",
 		"rollup-plugin-visualizer": "^7.0.1",
 		"svelte": "^5.55.5",
-		"svelte-check": "^4.4.6",
+		"svelte-check": "^4.4.7",
 		"typescript": "^6.0.3",
 		"typescript-eslint": "^8.59.1",
 		"vite": "^8.0.10",
