@@ -20,7 +20,7 @@
 	} = $props();
 
 	const summaryToggler = () => {
-		open = open ? false : true;
+		open = !open;
 	};
 </script>
 
@@ -32,7 +32,7 @@
 				class="summary-toggler zeltron-flex-middle"
 				aria-label="Accordion summary toggler"
 				onclick={summaryToggler}
-				onkeypress={summaryToggler}
+				onkeydown={summaryToggler}
 				type="button">
 				{#if open}
 					<svg
@@ -60,8 +60,7 @@
 			</button>
 			{#if url}
 				{#if external}
-					<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-					<a href={url} rel="noopener noreferrer" target="_blank">
+					<a href={url} rel="noopener noreferrer external" target="_blank">
 						<button type="button">Open</button>
 					</a>
 				{:else}

@@ -211,8 +211,7 @@
 			{#each get_plugins_in_config(res) as plugin, _ (_)}
 				<li>
 					{#if /https:\/\/*/.exec(plugin)}
-						<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -->
-						<a href={plugin} rel="noopener noreferrer" target="_blank">
+						<a href={plugin} rel="noopener noreferrer external" target="_blank">
 							{plugin}
 						</a>
 					{:else}
