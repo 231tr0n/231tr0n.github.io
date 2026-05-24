@@ -24,6 +24,18 @@
 		</li>
 	</ul>
 
+	<h2>Hobbies</h2>
+	<div>
+		<span class="zeltron-badge">Badminton</span>
+		<span class="zeltron-badge">Programming</span>
+		<span class="zeltron-badge">Cycling</span>
+		<span class="zeltron-badge">Chess</span>
+		<span class="zeltron-badge">Gaming</span>
+		<span class="zeltron-badge">Listening to music</span>
+		<span class="zeltron-badge">Watching movies and anime</span>
+		<span class="zeltron-badge">Solving rubik's cubes</span>
+	</div>
+
 	<h2>Work Experience</h2>
 	<ul>
 		<li>
@@ -119,7 +131,35 @@
 		</li>
 	</ol>
 
-	<h2>Technologies</h2>
+	<h2>Interested Domains</h2>
+	<div>
+		<a
+			href="https://en.wikipedia.org/wiki/Data_engineering"
+			rel="noopener noreferrer"
+			target="_blank">
+			<img class="big-logo" alt="Data Engineering" src="/images/dataengineering.avif" />
+		</a>
+		<a
+			href="https://en.wikipedia.org/wiki/Web_development"
+			rel="noopener noreferrer"
+			target="_blank">
+			<img class="big-logo" alt="Web Application development" src="/images/webappdev.avif" />
+		</a>
+		<a
+			href="https://en.wikipedia.org/wiki/Application_security"
+			rel="noopener noreferrer"
+			target="_blank">
+			<img class="big-logo" alt="Web Application security" src="/images/webappsec.avif" />
+		</a>
+		<a
+			href="https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning"
+			rel="noopener noreferrer"
+			target="_blank">
+			<img class="big-logo" alt="AI/ML" src="/images/ai.avif" />
+		</a>
+	</div>
+
+	<h2>Used Technologies</h2>
 	<div>
 		<a href="https://openjdk.org" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Java" src="/images/java.avif" />
@@ -163,6 +203,9 @@
 		<a href="https://www.docker.com" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Docker" src="/images/docker.svg" />
 		</a>
+		<a href="https://kubernetes.io/" rel="noopener noreferrer" target="_blank">
+			<img class="logo" alt="Docker" src="/images/kubernetes.svg" />
+		</a>
 		<a href="https://git-scm.com" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Git" src="/images/git.avif" />
 		</a>
@@ -187,7 +230,6 @@
 		<a href="https://www.lua.org" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Lua" src="/images/lua.svg" />
 		</a>
-		<br />
 		<a href="https://hadoop.apache.org" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Hadoop" src="/images/hadoop.svg" />
 		</a>
@@ -197,43 +239,6 @@
 		<a href="https://spark.apache.org" rel="noopener noreferrer" target="_blank">
 			<img class="logo" alt="Spark" src="/images/spark.svg" />
 		</a>
-		<br />
-		<a
-			href="https://en.wikipedia.org/wiki/Data_engineering"
-			rel="noopener noreferrer"
-			target="_blank">
-			<img class="big-logo" alt="Data Engineering" src="/images/dataengineering.avif" />
-		</a>
-		<a
-			href="https://en.wikipedia.org/wiki/Web_development"
-			rel="noopener noreferrer"
-			target="_blank">
-			<img class="big-logo" alt="Web Application development" src="/images/webappdev.avif" />
-		</a>
-		<a
-			href="https://en.wikipedia.org/wiki/Application_security"
-			rel="noopener noreferrer"
-			target="_blank">
-			<img class="big-logo" alt="Web Application security" src="/images/webappsec.avif" />
-		</a>
-		<a
-			href="https://cloud.google.com/learn/artificial-intelligence-vs-machine-learning"
-			rel="noopener noreferrer"
-			target="_blank">
-			<img class="big-logo" alt="AI/ML" src="/images/ai.avif" />
-		</a>
-	</div>
-
-	<h2>Hobbies</h2>
-	<div>
-		<span class="zeltron-badge">Badminton</span>
-		<span class="zeltron-badge">Programming</span>
-		<span class="zeltron-badge">Cycling</span>
-		<span class="zeltron-badge">Chess</span>
-		<span class="zeltron-badge">Gaming</span>
-		<span class="zeltron-badge">Listening to music</span>
-		<span class="zeltron-badge">Watching movies and anime</span>
-		<span class="zeltron-badge">Solving rubik's cubes</span>
 	</div>
 
 	<h2>Developer Tools</h2>

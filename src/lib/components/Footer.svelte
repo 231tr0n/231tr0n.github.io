@@ -5,6 +5,9 @@
 	<a href="https://www.github.com/231tr0n" rel="noopener noreferrer" target="_blank">
 		<img class="github" alt="Github" src="/images/github-dark.svg" />
 	</a>
+	<a href="https://codeberg.org/231tr0n" rel="noopener noreferrer" target="_blank">
+		<img alt="Codeberg" src="/images/codeberg.svg" />
+	</a>
 	<a href="https://www.gitlab.com/231tr0n" rel="noopener noreferrer" target="_blank">
 		<img alt="Gitlab" src="/images/gitlab.svg" />
 	</a>
