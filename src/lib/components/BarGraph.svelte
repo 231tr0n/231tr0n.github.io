@@ -141,7 +141,12 @@
 
 	div.padding {
 		padding-top: 5px;
-		padding-bottom: 5px;
+	}
+
+	@supports (-moz-appearance: none) {
+		div.padding {
+			padding-bottom: 10px;
+		}
 	}
 
 	div.zeltron-flex-middle {
