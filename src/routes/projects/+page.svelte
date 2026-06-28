@@ -46,8 +46,7 @@
 		for (const repo of nonForkedRepos) {
 			const temp = await fetch(repo.languages_url);
 			const languages: githubLanguages | githubError = (await temp.json()) as
-				| githubLanguages
-				| githubError;
+				githubLanguages | githubError;
 			if ((languages as githubError).message) {
 				throw new Error('Github api rate limit exceeded');
 			}
