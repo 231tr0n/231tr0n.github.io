@@ -11,6 +11,18 @@
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
+		<script>
+			(function () {
+				var theme = localStorage.getItem('theme');
+				if (theme === null) {
+					theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+					localStorage.setItem('theme', theme);
+				}
+				if (theme === 'dark') {
+					document.body.classList.add('dark');
+				}
+			})();
+		</script>
 		<div style="display: contents">%sveltekit.body%</div>
 	</body>
 </html>

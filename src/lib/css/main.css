@@ -46,7 +46,7 @@
 	--color-dark-component-foreground: var(--color-everforest-dark-fg);
 	--color-dark-error: var(--color-everforest-dark-orange);
 	--color-dark-foreground: var(--color-everforest-dark-fg);
-	--color-dark-heading: var(--color-everforest-dark-fg);
+	--color-dark-heading: var(--color-everforest-dark-grey2);
 	--color-dark-keyword: var(--color-everforest-dark-green);
 	--color-dark-strong-background: var(--color-everforest-dark-bg1);
 
@@ -60,7 +60,7 @@
 	--color-light-component-foreground: var(--color-everforest-light-fg);
 	--color-light-error: var(--color-everforest-light-red);
 	--color-light-foreground: var(--color-everforest-light-fg);
-	--color-light-heading: var(--color-everforest-light-fg);
+	--color-light-heading: var(--color-everforest-light-grey2);
 	--color-light-keyword: var(--color-everforest-light-blue);
 	--color-light-strong-background: var(--color-everforest-light-bg1);
 }

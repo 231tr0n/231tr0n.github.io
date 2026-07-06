@@ -14,17 +14,7 @@
 	};
 
 	onMount(() => {
-		if (localStorage.getItem('theme') == null) {
-			if (darkMode().dark) {
-				toggletheme();
-			}
-			localStorage.setItem(
-				'theme',
-				window.document.body.classList.contains('dark') ? 'dark' : 'light'
-			);
-		} else if (localStorage.getItem('theme') == 'dark') {
-			toggletheme();
-		}
+		darkMode().dark = document.body.classList.contains('dark');
 	});
 </script>
 

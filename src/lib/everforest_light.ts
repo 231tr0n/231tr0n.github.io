@@ -54,19 +54,22 @@ const everforestLight = {
 }
 
 .ace-everforest-light .ace_keyword,
-.ace-everforest-light .ace_meta,
 .ace-everforest-light .ace_support.ace_class,
 .ace-everforest-light .ace_support.ace_type {
   color: #F85552
 }
 
+.ace-everforest-light .ace_meta {
+  color: #DF69BA
+}
+
 .ace-everforest-light .ace_constant.ace_character,
 .ace-everforest-light .ace_constant.ace_other {
-  color: #F57D26
+  color: #35A77C
 }
 
 .ace-everforest-light .ace_constant.ace_language {
-  color: #DFA000
+  color: #DF69BA
 }
 
 .ace-everforest-light .ace_constant.ace_numeric {
@@ -79,15 +82,18 @@ const everforestLight = {
 }
 
 .ace-everforest-light .ace_entity.ace_name.ace_function,
+.ace-everforest-light .ace_support.ace_function {
+  color: #8DA101
+}
+
 .ace-everforest-light .ace_entity.ace_name.ace_tag,
-.ace-everforest-light .ace_support.ace_function,
 .ace-everforest-light .ace_variable,
 .ace-everforest-light .ace_variable.ace_language {
   color: #3A94C5
 }
 
 .ace-everforest-light .ace_storage {
-  color: #5C6A72
+  color: #F57D26
 }
 
 .ace-everforest-light .ace_string {

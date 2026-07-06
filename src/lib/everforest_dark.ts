@@ -16,9 +16,12 @@ const everforestDark = {
   color: #D3C6AA
 }
 
-.ace-everforest-dark .ace_entity.ace_other.ace_attribute-name,
-.ace-everforest-dark .ace_storage {
+.ace-everforest-dark .ace_entity.ace_other.ace_attribute-name {
   color: #D3C6AA
+}
+
+.ace-everforest-dark .ace_storage {
+  color: #E69875
 }
 
 .ace-everforest-dark .ace_cursor,
@@ -57,19 +60,22 @@ const everforestDark = {
 }
 
 .ace-everforest-dark .ace_keyword,
-.ace-everforest-dark .ace_meta,
 .ace-everforest-dark .ace_support.ace_class,
 .ace-everforest-dark .ace_support.ace_type {
   color: #E67E80
 }
 
+.ace-everforest-dark .ace_meta {
+  color: #D699B6
+}
+
 .ace-everforest-dark .ace_constant.ace_character,
 .ace-everforest-dark .ace_constant.ace_other {
-  color: #E69875
+  color: #83C092
 }
 
 .ace-everforest-dark .ace_constant.ace_language {
-  color: #DBBC7F
+  color: #D699B6
 }
 
 .ace-everforest-dark .ace_constant.ace_numeric {
@@ -82,8 +88,11 @@ const everforestDark = {
 }
 
 .ace-everforest-dark .ace_entity.ace_name.ace_function,
+.ace-everforest-dark .ace_support.ace_function {
+  color: #A7C080
+}
+
 .ace-everforest-dark .ace_entity.ace_name.ace_tag,
-.ace-everforest-dark .ace_support.ace_function,
 .ace-everforest-dark .ace_variable,
 .ace-everforest-dark .ace_variable.ace_language {
   color: #7FBBB3
