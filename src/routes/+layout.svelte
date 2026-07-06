@@ -49,7 +49,7 @@
 		background-image: url('/images/background.avif');
 		background-position: center;
 		background-repeat: repeat;
-		filter: blur(0px);
+		filter: blur(4px);
 		position: fixed;
 		width: 100%;
 		height: 100%;

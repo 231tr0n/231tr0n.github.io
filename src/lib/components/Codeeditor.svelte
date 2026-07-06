@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import ace from 'ace-code';
-	import everforest_light from '$lib/everforest_light.js';
-	import everforest_dark from '$lib/everforest_dark.js';
+	import ace_everforest_light from '$lib/ace-themes/ace-everforest-light.js';
+	import ace_everforest_dark from '$lib/ace-themes/ace-everforest-dark.js';
 	import vim from 'ace-code/src/keyboard/vim';
 	import vscode from 'ace-code/src/keyboard/vscode';
 	import beautifier from 'ace-code/src/ext/beautify';
@@ -114,9 +114,9 @@
 		editor.setShowPrintMargin(false);
 		$effect(() => {
 			if (darkMode().dark) {
-				editor.setTheme(everforest_dark);
+				editor.setTheme(ace_everforest_dark);
 			} else {
-				editor.setTheme(everforest_light);
+				editor.setTheme(ace_everforest_light);
 			}
 		});
 
