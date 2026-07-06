@@ -1,4 +1,4 @@
-let dark = $state(false);
+let dark = $state(true);
 
 export const darkMode = () => {
 	return {

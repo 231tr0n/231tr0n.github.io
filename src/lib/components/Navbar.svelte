@@ -4,17 +4,9 @@
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 
-	let dark = $state(false);
-
 	const toggletheme = () => {
 		window.document.body.classList.toggle('dark');
-		if (window.document.body.classList.contains('dark')) {
-			darkMode().dark = true;
-			dark = true;
-		} else {
-			darkMode().dark = false;
-			dark = false;
-		}
+		darkMode().dark = window.document.body.classList.contains('dark');
 		localStorage.setItem(
 			'theme',
 			window.document.body.classList.contains('dark') ? 'dark' : 'light'
@@ -45,7 +37,7 @@
 		<a href={resolve('/games')}><button type="button">Games</button></a>
 	</div>
 	<button class="theme-changer zeltron-strong-component" onclick={toggletheme} type="button">
-		{#if dark}
+		{#if darkMode().dark}
 			<svg
 				fill="currentColor"
 				version="1.1"
