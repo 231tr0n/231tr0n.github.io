@@ -1,6 +1,7 @@
 :root {
 	--color-everforest-dark-aqua: #83c092;
 	--color-everforest-dark-bg-dim: #232a2e;
+	--color-everforest-dark-bg-visual: #543a48;
 	--color-everforest-dark-bg0: #2d353b;
 	--color-everforest-dark-bg1: #343f44;
 	--color-everforest-dark-bg2: #3d484d;
@@ -20,6 +21,7 @@
 
 	--color-everforest-light-aqua: #35a77c;
 	--color-everforest-light-bg-dim: #efebd4;
+	--color-everforest-light-bg-visual: #eaedc8;
 	--color-everforest-light-bg0: #fdf6e3;
 	--color-everforest-light-bg1: #f4f0d9;
 	--color-everforest-light-bg3: #e6e2cc;
@@ -38,6 +40,7 @@
 
 	--color-dark-anchor: var(--color-everforest-dark-purple);
 	--color-dark-background: var(--color-everforest-dark-bg0);
+	--color-dark-visual: var(--color-everforest-dark-bg-visual);
 	--color-dark-badge-background: transparent;
 	--color-dark-badge-foreground: var(--color-everforest-dark-green);
 	--color-dark-button-background: var(--color-dark-component-background);
@@ -52,6 +55,7 @@
 
 	--color-light-anchor: var(--color-everforest-light-purple);
 	--color-light-background: var(--color-everforest-light-bg0);
+	--color-light-visual: var(--color-everforest-light-bg-visual);
 	--color-light-badge-background: transparent;
 	--color-light-badge-foreground: var(--color-everforest-light-blue);
 	--color-light-button-background: var(--color-light-component-background);

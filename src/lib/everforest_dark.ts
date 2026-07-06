@@ -24,12 +24,18 @@ const everforestDark = {
   color: #E69875
 }
 
-.ace-everforest-dark .ace_cursor,
-.ace-everforest-dark .ace_string.ace_regexp {
+.ace-everforest-dark .ace_cursor {
   color: #E67E80
 }
 
-.ace-everforest-dark .ace_marker-layer .ace_active-line,
+.ace-everforest-dark .ace_string.ace_regexp {
+  color: #A7C080
+}
+
+.ace-everforest-dark .ace_marker-layer .ace_active-line {
+  background: #343F44
+}
+
 .ace-everforest-dark .ace_marker-layer .ace_selection {
   background: #543A48
 }
@@ -83,7 +89,7 @@ const everforestDark = {
 }
 
 .ace-everforest-dark .ace_fold {
-  background-color: #7FBBB3;
+  background-color: #7A8478;
   border-color: #859289
 }
 
@@ -92,7 +98,10 @@ const everforestDark = {
   color: #A7C080
 }
 
-.ace-everforest-dark .ace_entity.ace_name.ace_tag,
+.ace-everforest-dark .ace_entity.ace_name.ace_tag {
+  color: #E69875
+}
+
 .ace-everforest-dark .ace_variable,
 .ace-everforest-dark .ace_variable.ace_language {
   color: #7FBBB3

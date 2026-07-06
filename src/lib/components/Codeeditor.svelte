@@ -310,7 +310,23 @@
 	}
 
 	.editor-height {
-		height: calc(100% - 66px);
+		flex: 1;
+	}
+
+	.editor-block {
+		width: 100%;
+		box-sizing: border-box;
+		overflow: auto;
+		height: calc(100vh - 20vh - 50px - 50px);
+		display: flex;
+		flex-direction: column;
+	}
+
+	.context {
+		padding: 5px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 	}
 
 	svg {
@@ -342,24 +358,9 @@
 		border-bottom: 1px solid var(--color-dark-component-foreground);
 	}
 
-	.editor-block {
-		width: 100%;
-		box-sizing: border-box;
-		overflow: auto;
-		height: calc(100vh - 20vh - 50px - 50px);
-	}
-
-	.context {
-		padding: 5px;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
-
 	:global(.ace_editor) {
 		font-family: Roboto-Mono;
 		font-size: 15px;
-		background-color: unset;
 	}
 
 	:global(.ace-everforest-light .ace_gutter-layer) {
@@ -392,42 +393,26 @@
 		background: unset;
 	}
 
-	:global(.ace-everforest-dark .ace_gutter) {
-		background-color: unset;
-	}
-
-	:global(.ace-everforest-light .ace_gutter) {
-		background-color: unset;
-	}
-
 	:global(.ace-everforest-dark .ace_fold) {
-		background-color: var(--color-dark-component-background);
-		border: 0px;
+		background-color: var(--color-dark-visual);
+		border: none;
+		border-radius: 3px;
 	}
 
 	:global(.ace-everforest-light .ace_fold) {
-		background-color: var(--color-light-component-background);
-		border: 0px;
+		background-color: var(--color-light-visual);
+		border: none;
+		border-radius: 3px;
 	}
 
+	:global(.ace-everforest-dark .ace_fold-widget:hover),
 	:global(.ace-everforest-dark .ace_fold:hover) {
 		border: 2px solid var(--color-dark-anchor);
 	}
 
+	:global(.ace-everforest-light .ace_fold-widget:hover),
 	:global(.ace-everforest-light .ace_fold:hover) {
 		border: 2px solid var(--color-light-anchor);
-	}
-
-	:global(.ace_fold-widget:hover) {
-		box-shadow: unset;
-		border: 1px solid var(--color-light-anchor);
-		background-color: unset;
-	}
-
-	:global(.ace_dark .ace_fold-widget:hover) {
-		box-shadow: unset;
-		border: 1px solid var(--color-dark-anchor);
-		background-color: unset;
 	}
 
 	line {

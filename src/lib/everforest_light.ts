@@ -77,7 +77,7 @@ const everforestLight = {
 }
 
 .ace-everforest-light .ace_fold {
-  background-color: #3A94C5;
+  background-color: #A6B0A0;
   border-color: #939F91
 }
 
@@ -86,7 +86,10 @@ const everforestLight = {
   color: #8DA101
 }
 
-.ace-everforest-light .ace_entity.ace_name.ace_tag,
+.ace-everforest-light .ace_entity.ace_name.ace_tag {
+  color: #F57D26
+}
+
 .ace-everforest-light .ace_variable,
 .ace-everforest-light .ace_variable.ace_language {
   color: #3A94C5
@@ -101,7 +104,7 @@ const everforestLight = {
 }
 
 .ace-everforest-light .ace_string.ace_regexp {
-  color: #F85552
+  color: #8DA101
 }
 
 .ace-everforest-light .ace_comment,
