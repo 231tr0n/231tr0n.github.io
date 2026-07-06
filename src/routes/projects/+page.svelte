@@ -6,6 +6,7 @@
 	import Post from '$lib/components/Post.svelte';
 	import type { PostData } from '$lib/types';
 	import { animationDuration } from '$lib/animation.constants';
+	import { onMount } from 'svelte';
 
 	interface githubError {
 		message: string;
@@ -23,6 +24,9 @@
 
 	let progressLength = $state(0);
 	let fullCompletionLength = $state(0);
+	let reposData = $state<PostData[] | null>(null);
+	let languagesPercentageList = $state<Record<string, number> | null>(null);
+	let fetchError = $state<string | null>(null);
 
 	const fetchGithubRepoData = async (url: string) => {
 		const languagesList: Record<string, number> = {};
@@ -87,28 +91,38 @@
 
 		return { reposData, languagesPercentageList };
 	};
+
+	onMount(async () => {
+		try {
+			const result = await fetchGithubRepoData('https://api.github.com/users/231tr0n/repos');
+			reposData = result.reposData;
+			languagesPercentageList = result.languagesPercentageList;
+		} catch (e) {
+			fetchError = e instanceof Error ? e.message : 'Unknown error';
+		}
+	});
 </script>
 
 <Page>
 	<h1>Projects</h1>
 
-	{#await fetchGithubRepoData('https://api.github.com/users/231tr0n/repos')}
-		<br />
-		<Progress max={fullCompletionLength} value={progressLength}></Progress>
-	{:then res}
+	{#if fetchError}
+		<div class="zeltron-error">{fetchError}</div>
+	{:else if reposData && languagesPercentageList}
 		<Accordion name="Github Language Statistics" open={true}>
 			<BarGraph
 				context="Github"
-				data={res.languagesPercentageList}
+				data={languagesPercentageList}
 				height={10}
 				sort={true}
 				title="Language Statistics"></BarGraph>
 		</Accordion>
 		<br />
-		{#each Object.values(res.reposData) as repo, _ (_)}
+		{#each reposData as repo (repo.name)}
 			<Post post={repo} />
 		{/each}
-	{:catch error}
-		<div class="zeltron-error">{error}</div>
-	{/await}
+	{:else}
+		<br />
+		<Progress max={fullCompletionLength} value={progressLength}></Progress>
+	{/if}
 </Page>

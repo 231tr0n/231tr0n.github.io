@@ -1,4 +1,4 @@
-<footer class="zeltron-flex-middle zeltron-blur">
+<footer class="zeltron-flex-middle zeltron-body-background">
 	<a href="mailto:zeltronsrikar@gmail.com" rel="noopener noreferrer" target="_blank">
 		<img alt="Gmail" src="/images/gmail.svg" />
 	</a>
@@ -36,11 +36,11 @@
 		height: 45px;
 		box-sizing: border-box;
 		z-index: 7;
-		border-top: 1px solid var(--color-light-foreground);
+		border-top: 1px solid var(--color-light-component-background);
 	}
 
 	:global(body.dark) footer {
-		border-top: 1px solid var(--color-dark-foreground);
+		border-top: 1px solid var(--color-dark-component-background);
 	}
 
 	img {

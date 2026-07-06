@@ -3,11 +3,21 @@
 	import Loading from '$lib/components/Loading.svelte';
 	import Codeeditor from '$lib/components/Codeeditor.svelte';
 	import luaMode from 'ace-code/src/mode/lua';
+	import { onMount } from 'svelte';
 
-	const fetch_neovim_config = async (url: string) => {
-		const temp = await fetch(url);
-		return await temp.text();
-	};
+	let configData = $state<string | null>(null);
+	let configError = $state<string | null>(null);
+
+	onMount(async () => {
+		try {
+			const temp = await fetch(
+				'https://raw.githubusercontent.com/231tr0n/config/main/nvim/init.lua'
+			);
+			configData = await temp.text();
+		} catch (e) {
+			configError = e instanceof Error ? e.message : 'Unknown error';
+		}
+	});
 
 	const get_sections_in_config = (data: string) => {
 		const contents = data.split('\n\n');
@@ -203,12 +213,12 @@
 		plugins.
 	</p>
 	<h2>Configuration</h2>
-	{#await fetch_neovim_config('https://raw.githubusercontent.com/231tr0n/config/main/nvim/init.lua')}
-		<Loading />
-	{:then res}
+	{#if configError}
+		<div class="zeltron-error">{configError}</div>
+	{:else if configData}
 		<h3>Plugins used in the configuration</h3>
 		<ol>
-			{#each get_plugins_in_config(res) as plugin, _ (_)}
+			{#each get_plugins_in_config(configData) as plugin, _ (_)}
 				<li>
 					{#if /https:\/\/*/.exec(plugin)}
 						<a href={plugin} rel="noopener noreferrer external" target="_blank">
@@ -224,7 +234,7 @@
 		</ol>
 		<h3>Configuration split into meaningful chunks</h3>
 		<ol>
-			{#each Object.entries(get_sections_in_config(res)) as [heading, block] (heading)}
+			{#each Object.entries(get_sections_in_config(configData)) as [heading, block] (heading)}
 				<li>{heading}</li>
 				<Codeeditor
 					code={block}
@@ -234,7 +244,7 @@
 					readOnly={true} />
 			{/each}
 		</ol>
-	{:catch error}
-		<div class="zeltron-error">{error}</div>
-	{/await}
+	{:else}
+		<Loading />
+	{/if}
 </Page>

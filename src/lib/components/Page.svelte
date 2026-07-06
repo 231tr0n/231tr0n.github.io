@@ -85,7 +85,7 @@
 		{/if}
 		{@render children?.()}
 	</div>
-	<div class="zeltron-body-background zeltron-blur zeltron-border"></div>
+	<div class="zeltron-body-background zeltron-border"></div>
 </div>
 
 <style>
@@ -117,7 +117,6 @@
 	}
 
 	div.zeltron-body-background {
-		background-color: unset;
 		position: fixed;
 		top: 44px;
 		bottom: 44px;

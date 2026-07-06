@@ -94,8 +94,12 @@
 
 	.summary {
 		list-style: none;
-		border-bottom: 1px solid var(--color-dark-foreground);
+		border-bottom: 1px solid var(--color-light-component-background);
 		margin-bottom: 5px;
+	}
+
+	:global(body.dark) .summary {
+		border-bottom: 1px solid var(--color-dark-component-background);
 	}
 
 	a > button {

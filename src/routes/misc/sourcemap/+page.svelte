@@ -2,16 +2,22 @@
 	import Page from '$lib/components/Page.svelte';
 	import Sandbox from '$lib/components/Sandbox.svelte';
 	import Loading from '$lib/components/Loading.svelte';
+	import { onMount } from 'svelte';
 
-	const fetchSourceMap = async () => {
-		const fetchedUrl = await fetch(
-			'https://raw.githubusercontent.com/231tr0n/231tr0n.github.io/main/stats.html'
-		);
-		if (!fetchedUrl.ok) {
-			throw new Error('Error loading stats file');
+	let sourceMap = $state<string | null>(null);
+	let sourceMapError = $state<string | null>(null);
+
+	onMount(async () => {
+		try {
+			const response = await fetch(
+				'https://raw.githubusercontent.com/231tr0n/231tr0n.github.io/main/stats.html'
+			);
+			if (!response.ok) throw new Error('Error loading stats file');
+			sourceMap = await response.text();
+		} catch (e) {
+			sourceMapError = e instanceof Error ? e.message : 'Unknown error';
 		}
-		return await fetchedUrl.text();
-	};
+	});
 </script>
 
 <Page scrollspy={true}>
@@ -24,9 +30,11 @@
 	</ul>
 
 	<h2>Sourcemap</h2>
-	{#await fetchSourceMap()}
-		<Loading />
-	{:then sourceMap}
+	{#if sourceMapError}
+		<div class="zeltron-error">{sourceMapError}</div>
+	{:else if sourceMap}
 		<Sandbox description="" srcDoc={sourceMap} title="Source Map" />
-	{/await}
+	{:else}
+		<Loading />
+	{/if}
 </Page>

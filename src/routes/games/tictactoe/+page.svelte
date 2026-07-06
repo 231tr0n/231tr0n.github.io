@@ -6,43 +6,65 @@
 	import htmlMode from 'ace-code/src/mode/html';
 	import cssMode from 'ace-code/src/mode/css';
 	import javascriptMode from 'ace-code/src/mode/javascript';
+	import { onMount } from 'svelte';
 
-	const fetch_url = async (url: string) => {
-		const data = await fetch(url);
-		return await data.text();
-	};
+	let jsCode = $state<string | null>(null);
+	let cssCode = $state<string | null>(null);
+	let htmlCode = $state<string | null>(null);
+	let jsError = $state<string | null>(null);
+	let cssError = $state<string | null>(null);
+	let htmlError = $state<string | null>(null);
+
+	onMount(async () => {
+		const results = await Promise.allSettled([
+			fetch('/resources/snippets/tictactoe/index.js').then((r) => r.text()),
+			fetch('/resources/snippets/tictactoe/style.css').then((r) => r.text()),
+			fetch('/resources/snippets/tictactoe/index.html').then((r) => r.text())
+		]);
+		if (results[0].status === 'fulfilled') jsCode = results[0].value;
+		else jsError = 'Failed to load JS';
+		if (results[1].status === 'fulfilled') cssCode = results[1].value;
+		else cssError = 'Failed to load CSS';
+		if (results[2].status === 'fulfilled') htmlCode = results[2].value;
+		else htmlError = 'Failed to load HTML';
+	});
 </script>
 
 <Page scrollspy={true}>
 	<h1>TicTacToe</h1>
 
 	<h2>Source Code</h2>
-	{#await fetch_url('/resources/snippets/tictactoe/index.js')}
-		<Loading />
-	{:then res}
+	{#if jsError}
+		<div class="zeltron-error">{jsError}</div>
+	{:else if jsCode}
 		<Codeeditor
-			code={res}
+			code={jsCode}
 			fileName="index.js"
 			langName="javascript"
 			mode={javascriptMode}
 			readOnly={true} />
-	{:catch error}
-		<div class="zeltron-error">{error}</div>
-	{/await}
-	{#await fetch_url('/resources/snippets/tictactoe/style.css')}
+	{:else}
 		<Loading />
-	{:then res}
-		<Codeeditor code={res} fileName="style.css" langName="css" mode={cssMode} readOnly={true} />
-	{:catch error}
-		<div class="zeltron-error">{error}</div>
-	{/await}
-	{#await fetch_url('/resources/snippets/tictactoe/index.html')}
+	{/if}
+	{#if cssError}
+		<div class="zeltron-error">{cssError}</div>
+	{:else if cssCode}
+		<Codeeditor code={cssCode} fileName="style.css" langName="css" mode={cssMode} readOnly={true} />
+	{:else}
 		<Loading />
-	{:then res}
-		<Codeeditor code={res} fileName="index.html" langName="html" mode={htmlMode} readOnly={true} />
-	{:catch error}
-		<div class="zeltron-error">{error}</div>
-	{/await}
+	{/if}
+	{#if htmlError}
+		<div class="zeltron-error">{htmlError}</div>
+	{:else if htmlCode}
+		<Codeeditor
+			code={htmlCode}
+			fileName="index.html"
+			langName="html"
+			mode={htmlMode}
+			readOnly={true} />
+	{:else}
+		<Loading />
+	{/if}
 
 	<h2>Output</h2>
 	<Sandbox description="Game" src="/resources/snippets/tictactoe/index.html" title="tic-tac-toe" />

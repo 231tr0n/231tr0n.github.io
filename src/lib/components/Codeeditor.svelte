@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import ace from 'ace-code';
-	import solarized_light from 'ace-code/src/theme/solarized_light';
-	import solarized_dark from 'ace-code/src/theme/solarized_dark';
+	import everforest_light from '$lib/everforest_light.js';
+	import everforest_dark from '$lib/everforest_dark.js';
 	import vim from 'ace-code/src/keyboard/vim';
 	import vscode from 'ace-code/src/keyboard/vscode';
 	import beautifier from 'ace-code/src/ext/beautify';
@@ -114,9 +114,9 @@
 		editor.setShowPrintMargin(false);
 		$effect(() => {
 			if (darkMode().dark) {
-				editor.setTheme(solarized_dark);
+				editor.setTheme(everforest_dark);
 			} else {
-				editor.setTheme(solarized_light);
+				editor.setTheme(everforest_light);
 			}
 		});
 
@@ -362,59 +362,59 @@
 		background-color: unset;
 	}
 
-	:global(.ace-solarized-light .ace_gutter-layer) {
+	:global(.ace-everforest-light .ace_gutter-layer) {
 		border-right: 2px solid var(--color-light-component-background);
 		color: var(--color-light-foreground);
 	}
 
-	:global(.ace-solarized-dark .ace_gutter-layer) {
+	:global(.ace-everforest-dark .ace_gutter-layer) {
 		border-right: 2px solid var(--color-dark-component-background);
 		color: var(--color-dark-foreground);
 	}
 
-	:global(.ace-solarized-light .ace_indent-guide) {
+	:global(.ace-everforest-light .ace_indent-guide) {
 		background: unset;
 		border-right: 1px solid var(--color-light-component-background);
 	}
 
-	:global(.ace-solarized-light .ace_indent-guide-active) {
+	:global(.ace-everforest-light .ace_indent-guide-active) {
 		border-right: 1px solid var(--color-light-component-background);
 		background: unset;
 	}
 
-	:global(.ace-solarized-dark .ace_indent-guide) {
+	:global(.ace-everforest-dark .ace_indent-guide) {
 		border-right: 1px solid var(--color-dark-component-background);
 		background: unset;
 	}
 
-	:global(.ace-solarized-dark .ace_indent-guide-active) {
+	:global(.ace-everforest-dark .ace_indent-guide-active) {
 		border-right: 1px solid var(--color-dark-component-background);
 		background: unset;
 	}
 
-	:global(.ace-solarized-dark .ace_gutter) {
+	:global(.ace-everforest-dark .ace_gutter) {
 		background-color: unset;
 	}
 
-	:global(.ace-solarized-light .ace_gutter) {
+	:global(.ace-everforest-light .ace_gutter) {
 		background-color: unset;
 	}
 
-	:global(.ace-solarized-dark .ace_fold) {
+	:global(.ace-everforest-dark .ace_fold) {
 		background-color: var(--color-dark-component-background);
 		border: 0px;
 	}
 
-	:global(.ace-solarized-light .ace_fold) {
+	:global(.ace-everforest-light .ace_fold) {
 		background-color: var(--color-light-component-background);
 		border: 0px;
 	}
 
-	:global(.ace-solarized-dark .ace_fold:hover) {
+	:global(.ace-everforest-dark .ace_fold:hover) {
 		border: 2px solid var(--color-dark-anchor);
 	}
 
-	:global(.ace-solarized-light .ace_fold:hover) {
+	:global(.ace-everforest-light .ace_fold:hover) {
 		border: 2px solid var(--color-light-anchor);
 	}
 
