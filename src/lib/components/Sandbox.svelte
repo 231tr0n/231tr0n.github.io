@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { UIEventHandler } from 'svelte/elements';
 	import Frame from './Frame.svelte';
+	import { darkMode } from '$lib/dark.svelte.js';
 
 	let {
 		title,
@@ -15,18 +15,28 @@
 		srcDoc?: string;
 	} = $props();
 
-	let iframe: HTMLIFrameElement;
+	let iframe: HTMLIFrameElement | undefined;
 
 	const resized: UIEventHandler<HTMLIFrameElement> = (element) => {
 		element.currentTarget.style.height = '100%';
 	};
 
-	onMount(() => {
-		$effect(() => {
-			if (!srcDoc) return;
+	$effect(() => {
+		const isDark = darkMode().dark;
+		if (!iframe || srcDoc.length === 0) return;
+		const hasBodyBg =
+			/<body[^>]*\bbackground\s*[=:]/i.test(srcDoc) ||
+			/(?:body|html)\s*\{[^}]*\bbackground\b/i.test(srcDoc);
+		if (hasBodyBg) {
 			iframe.srcdoc = srcDoc;
-			iframe.src = iframe.src;
-		});
+		} else {
+			const root = document.documentElement;
+			const style = getComputedStyle(root);
+			const bg = style
+				.getPropertyValue(isDark ? '--color-dark-background' : '--color-light-background')
+				.trim();
+			iframe.srcdoc = `<html style="background:${bg}"><body>${srcDoc}</body></html>`;
+		}
 	});
 </script>
 

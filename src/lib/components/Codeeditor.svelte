@@ -360,6 +360,6 @@
 
 	line {
 		stroke: currentColor;
-		stroke-width: '1';
+		stroke-width: 1;
 	}
 </style>

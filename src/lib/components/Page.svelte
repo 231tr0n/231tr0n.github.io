@@ -23,57 +23,54 @@
 		selectedItem = value;
 	};
 
-	if ((() => scrollspy)()) {
-		onSetSelectedItem(0);
+	$effect(() => {
+		if (!scrollspy) return;
+		if (selectedItem >= 0 && selectedItem < sections.length) {
+			const currentDiv = sections[selectedItem];
+			const currentDivBoundingClientRect = currentDiv.getBoundingClientRect();
+			pageDiv.scrollBy(
+				0,
+				currentDivBoundingClientRect.top -
+					currentDivBoundingClientRect.height -
+					(breadcrumb as HTMLHeadingElement).offsetHeight -
+					15
+			);
+		}
+	});
 
-		$effect(() => {
-			if (selectedItem >= 0 && selectedItem < sections.length) {
-				const currentDiv = sections[selectedItem];
-				const currentDivBoundingClientRect = currentDiv.getBoundingClientRect();
-				pageDiv.scrollBy(
-					0,
-					currentDivBoundingClientRect.top -
-						currentDivBoundingClientRect.height -
-						(breadcrumb as HTMLHeadingElement).offsetHeight -
-						15
-				);
-			}
-		});
-
-		onMount(() => {
-			pageDiv.onscroll = () => {
-				let prev = null;
-				for (const [index, section] of sections.entries()) {
-					if (
-						(breadcrumb as HTMLHeadingElement).offsetTop +
-							(breadcrumb as HTMLHeadingElement).offsetHeight +
-							5 <
-						section.offsetTop
-					) {
-						if (prev) {
-							currentItem = index - 1;
-						} else {
-							currentItem = index;
-						}
-						break;
+	onMount(() => {
+		if (!scrollspy) return;
+		pageDiv.onscroll = () => {
+			let prev = null;
+			for (const [index, section] of sections.entries()) {
+				if (
+					(breadcrumb as HTMLHeadingElement).offsetTop +
+						(breadcrumb as HTMLHeadingElement).offsetHeight +
+						5 <
+					section.offsetTop
+				) {
+					if (prev) {
+						currentItem = index - 1;
 					} else {
 						currentItem = index;
 					}
-					prev = section;
+					break;
+				} else {
+					currentItem = index;
 				}
-			};
+				prev = section;
+			}
+		};
 
-			setTimeout(() => {
-				name = document.querySelector('div.page div.content h1') ?? document.createElement('div');
-				sections = Array.from(document.querySelectorAll('div.page div.content h2'));
-				sections = Array.from(sections);
-				sections.unshift(name);
-				for (const section of sections) {
-					selectionMenuArray.push(section.innerText);
-				}
-			}, animationDelay + animationDuration);
-		});
-	}
+		setTimeout(() => {
+			name = document.querySelector('div.page div.content h1') ?? document.createElement('div');
+			sections = Array.from(document.querySelectorAll('div.page div.content h2'));
+			sections.unshift(name);
+			for (const section of sections) {
+				selectionMenuArray.push(section.innerText);
+			}
+		}, animationDelay + animationDuration);
+	});
 </script>
 
 <div bind:this={pageDiv} class="page">

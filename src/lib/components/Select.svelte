@@ -20,12 +20,7 @@
 
 	let open = $state(false);
 	let selectContext: HTMLElement;
-
-	(() => {
-		if (emptyItem) {
-			items.unshift('');
-		}
-	})();
+	const localItems = $derived(emptyItem ? ['', ...items] : [...items]);
 
 	const selectItem = (item: number) => {
 		currentItem = item;
@@ -45,7 +40,7 @@
 
 	$effect(() => {
 		let largestItem = '';
-		for (const item of items) {
+		for (const item of localItems) {
 			if (largestItem.length < item.length) {
 				largestItem = item;
 			}
@@ -66,7 +61,7 @@
 		aria-label="Select menu toggler"
 		onclick={toggleSelectionMenu}
 		type="button">
-		{items[currentItem]}
+		{localItems[currentItem]}
 		{#if open}
 			<svg
 				fill="currentColor"
@@ -96,7 +91,7 @@
 			class="select-menu zeltron-flex-middle zeltron-component zeltron-thick-component-border"
 			transition:slide>
 			<div class="content">
-				{#each items.entries() as [index, item] (index)}
+				{#each localItems.entries() as [index, item] (index)}
 					<button
 						onclick={() => {
 							selectItem(index);
