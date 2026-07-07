@@ -93,7 +93,6 @@
 	}
 
 	.summary {
-		list-style: none;
 		border-bottom: 1px solid var(--color-light-component-background);
 		margin-bottom: 5px;
 	}
@@ -117,8 +116,8 @@
 
 	h2 {
 		width: 100%;
-		border: 0px;
 		margin: 0px;
+		border: 0px;
 	}
 
 	:global(body.dark) h2 {

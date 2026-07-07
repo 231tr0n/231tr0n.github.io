@@ -306,12 +306,10 @@
 	.logo {
 		padding: 2px;
 		height: 40px;
-		width: auto;
 	}
 
 	.big-logo {
 		padding: 2px;
 		height: 80px;
-		width: auto;
 	}
 </style>

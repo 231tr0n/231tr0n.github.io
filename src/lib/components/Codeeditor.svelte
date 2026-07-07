@@ -9,6 +9,7 @@
 	import { darkMode } from '$lib/dark.svelte.js';
 	import type { KeyboardHandler } from 'ace-code/src/keyboard/keybinding';
 	import type { SyntaxMode } from 'ace-code/src/edit_session';
+	import Frame from './Frame.svelte';
 
 	interface aceKeyboardHandler {
 		handler: KeyboardHandler;
@@ -44,11 +45,7 @@
 
 	let editorDiv: HTMLElement;
 	let editor: ace.Editor;
-	let fullscreen = $state(false);
-	let editorElement: HTMLElement;
-	let editorBlock: HTMLElement;
 	let copied = $state(false);
-	let storedHeight = '';
 
 	const copy = async () => {
 		await navigator.clipboard.writeText(editor.session.getValue());
@@ -56,14 +53,6 @@
 		setTimeout(() => {
 			copied = false;
 		}, 2000);
-	};
-
-	const toggleFullscreen = async () => {
-		if (document.fullscreenElement) {
-			await document.exitFullscreen();
-		} else {
-			await editorElement.requestFullscreen();
-		}
 	};
 
 	const toggleWrap = () => {
@@ -119,201 +108,166 @@
 				editor.setTheme(ace_everforest_light);
 			}
 		});
-
-		editorElement.onfullscreenchange = () => {
-			if (document.fullscreenElement) {
-				storedHeight = editorBlock.style.height;
-				editorBlock.style.height = '100vh';
-				editorElement.classList.add('zeltron-body-background');
-				fullscreen = true;
-			} else {
-				editorBlock.style.height = storedHeight;
-				editorElement.classList.remove('zeltron-body-background');
-				fullscreen = false;
-			}
-			editor.resize();
-		};
 	});
+
+	const onFrameFullscreenChange = () => {
+		editor.resize();
+	};
 </script>
 
-<div bind:this={editorElement} class="zeltron-flex-middle">
-	<div bind:this={editorBlock} class="editor-block zeltron-thick-component-border">
-		<div class="filename context zeltron-component">
-			<span>
-				{readOnly ? 'Snippet' : 'Editor'}
-			</span>
-			{#if readOnly && fileName != ''}
-				<span>
-					{fileName}
-				</span>
+<Frame
+	caption={readOnly && fileName ? fileName : ''}
+	contextLabel={langName}
+	frameClass="codeeditor-frame"
+	label={readOnly ? 'Snippet' : 'Editor'}
+	onFullscreenChange={onFrameFullscreenChange}>
+	{#snippet toolbar({ toggleFullscreen, fullscreen })}
+		<button class="zeltron-inline-flex-middle" aria-label="Copy" onclick={copy} type="button">
+			{#if !copied}
+				<svg
+					fill="currentColor"
+					height="16"
+					viewBox="0 0 16 16"
+					width="16"
+					xmlns="http://www.w3.org/2000/svg">
+					<path
+						d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
+					<path
+						d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" />
+				</svg>
+			{:else}
+				<svg
+					fill="currentColor"
+					height="16"
+					viewBox="0 0 16 16"
+					width="16"
+					xmlns="http://www.w3.org/2000/svg">
+					<path
+						d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z"
+						fill-rule="evenodd" />
+					<path
+						d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
+					<path
+						d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" />
+				</svg>
 			{/if}
-		</div>
-		<div class="context zeltron-component">
-			<span>
-				<button class="zeltron-inline-flex-middle" aria-label="Copy" onclick={copy} type="button">
-					{#if !copied}
-						<svg
-							fill="currentColor"
-							height="16"
-							viewBox="0 0 16 16"
-							width="16"
-							xmlns="http://www.w3.org/2000/svg">
-							<path
-								d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
-							<path
-								d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" />
-						</svg>
-					{:else}
-						<svg
-							fill="currentColor"
-							height="16"
-							viewBox="0 0 16 16"
-							width="16"
-							xmlns="http://www.w3.org/2000/svg">
-							<path
-								d="M10.854 7.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 9.793l2.646-2.647a.5.5 0 0 1 .708 0z"
-								fill-rule="evenodd" />
-							<path
-								d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z" />
-							<path
-								d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z" />
-						</svg>
-					{/if}
-				</button>
-				<button
-					class="zeltron-inline-flex-middle"
-					aria-label="Toggle fullscreen"
-					onclick={toggleFullscreen}
-					type="button">
-					{#if !fullscreen}
-						<svg
-							fill="currentColor"
-							height="16"
-							viewBox="0 0 16 16"
-							width="16"
-							xmlns="http://www.w3.org/2000/svg">
-							<path
-								d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z" />
-						</svg>
-					{:else}
-						<svg
-							fill="currentColor"
-							height="16"
-							viewBox="0 0 16 16"
-							width="16"
-							xmlns="http://www.w3.org/2000/svg">
-							<path
-								d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5zM0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zm10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4z" />
-						</svg>
-					{/if}
-				</button>
-				<button
-					class="zeltron-inline-flex-middle"
-					aria-label="Wrap"
-					onclick={toggleWrap}
-					type="button">
-					{#if wrap}
-						<svg
-							fill="currentColor"
-							height="16"
-							viewBox="0 0 16 16"
-							width="16"
-							xmlns="http://www.w3.org/2000/svg">
-							<line x1="0" x2="16" y1="0" y2="16" />
-							<path
-								d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h9a2.5 2.5 0 0 1 0 5h-1.293l.647.646a.5.5 0 0 1-.708.708l-1.5-1.5a.5.5 0 0 1 0-.708l1.5-1.5a.5.5 0 0 1 .708.708l-.647.646H11.5a1.5 1.5 0 0 0 0-3h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5"
-								fill-rule="evenodd" />
-						</svg>
-					{:else}
-						<svg
-							fill="currentColor"
-							height="16"
-							viewBox="0 0 16 16"
-							width="16"
-							xmlns="http://www.w3.org/2000/svg">
-							<path
-								d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h9a2.5 2.5 0 0 1 0 5h-1.293l.647.646a.5.5 0 0 1-.708.708l-1.5-1.5a.5.5 0 0 1 0-.708l1.5-1.5a.5.5 0 0 1 .708.708l-.647.646H11.5a1.5 1.5 0 0 0 0-3h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5"
-								fill-rule="evenodd" />
-						</svg>
-					{/if}
-				</button>
-				{#if !readOnly}
-					<button
-						class="zeltron-inline-flex-middle"
-						aria-label="Toggle keybindings"
-						onclick={toggleKeybinds}
-						type="button">
-						{#if vimMode}
-							<img class="logo" alt="Vim" src="/images/vim.avif" />
-						{:else}
-							<img class="logo" alt="Vscode" src="/images/vscode.avif" />
-						{/if}
-					</button>
-					<button
-						class="zeltron-inline-flex-middle"
-						aria-label="Format"
-						onclick={beautify}
-						type="button">
-						<svg
-							fill="currentColor"
-							height="16"
-							viewBox="0 0 16 16"
-							width="16"
-							xmlns="http://www.w3.org/2000/svg">
-							<path
-								d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
-							<path
-								d="M6.854 4.646a.5.5 0 0 1 0 .708L4.207 8l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0zm2.292 0a.5.5 0 0 0 0 .708L11.793 8l-2.647 2.646a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708 0z" />
-						</svg>
-					</button>
-					<button
-						class="zeltron-inline-flex-middle"
-						aria-label="Run"
-						onclick={execute}
-						type="button">
-						<svg
-							fill="currentColor"
-							height="16"
-							viewBox="0 0 16 16"
-							width="16"
-							xmlns="http://www.w3.org/2000/svg">
-							<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-							<path
-								d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z" />
-						</svg>
-					</button>
+		</button>
+		<button
+			class="zeltron-inline-flex-middle"
+			aria-label="Toggle fullscreen"
+			onclick={toggleFullscreen}
+			type="button">
+			{#if !fullscreen}
+				<svg
+					fill="currentColor"
+					height="16"
+					viewBox="0 0 16 16"
+					width="16"
+					xmlns="http://www.w3.org/2000/svg">
+					<path
+						d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z" />
+				</svg>
+			{:else}
+				<svg
+					fill="currentColor"
+					height="16"
+					viewBox="0 0 16 16"
+					width="16"
+					xmlns="http://www.w3.org/2000/svg">
+					<path
+						d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5zM0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zm10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4z" />
+				</svg>
+			{/if}
+		</button>
+		<button class="zeltron-inline-flex-middle" aria-label="Wrap" onclick={toggleWrap} type="button">
+			{#if wrap}
+				<svg
+					fill="currentColor"
+					height="16"
+					viewBox="0 0 16 16"
+					width="16"
+					xmlns="http://www.w3.org/2000/svg">
+					<line x1="0" x2="16" y1="0" y2="16" />
+					<path
+						d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h9a2.5 2.5 0 0 1 0 5h-1.293l.647.646a.5.5 0 0 1-.708.708l-1.5-1.5a.5.5 0 0 1 0-.708l1.5-1.5a.5.5 0 0 1 .708.708l-.647.646H11.5a1.5 1.5 0 0 0 0-3h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5"
+						fill-rule="evenodd" />
+				</svg>
+			{:else}
+				<svg
+					fill="currentColor"
+					height="16"
+					viewBox="0 0 16 16"
+					width="16"
+					xmlns="http://www.w3.org/2000/svg">
+					<path
+						d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h9a2.5 2.5 0 0 1 0 5h-1.293l.647.646a.5.5 0 0 1-.708.708l-1.5-1.5a.5.5 0 0 1 0-.708l1.5-1.5a.5.5 0 0 1 .708.708l-.647.646H11.5a1.5 1.5 0 0 0 0-3h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5"
+						fill-rule="evenodd" />
+				</svg>
+			{/if}
+		</button>
+		{#if !readOnly}
+			<button
+				class="zeltron-inline-flex-middle"
+				aria-label="Toggle keybindings"
+				onclick={toggleKeybinds}
+				type="button">
+				{#if vimMode}
+					<img class="logo" alt="Vim" src="/images/vim.avif" />
+				{:else}
+					<img class="logo" alt="Vscode" src="/images/vscode.avif" />
 				{/if}
-			</span>
-			<span>{langName}</span>
-		</div>
-		<div bind:this={editorDiv} class="editor-height"></div>
+			</button>
+			<button
+				class="zeltron-inline-flex-middle"
+				aria-label="Format"
+				onclick={beautify}
+				type="button">
+				<svg
+					fill="currentColor"
+					height="16"
+					viewBox="0 0 16 16"
+					width="16"
+					xmlns="http://www.w3.org/2000/svg">
+					<path
+						d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
+					<path
+						d="M6.854 4.646a.5.5 0 0 1 0 .708L4.207 8l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0zm2.292 0a.5.5 0 0 0 0 .708L11.793 8l-2.647 2.646a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708 0z" />
+				</svg>
+			</button>
+			<button class="zeltron-inline-flex-middle" aria-label="Run" onclick={execute} type="button">
+				<svg
+					fill="currentColor"
+					height="16"
+					viewBox="0 0 16 16"
+					width="16"
+					xmlns="http://www.w3.org/2000/svg">
+					<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+					<path
+						d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z" />
+				</svg>
+			</button>
+		{/if}
+	{/snippet}
+	<div bind:this={editorDiv} class="editor-height"></div>
+</Frame>
+{#if readOnly && output}
+	<div class="output zeltron-component-border">
+		<div class="zeltron-component"><span>Output</span></div>
+		<pre>{output}</pre>
 	</div>
-	{#if readOnly && output}
-		<div class="output zeltron-component-border">
-			<div class="context zeltron-component"><span>Output</span></div>
-			<pre>{output}</pre>
-		</div>
-	{/if}
-</div>
+{/if}
 
 <style>
 	.output {
 		box-sizing: border-box;
-		width: 100%;
 	}
 
-	div.zeltron-flex-middle {
-		box-sizing: border-box;
+	:global(.frame-wrapper) {
 		margin-top: 1em;
 		margin-bottom: 1em;
-		flex-direction: column;
 	}
 
-	.editor-height {
-		flex: 1;
-	}
-
-	.editor-block {
+	:global(.codeeditor-frame) {
 		width: 100%;
 		box-sizing: border-box;
 		overflow: auto;
@@ -322,16 +276,8 @@
 		flex-direction: column;
 	}
 
-	.context {
-		padding: 5px;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
-
-	svg {
-		width: 16px;
-		height: 16px;
+	.editor-height {
+		flex: 1;
 	}
 
 	pre {
@@ -350,12 +296,9 @@
 		padding: 3px;
 	}
 
-	.filename {
-		border-bottom: 1px solid var(--color-light-component-foreground);
-	}
-
-	:global(body.dark) .filename {
-		border-bottom: 1px solid var(--color-dark-component-foreground);
+	svg {
+		width: 16px;
+		height: 16px;
 	}
 
 	:global(.ace_editor) {

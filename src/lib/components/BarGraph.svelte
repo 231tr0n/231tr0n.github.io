@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
+	import Frame from './Frame.svelte';
 
 	let {
 		data,
@@ -23,120 +24,105 @@
 			: data
 	);
 
-	let chartDiv: HTMLDivElement;
 	let table: HTMLTableElement;
-	let fullscreen = $state(false);
-	let storedHeight = '';
-	let storedWidth = '';
 	const bars: Record<string, HTMLDivElement> = $state({});
 
-	const toggleFullscreen = async () => {
-		if (document.fullscreenElement) {
-			await document.exitFullscreen();
-			fullscreen = false;
+	const onGraphFullscreenChange = (fullscreen: boolean) => {
+		if (fullscreen) {
+			table.style.height = '100%';
 		} else {
-			await chartDiv.requestFullscreen();
-			fullscreen = true;
+			table.style.height = height.toString() + 'vh';
 		}
 	};
 
-	// <!-- <div style={'height: ' + value.toString() + '%;'} class="bar zeltron-component"> -->
 	onMount(() => {
 		for (const [key, value] of Object.entries(sortedData)) {
 			bars[key].style.height = value.toString() + '%';
 		}
 
 		table.style.height = height.toString() + 'vh';
-		chartDiv.onfullscreenchange = () => {
-			if (document.fullscreenElement) {
-				table.style.height = 'calc(100vh - 76px)';
-				storedHeight = chartDiv.style.height;
-				storedWidth = chartDiv.style.width;
-				chartDiv.classList.add('zeltron-body-background');
-				chartDiv.style.height = '100vh';
-				chartDiv.style.width = '100vw';
-				fullscreen = true;
-			} else {
-				table.style.height = height.toString() + 'vh';
-				chartDiv.classList.remove('zeltron-body-background');
-				chartDiv.style.height = storedHeight;
-				chartDiv.style.width = storedWidth;
-				fullscreen = false;
-			}
-		};
 	});
 </script>
 
-<div bind:this={chartDiv} class="zeltron-flex-middle">
-	<div class="zeltron-thick-component-border overflow">
-		<div class="filename context zeltron-component">
-			<span>Bar Graph</span>
-			<span>{context}</span>
-		</div>
-		<div class="context zeltron-component">
-			<button
-				class="zeltron-inline-flex-middle"
-				aria-label="Toggle fullscreen"
-				onclick={toggleFullscreen}
-				type="button">
-				{#if !fullscreen}
-					<svg
-						fill="currentColor"
-						height="16"
-						viewBox="0 0 16 16"
-						width="16"
-						xmlns="http://www.w3.org/2000/svg">
-						<path
-							d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z" />
-					</svg>
-				{:else}
-					<svg
-						fill="currentColor"
-						height="16"
-						viewBox="0 0 16 16"
-						width="16"
-						xmlns="http://www.w3.org/2000/svg">
-						<path
-							d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5zM0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zm10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4z" />
-					</svg>
-				{/if}
-			</button>
-			<span>{title}</span>
-		</div>
-		<div class="bottom">
-			<div class="padding overflow">
-				<table bind:this={table}>
-					<tbody>
-						<tr>
-							{#each Object.keys(sortedData) as key, _ (_)}
-								<td class="plot">
-									<div bind:this={bars[key]} class="bar zeltron-component"></div>
-								</td>
-							{/each}
-						</tr>
-						<tr>
-							{#each Object.entries(sortedData) as [key, value], _ (_)}
-								<td class="label">
-									<span class="zeltron-badge">{key} - {value.toString() + '%'}</span>
-								</td>
-							{/each}
-						</tr>
-					</tbody>
-				</table>
-			</div>
+<Frame
+	caption={context}
+	contextLabel={title}
+	frameClass="bar-graph"
+	label="Bar Graph"
+	onFullscreenChange={onGraphFullscreenChange}>
+	{#snippet toolbar({ toggleFullscreen, fullscreen })}
+		<button
+			class="zeltron-inline-flex-middle"
+			aria-label="Toggle fullscreen"
+			onclick={toggleFullscreen}
+			type="button">
+			{#if !fullscreen}
+				<svg
+					fill="currentColor"
+					height="16"
+					viewBox="0 0 16 16"
+					width="16"
+					xmlns="http://www.w3.org/2000/svg">
+					<path
+						d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z" />
+				</svg>
+			{:else}
+				<svg
+					fill="currentColor"
+					height="16"
+					viewBox="0 0 16 16"
+					width="16"
+					xmlns="http://www.w3.org/2000/svg">
+					<path
+						d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5zM0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zm10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4z" />
+				</svg>
+			{/if}
+		</button>
+	{/snippet}
+	<div class="bottom">
+		<div class="padding overflow">
+			<table bind:this={table}>
+				<tbody>
+					<tr>
+						{#each Object.keys(sortedData) as key, _ (_)}
+							<td class="plot">
+								<div bind:this={bars[key]} class="bar zeltron-component"></div>
+							</td>
+						{/each}
+					</tr>
+					<tr>
+						{#each Object.entries(sortedData) as [key, value], _ (_)}
+							<td class="label">
+								<span class="zeltron-badge">{key} - {value.toString() + '%'}</span>
+							</td>
+						{/each}
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
-</div>
+</Frame>
 
 <style>
-	div.zeltron-thick-component-border {
-		height: 100%;
+	:global(.frame-wrapper) {
+		margin-top: 1em;
+		margin-bottom: 1em;
+	}
+
+	:global(.bar-graph) {
+		display: flex;
+		flex-direction: column;
+		min-height: 0;
+		width: 100%;
+		box-sizing: border-box;
 	}
 
 	div.bottom {
-		height: calc(100% - 65px);
+		flex: 1;
+		min-height: 0;
+		min-width: 0;
 		display: flex;
-		align-items: end;
+		flex-direction: column;
 	}
 
 	div.padding {
@@ -149,32 +135,21 @@
 		}
 	}
 
-	div.zeltron-flex-middle {
-		margin-top: 1em;
-		margin-bottom: 1em;
+	div.overflow {
+		flex: 1;
+		min-height: 0;
+		min-width: 0;
+		overflow-x: auto;
+		overflow-y: hidden;
 	}
 
 	button {
 		padding: 3px;
 	}
 
-	.filename {
-		border-bottom: 1px solid var(--color-light-component-foreground);
-	}
-
-	:global(body.dark) .filename {
-		border-bottom: 1px solid var(--color-dark-component-foreground);
-	}
-
-	.context {
-		padding: 5px;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-	}
-
-	div.overflow {
-		overflow: auto;
+	svg {
+		width: 16px;
+		height: 16px;
 	}
 
 	span.zeltron-badge {
@@ -197,12 +172,9 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		width: 100%;
 	}
 
 	table {
-		margin-top: 2px;
-		margin-left: 2px;
-		margin-right: 2px;
+		margin: 2px 8px;
 	}
 </style>

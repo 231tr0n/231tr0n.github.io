@@ -91,8 +91,6 @@
 		left: 0px;
 		right: 0px;
 		height: 45px;
-		padding-top: 0px;
-		padding-bottom: 0px;
 		padding-left: 7px;
 		padding-right: 7px;
 		box-sizing: border-box;

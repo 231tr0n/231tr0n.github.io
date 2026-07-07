@@ -90,12 +90,9 @@
 
 <style>
 	.page {
-		width: 100%;
 		height: 100%;
 		overflow: auto;
 		box-sizing: border-box;
-		padding: 0px;
-		margin: 0px;
 		display: flex;
 		justify-content: center;
 		scroll-behavior: smooth;
@@ -107,8 +104,6 @@
 
 	.content {
 		z-index: 5;
-		margin: 0px;
-		padding: 0px;
 		padding-bottom: 100px;
 		max-width: 85vw;
 		width: 900px;
