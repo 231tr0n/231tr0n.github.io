@@ -326,14 +326,6 @@ body.dark hr {
 }
 
 /* Generic css */
-.zeltron-blur {
-	backdrop-filter: blur(7px);
-}
-
-body.dark .zeltron-blur {
-	backdrop-filter: blur(10px);
-}
-
 .zeltron-box-shadow {
 	box-shadow: 0px 0px 5px var(--color-light-foreground);
 }

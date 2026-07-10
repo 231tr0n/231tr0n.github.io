@@ -1,144 +1,62 @@
-(() => {
-	const xobox = [];
-	const x = 'X';
-	const o = 'O';
-	let turn = x;
-	const steps = [];
-	const grid = document.getElementById('game-board');
-	const message = document.getElementById('message');
-	const restart = document.getElementById('restart');
-
-	for (let i = 0; i < 3; i++) {
-		xobox.push([]);
-		for (let j = 0; j < 3; j++) {
-			xobox[i].push(document.getElementById(i.toString() + j.toString()));
-		}
+const cells = [];
+for (let i = 0; i < 3; i++) {
+	cells[i] = [];
+	for (let j = 0; j < 3; j++) {
+		cells[i][j] = document.getElementById(`${i}${j}`);
 	}
+}
 
-	const check = () => {
-		if (
-			xobox[0][0].innerText !== '' &&
-			xobox[0][0].innerText === xobox[0][1].innerText &&
-			xobox[0][0].innerText === xobox[0][2].innerText
-		) {
-			return true;
-		}
-		if (
-			xobox[1][0].innerText !== '' &&
-			xobox[1][0].innerText === xobox[1][1].innerText &&
-			xobox[1][0].innerText === xobox[1][2].innerText
-		) {
-			return true;
-		}
-		if (
-			xobox[2][0].innerText !== '' &&
-			xobox[2][0].innerText === xobox[2][1].innerText &&
-			xobox[2][0].innerText === xobox[2][2].innerText
-		) {
-			return true;
-		}
-		if (
-			xobox[0][0].innerText !== '' &&
-			xobox[0][0].innerText === xobox[1][0].innerText &&
-			xobox[0][0].innerText === xobox[2][0].innerText
-		) {
-			return true;
-		}
-		if (
-			xobox[0][1].innerText !== '' &&
-			xobox[0][1].innerText === xobox[1][1].innerText &&
-			xobox[0][1].innerText === xobox[2][1].innerText
-		) {
-			return true;
-		}
-		if (
-			xobox[0][2].innerText !== '' &&
-			xobox[0][2].innerText === xobox[1][2].innerText &&
-			xobox[0][2].innerText === xobox[2][2].innerText
-		) {
-			return true;
-		}
-		if (
-			xobox[0][0].innerText !== '' &&
-			xobox[0][0].innerText === xobox[1][1].innerText &&
-			xobox[0][0].innerText === xobox[2][2].innerText
-		) {
-			return true;
-		}
-		if (
-			xobox[2][0].innerText !== '' &&
-			xobox[2][0].innerText === xobox[1][1].innerText &&
-			xobox[2][0].innerText === xobox[0][2].innerText
-		) {
-			return true;
-		}
-		return false;
-	};
+const msg = document.getElementById('message');
+const restart = document.getElementById('restart');
+let turn = 'X';
+let moves = 0;
 
-	const getter = (i, j) => xobox[i][j].innerText;
+const win = () => {
+	const lines = [
+		[cells[0][0], cells[0][1], cells[0][2]],
+		[cells[1][0], cells[1][1], cells[1][2]],
+		[cells[2][0], cells[2][1], cells[2][2]],
+		[cells[0][0], cells[1][0], cells[2][0]],
+		[cells[0][1], cells[1][1], cells[2][1]],
+		[cells[0][2], cells[1][2], cells[2][2]],
+		[cells[0][0], cells[1][1], cells[2][2]],
+		[cells[2][0], cells[1][1], cells[0][2]]
+	];
+	return lines.some(
+		([a, b, c]) => a.innerText && a.innerText === b.innerText && a.innerText === c.innerText
+	);
+};
 
-	const setter = (i, j, value) => {
-		xobox[i][j].innerText = value;
-	};
-
-	const reset = () => {
-		restart.blur();
-		grid.focus();
-		steps.length = 0;
-		message.innerText = 'Best of Luck';
-		for (let i = 0; i < 3; i++) {
-			for (let j = 0; j < 3; j++) {
-				setter(i, j, '');
-			}
-		}
-		turn = x;
-	};
-
-	const predictWinner = () => {
-		if (check()) {
-			message.innerText = `'${turn}' won`;
-			return true;
-		}
-		if (steps.length === 9) {
-			message.innerText = "It's a tie";
-			return true;
-		}
-		return false;
-	};
-
-	const next = (i, j) => {
-		if (getter(i, j) === '') {
-			if (predictWinner()) {
-				return;
-			}
-			setter(i, j, turn);
-			steps.push([i, j, turn]);
-			if (predictWinner()) {
-				return;
-			}
-			if (turn === x) {
-				turn = o;
-			} else {
-				turn = x;
-			}
-		}
-	};
-
-	restart.onclick = () => {
-		reset();
-	};
-
+const reset = () => {
+	restart.blur();
 	for (let i = 0; i < 3; i++) {
 		for (let j = 0; j < 3; j++) {
-			(() => {
-				xobox[i][j].onclick = () => {
-					grid.focus();
-					next(i, j);
-				};
-				xobox[i][j].ondblclick = () => {
-					grid.focus();
-				};
-			})();
+			cells[i][j].innerText = '';
 		}
 	}
-})();
+	turn = 'X';
+	moves = 0;
+	msg.innerText = 'Best of Luck';
+};
+
+const play = (i, j) => {
+	const cell = cells[i][j];
+	if (cell.innerText || win()) return;
+	cell.innerText = turn;
+	moves++;
+	if (win()) {
+		msg.innerText = `'${turn}' won`;
+	} else if (moves === 9) {
+		msg.innerText = "It's a tie";
+	} else {
+		turn = turn === 'X' ? 'O' : 'X';
+	}
+};
+
+reset();
+restart.onclick = reset;
+for (let i = 0; i < 3; i++) {
+	for (let j = 0; j < 3; j++) {
+		cells[i][j].onclick = () => play(i, j);
+	}
+}

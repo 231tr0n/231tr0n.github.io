@@ -4,7 +4,21 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { visualizer } from 'rollup-plugin-visualizer';
 
 export default defineConfig({
-	plugins: [sveltekit(), visualizer() as PluginOption],
+	plugins: [
+		sveltekit(),
+		visualizer() as PluginOption,
+		{
+			name: 'static-watch',
+			configureServer(server) {
+				server.watcher.add('static/**/*');
+				server.watcher.on('change', (path) => {
+					if (path.startsWith('static/')) {
+						server.ws.send({ type: 'full-reload' });
+					}
+				});
+			}
+		}
+	],
 	test: {
 		expect: { requireAssertions: true },
 		projects: [

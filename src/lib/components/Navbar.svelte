@@ -20,13 +20,30 @@
 
 <header class="zeltron-body-background">
 	<div class="zeltron-flex-middle">
-		<a href={resolve('/')}><button class="zeltron-strong-component" type="button">Home</button></a>
+		<a aria-label="Home" href={resolve('/')}>
+			<button class="zeltron-strong-component" aria-label="Home" type="button">
+				<svg
+					fill="currentColor"
+					height="20"
+					viewBox="0 0 16 16"
+					width="20"
+					xmlns="http://www.w3.org/2000/svg">
+					<path
+						d="M8.707 1.5a1 1 0 0 0-1.414 0L.646 8.146a.5.5 0 0 0 .708.708L8 2.207l6.646 6.647a.5.5 0 0 0 .708-.708L13 5.793V2.5a.5.5 0 0 0-.5-.5h-1a.5.5 0 0 0-.5.5v1.293z" />
+					<path d="m8 3.293 6 6V13.5a1.5 1.5 0 0 1-1.5 1.5h-9A1.5 1.5 0 0 1 2 13.5V9.293z" />
+				</svg>
+			</button>
+		</a>
 		<a href={resolve('/blog')}><button type="button">Blog</button></a>
 		<a href={resolve('/projects')}><button type="button">Projects</button></a>
 		<a href={resolve('/misc')}><button type="button">Misc</button></a>
 		<a href={resolve('/games')}><button type="button">Games</button></a>
 	</div>
-	<button class="theme-changer zeltron-strong-component" onclick={toggletheme} type="button">
+	<button
+		class="zeltron-strong-component"
+		aria-label="Toggle theme"
+		onclick={toggletheme}
+		type="button">
 		{#if darkMode().dark}
 			<svg
 				fill="currentColor"
@@ -79,6 +96,13 @@
 	button.zeltron-strong-component {
 		font-size: 15px;
 		height: 30px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		box-sizing: border-box;
+		height: 30px;
+		width: 30px;
+		padding: 3px;
 	}
 
 	a {
@@ -103,14 +127,5 @@
 
 	:global(body.dark) header {
 		border-bottom: 1px solid var(--color-dark-component-background);
-	}
-
-	button.theme-changer {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		height: 30px;
-		width: 30px;
-		padding: 5px;
 	}
 </style>

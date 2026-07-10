@@ -1,18 +1,12 @@
 :root {
-	--color-1: #149414;
-	--color-2: #9ccc9c;
-	--color-3: #2b5329;
+	--c1: #149414;
+	--c2: #9ccc9c;
+	--c3: #2b5329;
 }
 
 @font-face {
 	font-family: Roboto-Condensed;
 	src: url('/fonts/roboto-condensed.woff2') format('woff2');
-	font-display: swap;
-}
-
-@font-face {
-	font-family: Roboto-Mono;
-	src: url('/fonts/roboto-mono.woff2') format('woff2');
 	font-display: swap;
 }
 
@@ -22,56 +16,54 @@
 }
 
 body {
-	background-color: black;
+	background: #000;
 }
 
 .game-board {
 	margin: 1em;
-	width: max-content;
 	display: grid;
-	grid-template-rows: 50px 50px 50px;
-	grid-template-columns: 50px 50px 50px;
-	grid-gap: 10px;
+	grid: 50px 50px 50px / 50px 50px 50px;
+	gap: 10px;
+	width: max-content;
 }
 
 .box {
 	display: flex;
-	justify-content: center;
 	align-items: center;
-	color: var(--color-2);
+	justify-content: center;
+	color: var(--c2);
 	font-size: 30px;
-	background-color: var(--color-3);
+	background: var(--c3);
 }
 
 .box:hover {
-	background-color: var(--color-1);
+	background: var(--c1);
 }
 
 button {
-	background-color: var(--color-3);
-	color: var(--color-2);
+	background: var(--c3);
+	color: var(--c2);
 	padding: 5px;
-	border: 2px solid var(--color-3);
+	border: 2px solid var(--c3);
 }
 
 button:hover {
-	background-color: transparent;
-	color: var(--color-2);
+	background: transparent;
+	color: var(--c2);
 }
 
 .center {
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
 	align-items: center;
+	justify-content: center;
 	text-align: center;
 }
 
 #message {
 	margin-bottom: 1em;
-	width: max-content;
 	padding: 5px;
-	background-color: var(--color-2);
-	border: 2px solid var(--color-3);
-	color: var(--color-3);
+	background: var(--c2);
+	border: 2px solid var(--c3);
+	color: var(--c3);
 }

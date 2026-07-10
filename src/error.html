@@ -5,9 +5,26 @@
 		<link rel="icon" href="%sveltekit.assets%/favicon.ico" />
 		<meta name="viewport" content="width=device-width" />
 		<title>231tr0n</title>
+		<style>
+			body {
+				margin: 0;
+				font-family: Roboto-Condensed, monospace;
+			}
+			div {
+				text-align: center;
+			}
+			.message {
+				font-size: 30px;
+				width: 100vw;
+				height: 100vh;
+				display: flex;
+				justify-content: center;
+				align-items: center;
+			}
+		</style>
 	</head>
 
 	<body data-sveltekit-preload-data="hover">
-		<h1>%sveltekit.status%: %sveltekit.error.message%</h1>
+		<div class="message">%sveltekit.status% - %sveltekit.error.message%</div>
 	</body>
 </html>

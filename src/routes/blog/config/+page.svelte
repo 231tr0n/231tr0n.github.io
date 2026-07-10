@@ -4,16 +4,16 @@
 	import Codeeditor from '$lib/components/Codeeditor.svelte';
 	import luaMode from 'ace-code/src/mode/lua';
 	import { onMount } from 'svelte';
+	import { cachedFetch } from '$lib/fetch-cache.js';
 
 	let configData = $state<string | null>(null);
 	let configError = $state<string | null>(null);
 
 	onMount(async () => {
 		try {
-			const temp = await fetch(
+			configData = await cachedFetch(
 				'https://raw.githubusercontent.com/231tr0n/config/main/nvim/init.lua'
 			);
-			configData = await temp.text();
 		} catch (e) {
 			configError = e instanceof Error ? e.message : 'Unknown error';
 		}

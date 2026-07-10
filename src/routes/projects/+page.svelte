@@ -7,6 +7,7 @@
 	import type { PostData } from '$lib/types';
 	import { animationDuration } from '$lib/animation.constants';
 	import { onMount } from 'svelte';
+	import { cachedFetch } from '$lib/fetch-cache.js';
 
 	interface githubError {
 		message: string;
@@ -32,8 +33,7 @@
 		const languagesList: Record<string, number> = {};
 		const languagesPercentageList: Record<string, number> = {};
 
-		const temp = await fetch(url);
-		const repos = (await temp.json()) as githubRepo[] | githubError;
+		const repos = JSON.parse(await cachedFetch(url)) as githubRepo[] | githubError;
 		if ((repos as githubError).message) {
 			throw new Error('Github api rate limit exceeded');
 		}
@@ -48,8 +48,7 @@
 
 		const reposData = [];
 		for (const repo of nonForkedRepos) {
-			const temp = await fetch(repo.languages_url);
-			const languages: githubLanguages | githubError = (await temp.json()) as
+			const languages = JSON.parse(await cachedFetch(repo.languages_url)) as
 				githubLanguages | githubError;
 			if ((languages as githubError).message) {
 				throw new Error('Github api rate limit exceeded');

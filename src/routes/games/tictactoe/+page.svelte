@@ -7,6 +7,7 @@
 	import cssMode from 'ace-code/src/mode/css';
 	import javascriptMode from 'ace-code/src/mode/javascript';
 	import { onMount } from 'svelte';
+	import { cachedFetch } from '$lib/fetch-cache.js';
 
 	let jsCode = $state<string | null>(null);
 	let cssCode = $state<string | null>(null);
@@ -17,9 +18,9 @@
 
 	onMount(async () => {
 		const results = await Promise.allSettled([
-			fetch('/resources/snippets/tictactoe/index.js').then((r) => r.text()),
-			fetch('/resources/snippets/tictactoe/style.css').then((r) => r.text()),
-			fetch('/resources/snippets/tictactoe/index.html').then((r) => r.text())
+			cachedFetch('/resources/snippets/tictactoe/index.js'),
+			cachedFetch('/resources/snippets/tictactoe/style.css'),
+			cachedFetch('/resources/snippets/tictactoe/index.html')
 		]);
 		if (results[0].status === 'fulfilled') jsCode = results[0].value;
 		else jsError = 'Failed to load JS';
