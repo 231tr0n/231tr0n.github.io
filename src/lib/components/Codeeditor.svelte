@@ -37,8 +37,9 @@
 	} = $props();
 
 	let editorDiv: HTMLElement;
-	let editor: ace.Editor;
+	let editor: ace.Editor | null = $state(null);
 	let copied = $state(false);
+	let theme = $derived(darkMode().dark ? ace_everforest_dark : ace_everforest_light);
 
 	let vimHandler: { handler: import('ace-code').Ace.KeyboardHandler } | null = null;
 	let vscodeHandler: { handler: import('ace-code').Ace.KeyboardHandler } | null = null;
@@ -46,6 +47,7 @@
 		null;
 
 	const copy = async () => {
+		if (!editor) return;
 		await navigator.clipboard.writeText(editor.session.getValue());
 		copied = true;
 		setTimeout(() => {
@@ -54,21 +56,25 @@
 	};
 
 	const toggleWrap = () => {
+		if (!editor) return;
 		editor.session.setUseWrapMode(!wrap);
 		wrap = !wrap;
 	};
 
 	const execute = () => {
+		if (!editor) return;
 		if (setCode) {
 			setCode(editor.session.getValue());
 		}
 	};
 
 	const beautify = () => {
+		if (!editor) return;
 		if (beautifyModule !== null) beautifyModule.beautify(editor.session);
 	};
 
 	const toggleKeybinds = () => {
+		if (!editor) return;
 		if (vimHandler === null || vscodeHandler === null) return;
 		if (vimMode) {
 			editor.setKeyboardHandler(vscodeHandler.handler);
@@ -116,16 +122,14 @@
 		editor.session.setTabSize(editorTabSize);
 		editor.session.setUseSoftTabs(true);
 		editor.setShowPrintMargin(false);
-		$effect(() => {
-			if (darkMode().dark) {
-				editor.setTheme(ace_everforest_dark);
-			} else {
-				editor.setTheme(ace_everforest_light);
-			}
-		});
+	});
+
+	$effect(() => {
+		editor?.setTheme(theme);
 	});
 
 	const onFrameFullscreenChange = () => {
+		if (!editor) return;
 		editor.resize();
 	};
 </script>

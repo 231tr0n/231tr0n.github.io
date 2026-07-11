@@ -38,9 +38,8 @@
 	--color-everforest-light-red: #f85552;
 	--color-everforest-light-yellow: #dfa000;
 
-	--color-anchor: var(--color-everforest-light-purple);
+	--color-anchor: var(--color-everforest-light-orange);
 	--color-background: var(--color-everforest-light-bg0);
-	--color-visual: var(--color-everforest-light-bg-visual);
 	--color-badge-background: transparent;
 	--color-badge-foreground: var(--color-everforest-light-blue);
 	--color-button-background: var(--color-component-background);
@@ -53,21 +52,25 @@
 	--color-keyword: var(--color-everforest-light-blue);
 	--color-scrollbar: var(--color-everforest-light-blue);
 	--color-strong-background: var(--color-everforest-light-bg1);
+	--color-visual: var(--color-everforest-light-bg-visual);
 }
 
 body.dark {
-	--color-anchor: var(--color-everforest-dark-purple);
+	--color-anchor: var(--color-everforest-dark-orange);
 	--color-background: var(--color-everforest-dark-bg0);
-	--color-visual: var(--color-everforest-dark-bg-visual);
+	--color-badge-background: transparent;
 	--color-badge-foreground: var(--color-everforest-dark-green);
+	--color-button-background: var(--color-everforest-dark-bg2);
+	--color-button-foreground: var(--color-everforest-dark-fg);
 	--color-component-background: var(--color-everforest-dark-bg2);
 	--color-component-foreground: var(--color-everforest-dark-fg);
-	--color-error: var(--color-everforest-dark-orange);
+	--color-error: var(--color-everforest-dark-red);
 	--color-foreground: var(--color-everforest-dark-fg);
 	--color-heading: var(--color-everforest-dark-grey2);
 	--color-keyword: var(--color-everforest-dark-green);
 	--color-scrollbar: var(--color-everforest-dark-green);
 	--color-strong-background: var(--color-everforest-dark-bg1);
+	--color-visual: var(--color-everforest-dark-bg-visual);
 }
 
 @font-face {
@@ -111,6 +114,10 @@ body.dark {
 	pointer-events: auto;
 }
 
+.custom-scrollbar-thumb-v:hover {
+	background: var(--color-anchor);
+}
+
 .custom-scrollbar-track-h {
 	position: absolute;
 	bottom: 0;
@@ -131,6 +138,10 @@ body.dark {
 	border-radius: 0;
 	cursor: default;
 	pointer-events: auto;
+}
+
+.custom-scrollbar-thumb-h:hover {
+	background: var(--color-anchor);
 }
 
 progress {
