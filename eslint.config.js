@@ -51,7 +51,6 @@ export default defineConfig(
 			ts.configs.eslintRecommended,
 			ts.configs.strictTypeChecked,
 			ts.configs.stylisticTypeChecked,
-			// svelte.configs.recommended,
 			svelte.configs.all,
 			prettier,
 			svelte.configs.prettier
@@ -62,7 +61,8 @@ export default defineConfig(
 				...globals.node
 			},
 			parserOptions: {
-				projectService: true
+				projectService: true,
+				extraFileExtensions: ['.svelte']
 			}
 		},
 		rules: {
@@ -86,7 +86,7 @@ export default defineConfig(
 			'svelte/no-target-blank': 'error',
 			'svelte/no-at-debug-tags': 'warn',
 			'svelte/button-has-type': 'error',
-			// Remove below line after below rule is removed
+			// Remove below line after deprecated rule is removed
 			'svelte/no-navigation-without-base': 'off'
 		}
 	},
