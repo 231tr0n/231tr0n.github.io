@@ -1,16 +1,16 @@
 export const setupExternalLinks = () => {
 	const addTarget = () => {
-		document.querySelectorAll('a:not([target])').forEach((anchor) => {
+		document.querySelectorAll<HTMLAnchorElement>('a:not([target])').forEach((anchor) => {
 			const href = anchor.getAttribute('href');
-			if (!href) return;
+			if (href === null || href === '') return;
 			if (!/^https?:\/\//.test(href) && !href.startsWith('//') && !href.startsWith('mailto:'))
 				return;
-			(anchor as HTMLAnchorElement).target = '_blank';
+			anchor.target = '_blank';
 			const existingRel = anchor.getAttribute('rel') ?? '';
 			const relList = existingRel.split(/\s+/).filter(Boolean);
 			if (!relList.includes('noopener')) relList.push('noopener');
 			if (!relList.includes('noreferrer')) relList.push('noreferrer');
-			(anchor as HTMLAnchorElement).rel = relList.join(' ');
+			anchor.rel = relList.join(' ');
 		});
 	};
 	addTarget();

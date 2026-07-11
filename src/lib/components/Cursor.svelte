@@ -30,10 +30,11 @@
 			document,
 			'touchmove',
 			(event) => {
-				if (event.touches.length === 0) return;
+				const touch = event.touches[event.touches.length - 1];
+				if (!touch) return;
 				cursor.target = {
-					x: event.touches[event.touches.length - 1].clientX,
-					y: event.touches[event.touches.length - 1].clientY
+					x: touch.clientX,
+					y: touch.clientY
 				};
 			},
 			{ signal: controller.signal }

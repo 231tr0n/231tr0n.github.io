@@ -24,7 +24,8 @@
 		const contentMap: Record<string, string> = {};
 		for (const value of Object.values(contents)) {
 			const temp = value.split('\n');
-			const heading = temp[0].substring(3);
+			const heading = temp[0]?.substring(3);
+			if (heading === undefined) continue;
 			const content = temp.slice(1).join('\n');
 			contentMap[heading] = content;
 		}
@@ -48,6 +49,7 @@
 			let lastKey: string | null = null;
 			for (let i = 0; i < body.length; i++) {
 				const ch = body[i];
+				if (ch === undefined) continue;
 				if (ch === '{') {
 					braceDepth++;
 					lastKey = null;
@@ -72,7 +74,11 @@
 					lastKey = null;
 				} else if (/[a-zA-Z_]/.test(ch)) {
 					const keyStart = i;
-					while (i < body.length && /\w/.test(body[i])) i++;
+					while (i < body.length) {
+						const next = body[i];
+						if (next === undefined || !/\w/.test(next)) break;
+						i++;
+					}
 					lastKey = body.slice(keyStart, i);
 					i--;
 				}

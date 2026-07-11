@@ -64,6 +64,7 @@
 						<button type="button">Open</button>
 					</a>
 				{:else}
+					<!-- eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -->
 					<a href={resolve(url as RouteId)}><button type="button">Open</button></a>
 				{/if}
 			{/if}

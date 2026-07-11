@@ -87,7 +87,13 @@ export default defineConfig(
 			'svelte/no-at-debug-tags': 'warn',
 			'svelte/button-has-type': 'error',
 			// Remove below line after deprecated rule is removed
-			'svelte/no-navigation-without-base': 'off'
+			'svelte/no-navigation-without-base': 'off',
+			'@typescript-eslint/no-unsafe-type-assertion': 'error',
+			'@typescript-eslint/strict-boolean-expressions': 'error',
+			'@typescript-eslint/switch-exhaustiveness-check': 'error',
+			'@typescript-eslint/no-shadow': 'error',
+			'@typescript-eslint/prefer-readonly': 'error',
+			'@typescript-eslint/require-array-sort-compare': 'error'
 		}
 	},
 	{

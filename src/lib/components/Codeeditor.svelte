@@ -7,13 +7,8 @@
 	import vscode from 'ace-code/src/keyboard/vscode';
 	import beautifier from 'ace-code/src/ext/beautify';
 	import { darkMode } from '$lib/utils/dark.svelte.js';
-	import type { KeyboardHandler } from 'ace-code/src/keyboard/keybinding';
 	import type { SyntaxMode } from 'ace-code/src/edit_session';
 	import Frame from './Frame.svelte';
-
-	interface aceKeyboardHandler {
-		handler: KeyboardHandler;
-	}
 
 	type setCode = (code: string) => void;
 
@@ -72,9 +67,9 @@
 
 	const toggleKeybinds = () => {
 		if (vimMode) {
-			editor.setKeyboardHandler((vscode as aceKeyboardHandler).handler);
+			editor.setKeyboardHandler(vscode.handler);
 		} else {
-			editor.setKeyboardHandler((vim as aceKeyboardHandler).handler);
+			editor.setKeyboardHandler(vim.handler);
 		}
 		vimMode = !vimMode;
 	};
@@ -93,9 +88,9 @@
 			editor.setHighlightGutterLine(false);
 		} else {
 			if (vimMode) {
-				editor.setKeyboardHandler((vim as aceKeyboardHandler).handler);
+				editor.setKeyboardHandler(vim.handler);
 			} else {
-				editor.setKeyboardHandler((vscode as aceKeyboardHandler).handler);
+				editor.setKeyboardHandler(vscode.handler);
 			}
 		}
 		editor.setFontSize(11);
@@ -160,7 +155,7 @@
 			aria-label="Toggle fullscreen"
 			onclick={toggleFullscreen}
 			type="button">
-			{#if !fullscreen}
+			{#if fullscreen === false}
 				<svg
 					fill="currentColor"
 					height="16"

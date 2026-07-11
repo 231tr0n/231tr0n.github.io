@@ -47,7 +47,7 @@
 			aria-label="Toggle fullscreen"
 			onclick={toggleFullscreen}
 			type="button">
-			{#if !fullscreen}
+			{#if fullscreen === false}
 				<svg
 					fill="currentColor"
 					height="16"

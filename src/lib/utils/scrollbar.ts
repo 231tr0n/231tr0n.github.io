@@ -198,8 +198,22 @@ const getScrollAxes = (el: HTMLElement): { v: boolean; h: boolean } => {
 	};
 };
 
+interface TrackEntry {
+	el: HTMLElement;
+	track: HTMLElement;
+	thumb: HTMLElement;
+	dir: 'v' | 'h';
+}
+
+interface ScrollbarInstance {
+	tracks?: TrackEntry[];
+	resizeObserver?: ResizeObserver;
+	mutationObserver?: MutationObserver;
+	destroy: () => void;
+}
+
 export const setupScrollbars = (container: HTMLElement = document.body) => {
-	const instances = new Map<HTMLElement, { destroy: () => void }>();
+	const instances = new Map<HTMLElement, ScrollbarInstance>();
 	const posRefCount = new Map<HTMLElement, number>();
 
 	const revertEnsurePos = (elem: HTMLElement) => {
@@ -308,32 +322,25 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 		if (!pending.length) return;
 
 		const scroller = editorEl.querySelector<HTMLElement>('.ace_scroller');
-		const existing = instances.get(editorEl) as
-			| {
-					tracks: { el: HTMLElement; track: HTMLElement; thumb: HTMLElement; dir: 'v' | 'h' }[];
-					resizeObserver: ResizeObserver;
-					mutationObserver: MutationObserver;
-					destroy: () => void;
-			  }
-			| undefined;
+		const existing = instances.get(editorEl);
 
-		const tracks = existing ? existing.tracks : [];
+		const tracks = existing?.tracks ?? [];
 
 		for (const { el, dir } of pending) {
 			const trackInfo = setupAceTrack(editorEl, el, dir);
 			tracks.push(trackInfo);
-			if (existing) {
-				existing.resizeObserver.observe(trackInfo.el);
-				if (trackInfo.el.firstElementChild)
-					existing.resizeObserver.observe(trackInfo.el.firstElementChild);
-				existing.mutationObserver.observe(trackInfo.el, { attributes: true, subtree: true });
+			if (existing != null) {
+				existing.resizeObserver?.observe(trackInfo.el);
+				if (trackInfo.el.firstElementChild != null)
+					existing.resizeObserver?.observe(trackInfo.el.firstElementChild);
+				existing.mutationObserver?.observe(trackInfo.el, { attributes: true, subtree: true });
 				doubleRAF(() => {
 					syncScroll(trackInfo.el, trackInfo.track, trackInfo.thumb, trackInfo.dir);
 				});
 			}
 		}
 
-		if (existing) return;
+		if (existing != null) return;
 
 		editorEl.style.setProperty('isolation', 'isolate');
 
@@ -343,7 +350,8 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 		});
 		for (const trackEntry of tracks) {
 			resizeObserver.observe(trackEntry.el);
-			if (trackEntry.el.firstElementChild) resizeObserver.observe(trackEntry.el.firstElementChild);
+			if (trackEntry.el.firstElementChild != null)
+				resizeObserver.observe(trackEntry.el.firstElementChild);
 		}
 		if (scroller?.firstElementChild) resizeObserver.observe(scroller.firstElementChild);
 
@@ -409,7 +417,7 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 			ensureAceProcessed(editor);
 		} else {
 			const editors = node.querySelectorAll<HTMLElement>('.ace_editor');
-			for (const editor of editors) ensureAceProcessed(editor);
+			for (const aceEditor of editors) ensureAceProcessed(aceEditor);
 		}
 
 		processScrollable(node);

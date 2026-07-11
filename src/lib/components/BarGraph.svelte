@@ -37,7 +37,8 @@
 
 	onMount(() => {
 		for (const [key, value] of Object.entries(sortedData)) {
-			bars[key].style.height = value.toString() + '%';
+			const bar = bars[key];
+			if (bar) bar.style.height = value.toString() + '%';
 		}
 
 		table.style.height = height.toString() + 'vh';
@@ -56,7 +57,7 @@
 			aria-label="Toggle fullscreen"
 			onclick={toggleFullscreen}
 			type="button">
-			{#if !fullscreen}
+			{#if fullscreen === false}
 				<svg
 					fill="currentColor"
 					height="16"

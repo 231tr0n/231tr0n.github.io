@@ -25,14 +25,16 @@
 
 	$effect(() => {
 		if (!scrollspy) return;
+		if (!breadcrumb) return;
 		if (selectedItem >= 0 && selectedItem < sections.length) {
 			const currentDiv = sections[selectedItem];
+			if (!currentDiv) return;
 			const currentDivBoundingClientRect = currentDiv.getBoundingClientRect();
 			pageDiv.scrollBy(
 				0,
 				currentDivBoundingClientRect.top -
 					currentDivBoundingClientRect.height -
-					(breadcrumb as HTMLHeadingElement).offsetHeight -
+					breadcrumb.offsetHeight -
 					15
 			);
 		}
@@ -40,15 +42,12 @@
 
 	onMount(() => {
 		if (!scrollspy) return;
+		const breadcrumbEl = breadcrumb;
+		if (!breadcrumbEl) return;
 		pageDiv.onscroll = () => {
 			let prev = null;
 			for (const [index, section] of sections.entries()) {
-				if (
-					(breadcrumb as HTMLHeadingElement).offsetTop +
-						(breadcrumb as HTMLHeadingElement).offsetHeight +
-						5 <
-					section.offsetTop
-				) {
+				if (breadcrumbEl.offsetTop + breadcrumbEl.offsetHeight + 5 < section.offsetTop) {
 					if (prev) {
 						currentItem = index - 1;
 					} else {

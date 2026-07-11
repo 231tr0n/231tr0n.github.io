@@ -16,8 +16,10 @@
 		"noImplicitOverride": true,
 		"noImplicitReturns": true,
 		"noPropertyAccessFromIndexSignature": true,
+		"noUncheckedIndexedAccess": true,
 		"noUnusedLocals": true,
 		"noUnusedParameters": true,
-		"allowImportingTsExtensions": true
+		"allowImportingTsExtensions": true,
+		"erasableSyntaxOnly": true
 	}
 }

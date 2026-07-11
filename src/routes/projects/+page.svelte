@@ -9,18 +9,6 @@
 	import { onMount } from 'svelte';
 	import { cachedFetch } from '$lib/utils/fetch-cache.js';
 
-	interface githubError {
-		message: string;
-	}
-
-	interface githubRepo {
-		fork: boolean;
-		languages_url: string;
-		name: string;
-		html_url: string;
-		description: string;
-	}
-
 	type githubLanguages = Record<string, number>;
 
 	let progressLength = $state(0);
@@ -29,29 +17,45 @@
 	let languagesPercentageList = $state<Record<string, number> | null>(null);
 	let fetchError = $state<string | null>(null);
 
+	const isRecord = (value: unknown): value is Record<string, unknown> =>
+		typeof value === 'object' && value !== null;
+
 	const fetchGithubRepoData = async (url: string) => {
 		const languagesList: Record<string, number> = {};
-		const languagesPercentageList: Record<string, number> = {};
+		const langPctList: Record<string, number> = {};
 
-		const repos = JSON.parse(await cachedFetch(url)) as githubRepo[] | githubError;
-		if ((repos as githubError).message) {
-			throw new Error('Github api rate limit exceeded');
+		const repos: unknown = JSON.parse(await cachedFetch(url));
+		if (!isRecord(repos)) throw new Error('Invalid API response');
+		if ('message' in repos) throw new Error('Github api rate limit exceeded');
+		if (!Array.isArray(repos)) throw new Error('Invalid API response');
+
+		const nonForkedRepoList: {
+			languages_url: string;
+			html_url: string;
+			name: string;
+			description: string;
+		}[] = [];
+		for (const repo of repos) {
+			if (!isRecord(repo)) continue;
+			if (repo['fork'] === true) continue;
+			nonForkedRepoList.push({
+				languages_url: typeof repo['languages_url'] === 'string' ? repo['languages_url'] : '',
+				html_url: typeof repo['html_url'] === 'string' ? repo['html_url'] : '',
+				name: typeof repo['name'] === 'string' ? repo['name'] : '',
+				description: typeof repo['description'] === 'string' ? repo['description'] : ''
+			});
+			fullCompletionLength += 1;
 		}
 
-		const nonForkedRepos = [];
-		for (const repo of repos as githubRepo[]) {
-			if (!repo.fork) {
-				nonForkedRepos.push(repo);
-				fullCompletionLength += 1;
-			}
-		}
+		const reposDataList: PostData[] = [];
+		for (const repo of nonForkedRepoList) {
+			const rawLanguages: unknown = JSON.parse(await cachedFetch(repo.languages_url));
+			if (!isRecord(rawLanguages)) throw new Error('Invalid API response');
+			if ('message' in rawLanguages) throw new Error('Github api rate limit exceeded');
 
-		const reposData = [];
-		for (const repo of nonForkedRepos) {
-			const languages = JSON.parse(await cachedFetch(repo.languages_url)) as
-				githubLanguages | githubError;
-			if ((languages as githubError).message) {
-				throw new Error('Github api rate limit exceeded');
+			const languages: githubLanguages = {};
+			for (const [key, value] of Object.entries(rawLanguages)) {
+				languages[key] = Number(value);
 			}
 
 			const repoData: PostData = {
@@ -63,16 +67,13 @@
 				external: true
 			};
 
-			for (const [key, value] of Object.entries(languages as githubLanguages)) {
+			for (const key of Object.keys(languages)) {
 				repoData.badges.push(key);
-				if (languagesList[key]) {
-					languagesList[key] += value;
-				} else {
-					languagesList[key] = value;
-				}
+				const value = languages[key] ?? 0;
+				languagesList[key] = (languagesList[key] ?? 0) + value;
 			}
 
-			reposData.push(repoData);
+			reposDataList.push(repoData);
 
 			progressLength += 1;
 		}
@@ -83,12 +84,12 @@
 		}
 
 		for (const [key, value] of Object.entries(languagesList)) {
-			languagesPercentageList[key] = parseFloat(((value / total) * 100).toFixed(2));
+			langPctList[key] = parseFloat(((value / total) * 100).toFixed(2));
 		}
 
 		await new Promise((f) => setTimeout(f, animationDuration));
 
-		return { reposData, languagesPercentageList };
+		return { reposData: reposDataList, languagesPercentageList: langPctList };
 	};
 
 	onMount(async () => {

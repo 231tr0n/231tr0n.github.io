@@ -16,7 +16,7 @@ const getLabel = (element: HTMLElement): string | null => {
 	const anchor = element instanceof HTMLAnchorElement ? element : element.closest('a');
 	if (anchor) {
 		const href = anchor.getAttribute('href');
-		if (href) return href;
+		if (href != null) return href;
 	}
 	return (element.getAttribute('aria-label') ?? element.textContent.trim()) || null;
 };
@@ -85,7 +85,7 @@ const attach = (targetElement: HTMLElement) => {
 
 	const show = (clientX: number, clientY: number) => {
 		const label = getLabel(targetElement);
-		if (!label || tip || pendingShowTimeout) return;
+		if (label == null || tip || pendingShowTimeout) return;
 
 		latestClientX = clientX;
 		latestClientY = clientY;
@@ -146,7 +146,7 @@ const attachToUnattachedElements = () => {
 		if (element.querySelector(ATTACH_SELECTOR)) continue;
 		if (element.hasAttribute('title')) continue;
 		if (element.closest('.ace_editor')) continue;
-		if (!getLabel(element)) continue;
+		if (getLabel(element) == null) continue;
 		instances.set(element, attach(element));
 	}
 };
