@@ -30,7 +30,7 @@ export const tooltipZIndex = 10000;
 export const tooltipFontFamily = 'Roboto-Condensed, monospace';
 
 export const scrollbarMinThumbV = 20;
-export const scrollbarMinThumbH = 40;
+export const scrollbarMinThumbH = 20;
 export const scrollbarTrackSize = 5;
 export const scrollbarZIndex = 7;
 export const scrollbarAceSetupTimeout = 3000;

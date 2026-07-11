@@ -16,10 +16,17 @@ const getColor = (node: HTMLElement, key: string): string => {
 const makeTrack = (dir: 'v' | 'h') => {
 	const track = document.createElement('div');
 	track.className = `custom-scrollbar-track-${dir}`;
-	track.style.position = 'absolute';
-	const thumb = document.createElement('div');
-	thumb.className = `custom-scrollbar-thumb-${dir}`;
-	thumb.style.position = 'absolute';
+	const thumb = document.createElement('button');
+	thumb.type = 'button';
+	thumb.className = `custom-scrollbar-thumb-${dir} zeltron-scrollbar`;
+	if (dir === 'v') {
+		thumb.style.minHeight = `${String(scrollbarMinThumbV)}px`;
+		thumb.style.width = `${String(scrollbarTrackSize)}px`;
+	} else {
+		thumb.style.minWidth = `${String(scrollbarMinThumbH)}px`;
+		thumb.style.height = `${String(scrollbarTrackSize)}px`;
+	}
+	thumb.setAttribute('data-custom-scrollbar-thumb', '');
 	track.appendChild(thumb);
 	return { track, thumb };
 };
@@ -129,13 +136,28 @@ const setupTrackClick = (track: HTMLElement, node: HTMLElement, dir: 'v' | 'h') 
 	});
 };
 
+const updateThumbAriaLabel = (node: HTMLElement, thumb: HTMLElement, dir: 'v' | 'h') => {
+	const isVertical = dir === 'v';
+	const scrollSize = isVertical ? node.scrollHeight : node.scrollWidth;
+	const clientSize = isVertical ? node.clientHeight : node.clientWidth;
+	const scrollPos = isVertical ? node.scrollTop : node.scrollLeft;
+	if (scrollSize <= clientSize + 1) {
+		thumb.removeAttribute('aria-label');
+		return;
+	}
+	const percent = Math.round((scrollPos / (scrollSize - clientSize)) * 100);
+	thumb.setAttribute('aria-label', `Scroll: ${String(percent)}%`);
+};
+
 const setupAxis = (node: HTMLElement, track: HTMLElement, thumb: HTMLElement, dir: 'v' | 'h') => {
 	thumb.style.background = getColor(node, 'scrollbar');
 	on(node, 'scroll', () => {
 		syncScroll(node, track, thumb, dir);
+		updateThumbAriaLabel(node, thumb, dir);
 	});
 	setupDrag(thumb, node, track, dir);
 	setupTrackClick(track, node, dir);
+	updateThumbAriaLabel(node, thumb, dir);
 };
 
 const initScrollbar = (
@@ -314,13 +336,26 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 
 		const { track, thumb } = makeTrack(dir);
 		track.style.zIndex = String(scrollbarZIndex);
+		if (dir === 'v') {
+			track.style.top = '0';
+			track.style.right = '0';
+			track.style.width = `${String(scrollbarTrackSize)}px`;
+			track.style.height = 'calc(100% + 2px)';
+		} else {
+			track.style.bottom = '0';
+			track.style.left = '0';
+			track.style.right = '0';
+			track.style.height = `${String(scrollbarTrackSize)}px`;
+		}
 		editorEl.appendChild(track);
 		thumb.style.background = getColor(el, 'scrollbar');
 		on(el, 'scroll', () => {
 			syncScroll(el, track, thumb, dir);
+			updateThumbAriaLabel(el, thumb, dir);
 		});
 		setupDrag(thumb, el, track, dir);
 		setupTrackClick(track, el, dir);
+		updateThumbAriaLabel(el, thumb, dir);
 		return { el, track, thumb, dir };
 	};
 

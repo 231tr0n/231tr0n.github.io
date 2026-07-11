@@ -52,12 +52,24 @@ const positionTooltip = (tip: HTMLDivElement, cx: number, cy: number) => {
 const attach = (target: HTMLElement) => {
 	let tip: HTMLDivElement | null = null;
 	let timeout: ReturnType<typeof setTimeout> | null = null;
+	let hideTimeout: ReturnType<typeof setTimeout> | null = null;
 	let lastX = 0,
 		lastY = 0;
 
 	const show = (cx: number, cy: number) => {
 		const label = getLabel(target);
-		if (label === null || tip || timeout) return;
+		if (label === null || timeout) return;
+
+		if (tip) {
+			if (hideTimeout) {
+				clearTimeout(hideTimeout);
+				hideTimeout = null;
+			}
+			const t = tip;
+			tip = null;
+			t.remove();
+		}
+
 		lastX = cx;
 		lastY = cy;
 		timeout = setTimeout(() => {
@@ -77,13 +89,25 @@ const attach = (target: HTMLElement) => {
 			timeout = null;
 		}
 		if (!tip) return;
+		if (hideTimeout) clearTimeout(hideTimeout);
 		const t = tip;
 		tip.style.opacity = '0';
-		setTimeout(() => {
+		hideTimeout = setTimeout(() => {
+			hideTimeout = null;
 			t.remove();
 			if (tip === t) tip = null;
 		}, animationDuration);
 	};
+
+	const updateTipContent = () => {
+		if (tip) {
+			const label = getLabel(target);
+			if (label !== null) tip.textContent = label;
+		}
+	};
+
+	const labelObserver = new MutationObserver(updateTipContent);
+	labelObserver.observe(target, { attributes: true, attributeFilter: ['aria-label'] });
 
 	const cleanups = [
 		on(target, 'mouseenter', (e: MouseEvent) => {
@@ -99,7 +123,19 @@ const attach = (target: HTMLElement) => {
 
 	return {
 		destroy() {
-			hide();
+			if (timeout) {
+				clearTimeout(timeout);
+				timeout = null;
+			}
+			if (hideTimeout) {
+				clearTimeout(hideTimeout);
+				hideTimeout = null;
+			}
+			if (tip) {
+				tip.remove();
+				tip = null;
+			}
+			labelObserver.disconnect();
 			cleanups.forEach((f) => {
 				f();
 			});
@@ -115,7 +151,7 @@ const attachToUnattachedElements = () => {
 			instances.has(el) ||
 			el.querySelector(ATTACH_SELECTOR) ||
 			el.hasAttribute('title') ||
-			el.closest('.ace_editor')
+			(el.closest('.ace_editor') && !el.hasAttribute('data-custom-scrollbar-thumb'))
 		)
 			continue;
 		if (getLabel(el) === null) continue;

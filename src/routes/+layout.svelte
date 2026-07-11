@@ -17,12 +17,16 @@
 	$effect(() => setupExternalLinks());
 
 	onMount(() => {
+		const style = document.createElement('style');
+		style.textContent = `* { transition: background-color ${String(animationDuration)}ms linear, color ${String(animationDuration)}ms linear; }`;
+		document.head.appendChild(style);
 		const scrollbars = setupScrollbars();
 		document.onfullscreenchange = () => {
 			document.body.classList.toggle('full-screen', !!document.fullscreenElement);
 		};
 		return () => {
 			scrollbars.destroy();
+			style.remove();
 			document.onfullscreenchange = null;
 		};
 	});
