@@ -25,7 +25,11 @@
 	);
 
 	let table: HTMLTableElement;
-	const bars: Record<string, HTMLDivElement> = $state({});
+	const bars: Map<string, HTMLDivElement> = $state(new Map<string, HTMLDivElement>());
+
+	const setBarRef = (el: HTMLDivElement, key: string) => {
+		bars.set(key, el);
+	};
 
 	const onGraphFullscreenChange = (fullscreen: boolean) => {
 		table.style.height = fullscreen ? '100%' : String(height) + 'vh';
@@ -33,7 +37,7 @@
 
 	onMount(() => {
 		for (const [key, value] of Object.entries(sortedData)) {
-			const bar = bars[key];
+			const bar = bars.get(key);
 			if (bar) bar.style.height = String(value) + '%';
 		}
 		table.style.height = String(height) + 'vh';
@@ -82,7 +86,7 @@
 					<tr>
 						{#each Object.keys(sortedData) as key, _ (_)}
 							<td class="plot">
-								<div bind:this={bars[key]} class="bar zeltron-component"></div>
+								<div class="bar zeltron-component" use:setBarRef={key}></div>
 							</td>
 						{/each}
 					</tr>

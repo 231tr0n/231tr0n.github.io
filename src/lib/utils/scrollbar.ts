@@ -24,8 +24,8 @@ const makeTrack = (dir: 'v' | 'h') => {
 	return { track, thumb };
 };
 
-const doubleRAF = (callback: () => void) => {
-	requestAnimationFrame(() => requestAnimationFrame(callback));
+const doubleRAF = (fn: () => void) => {
+	requestAnimationFrame(() => requestAnimationFrame(fn));
 };
 
 const syncScroll = (node: HTMLElement, track: HTMLElement, thumb: HTMLElement, dir: 'v' | 'h') => {

@@ -30,7 +30,7 @@
 	$effect(() => {
 		const idx = selectedItem;
 		if (!scrollspy || !breadcrumb) return;
-		const div = sections[idx];
+		const div = sections.at(idx);
 		if (!div) return;
 		const rect = div.getBoundingClientRect();
 		pageDiv.scrollBy(0, rect.top - rect.height - breadcrumb.offsetHeight - scrollspyOffset);

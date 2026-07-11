@@ -15,7 +15,7 @@ export interface AceMode {
 
 export type OnSetSelectedItem = (item: number) => void;
 
-export type GithubLanguages = Record<string, number>;
+export type GithubLanguages = Map<string, number>;
 
 export interface FileState {
 	code: string | null;

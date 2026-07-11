@@ -7,6 +7,7 @@
 	import type { PostData, GithubLanguages } from '$lib/types';
 	import { animationDuration } from '$lib/constants/app.constants';
 	import { onMount } from 'svelte';
+	import { SvelteMap } from 'svelte/reactivity';
 	import { cachedFetch } from '$lib/utils/fetch-cache.ts';
 
 	let processedRepos = $state(0);
@@ -19,7 +20,7 @@
 		typeof value === 'object' && value !== null;
 
 	const fetchGithubRepoData = async (url: string) => {
-		const languageBytes: Record<string, number> = {};
+		const languageBytes = new SvelteMap<string, number>();
 		const repos: unknown = JSON.parse(await cachedFetch(url));
 		if (!isRecord(repos)) throw new Error('Invalid API response');
 		if ('message' in repos) throw new Error('Github api rate limit exceeded');
@@ -48,20 +49,22 @@
 			if (!isRecord(raw)) throw new Error('Invalid API response');
 			if ('message' in raw) throw new Error('Github api rate limit exceeded');
 
-			const languages: GithubLanguages = {};
-			for (const [key, value] of Object.entries(raw)) languages[key] = Number(value);
+			const languages: GithubLanguages = new SvelteMap<string, number>();
+			for (const [key, value] of Object.entries(raw)) languages.set(key, Number(value));
 
 			const repoData: PostData = {
 				name: repo.name,
 				url: repo.htmlUrl,
 				description: repo.description,
-				badges: Object.keys(languages),
+				badges: [...languages.keys()],
 				open: false,
 				external: true
 			};
 
-			for (const key of Object.keys(languages)) {
-				languageBytes[key] = (languageBytes[key] ?? 0) + (languages[key] ?? 0);
+			for (const key of languages.keys()) {
+				const prev = languageBytes.get(key) ?? 0;
+				const lang = languages.get(key) ?? 0;
+				languageBytes.set(key, prev + lang);
 			}
 
 			repoDataList.push(repoData);
@@ -69,16 +72,16 @@
 		}
 
 		let totalBytes = 0;
-		for (const byteCount of Object.values(languageBytes)) totalBytes += byteCount;
+		for (const byteCount of languageBytes.values()) totalBytes += byteCount;
 
-		const percentages: Record<string, number> = {};
-		for (const [key, byteCount] of Object.entries(languageBytes)) {
-			percentages[key] = parseFloat(((byteCount / totalBytes) * 100).toFixed(2));
+		const percentages = new SvelteMap<string, number>();
+		for (const [key, byteCount] of languageBytes.entries()) {
+			percentages.set(key, parseFloat(((byteCount / totalBytes) * 100).toFixed(2)));
 		}
 
 		await new Promise((resolve) => setTimeout(resolve, animationDuration));
 
-		return { repoData: repoDataList, languagePercentages: percentages };
+		return { repoData: repoDataList, languagePercentages: Object.fromEntries(percentages) };
 	};
 
 	onMount(async () => {

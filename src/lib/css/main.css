@@ -326,6 +326,11 @@ hr {
 	color: var(--color-background);
 }
 
+.zeltron-strong-component:hover {
+	background-color: var(--color-anchor);
+	border-color: transparent;
+}
+
 .zeltron-highlightkeyword {
 	color: var(--color-keyword);
 	font-weight: bold;

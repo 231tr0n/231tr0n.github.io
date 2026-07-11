@@ -4,6 +4,7 @@
 	import Codeeditor from '$lib/components/Codeeditor.svelte';
 	import luaMode from 'ace-code/src/mode/lua';
 	import { onMount } from 'svelte';
+	import { SvelteMap } from 'svelte/reactivity';
 	import { cachedFetch } from '$lib/utils/fetch-cache.ts';
 
 	let configData = $state<string | null>(null);
@@ -22,12 +23,12 @@
 
 	const getSectionsInConfig = (data: string) => {
 		const contents = data.split('\n\n');
-		const map: Record<string, string> = {};
+		const map = new SvelteMap<string, string>();
 		for (const block of contents) {
 			const lines = block.split('\n');
 			const heading = lines[0]?.substring(3);
 			if (heading === undefined) continue;
-			map[heading] = lines.slice(1).join('\n');
+			map.set(heading, lines.slice(1).join('\n'));
 		}
 		return map;
 	};
@@ -40,15 +41,15 @@
 			let depth = 1;
 			let pos = match.index + match[0].length;
 			while (depth > 0 && pos < data.length) {
-				if (data[pos] === '(') depth++;
-				else if (data[pos] === ')') depth--;
+				if (data.at(pos) === '(') depth++;
+				else if (data.at(pos) === ')') depth--;
 				if (depth > 0) pos++;
 			}
 			const body = data.slice(match.index + match[0].length, pos);
 			let braceDepth = 0;
 			let lastKey: string | null = null;
 			for (let i = 0; i < body.length; i++) {
-				const ch = body[i];
+				const ch = body.at(i);
 				if (ch === undefined) continue;
 				if (ch === '{' || ch === '}') {
 					braceDepth += ch === '{' ? 1 : -1;
@@ -66,7 +67,7 @@
 					lastKey = null;
 				} else if (/[a-zA-Z_]/.test(ch)) {
 					const start = i;
-					while (i < body.length && /[\w]/.test(body[i] ?? '')) i++;
+					while (i < body.length && /[\w]/.test(body.at(i) ?? '')) i++;
 					lastKey = body.slice(start, i);
 					i--;
 				}
@@ -227,7 +228,7 @@
 		</ol>
 		<h3>Configuration split into meaningful chunks</h3>
 		<ol>
-			{#each Object.entries(getSectionsInConfig(configData)) as [heading, block] (heading)}
+			{#each getSectionsInConfig(configData) as [heading, block] (heading)}
 				<li>{heading}</li>
 				<Codeeditor
 					code={block}

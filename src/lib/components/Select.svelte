@@ -56,7 +56,7 @@
 		aria-label="Select menu toggler"
 		onclick={toggleSelectionMenu}
 		type="button">
-		{localItems[currentItem]}
+		{localItems.at(currentItem)}
 		{#if open}
 			<svg
 				fill="currentColor"
