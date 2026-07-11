@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '$lib/css/main.css';
-	import '$lib/utils/tooltip.js';
+	import '$lib/utils/tooltip.ts';
 
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';

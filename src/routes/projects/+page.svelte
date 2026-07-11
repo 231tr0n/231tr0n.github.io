@@ -7,7 +7,7 @@
 	import type { PostData, GithubLanguages } from '$lib/types';
 	import { animationDuration } from '$lib/constants/app.constants';
 	import { onMount } from 'svelte';
-	import { cachedFetch } from '$lib/utils/fetch-cache.js';
+	import { cachedFetch } from '$lib/utils/fetch-cache.ts';
 
 	let processedRepos = $state(0);
 	let totalRepos = $state(0);

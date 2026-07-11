@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { darkMode } from '$lib/utils/dark.svelte.js';
+	import { darkMode } from '$lib/utils/dark.svelte.ts';
 	import { themeStorageKey, themeDark, themeLight } from '$lib/constants/app.constants';
 	import { onMount } from 'svelte';
 

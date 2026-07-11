@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type ace from 'ace-code';
-	import ace_everforest_light from '$lib/ace-themes/ace-everforest-light.js';
-	import ace_everforest_dark from '$lib/ace-themes/ace-everforest-dark.js';
-	import { darkMode } from '$lib/utils/dark.svelte.js';
+	import ace_everforest_light from '$lib/ace-themes/ace-everforest-light.ts';
+	import ace_everforest_dark from '$lib/ace-themes/ace-everforest-dark.ts';
+	import { darkMode } from '$lib/utils/dark.svelte.ts';
 	import {
 		editorFontSize,
 		editorTabSize,

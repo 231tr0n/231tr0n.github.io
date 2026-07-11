@@ -4,7 +4,7 @@
 	import Codeeditor from '$lib/components/Codeeditor.svelte';
 	import luaMode from 'ace-code/src/mode/lua';
 	import { onMount } from 'svelte';
-	import { cachedFetch } from '$lib/utils/fetch-cache.js';
+	import { cachedFetch } from '$lib/utils/fetch-cache.ts';
 
 	let configData = $state<string | null>(null);
 	let configError = $state<string | null>(null);

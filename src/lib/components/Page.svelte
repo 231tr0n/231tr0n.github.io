@@ -6,7 +6,7 @@
 		animationDuration,
 		scrollspyOffset,
 		scrollspyThreshold
-	} from '$lib/constants/app.constants.js';
+	} from '$lib/constants/app.constants.ts';
 
 	let {
 		scrollspy = false,
