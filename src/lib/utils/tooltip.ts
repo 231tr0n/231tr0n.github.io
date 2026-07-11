@@ -1,5 +1,5 @@
 import { on } from 'svelte/events';
-import { animationDelay, animationDuration } from '$lib/animation.constants';
+import { animationDelay, animationDuration } from '$lib/constants/animation.constants';
 
 const ATTACH_SELECTOR = 'a, button';
 const GAP = 8;

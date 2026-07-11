@@ -6,7 +6,7 @@
 	import vim from 'ace-code/src/keyboard/vim';
 	import vscode from 'ace-code/src/keyboard/vscode';
 	import beautifier from 'ace-code/src/ext/beautify';
-	import { darkMode } from '$lib/dark.svelte.js';
+	import { darkMode } from '$lib/utils/dark.svelte.js';
 	import type { KeyboardHandler } from 'ace-code/src/keyboard/keybinding';
 	import type { SyntaxMode } from 'ace-code/src/edit_session';
 	import Frame from './Frame.svelte';

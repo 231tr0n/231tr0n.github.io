@@ -3,7 +3,7 @@
 	import Sandbox from '$lib/components/Sandbox.svelte';
 	import Loading from '$lib/components/Loading.svelte';
 	import { onMount } from 'svelte';
-	import { cachedFetch } from '$lib/fetch-cache.js';
+	import { cachedFetch } from '$lib/utils/fetch-cache.js';
 
 	let sourceMap = $state<string | null>(null);
 	let sourceMapError = $state<string | null>(null);

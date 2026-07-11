@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
-	import { darkMode } from '$lib/dark.svelte.js';
+	import { darkMode } from '$lib/utils/dark.svelte.js';
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 

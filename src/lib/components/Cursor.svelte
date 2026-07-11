@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Tween } from 'svelte/motion';
-	import { animationDuration } from '$lib/animation.constants';
+	import { animationDuration } from '$lib/constants/animation.constants';
 	import { linear } from 'svelte/easing';
 	import { onDestroy, onMount } from 'svelte';
 	import { on } from 'svelte/events';

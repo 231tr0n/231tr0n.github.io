@@ -1,17 +1,20 @@
 <script lang="ts">
 	import '$lib/css/main.css';
-	import '$lib/tooltip.js';
+	import '$lib/utils/tooltip.js';
 
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
 	import { page } from '$app/state';
 	import { fade } from 'svelte/transition';
-	import { animationDelay, animationDuration } from '$lib/animation.constants';
+	import { animationDelay, animationDuration } from '$lib/constants/animation.constants';
 	import Cursor from '$lib/components/Cursor.svelte';
 	import { onMount, type Snippet } from 'svelte';
-	import { setupScrollbars } from '$lib/scrollbar';
+	import { setupScrollbars } from '$lib/utils/scrollbar';
+	import { setupExternalLinks } from '$lib/utils/anchor';
 
 	let { children }: { children?: Snippet } = $props();
+
+	$effect(() => setupExternalLinks());
 
 	onMount(() => {
 		const scrollbars = setupScrollbars();

@@ -9,22 +9,22 @@
 
 <footer class="zeltron-body-background">
 	<div>
-		<a href="mailto:zeltronsrikar@gmail.com" rel="noopener noreferrer" target="_blank">
+		<a href="mailto:zeltronsrikar@gmail.com">
 			<img alt="Gmail" src="/images/gmail.svg" />
 		</a>
-		<a href="https://www.github.com/231tr0n" rel="noopener noreferrer" target="_blank">
+		<a href="https://www.github.com/231tr0n">
 			<img class="github" alt="Github" src="/images/github-dark.svg" />
 		</a>
-		<a href="https://codeberg.org/231tr0n" rel="noopener noreferrer" target="_blank">
+		<a href="https://codeberg.org/231tr0n">
 			<img alt="Codeberg" src="/images/codeberg.svg" />
 		</a>
-		<a href="https://www.gitlab.com/231tr0n" rel="noopener noreferrer" target="_blank">
+		<a href="https://www.gitlab.com/231tr0n">
 			<img alt="Gitlab" src="/images/gitlab.svg" />
 		</a>
-		<a href="https://www.linkedin.com/in/231tr0n" rel="noopener noreferrer" target="_blank">
+		<a href="https://www.linkedin.com/in/231tr0n">
 			<img alt="LinkedIn" src="/images/linkedin.svg" />
 		</a>
-		<a href="https://www.twitter.com/231tr0n" rel="noopener noreferrer" target="_blank">
+		<a href="https://www.twitter.com/231tr0n">
 			<img alt="Twitter" src="/images/twitter.svg" />
 		</a>
 	</div>

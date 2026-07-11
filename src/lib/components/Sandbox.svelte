@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { UIEventHandler } from 'svelte/elements';
 	import Frame from './Frame.svelte';
-	import { darkMode } from '$lib/dark.svelte.js';
+	import { darkMode } from '$lib/utils/dark.svelte.js';
 
 	let {
 		title,

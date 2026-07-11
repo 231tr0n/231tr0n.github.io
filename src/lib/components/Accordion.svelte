@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { slide, fade } from 'svelte/transition';
-	import { animationDelay, animationDuration } from '$lib/animation.constants';
+	import { animationDelay, animationDuration } from '$lib/constants/animation.constants';
 	import { resolve } from '$app/paths';
 	import type { Snippet } from 'svelte';
 	import type { RouteId } from '$app/types';
@@ -60,7 +60,7 @@
 			</button>
 			{#if url}
 				{#if external}
-					<a href={url} rel="noopener noreferrer external" target="_blank">
+					<a href={url} rel="external">
 						<button type="button">Open</button>
 					</a>
 				{:else}

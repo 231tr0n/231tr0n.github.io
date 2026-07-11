@@ -4,7 +4,7 @@
 	import Codeeditor from '$lib/components/Codeeditor.svelte';
 	import luaMode from 'ace-code/src/mode/lua';
 	import { onMount } from 'svelte';
-	import { cachedFetch } from '$lib/fetch-cache.js';
+	import { cachedFetch } from '$lib/utils/fetch-cache.js';
 
 	let configData = $state<string | null>(null);
 	let configError = $state<string | null>(null);
@@ -33,11 +33,50 @@
 
 	const get_plugins_in_config = (data: string) => {
 		const plugins: string[] = [];
-		const matches = data.match(/vim.pack.add\s*\(([\s\S]*?)\)/g) ?? [];
-		for (const match of matches) {
-			match.matchAll(/"([^"]*?)"/g).forEach((plugin) => {
-				plugins.push(plugin[1]);
-			});
+		const addRegex = /vim\.pack\.add\s*\(/g;
+		let match;
+		while ((match = addRegex.exec(data)) !== null) {
+			let depth = 1;
+			let pos = match.index + match[0].length;
+			while (depth > 0 && pos < data.length) {
+				if (data[pos] === '(') depth++;
+				else if (data[pos] === ')') depth--;
+				if (depth > 0) pos++;
+			}
+			const body = data.slice(match.index + match[0].length, pos);
+			let braceDepth = 0;
+			let lastKey: string | null = null;
+			for (let i = 0; i < body.length; i++) {
+				const ch = body[i];
+				if (ch === '{') {
+					braceDepth++;
+					lastKey = null;
+				} else if (ch === '}') {
+					braceDepth--;
+					lastKey = null;
+				} else if (ch === ',') {
+					lastKey = null;
+				} else if (ch === '"') {
+					const start = i + 1;
+					let end = start;
+					while (end < body.length && body[end] !== '"') end++;
+					const str = body.slice(start, end);
+					if (
+						braceDepth === 0 ||
+						(braceDepth >= 1 && lastKey === null) ||
+						(braceDepth >= 1 && lastKey === 'src')
+					) {
+						plugins.push(str);
+					}
+					i = end;
+					lastKey = null;
+				} else if (/[a-zA-Z_]/.test(ch)) {
+					const keyStart = i;
+					while (i < body.length && /\w/.test(body[i])) i++;
+					lastKey = body.slice(keyStart, i);
+					i--;
+				}
+			}
 		}
 		return plugins;
 	};
@@ -64,12 +103,7 @@
 			and <span class="zeltron-highlightkeyword">vim keybinds</span>
 			and wrote my first <span class="zeltron-highlightkeyword">vim configuration</span>
 			using the
-			<a
-				href="https://github.com/231tr0n/config/blob/main/nvim/init.vim"
-				rel="noopener noreferrer"
-				target="_blank">
-				.vimrc
-			</a>
+			<a href="https://github.com/231tr0n/config/blob/main/nvim/init.vim">.vimrc</a>
 			in vimscript.
 		</li>
 		<li>
@@ -97,13 +131,9 @@
 		<li>
 			Till then, I was using a basic <span class="zeltron-highlightkeyword">LSP</span>
 			based auto completion setup with
-			<a href="https://github.com/dense-analysis/ale" rel="noopener noreferrer" target="_blank">
-				ALE
-			</a>
+			<a href="https://github.com/dense-analysis/ale">ALE</a>
 			and later switched to
-			<a href="https://github.com/prabirshrestha/vim-lsp" rel="noopener noreferrer" target="_blank">
-				vim-lsp
-			</a>
+			<a href="https://github.com/prabirshrestha/vim-lsp">vim-lsp</a>
 			.
 		</li>
 		<li>
@@ -117,9 +147,7 @@
 		<li>
 			Additionally I also needed debuggers to debug stuff unlike before when I used to make do with
 			print statements. Altough there was a plugin for it like <a
-				href="https://github.com/puremourning/vimspector"
-				rel="noopener noreferrer"
-				target="_blank">
+				href="https://github.com/puremourning/vimspector">
 				Vimspector
 			</a>
 			, I felt like dabbling anymore with
@@ -149,19 +177,14 @@
 			Now came the <span class="zeltron-highlightkeyword">problem of performance</span>
 			. On one hand I had 80+ plugins making my editor start with a delay of around one second since I
 			did not do lazy loading as I wrote my initial configuration using the plugin manager
-			<a href="https://github.com/savq/paq-nvim" rel="noopener noreferrer" target="_blank">Paq</a>
+			<a href="https://github.com/savq/paq-nvim">Paq</a>
 			for simplicity and it did not support lazy loading. On the other hand I had to deal with java files
 			whose source code was more than 50000+ lines and the file sizes crossed 2MB making treesitter and
 			plugins which depend on it very slow. Also most utility plugins I use were full of bloat which I
 			never used.
 		</li>
 		<li>
-			Then comes <a
-				href="https://github.com/echasnovski/mini.nvim"
-				rel="noopener noreferrer"
-				target="_blank">
-				mini.nvim
-			</a>
+			Then comes <a href="https://github.com/echasnovski/mini.nvim">mini.nvim</a>
 			to save me from all this trouble. It provided many
 			<span class="zeltron-highlightkeyword">utilities</span>
 			which were not bloated and were pretty good at doing just the single thing they were meant to do.
@@ -169,9 +192,7 @@
 		<li>
 			I slowly replaced many of my <span class="zeltron-highlightkeyword">utility plugins</span>
 			with alternatives of it provided my
-			<a href="https://github.com/echasnovski/mini.nvim" rel="noopener noreferrer" target="_blank">
-				mini.nvim
-			</a>
+			<a href="https://github.com/echasnovski/mini.nvim">mini.nvim</a>
 			. One of my biggest migrations was to integrate the plugin manager provided by it and lazy load
 			configuration when possible reducing the editor's startup time.
 		</li>
@@ -186,10 +207,7 @@
 		</li>
 		<li>
 			After all these iterations of changing my editor's configuration, I ended up with around 50+
-			plugins most of which are from <a
-				href="https://github.com/echasnovski/mini.nvim"
-				rel="noopener noreferrer"
-				target="_blank">
+			plugins most of which are from <a href="https://github.com/echasnovski/mini.nvim">
 				mini.nvim
 			</a>
 			. The startup time of my configuration is less than 150ms and it works on files as big as 8MB without
@@ -221,11 +239,11 @@
 			{#each get_plugins_in_config(configData) as plugin, _ (_)}
 				<li>
 					{#if /https:\/\/*/.exec(plugin)}
-						<a href={plugin} rel="noopener noreferrer external" target="_blank">
+						<a href={plugin} rel="external">
 							{plugin}
 						</a>
 					{:else}
-						<a href="https://github.com/{plugin}" rel="noopener noreferrer" target="_blank">
+						<a href="https://github.com/{plugin}">
 							{plugin}
 						</a>
 					{/if}

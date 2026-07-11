@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
 	import Select from './Select.svelte';
-	import { animationDelay, animationDuration } from '$lib/animation.constants.js';
+	import { animationDelay, animationDuration } from '$lib/constants/animation.constants.js';
 
 	let {
 		scrollspy = false,

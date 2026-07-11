@@ -5,9 +5,9 @@
 	import BarGraph from '$lib/components/BarGraph.svelte';
 	import Post from '$lib/components/Post.svelte';
 	import type { PostData } from '$lib/types';
-	import { animationDuration } from '$lib/animation.constants';
+	import { animationDuration } from '$lib/constants/animation.constants';
 	import { onMount } from 'svelte';
-	import { cachedFetch } from '$lib/fetch-cache.js';
+	import { cachedFetch } from '$lib/utils/fetch-cache.js';
 
 	interface githubError {
 		message: string;
