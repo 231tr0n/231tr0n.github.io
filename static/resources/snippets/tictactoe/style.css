@@ -12,6 +12,7 @@
 
 * {
 	font-family: Roboto-Condensed, monospace;
+	-webkit-user-select: none;
 	user-select: none;
 }
 

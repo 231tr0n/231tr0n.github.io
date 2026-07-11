@@ -51,6 +51,7 @@
 	--color-dark-foreground: var(--color-everforest-dark-fg);
 	--color-dark-heading: var(--color-everforest-dark-grey2);
 	--color-dark-keyword: var(--color-everforest-dark-green);
+	--color-dark-scrollbar: var(--color-everforest-dark-green);
 	--color-dark-strong-background: var(--color-everforest-dark-bg1);
 
 	--color-light-anchor: var(--color-everforest-light-purple);
@@ -66,6 +67,7 @@
 	--color-light-foreground: var(--color-everforest-light-fg);
 	--color-light-heading: var(--color-everforest-light-grey2);
 	--color-light-keyword: var(--color-everforest-light-blue);
+	--color-light-scrollbar: var(--color-everforest-light-blue);
 	--color-light-strong-background: var(--color-everforest-light-bg1);
 }
 
@@ -82,16 +84,62 @@
 }
 
 * {
-	scrollbar-color: var(--color-light-keyword) transparent;
-	scrollbar-width: thin;
 	transition:
 		background-color 300ms linear,
 		color 300ms linear;
 	caret-color: transparent;
 }
 
-body.dark * {
-	scrollbar-color: var(--color-dark-keyword) transparent;
+.custom-scrollbar-track-v {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 5px;
+	height: 100%;
+	background: transparent;
+	pointer-events: none;
+}
+
+.custom-scrollbar-thumb-v {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 5px;
+	min-height: 20px;
+	background: var(--color-light-scrollbar);
+	border-radius: 0;
+	cursor: default;
+	pointer-events: auto;
+}
+
+body.dark .custom-scrollbar-thumb-v {
+	background: var(--color-dark-scrollbar);
+}
+
+.custom-scrollbar-track-h {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 5px;
+	width: 100%;
+	background: transparent;
+	pointer-events: none;
+}
+
+.custom-scrollbar-thumb-h {
+	position: absolute;
+	bottom: 0;
+	left: 0;
+	height: 5px;
+	min-width: 40px;
+	background: var(--color-light-scrollbar);
+	border-radius: 0;
+	cursor: default;
+	pointer-events: auto;
+}
+
+body.dark .custom-scrollbar-thumb-h {
+	background: var(--color-dark-scrollbar);
 }
 
 progress {

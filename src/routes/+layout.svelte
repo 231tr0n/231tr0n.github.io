@@ -9,16 +9,22 @@
 	import { animationDelay, animationDuration } from '$lib/animation.constants';
 	import Cursor from '$lib/components/Cursor.svelte';
 	import { onMount, type Snippet } from 'svelte';
+	import { setupScrollbars } from '$lib/scrollbar';
 
 	let { children }: { children?: Snippet } = $props();
 
 	onMount(() => {
+		const scrollbars = setupScrollbars();
 		document.onfullscreenchange = () => {
 			if (document.fullscreenElement) {
 				document.body.classList.add('full-screen');
 			} else {
 				document.body.classList.remove('full-screen');
 			}
+		};
+		return () => {
+			scrollbars.destroy();
+			document.onfullscreenchange = null;
 		};
 	});
 </script>

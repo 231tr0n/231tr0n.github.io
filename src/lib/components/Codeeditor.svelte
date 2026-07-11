@@ -81,6 +81,9 @@
 
 	onMount(() => {
 		editor = ace.edit(editorDiv);
+		editor.renderer.scrollBarV['width'] = 6;
+		editor.renderer.scrollBarH['height'] = 6;
+		editor.resize(true);
 		if (mode) {
 			editor.session.setMode(new mode.Mode());
 		}
