@@ -321,6 +321,16 @@
 		font-size: 15px;
 	}
 
+	:global(.ace_scrollbar),
+	:global(.ace_scrollbar-h) {
+		scrollbar-width: none;
+	}
+
+	:global(.ace_scrollbar::-webkit-scrollbar),
+	:global(.ace_scrollbar-h::-webkit-scrollbar) {
+		display: none;
+	}
+
 	:global(.ace-everforest-light .ace_gutter-layer),
 	:global(.ace-everforest-dark .ace_gutter-layer) {
 		border-right: 2px solid var(--color-component-background);
