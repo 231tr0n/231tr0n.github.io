@@ -1,116 +1,138 @@
 import { on } from 'svelte/events';
+import { animationDelay, animationDuration } from '$lib/animation.constants';
 
-const getStyle = (el: Element, prop: string) => getComputedStyle(el).getPropertyValue(prop).trim();
+const ATTACH_SELECTOR = 'a, button';
+const GAP = 8;
 
-const getLabel = (el: HTMLElement): string | null => {
-	const anchor = el instanceof HTMLAnchorElement ? el : el.closest('a');
+interface ThemeColors {
+	background: string;
+	foreground: string;
+}
+
+const getComputedStyleValue = (element: Element, property: string) =>
+	getComputedStyle(element).getPropertyValue(property).trim();
+
+const getLabel = (element: HTMLElement): string | null => {
+	const anchor = element instanceof HTMLAnchorElement ? element : element.closest('a');
 	if (anchor) {
 		const href = anchor.getAttribute('href');
 		if (href) return href;
 	}
-	const aria = el.getAttribute('aria-label');
-	if (aria) return aria;
-	const text = el.textContent.trim();
-	if (text) return text;
-	return null;
+	return (element.getAttribute('aria-label') ?? element.textContent.trim()) || null;
 };
 
-const ATTACH_SELECTOR = 'a, button';
+const createTooltip = (label: string, themeColors: ThemeColors): HTMLDivElement => {
+	const tip = document.createElement('div');
+	tip.textContent = label;
+	Object.assign(tip.style, {
+		position: 'fixed',
+		padding: '4px 8px',
+		borderRadius: '4px',
+		fontSize: '12px',
+		fontFamily: 'Roboto-Condensed, monospace',
+		whiteSpace: 'nowrap',
+		backgroundColor: themeColors.background,
+		color: themeColors.foreground,
+		zIndex: '10000',
+		pointerEvents: 'none',
+		opacity: '0',
+		transition: `opacity ${String(animationDuration)}ms ease`
+	});
+	return tip;
+};
 
-const attach = (node: HTMLElement) => {
-	let tip: HTMLDivElement | null = null;
+const getThemeColors = (() => {
+	let cachedColors: ThemeColors | null = null;
+	let cachedIsDarkMode: boolean | null = null;
 
-	const getPosition = (clientX: number, clientY: number) => {
-		if (!tip) return { top: 0, left: 0 };
-		const tipRect = tip.getBoundingClientRect();
-		const gap = 8;
+	return (): ThemeColors => {
+		const isDarkMode = document.body.classList.contains('dark');
+		if (cachedColors && cachedIsDarkMode === isDarkMode) return cachedColors;
 
-		let top = clientY + gap;
-		let left = clientX + gap;
-
-		if (top + tipRect.height > window.innerHeight) {
-			top = clientY - tipRect.height - gap;
-		}
-		if (left + tipRect.width > window.innerWidth) {
-			left = clientX - tipRect.width - gap;
-		}
-
-		top = Math.max(4, Math.min(top, window.innerHeight - tipRect.height - 4));
-		left = Math.max(4, Math.min(left, window.innerWidth - tipRect.width - 4));
-
-		return { top, left };
+		const rootElement = document.documentElement;
+		cachedColors = {
+			background: getComputedStyleValue(
+				rootElement,
+				isDarkMode ? '--color-dark-component-background' : '--color-light-component-background'
+			),
+			foreground: getComputedStyleValue(
+				rootElement,
+				isDarkMode ? '--color-dark-component-foreground' : '--color-light-component-foreground'
+			)
+		};
+		cachedIsDarkMode = isDarkMode;
+		return cachedColors;
 	};
+})();
+
+const positionTooltip = (tooltipElement: HTMLDivElement, clientX: number, clientY: number) => {
+	const tooltipRect = tooltipElement.getBoundingClientRect();
+	let top = clientY + GAP;
+	let left = clientX + GAP;
+
+	if (top + tooltipRect.height > window.innerHeight) top = clientY - tooltipRect.height - GAP;
+	if (left + tooltipRect.width > window.innerWidth) left = clientX - tooltipRect.width - GAP;
+
+	tooltipElement.style.top = `${String(Math.max(4, Math.min(top, window.innerHeight - tooltipRect.height - 4)))}px`;
+	tooltipElement.style.left = `${String(Math.max(4, Math.min(left, window.innerWidth - tooltipRect.width - 4)))}px`;
+};
+
+const attach = (targetElement: HTMLElement) => {
+	let tip: HTMLDivElement | null = null;
+	let pendingShowTimeout: ReturnType<typeof setTimeout> | null = null;
+	let latestClientX = 0;
+	let latestClientY = 0;
 
 	const show = (clientX: number, clientY: number) => {
-		const label = getLabel(node);
-		if (!label || tip) return;
+		const label = getLabel(targetElement);
+		if (!label || tip || pendingShowTimeout) return;
 
-		const isDark = document.body.classList.contains('dark');
-		const root = document.documentElement;
-		const bg = isDark
-			? getStyle(root, '--color-dark-component-background') || '#475258'
-			: getStyle(root, '--color-light-component-background') || '#bdc3af';
-		const fg = isDark
-			? getStyle(root, '--color-dark-component-foreground') || '#d3c6aa'
-			: getStyle(root, '--color-light-component-foreground') || '#5c6a72';
+		latestClientX = clientX;
+		latestClientY = clientY;
 
-		tip = document.createElement('div');
-		tip.textContent = label;
-		Object.assign(tip.style, {
-			position: 'fixed',
-			padding: '4px 8px',
-			borderRadius: '4px',
-			fontSize: '12px',
-			fontFamily: 'Roboto-Condensed, monospace',
-			whiteSpace: 'nowrap',
-			backgroundColor: bg,
-			color: fg,
-			zIndex: '10000',
-			pointerEvents: 'none',
-			opacity: '0',
-			transition: 'opacity 100ms ease'
-		});
-		document.body.appendChild(tip);
+		pendingShowTimeout = setTimeout(() => {
+			pendingShowTimeout = null;
+			tip = createTooltip(label, getThemeColors());
+			document.body.appendChild(tip);
+			positionTooltip(tip, latestClientX, latestClientY);
 
-		const { top, left } = getPosition(clientX, clientY);
-		tip.style.top = `${String(top)}px`;
-		tip.style.left = `${String(left)}px`;
-
-		requestAnimationFrame(() => {
-			if (tip) tip.style.opacity = '1';
-		});
-	};
-
-	const updatePosition = (e: MouseEvent) => {
-		if (!tip) return;
-		const { top, left } = getPosition(e.clientX, e.clientY);
-		tip.style.top = `${String(top)}px`;
-		tip.style.left = `${String(left)}px`;
+			requestAnimationFrame(() => {
+				if (tip) tip.style.opacity = '1';
+			});
+		}, animationDelay);
 	};
 
 	const hide = () => {
-		if (tip) {
-			tip.style.opacity = '0';
-			setTimeout(() => {
-				tip?.remove();
-				tip = null;
-			}, 100);
+		if (pendingShowTimeout) {
+			clearTimeout(pendingShowTimeout);
+			pendingShowTimeout = null;
 		}
+		if (!tip) return;
+		const tooltipToFade = tip;
+		tip.style.opacity = '0';
+		setTimeout(() => {
+			tooltipToFade.remove();
+			if (tip === tooltipToFade) tip = null;
+		}, animationDuration);
 	};
 
-	const cleanups: (() => void)[] = [
-		on(node, 'mouseenter', (e: MouseEvent) => {
+	const cleanupFunctions = [
+		on(targetElement, 'mouseenter', (e: MouseEvent) => {
 			show(e.clientX, e.clientY);
 		}),
-		on(node, 'mousemove', updatePosition),
-		on(node, 'mouseleave', hide)
+		on(targetElement, 'mousemove', (e: MouseEvent) => {
+			latestClientX = e.clientX;
+			latestClientY = e.clientY;
+			if (tip) positionTooltip(tip, e.clientX, e.clientY);
+		}),
+		on(targetElement, 'mouseleave', hide)
 	];
 
 	return {
 		destroy() {
 			hide();
-			cleanups.forEach((fn) => {
-				fn();
+			cleanupFunctions.forEach((cleanup) => {
+				cleanup();
 			});
 		}
 	};
@@ -118,29 +140,24 @@ const attach = (node: HTMLElement) => {
 
 const instances = new WeakMap<HTMLElement, { destroy: () => void }>();
 
-const init = () => {
-	document.querySelectorAll<HTMLElement>(ATTACH_SELECTOR).forEach((el) => {
-		if (
-			!instances.has(el) &&
-			!el.querySelector(ATTACH_SELECTOR) &&
-			!el.hasAttribute('title') &&
-			!el.closest('.ace_editor') &&
-			getLabel(el)
-		) {
-			instances.set(el, attach(el));
-		}
-	});
+const attachToUnattachedElements = () => {
+	for (const element of document.querySelectorAll<HTMLElement>(ATTACH_SELECTOR)) {
+		if (instances.has(element)) continue;
+		if (element.querySelector(ATTACH_SELECTOR)) continue;
+		if (element.hasAttribute('title')) continue;
+		if (element.closest('.ace_editor')) continue;
+		if (!getLabel(element)) continue;
+		instances.set(element, attach(element));
+	}
 };
 
 if (typeof document !== 'undefined') {
-	const observer = new MutationObserver(() => {
-		init();
-	});
-	observer.observe(document.body, { childList: true, subtree: true });
+	const domObserver = new MutationObserver(attachToUnattachedElements);
+	domObserver.observe(document.body, { childList: true, subtree: true });
 
 	if (document.readyState === 'loading') {
-		on(document, 'DOMContentLoaded', init);
+		on(document, 'DOMContentLoaded', attachToUnattachedElements);
 	} else {
-		init();
+		attachToUnattachedElements();
 	}
 }
