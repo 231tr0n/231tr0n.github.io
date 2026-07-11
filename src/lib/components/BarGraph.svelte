@@ -28,20 +28,15 @@
 	const bars: Record<string, HTMLDivElement> = $state({});
 
 	const onGraphFullscreenChange = (fullscreen: boolean) => {
-		if (fullscreen) {
-			table.style.height = '100%';
-		} else {
-			table.style.height = height.toString() + 'vh';
-		}
+		table.style.height = fullscreen ? '100%' : String(height) + 'vh';
 	};
 
 	onMount(() => {
 		for (const [key, value] of Object.entries(sortedData)) {
 			const bar = bars[key];
-			if (bar) bar.style.height = value.toString() + '%';
+			if (bar) bar.style.height = String(value) + '%';
 		}
-
-		table.style.height = height.toString() + 'vh';
+		table.style.height = String(height) + 'vh';
 	});
 </script>
 
@@ -94,7 +89,7 @@
 					<tr>
 						{#each Object.entries(sortedData) as [key, value], _ (_)}
 							<td class="label">
-								<span class="zeltron-badge">{key} - {value.toString() + '%'}</span>
+								<span class="zeltron-badge">{key} - {String(value) + '%'}</span>
 							</td>
 						{/each}
 					</tr>
@@ -118,7 +113,7 @@
 		box-sizing: border-box;
 	}
 
-	div.bottom {
+	.bottom {
 		flex: 1;
 		min-height: 0;
 		min-width: 0;
@@ -126,17 +121,17 @@
 		flex-direction: column;
 	}
 
-	div.padding {
+	.padding {
 		padding-top: 5px;
 	}
 
 	@supports (-moz-appearance: none) {
-		div.padding {
+		.padding {
 			padding-bottom: 10px;
 		}
 	}
 
-	div.overflow {
+	.overflow {
 		flex: 1;
 		min-height: 0;
 		min-width: 0;
@@ -168,7 +163,7 @@
 		height: inherit;
 	}
 
-	div.bar {
+	.bar {
 		position: absolute;
 		bottom: 0;
 		left: 0;

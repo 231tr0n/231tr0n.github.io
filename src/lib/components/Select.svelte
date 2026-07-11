@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
-
-	type onSetSelectedItemType = (item: number) => void;
+	import { selectPaddingOffset } from '$lib/constants/app.constants';
+	import type { OnSetSelectedItem } from '$lib/types';
 
 	let {
 		items,
@@ -15,7 +15,7 @@
 		emptyItem?: boolean;
 		currentItem: number;
 		colored: boolean;
-		onSetSelectedItem: onSetSelectedItemType | null;
+		onSetSelectedItem: OnSetSelectedItem | null;
 	} = $props();
 
 	let open = $state(false);
@@ -29,28 +29,23 @@
 	};
 
 	const toggleSelectionMenu = () => {
-		open = open ? false : true;
+		open = !open;
 	};
 
 	onMount(() => {
-		if (colored) {
-			selectContext.classList.add('zeltron-strong-component');
-		}
+		if (colored) selectContext.classList.add('zeltron-strong-component');
 	});
 
 	$effect(() => {
-		let largestItem = '';
+		let largest = '';
 		for (const item of localItems) {
-			if (largestItem.length < item.length) {
-				largestItem = item;
-			}
+			if (largest.length < item.length) largest = item;
 		}
-
-		const button = document.createElement('button');
-		button.innerText = largestItem;
-		document.body.appendChild(button);
-		selectContext.style.width = (Math.ceil(button.clientWidth) + 30).toString() + 'px';
-		document.body.removeChild(button);
+		const btn = document.createElement('button');
+		btn.innerText = largest;
+		document.body.appendChild(btn);
+		selectContext.style.width = String(Math.ceil(btn.clientWidth) + selectPaddingOffset) + 'px';
+		document.body.removeChild(btn);
 	});
 </script>
 

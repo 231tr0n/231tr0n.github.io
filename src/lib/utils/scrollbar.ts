@@ -1,4 +1,11 @@
 import { on } from 'svelte/events';
+import {
+	scrollbarMinThumbV,
+	scrollbarMinThumbH,
+	scrollbarTrackSize,
+	scrollbarZIndex,
+	scrollbarAceSetupTimeout
+} from '$lib/constants/app.constants';
 
 const getColor = (node: HTMLElement, key: string): string => {
 	const dark = document.body.classList.contains('dark');
@@ -35,7 +42,10 @@ const syncScroll = (node: HTMLElement, track: HTMLElement, thumb: HTMLElement, d
 	track.style.display = '';
 	if (!trackSize) return;
 
-	const thumbSize = Math.max(isVertical ? 20 : 40, (clientSize / scrollSize) * trackSize);
+	const thumbSize = Math.max(
+		isVertical ? scrollbarMinThumbV : scrollbarMinThumbH,
+		(clientSize / scrollSize) * trackSize
+	);
 	const maxPos = trackSize - thumbSize;
 	if (maxPos <= 0) return;
 
@@ -63,7 +73,10 @@ const setupDrag = (thumb: HTMLElement, node: HTMLElement, track: HTMLElement, di
 		if (!scrollRange) return;
 
 		const trackSize = isVertical ? track.clientHeight : track.clientWidth;
-		const thumbSize = Math.max(isVertical ? 20 : 40, (clientSize / scrollSize) * trackSize);
+		const thumbSize = Math.max(
+			isVertical ? scrollbarMinThumbV : scrollbarMinThumbH,
+			(clientSize / scrollSize) * trackSize
+		);
 		const maxPos = trackSize - thumbSize;
 		if (maxPos <= 0) return;
 
@@ -263,7 +276,7 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 				vThumb = trackParts.thumb;
 				vTrack.style.top = '0';
 				vTrack.style.right = '0';
-				vTrack.style.width = '5px';
+				vTrack.style.width = `${String(scrollbarTrackSize)}px`;
 				vTrack.style.height = 'calc(100% + 2px)';
 				parent.appendChild(vTrack);
 			}
@@ -280,7 +293,7 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 				hTrack.style.bottom = '0';
 				hTrack.style.left = '0';
 				hTrack.style.right = '0';
-				hTrack.style.height = '5px';
+				hTrack.style.height = `${String(scrollbarTrackSize)}px`;
 				parent.appendChild(hTrack);
 			}
 		}
@@ -300,7 +313,7 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 		el.style.background = 'transparent';
 
 		const { track, thumb } = makeTrack(dir);
-		track.style.zIndex = '7';
+		track.style.zIndex = String(scrollbarZIndex);
 		editorEl.appendChild(track);
 		thumb.style.background = getColor(el, 'scrollbar');
 		on(el, 'scroll', () => {
@@ -406,7 +419,7 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 		mutationObserver.observe(editorEl, { childList: true, subtree: true });
 		setTimeout(() => {
 			mutationObserver.disconnect();
-		}, 3000);
+		}, scrollbarAceSetupTimeout);
 	};
 
 	const processAddedNode = (node: HTMLElement) => {

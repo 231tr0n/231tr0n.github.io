@@ -1,116 +1,71 @@
 <script lang="ts">
 	import { Tween } from 'svelte/motion';
-	import { animationDuration } from '$lib/constants/animation.constants';
+	import {
+		animationDuration,
+		cursorRadius,
+		cursorClickRadius,
+		cursorStrokeWidth
+	} from '$lib/constants/app.constants';
 	import { linear } from 'svelte/easing';
 	import { onDestroy, onMount } from 'svelte';
 	import { on } from 'svelte/events';
 
 	const controller = new AbortController();
 
-	const circleRadius = 50;
-	const circleClickRadius = 100;
-	const strokeWidth = 10;
-
-	const radius = new Tween(circleRadius, { duration: animationDuration, delay: 0, easing: linear });
+	const radius = new Tween(cursorRadius, { duration: animationDuration, delay: 0, easing: linear });
 	const cursor = new Tween(
 		{ x: 0, y: 0 },
 		{ duration: animationDuration, delay: 0, easing: linear }
 	);
 
 	onMount(() => {
+		const sig = { signal: controller.signal };
 		on(
 			document,
 			'mousemove',
-			(event) => {
-				cursor.target = { x: event.clientX, y: event.clientY };
+			(e) => {
+				cursor.target = { x: e.clientX, y: e.clientY };
 			},
-			{ signal: controller.signal }
+			sig
 		);
 		on(
 			document,
 			'touchmove',
-			(event) => {
-				const touch = event.touches[event.touches.length - 1];
-				if (!touch) return;
-				cursor.target = {
-					x: touch.clientX,
-					y: touch.clientY
-				};
+			(e) => {
+				const touch = e.touches[e.touches.length - 1];
+				if (touch) cursor.target = { x: touch.clientX, y: touch.clientY };
 			},
-			{ signal: controller.signal }
+			sig
 		);
-		on(
-			document,
-			'mouseleave',
-			() => {
-				radius.target = 0;
-			},
-			{ signal: controller.signal }
-		);
-		on(
-			document,
-			'mouseout',
-			() => {
-				radius.target = 0;
-			},
-			{ signal: controller.signal }
-		);
-		on(
-			document,
-			'mouseover',
-			() => {
-				radius.target = circleRadius;
-			},
-			{ signal: controller.signal }
-		);
-		on(
-			document,
-			'mouseenter',
-			() => {
-				radius.target = circleRadius;
-			},
-			{ signal: controller.signal }
-		);
-		on(
-			document,
-			'mouseup',
-			() => {
-				radius.target = circleRadius;
-			},
-			{ signal: controller.signal }
-		);
+		const hide = () => {
+			radius.target = 0;
+		};
+		const show = () => {
+			radius.target = cursorRadius;
+		};
+		on(document, 'mouseleave', hide, sig);
+		on(document, 'mouseout', hide, sig);
+		on(document, 'mouseover', show, sig);
+		on(document, 'mouseenter', show, sig);
+		on(document, 'mouseup', show, sig);
 		on(
 			document,
 			'mousedown',
 			() => {
-				radius.target = circleClickRadius;
+				radius.target = cursorClickRadius;
 			},
-			{ signal: controller.signal }
+			sig
 		);
-		on(
-			document,
-			'touchcancel',
-			() => {
-				radius.target = circleRadius;
-			},
-			{ signal: controller.signal }
-		);
+		on(document, 'touchcancel', show, sig);
 		on(
 			document,
 			'touchstart',
 			() => {
-				radius.target = circleClickRadius;
+				radius.target = cursorClickRadius;
 			},
-			{ signal: controller.signal }
+			sig
 		);
-		on(
-			document,
-			'touchend',
-			() => {
-				radius.target = circleRadius;
-			},
-			{ signal: controller.signal }
-		);
+		on(document, 'touchend', show, sig);
 	});
 
 	onDestroy(() => {
@@ -125,7 +80,7 @@
 			cx={cursor.current.x}
 			cy={cursor.current.y}
 			r={radius.current}
-			stroke-width={strokeWidth} />
+			stroke-width={cursorStrokeWidth} />
 	</svg>
 {/if}
 
@@ -144,10 +99,6 @@
 
 	.circle {
 		fill: none;
-		stroke: var(--color-light-component-background);
-	}
-
-	:global(body.dark) .circle {
-		stroke: var(--color-dark-component-background);
+		stroke: var(--color-component-background);
 	}
 </style>

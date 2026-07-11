@@ -1,7 +1,12 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
 	import Select from './Select.svelte';
-	import { animationDelay, animationDuration } from '$lib/constants/animation.constants.js';
+	import {
+		animationDelay,
+		animationDuration,
+		scrollspyOffset,
+		scrollspyThreshold
+	} from '$lib/constants/app.constants.js';
 
 	let {
 		scrollspy = false,
@@ -11,63 +16,48 @@
 		children?: Snippet;
 	} = $props();
 
-	let name: HTMLElement;
 	let sections: HTMLElement[] = [];
 	let currentItem = $state(0);
 	let breadcrumb: HTMLHeadingElement | undefined = $state();
-	const selectionMenuArray: string[] = $state([]);
+	const items: string[] = $state([]);
 	let pageDiv: HTMLDivElement;
-
 	let selectedItem = $state(0);
+
 	const onSetSelectedItem = (value: number) => {
 		selectedItem = value;
 	};
 
 	$effect(() => {
-		if (!scrollspy) return;
-		if (!breadcrumb) return;
-		if (selectedItem >= 0 && selectedItem < sections.length) {
-			const currentDiv = sections[selectedItem];
-			if (!currentDiv) return;
-			const currentDivBoundingClientRect = currentDiv.getBoundingClientRect();
-			pageDiv.scrollBy(
-				0,
-				currentDivBoundingClientRect.top -
-					currentDivBoundingClientRect.height -
-					breadcrumb.offsetHeight -
-					15
-			);
-		}
+		if (!scrollspy || !breadcrumb) return;
+		const div = sections[selectedItem];
+		if (!div) return;
+		const rect = div.getBoundingClientRect();
+		pageDiv.scrollBy(0, rect.top - rect.height - breadcrumb.offsetHeight - scrollspyOffset);
 	});
 
 	onMount(() => {
 		if (!scrollspy) return;
-		const breadcrumbEl = breadcrumb;
-		if (!breadcrumbEl) return;
+		const el = breadcrumb;
+		if (!el) return;
 		pageDiv.onscroll = () => {
-			let prev = null;
-			for (const [index, section] of sections.entries()) {
-				if (breadcrumbEl.offsetTop + breadcrumbEl.offsetHeight + 5 < section.offsetTop) {
-					if (prev) {
-						currentItem = index - 1;
-					} else {
-						currentItem = index;
-					}
+			let prev: HTMLElement | null = null;
+			for (const [i, section] of sections.entries()) {
+				if (el.offsetTop + el.offsetHeight + scrollspyThreshold < section.offsetTop) {
+					currentItem = prev ? i - 1 : i;
 					break;
 				} else {
-					currentItem = index;
+					currentItem = i;
 				}
 				prev = section;
 			}
 		};
-
 		setTimeout(() => {
-			name = document.querySelector('div.page div.content h1') ?? document.createElement('div');
-			sections = Array.from(document.querySelectorAll('div.page div.content h2'));
+			const name =
+				document.querySelector<HTMLElement>('div.page div.content h1') ??
+				document.createElement('div');
+			sections = Array.from(document.querySelectorAll<HTMLElement>('div.page div.content h2'));
 			sections.unshift(name);
-			for (const section of sections) {
-				selectionMenuArray.push(section.innerText);
-			}
+			for (const section of sections) items.push(section.innerText);
 		}, animationDelay + animationDuration);
 	});
 </script>
@@ -76,7 +66,7 @@
 	<div class="content">
 		{#if scrollspy}
 			<h4 bind:this={breadcrumb} class="zeltron-component zeltron-flex-middle">
-				<Select colored={true} {currentItem} items={selectionMenuArray} {onSetSelectedItem} />
+				<Select colored={true} {currentItem} {items} {onSetSelectedItem} />
 			</h4>
 		{/if}
 		{@render children?.()}
@@ -92,10 +82,6 @@
 		display: flex;
 		justify-content: center;
 		scroll-behavior: smooth;
-	}
-
-	h4 {
-		display: flex;
 	}
 
 	.content {
@@ -121,5 +107,6 @@
 		padding: 5px;
 		position: sticky;
 		top: 0px;
+		display: flex;
 	}
 </style>

@@ -8,13 +8,18 @@
 	import javascriptMode from 'ace-code/src/mode/javascript';
 	import { onMount } from 'svelte';
 	import { cachedFetch } from '$lib/utils/fetch-cache.js';
+	import type { FileState } from '$lib/types';
 
-	let jsCode = $state<string | null>(null);
-	let cssCode = $state<string | null>(null);
-	let htmlCode = $state<string | null>(null);
-	let jsError = $state<string | null>(null);
-	let cssError = $state<string | null>(null);
-	let htmlError = $state<string | null>(null);
+	let jsFile = $state<FileState>({ code: null, error: null });
+	let cssFile = $state<FileState>({ code: null, error: null });
+	let htmlFile = $state<FileState>({ code: null, error: null });
+
+	const extractFileState = (result: PromiseSettledResult<string>): FileState => {
+		if (result.status === 'fulfilled') {
+			return { code: result.value, error: null };
+		}
+		return { code: null, error: 'Failed to load file' };
+	};
 
 	onMount(async () => {
 		const results = await Promise.allSettled([
@@ -22,12 +27,9 @@
 			cachedFetch('/resources/snippets/tictactoe/style.css'),
 			cachedFetch('/resources/snippets/tictactoe/index.html')
 		]);
-		if (results[0].status === 'fulfilled') jsCode = results[0].value;
-		else jsError = 'Failed to load JS';
-		if (results[1].status === 'fulfilled') cssCode = results[1].value;
-		else cssError = 'Failed to load CSS';
-		if (results[2].status === 'fulfilled') htmlCode = results[2].value;
-		else htmlError = 'Failed to load HTML';
+		jsFile = extractFileState(results[0]);
+		cssFile = extractFileState(results[1]);
+		htmlFile = extractFileState(results[2]);
 	});
 </script>
 
@@ -35,11 +37,11 @@
 	<h1>TicTacToe</h1>
 
 	<h2>Source Code</h2>
-	{#if jsError}
-		<div class="zeltron-error">{jsError}</div>
-	{:else if jsCode}
+	{#if jsFile.error}
+		<div class="zeltron-error">{jsFile.error}</div>
+	{:else if jsFile.code}
 		<Codeeditor
-			code={jsCode}
+			code={jsFile.code}
 			fileName="index.js"
 			langName="javascript"
 			mode={javascriptMode}
@@ -47,18 +49,23 @@
 	{:else}
 		<Loading />
 	{/if}
-	{#if cssError}
-		<div class="zeltron-error">{cssError}</div>
-	{:else if cssCode}
-		<Codeeditor code={cssCode} fileName="style.css" langName="css" mode={cssMode} readOnly={true} />
+	{#if cssFile.error}
+		<div class="zeltron-error">{cssFile.error}</div>
+	{:else if cssFile.code}
+		<Codeeditor
+			code={cssFile.code}
+			fileName="style.css"
+			langName="css"
+			mode={cssMode}
+			readOnly={true} />
 	{:else}
 		<Loading />
 	{/if}
-	{#if htmlError}
-		<div class="zeltron-error">{htmlError}</div>
-	{:else if htmlCode}
+	{#if htmlFile.error}
+		<div class="zeltron-error">{htmlFile.error}</div>
+	{:else if htmlFile.code}
 		<Codeeditor
-			code={htmlCode}
+			code={htmlFile.code}
 			fileName="index.html"
 			langName="html"
 			mode={htmlMode}

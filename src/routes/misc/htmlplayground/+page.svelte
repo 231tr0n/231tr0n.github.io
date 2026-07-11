@@ -5,7 +5,8 @@
 	import htmlMode from 'ace-code/src/mode/html';
 
 	let htmlPlayground = $state('');
-	const setHtmlPlayground = (value: string) => {
+
+	const handleHtmlChange = (value: string) => {
 		htmlPlayground = value;
 	};
 </script>
@@ -14,7 +15,7 @@
 	<h1>HTML Playground</h1>
 
 	<h2>Editor</h2>
-	<Codeeditor fileName="" langName="html" mode={htmlMode} setCode={setHtmlPlayground} />
+	<Codeeditor fileName="" langName="html" mode={htmlMode} setCode={handleHtmlChange} />
 
 	<h2>Output</h2>
 	<Sandbox description="" srcDoc={htmlPlayground} title="Output" />

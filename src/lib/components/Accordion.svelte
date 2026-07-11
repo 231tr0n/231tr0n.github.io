@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { slide, fade } from 'svelte/transition';
-	import { animationDelay, animationDuration } from '$lib/constants/animation.constants';
+	import { animationDelay, animationDuration } from '$lib/constants/app.constants';
 	import { resolve } from '$app/paths';
 	import type { Snippet } from 'svelte';
 	import type { RouteId } from '$app/types';
@@ -94,12 +94,8 @@
 	}
 
 	.summary {
-		border-bottom: 1px solid var(--color-light-component-background);
+		border-bottom: 1px solid var(--color-component-background);
 		margin-bottom: 5px;
-	}
-
-	:global(body.dark) .summary {
-		border-bottom: 1px solid var(--color-dark-component-background);
 	}
 
 	a > button {
@@ -118,10 +114,6 @@
 	h2 {
 		width: 100%;
 		margin: 0px;
-		border: 0px;
-	}
-
-	:global(body.dark) h2 {
 		border: 0px;
 	}
 </style>

@@ -73,11 +73,7 @@
 	}
 
 	.filename {
-		border-bottom: 1px solid var(--color-light-component-foreground);
-	}
-
-	:global(body.dark) .filename {
-		border-bottom: 1px solid var(--color-dark-component-foreground);
+		border-bottom: 1px solid var(--color-component-foreground);
 	}
 
 	.context {

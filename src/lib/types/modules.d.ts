@@ -1,17 +1,14 @@
 declare module 'ace-code/src/keyboard/vim' {
-	import type { KeyboardHandler } from 'ace-code/src/keyboard/keybinding';
-	interface VimModule {
-		handler: KeyboardHandler;
-	}
-	const vim: VimModule;
+	const vim: { handler: import('ace-code').Ace.KeyboardHandler };
 	export default vim;
 }
 
 declare module 'ace-code/src/keyboard/vscode' {
-	import type { KeyboardHandler } from 'ace-code/src/keyboard/keybinding';
-	interface VscodeModule {
-		handler: KeyboardHandler;
-	}
-	const vscode: VscodeModule;
+	const vscode: { handler: import('ace-code').Ace.KeyboardHandler };
 	export default vscode;
+}
+
+declare module 'ace-code/src/ext/beautify' {
+	const beautify: { beautify: (session: import('ace-code').Ace.EditSession) => void };
+	export default beautify;
 }

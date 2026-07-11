@@ -4,10 +4,10 @@
 
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import Cursor from '$lib/components/Cursor.svelte';
 	import { page } from '$app/state';
 	import { fade } from 'svelte/transition';
-	import { animationDelay, animationDuration } from '$lib/constants/animation.constants';
-	import Cursor from '$lib/components/Cursor.svelte';
+	import { animationDelay, animationDuration } from '$lib/constants/app.constants';
 	import { onMount, type Snippet } from 'svelte';
 	import { setupScrollbars } from '$lib/utils/scrollbar';
 	import { setupExternalLinks } from '$lib/utils/anchor';
@@ -19,11 +19,7 @@
 	onMount(() => {
 		const scrollbars = setupScrollbars();
 		document.onfullscreenchange = () => {
-			if (document.fullscreenElement) {
-				document.body.classList.add('full-screen');
-			} else {
-				document.body.classList.remove('full-screen');
-			}
+			document.body.classList.toggle('full-screen', !!document.fullscreenElement);
 		};
 		return () => {
 			scrollbars.destroy();
@@ -63,21 +59,21 @@
 		position: fixed;
 		width: 100%;
 		height: 100%;
-		top: 0px;
-		left: 0px;
-		right: 0px;
-		bottom: 0px;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
 		z-index: 1;
 	}
 
 	main {
 		position: fixed;
 		top: 45px;
-		left: 0px;
-		right: 0px;
+		left: 0;
+		right: 0;
 		bottom: 45px;
-		padding: 0px;
-		margin: 0px;
+		padding: 0;
+		margin: 0;
 		box-sizing: border-box;
 		overflow: hidden;
 		z-index: 3;

@@ -3,7 +3,7 @@
 	import Post from '$lib/components/Post.svelte';
 	import type { PostData } from '$lib/types';
 
-	const miscPosts: PostData[] = [
+	const games: PostData[] = [
 		{
 			name: 'TicTacToe',
 			badges: ['javascript', 'html', 'css'],
@@ -18,7 +18,7 @@
 <Page>
 	<h1>Games</h1>
 
-	{#each miscPosts as miscPost, _ (_)}
-		<Post post={miscPost} />
+	{#each games as game (game.url)}
+		<Post post={game} />
 	{/each}
 </Page>

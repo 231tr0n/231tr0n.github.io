@@ -10,12 +10,14 @@
 
 	onMount(async () => {
 		try {
-			sourceMap = await cachedFetch(
+			const data = await cachedFetch(
 				'https://raw.githubusercontent.com/231tr0n/231tr0n.github.io/main/stats.html'
 			);
-			if (!sourceMap) throw new Error('Error loading stats file');
-		} catch (e) {
-			sourceMapError = e instanceof Error ? e.message : 'Unknown error';
+			if (!data) throw new Error('Error loading stats file');
+			sourceMap = data;
+		} catch (error) {
+			console.error('Failed to load sourcemap', error);
+			sourceMapError = error instanceof Error ? error.message : 'Unknown error';
 		}
 	});
 </script>

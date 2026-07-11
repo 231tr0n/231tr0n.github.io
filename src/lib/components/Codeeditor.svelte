@@ -1,20 +1,18 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import ace from 'ace-code';
+	import type ace from 'ace-code';
 	import ace_everforest_light from '$lib/ace-themes/ace-everforest-light.js';
 	import ace_everforest_dark from '$lib/ace-themes/ace-everforest-dark.js';
-	import vim from 'ace-code/src/keyboard/vim';
-	import vscode from 'ace-code/src/keyboard/vscode';
-	import beautifier from 'ace-code/src/ext/beautify';
 	import { darkMode } from '$lib/utils/dark.svelte.js';
-	import type { SyntaxMode } from 'ace-code/src/edit_session';
+	import {
+		editorFontSize,
+		editorTabSize,
+		editorScrollbarWidth,
+		editorScrollbarHeight,
+		copyFeedbackTimeout
+	} from '$lib/constants/app.constants';
 	import Frame from './Frame.svelte';
-
-	type setCode = (code: string) => void;
-
-	interface aceMode {
-		Mode: new () => SyntaxMode;
-	}
+	import type { AceMode, SetCode } from '$lib/types';
 
 	let {
 		langName,
@@ -28,11 +26,11 @@
 		code = ''
 	}: {
 		langName: string;
-		mode?: aceMode | null;
+		mode?: AceMode | null;
 		output?: string;
 		readOnly?: boolean;
 		fileName: string;
-		setCode?: setCode | null;
+		setCode?: SetCode | null;
 		vimMode?: boolean;
 		wrap?: boolean;
 		code?: string;
@@ -42,12 +40,17 @@
 	let editor: ace.Editor;
 	let copied = $state(false);
 
+	let vimHandler: { handler: import('ace-code').Ace.KeyboardHandler } | null = null;
+	let vscodeHandler: { handler: import('ace-code').Ace.KeyboardHandler } | null = null;
+	let beautifyModule: { beautify: (session: import('ace-code').Ace.EditSession) => void } | null =
+		null;
+
 	const copy = async () => {
 		await navigator.clipboard.writeText(editor.session.getValue());
 		copied = true;
 		setTimeout(() => {
 			copied = false;
-		}, 2000);
+		}, copyFeedbackTimeout);
 	};
 
 	const toggleWrap = () => {
@@ -62,22 +65,36 @@
 	};
 
 	const beautify = () => {
-		beautifier.beautify(editor.session);
+		if (beautifyModule !== null) beautifyModule.beautify(editor.session);
 	};
 
 	const toggleKeybinds = () => {
+		if (vimHandler === null || vscodeHandler === null) return;
 		if (vimMode) {
-			editor.setKeyboardHandler(vscode.handler);
+			editor.setKeyboardHandler(vscodeHandler.handler);
 		} else {
-			editor.setKeyboardHandler(vim.handler);
+			editor.setKeyboardHandler(vimHandler.handler);
 		}
 		vimMode = !vimMode;
 	};
 
-	onMount(() => {
-		editor = ace.edit(editorDiv);
-		editor.renderer.scrollBarV['width'] = 6;
-		editor.renderer.scrollBarH['height'] = 6;
+	onMount(async () => {
+		const { default: aceEditor } = await import('ace-code');
+
+		if (!readOnly) {
+			const [vimMod, vscodeMod, beautifyMod] = await Promise.all([
+				import('ace-code/src/keyboard/vim'),
+				import('ace-code/src/keyboard/vscode'),
+				import('ace-code/src/ext/beautify')
+			]);
+			vimHandler = vimMod.default;
+			vscodeHandler = vscodeMod.default;
+			beautifyModule = beautifyMod.default;
+		}
+
+		editor = aceEditor.edit(editorDiv);
+		editor.renderer.scrollBarV['width'] = editorScrollbarWidth;
+		editor.renderer.scrollBarH['height'] = editorScrollbarHeight;
 		editor.resize(true);
 		if (mode) {
 			editor.session.setMode(new mode.Mode());
@@ -88,15 +105,15 @@
 			editor.setHighlightGutterLine(false);
 		} else {
 			if (vimMode) {
-				editor.setKeyboardHandler(vim.handler);
+				editor.setKeyboardHandler(vimHandler?.handler ?? null);
 			} else {
-				editor.setKeyboardHandler(vscode.handler);
+				editor.setKeyboardHandler(vscodeHandler?.handler ?? null);
 			}
 		}
-		editor.setFontSize(11);
+		editor.setFontSize(editorFontSize);
 		editor.session.setUseWrapMode(wrap);
 		editor.setReadOnly(readOnly);
-		editor.session.setTabSize(2);
+		editor.session.setTabSize(editorTabSize);
 		editor.session.setUseSoftTabs(true);
 		editor.setShowPrintMargin(false);
 		$effect(() => {
@@ -249,17 +266,13 @@
 	<div bind:this={editorDiv} class="editor-height"></div>
 </Frame>
 {#if readOnly && output}
-	<div class="output zeltron-component-border">
+	<div class="zeltron-component-border">
 		<div class="zeltron-component"><span>Output</span></div>
 		<pre>{output}</pre>
 	</div>
 {/if}
 
 <style>
-	.output {
-		box-sizing: border-box;
-	}
-
 	:global(.frame-wrapper) {
 		margin-top: 1em;
 		margin-bottom: 1em;
@@ -304,56 +317,31 @@
 		font-size: 15px;
 	}
 
-	:global(.ace-everforest-light .ace_gutter-layer) {
-		border-right: 2px solid var(--color-light-component-background);
-		color: var(--color-light-foreground);
-	}
-
+	:global(.ace-everforest-light .ace_gutter-layer),
 	:global(.ace-everforest-dark .ace_gutter-layer) {
-		border-right: 2px solid var(--color-dark-component-background);
-		color: var(--color-dark-foreground);
+		border-right: 2px solid var(--color-component-background);
+		color: var(--color-foreground);
 	}
 
-	:global(.ace-everforest-light .ace_indent-guide) {
-		background: unset;
-		border-right: 1px solid var(--color-light-component-background);
-	}
-
-	:global(.ace-everforest-light .ace_indent-guide-active) {
-		border-right: 1px solid var(--color-light-component-background);
-		background: unset;
-	}
-
-	:global(.ace-everforest-dark .ace_indent-guide) {
-		border-right: 1px solid var(--color-dark-component-background);
-		background: unset;
-	}
-
+	:global(.ace-everforest-light .ace_indent-guide),
+	:global(.ace-everforest-light .ace_indent-guide-active),
+	:global(.ace-everforest-dark .ace_indent-guide),
 	:global(.ace-everforest-dark .ace_indent-guide-active) {
-		border-right: 1px solid var(--color-dark-component-background);
-		background: unset;
+		border-right: 1px solid var(--color-component-background);
 	}
 
-	:global(.ace-everforest-dark .ace_fold) {
-		background-color: var(--color-dark-visual);
-		border: none;
-		border-radius: 3px;
-	}
-
+	:global(.ace-everforest-dark .ace_fold),
 	:global(.ace-everforest-light .ace_fold) {
-		background-color: var(--color-light-visual);
+		background-color: var(--color-visual);
 		border: none;
 		border-radius: 3px;
 	}
 
 	:global(.ace-everforest-dark .ace_fold-widget:hover),
-	:global(.ace-everforest-dark .ace_fold:hover) {
-		border: 2px solid var(--color-dark-anchor);
-	}
-
+	:global(.ace-everforest-dark .ace_fold:hover),
 	:global(.ace-everforest-light .ace_fold-widget:hover),
 	:global(.ace-everforest-light .ace_fold:hover) {
-		border: 2px solid var(--color-light-anchor);
+		border: 2px solid var(--color-anchor);
 	}
 
 	line {
