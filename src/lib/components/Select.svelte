@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
 	import { selectPaddingOffset } from '$lib/constants/app.constants';
 	import type { OnSetSelectedItem } from '$lib/types';
@@ -23,18 +22,13 @@
 	const localItems = $derived(emptyItem ? ['', ...items] : [...items]);
 
 	const selectItem = (item: number) => {
-		currentItem = item;
-		onSetSelectedItem?.(currentItem);
+		onSetSelectedItem?.(item);
 		toggleSelectionMenu();
 	};
 
 	const toggleSelectionMenu = () => {
 		open = !open;
 	};
-
-	onMount(() => {
-		if (colored) selectContext.classList.add('zeltron-strong-component');
-	});
 
 	$effect(() => {
 		let largest = '';
@@ -44,7 +38,7 @@
 		const btn = document.createElement('button');
 		btn.innerText = largest;
 		document.body.appendChild(btn);
-		selectContext.style.width = String(Math.ceil(btn.clientWidth) + selectPaddingOffset) + 'px';
+		selectContext.style.width = `${String(Math.ceil(btn.clientWidth) + selectPaddingOffset)}px`;
 		document.body.removeChild(btn);
 	});
 </script>
@@ -53,6 +47,7 @@
 	<button
 		bind:this={selectContext}
 		class="select-context"
+		class:zeltron-strong-component={colored}
 		aria-label="Select menu toggler"
 		onclick={toggleSelectionMenu}
 		type="button">

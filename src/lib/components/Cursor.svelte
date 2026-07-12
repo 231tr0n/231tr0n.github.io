@@ -19,14 +19,14 @@
 	);
 
 	onMount(() => {
-		const sig = { signal: controller.signal };
+		const listenerOptions = { signal: controller.signal };
 		on(
 			document,
 			'mousemove',
 			(e) => {
 				cursor.target = { x: e.clientX, y: e.clientY };
 			},
-			sig
+			listenerOptions
 		);
 		on(
 			document,
@@ -35,7 +35,7 @@
 				const touch = e.touches[e.touches.length - 1];
 				if (touch) cursor.target = { x: touch.clientX, y: touch.clientY };
 			},
-			sig
+			listenerOptions
 		);
 		const hide = () => {
 			radius.target = 0;
@@ -43,29 +43,29 @@
 		const show = () => {
 			radius.target = cursorRadius;
 		};
-		on(document, 'mouseleave', hide, sig);
-		on(document, 'mouseout', hide, sig);
-		on(document, 'mouseover', show, sig);
-		on(document, 'mouseenter', show, sig);
-		on(document, 'mouseup', show, sig);
+		on(document, 'mouseleave', hide, listenerOptions);
+		on(document, 'mouseout', hide, listenerOptions);
+		on(document, 'mouseover', show, listenerOptions);
+		on(document, 'mouseenter', show, listenerOptions);
+		on(document, 'mouseup', show, listenerOptions);
 		on(
 			document,
 			'mousedown',
 			() => {
 				radius.target = cursorClickRadius;
 			},
-			sig
+			listenerOptions
 		);
-		on(document, 'touchcancel', show, sig);
+		on(document, 'touchcancel', show, listenerOptions);
 		on(
 			document,
 			'touchstart',
 			() => {
 				radius.target = cursorClickRadius;
 			},
-			sig
+			listenerOptions
 		);
-		on(document, 'touchend', show, sig);
+		on(document, 'touchend', show, listenerOptions);
 	});
 
 	onDestroy(() => {

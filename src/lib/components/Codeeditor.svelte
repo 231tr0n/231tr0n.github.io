@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type ace from 'ace-code';
-	import ace_everforest_light from '$lib/ace-themes/ace-everforest-light.ts';
-	import ace_everforest_dark from '$lib/ace-themes/ace-everforest-dark.ts';
+	import aceEverforestLight from '$lib/ace-themes/ace-everforest-light.ts';
+	import aceEverforestDark from '$lib/ace-themes/ace-everforest-dark.ts';
 	import { darkMode } from '$lib/utils/dark.svelte.ts';
 	import {
 		editorFontSize,
@@ -39,18 +39,21 @@
 	let editorDiv: HTMLElement;
 	let editor: ace.Editor | null = $state(null);
 	let copied = $state(false);
-	let theme = $derived(darkMode().dark ? ace_everforest_dark : ace_everforest_light);
+	let theme = $derived(darkMode().dark ? aceEverforestDark : aceEverforestLight);
 
 	let vimHandler: { handler: import('ace-code').Ace.KeyboardHandler } | null = null;
 	let vscodeHandler: { handler: import('ace-code').Ace.KeyboardHandler } | null = null;
 	let beautifyModule: { beautify: (session: import('ace-code').Ace.EditSession) => void } | null =
 		null;
 
+	let copyTimeout: ReturnType<typeof setTimeout>;
+
 	const copy = async () => {
 		if (!editor) return;
 		await navigator.clipboard.writeText(editor.session.getValue());
 		copied = true;
-		setTimeout(() => {
+		clearTimeout(copyTimeout);
+		copyTimeout = setTimeout(() => {
 			copied = false;
 		}, copyFeedbackTimeout);
 	};
@@ -129,6 +132,7 @@
 		})();
 
 		return () => {
+			clearTimeout(copyTimeout);
 			destroying = true;
 			editor?.destroy();
 		};

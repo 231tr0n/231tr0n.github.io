@@ -80,7 +80,7 @@ export const setupDrag = (
 	dir: 'v' | 'h'
 ) => {
 	const isVertical = dir === 'v';
-	on(thumb, 'mousedown', (event: MouseEvent) => {
+	const cleanup = on(thumb, 'mousedown', (event: MouseEvent) => {
 		event.preventDefault();
 		node.style.setProperty('scroll-behavior', 'auto');
 
@@ -129,11 +129,12 @@ export const setupDrag = (
 			activeDragCleanup = null;
 		};
 	});
+	return cleanup;
 };
 
 export const setupTrackClick = (track: HTMLElement, node: HTMLElement, dir: 'v' | 'h') => {
 	const isVertical = dir === 'v';
-	on(track, 'click', (event: MouseEvent) => {
+	const cleanup = on(track, 'click', (event: MouseEvent) => {
 		if (event.target !== track) return;
 		const scrollRange =
 			(isVertical ? node.scrollHeight : node.scrollWidth) -
@@ -149,6 +150,7 @@ export const setupTrackClick = (track: HTMLElement, node: HTMLElement, dir: 'v' 
 		}
 		node.style.removeProperty('scroll-behavior');
 	});
+	return cleanup;
 };
 
 export const updateThumbAriaLabel = (node: HTMLElement, thumb: HTMLElement, dir: 'v' | 'h') => {

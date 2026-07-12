@@ -19,12 +19,14 @@ export interface AceTrackEntry {
 	track: HTMLElement;
 	thumb: HTMLElement;
 	dir: 'v' | 'h';
+	cleanups: (() => void)[];
 }
 
 export interface AceScrollbarInstance {
 	tracks: AceTrackEntry[];
 	resizeObserver: ResizeObserver;
 	mutationObserver: MutationObserver;
+	setupObserver?: MutationObserver;
 	destroy: () => void;
 }
 
@@ -48,14 +50,17 @@ const setupAceTrack = (editorEl: HTMLElement, el: HTMLElement, dir: 'v' | 'h') =
 		track.style.height = `${String(scrollbarTrackSize)}px`;
 	}
 	editorEl.appendChild(track);
-	on(el, 'scroll', () => {
-		syncScroll(el, track, thumb, dir);
-		updateThumbAriaLabel(el, thumb, dir);
-	});
-	setupDrag(thumb, el, track, dir);
-	setupTrackClick(track, el, dir);
+	const cleanups: (() => void)[] = [];
+	cleanups.push(
+		on(el, 'scroll', () => {
+			syncScroll(el, track, thumb, dir);
+			updateThumbAriaLabel(el, thumb, dir);
+		})
+	);
+	cleanups.push(setupDrag(thumb, el, track, dir));
+	cleanups.push(setupTrackClick(track, el, dir));
 	updateThumbAriaLabel(el, thumb, dir);
-	return { el, track, thumb, dir };
+	return { el, track, thumb, dir, cleanups };
 };
 
 export const processAce = (
@@ -127,7 +132,11 @@ export const processAce = (
 		destroy() {
 			resizeObserver.disconnect();
 			mutationObserver.disconnect();
+			instance.setupObserver?.disconnect();
 			for (const trackEntry of tracks) {
+				trackEntry.cleanups.forEach((cleanup) => {
+					cleanup();
+				});
 				trackEntry.track.remove();
 				trackEntry.el.removeAttribute('data-custom-scrollbar');
 				trackEntry.el.style.removeProperty('scrollbar-width');
@@ -150,12 +159,16 @@ export const ensureAceProcessed = (
 		'.ace_scrollbar:not([data-custom-scrollbar]), .ace_scrollbar-h:not([data-custom-scrollbar])';
 	if (!editorEl.querySelector(unprocessedSelector)) return;
 
-	const mutationObserver = new MutationObserver(() => {
+	const instance = instances.get(editorEl);
+	if (!instance) return;
+
+	const setupObserver = new MutationObserver(() => {
 		processAce(editorEl, instances);
-		if (!editorEl.querySelector(unprocessedSelector)) mutationObserver.disconnect();
+		if (!editorEl.querySelector(unprocessedSelector)) setupObserver.disconnect();
 	});
-	mutationObserver.observe(editorEl, { childList: true, subtree: true });
+	setupObserver.observe(editorEl, { childList: true, subtree: true });
+	instance.setupObserver = setupObserver;
 	setTimeout(() => {
-		mutationObserver.disconnect();
+		setupObserver.disconnect();
 	}, scrollbarAceSetupTimeout);
 };

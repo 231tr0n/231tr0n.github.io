@@ -12,13 +12,17 @@ import { processAce, ensureAceProcessed, type AceScrollbarInstance } from './scr
 import { scrollbarTrackSize, scrollbarTrackOverhang } from '$lib/constants/app.constants';
 
 const setupAxis = (node: HTMLElement, track: HTMLElement, thumb: HTMLElement, dir: 'v' | 'h') => {
-	on(node, 'scroll', () => {
-		syncScroll(node, track, thumb, dir);
-		updateThumbAriaLabel(node, thumb, dir);
-	});
-	setupDrag(thumb, node, track, dir);
-	setupTrackClick(track, node, dir);
+	const cleanups: (() => void)[] = [];
+	cleanups.push(
+		on(node, 'scroll', () => {
+			syncScroll(node, track, thumb, dir);
+			updateThumbAriaLabel(node, thumb, dir);
+		})
+	);
+	cleanups.push(setupDrag(thumb, node, track, dir));
+	cleanups.push(setupTrackClick(track, node, dir));
 	updateThumbAriaLabel(node, thumb, dir);
+	return cleanups;
 };
 
 const initScrollbar = (
@@ -38,8 +42,9 @@ const initScrollbar = (
 	node.scrollTop = prevScrollTop;
 	node.scrollLeft = prevScrollLeft;
 
-	if (vTrack && vThumb) setupAxis(node, vTrack, vThumb, 'v');
-	if (hTrack && hThumb) setupAxis(node, hTrack, hThumb, 'h');
+	const eventCleanups: (() => void)[] = [];
+	if (vTrack && vThumb) eventCleanups.push(...setupAxis(node, vTrack, vThumb, 'v'));
+	if (hTrack && hThumb) eventCleanups.push(...setupAxis(node, hTrack, hThumb, 'h'));
 
 	const resizeObserver = new ResizeObserver(() => {
 		if (vTrack && vThumb) syncScroll(node, vTrack, vThumb, 'v');
@@ -71,6 +76,9 @@ const initScrollbar = (
 			node.style.removeProperty('scrollbar-width');
 			resizeObserver.disconnect();
 			mutationObserver.disconnect();
+			eventCleanups.forEach((cleanup) => {
+				cleanup();
+			});
 			if (vTrack) vTrack.remove();
 			if (hTrack) hTrack.remove();
 			cleanupActiveDrag();

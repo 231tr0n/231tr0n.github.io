@@ -2,8 +2,8 @@ import { on } from 'svelte/events';
 import {
 	animationDelay,
 	animationDuration,
-	tooltipAttachSelector as ATTACH_SELECTOR,
-	tooltipGap as GAP,
+	tooltipAttachSelector,
+	tooltipGap,
 	tooltipZIndex,
 	tooltipMinMargin
 } from '$lib/constants/app.constants';
@@ -30,10 +30,10 @@ const createTooltip = (label: string) => {
 
 const positionTooltip = (tip: HTMLDivElement, cx: number, cy: number) => {
 	const rect = tip.getBoundingClientRect();
-	let top = cy + GAP,
-		left = cx + GAP;
-	if (top + rect.height > window.innerHeight) top = cy - rect.height - GAP;
-	if (left + rect.width > window.innerWidth) left = cx - rect.width - GAP;
+	let top = cy + tooltipGap,
+		left = cx + tooltipGap;
+	if (top + rect.height > window.innerHeight) top = cy - rect.height - tooltipGap;
+	if (left + rect.width > window.innerWidth) left = cx - rect.width - tooltipGap;
 	tip.style.top = `${String(Math.max(tooltipMinMargin, Math.min(top, window.innerHeight - rect.height - tooltipMinMargin)))}px`;
 	tip.style.left = `${String(Math.max(tooltipMinMargin, Math.min(left, window.innerWidth - rect.width - tooltipMinMargin)))}px`;
 };
@@ -144,7 +144,7 @@ const attachToUnattachedElements = (mutations?: MutationRecord[]) => {
 					inst.destroy();
 					instances.delete(node);
 				}
-				node.querySelectorAll<HTMLElement>(ATTACH_SELECTOR).forEach((el) => {
+				node.querySelectorAll<HTMLElement>(tooltipAttachSelector).forEach((el) => {
 					const childInst = instances.get(el);
 					if (childInst) {
 						childInst.destroy();
@@ -154,10 +154,10 @@ const attachToUnattachedElements = (mutations?: MutationRecord[]) => {
 			}
 		}
 	}
-	for (const el of document.querySelectorAll<HTMLElement>(ATTACH_SELECTOR)) {
+	for (const el of document.querySelectorAll<HTMLElement>(tooltipAttachSelector)) {
 		if (
 			instances.has(el) ||
-			el.querySelector(ATTACH_SELECTOR) ||
+			el.querySelector(tooltipAttachSelector) ||
 			el.hasAttribute('title') ||
 			(el.closest('.ace_editor') && !el.hasAttribute('data-custom-scrollbar-thumb'))
 		)

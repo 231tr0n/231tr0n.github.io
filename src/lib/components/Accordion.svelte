@@ -32,7 +32,6 @@
 				class="summary-toggler zeltron-flex-middle"
 				aria-label="Accordion summary toggler"
 				onclick={summaryToggler}
-				onkeydown={summaryToggler}
 				type="button">
 				{#if open}
 					<svg

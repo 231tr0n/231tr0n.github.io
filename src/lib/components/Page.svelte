@@ -36,21 +36,26 @@
 		pageDiv.scrollBy(0, rect.top - rect.height - breadcrumb.offsetHeight - scrollspyOffset);
 	});
 
+	let scrollRafId = 0;
+
 	onMount(() => {
 		if (!scrollspy) return;
 		const el = breadcrumb;
 		if (!el) return;
 		pageDiv.onscroll = () => {
-			let prev: HTMLElement | null = null;
-			for (const [i, section] of sections.entries()) {
-				if (el.offsetTop + el.offsetHeight + scrollspyThreshold < section.offsetTop) {
-					currentItem = prev ? i - 1 : i;
-					break;
-				} else {
-					currentItem = i;
+			cancelAnimationFrame(scrollRafId);
+			scrollRafId = requestAnimationFrame(() => {
+				let prev: HTMLElement | null = null;
+				for (const [i, section] of sections.entries()) {
+					if (el.offsetTop + el.offsetHeight + scrollspyThreshold < section.offsetTop) {
+						currentItem = prev ? i - 1 : i;
+						break;
+					} else {
+						currentItem = i;
+					}
+					prev = section;
 				}
-				prev = section;
-			}
+			});
 		};
 		const initTimeout = setTimeout(() => {
 			const name =
@@ -62,6 +67,8 @@
 		}, animationDelay + animationDuration);
 
 		return () => {
+			pageDiv.onscroll = null;
+			cancelAnimationFrame(scrollRafId);
 			clearTimeout(initTimeout);
 		};
 	});

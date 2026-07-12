@@ -164,9 +164,6 @@
 		<a href="https://developer.mozilla.org/en-US/docs/Web/CSS">
 			<img class="logo" alt="Css" src="/images/css.avif" />
 		</a>
-		<!-- <a href="https://gcc.gnu.org"> -->
-		<!-- 	<img class="logo" alt="C" src="/images/c.avif" /> -->
-		<!-- </a> -->
 		<a href="https://www.docker.com">
 			<img class="logo" alt="Docker" src="/images/docker.svg" />
 		</a>
