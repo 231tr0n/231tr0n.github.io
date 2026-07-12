@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Tween } from 'svelte/motion';
 	import { linear } from 'svelte/easing';
-	import { animationDuration } from '$lib/constants/animation.constants';
+	import { animationDuration } from '$lib/constants/app.constants';
 	import type { Snippet } from 'svelte';
 
 	let {

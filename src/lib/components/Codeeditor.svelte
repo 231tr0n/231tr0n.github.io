@@ -1,20 +1,18 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import ace from 'ace-code';
-	import ace_everforest_light from '$lib/ace-themes/ace-everforest-light.js';
-	import ace_everforest_dark from '$lib/ace-themes/ace-everforest-dark.js';
-	import vim from 'ace-code/src/keyboard/vim';
-	import vscode from 'ace-code/src/keyboard/vscode';
-	import beautifier from 'ace-code/src/ext/beautify';
-	import { darkMode } from '$lib/utils/dark.svelte.js';
-	import type { SyntaxMode } from 'ace-code/src/edit_session';
+	import type ace from 'ace-code';
+	import aceEverforestLight from '$lib/ace-themes/ace-everforest-light';
+	import aceEverforestDark from '$lib/ace-themes/ace-everforest-dark';
+	import { darkMode } from '$lib/utils/dark.svelte';
+	import {
+		editorFontSize,
+		editorTabSize,
+		editorScrollbarWidth,
+		editorScrollbarHeight,
+		copyFeedbackTimeout
+	} from '$lib/constants/app.constants';
 	import Frame from './Frame.svelte';
-
-	type setCode = (code: string) => void;
-
-	interface aceMode {
-		Mode: new () => SyntaxMode;
-	}
+	import type { AceMode, SetCode } from '$lib/types';
 
 	let {
 		langName,
@@ -23,92 +21,126 @@
 		readOnly = false,
 		fileName,
 		setCode = null,
-		vimMode = false,
-		wrap = false,
+		vimMode = $bindable(false),
+		wrap = $bindable(false),
 		code = ''
 	}: {
 		langName: string;
-		mode?: aceMode | null;
+		mode?: AceMode | null;
 		output?: string;
 		readOnly?: boolean;
 		fileName: string;
-		setCode?: setCode | null;
+		setCode?: SetCode | null;
 		vimMode?: boolean;
 		wrap?: boolean;
 		code?: string;
 	} = $props();
 
 	let editorDiv: HTMLElement;
-	let editor: ace.Editor;
+	let editor: ace.Editor | null = $state(null);
 	let copied = $state(false);
+	let theme = $derived(darkMode().dark ? aceEverforestDark : aceEverforestLight);
+
+	let vimHandler: { handler: import('ace-code').Ace.KeyboardHandler } | null = null;
+	let vscodeHandler: { handler: import('ace-code').Ace.KeyboardHandler } | null = null;
+	let beautifyModule: { beautify: (session: import('ace-code').Ace.EditSession) => void } | null =
+		null;
+
+	let copyTimeout: ReturnType<typeof setTimeout>;
 
 	const copy = async () => {
+		if (!editor) return;
 		await navigator.clipboard.writeText(editor.session.getValue());
 		copied = true;
-		setTimeout(() => {
+		clearTimeout(copyTimeout);
+		copyTimeout = setTimeout(() => {
 			copied = false;
-		}, 2000);
+		}, copyFeedbackTimeout);
 	};
 
 	const toggleWrap = () => {
+		if (!editor) return;
 		editor.session.setUseWrapMode(!wrap);
 		wrap = !wrap;
 	};
 
 	const execute = () => {
+		if (!editor) return;
 		if (setCode) {
 			setCode(editor.session.getValue());
 		}
 	};
 
 	const beautify = () => {
-		beautifier.beautify(editor.session);
+		if (!editor) return;
+		if (beautifyModule !== null) beautifyModule.beautify(editor.session);
 	};
 
 	const toggleKeybinds = () => {
+		if (!editor) return;
+		if (vimHandler === null || vscodeHandler === null) return;
 		if (vimMode) {
-			editor.setKeyboardHandler(vscode.handler);
+			editor.setKeyboardHandler(vscodeHandler.handler);
 		} else {
-			editor.setKeyboardHandler(vim.handler);
+			editor.setKeyboardHandler(vimHandler.handler);
 		}
 		vimMode = !vimMode;
 	};
 
 	onMount(() => {
-		editor = ace.edit(editorDiv);
-		editor.renderer.scrollBarV['width'] = 6;
-		editor.renderer.scrollBarH['height'] = 6;
-		editor.resize(true);
-		if (mode) {
-			editor.session.setMode(new mode.Mode());
-		}
-		if (readOnly) {
-			editor.setValue(code, -1);
-			editor.setHighlightActiveLine(false);
-			editor.setHighlightGutterLine(false);
-		} else {
-			if (vimMode) {
-				editor.setKeyboardHandler(vim.handler);
-			} else {
-				editor.setKeyboardHandler(vscode.handler);
+		void (async () => {
+			const { default: aceEditor } = await import('ace-code');
+
+			if (!readOnly) {
+				const [vimMod, vscodeMod, beautifyMod] = await Promise.all([
+					import('ace-code/src/keyboard/vim'),
+					import('ace-code/src/keyboard/vscode'),
+					import('ace-code/src/ext/beautify')
+				]);
+				vimHandler = vimMod.default;
+				vscodeHandler = vscodeMod.default;
+				beautifyModule = beautifyMod.default;
 			}
-		}
-		editor.setFontSize(11);
-		editor.session.setUseWrapMode(wrap);
-		editor.setReadOnly(readOnly);
-		editor.session.setTabSize(2);
-		editor.session.setUseSoftTabs(true);
-		editor.setShowPrintMargin(false);
-		$effect(() => {
-			if (darkMode().dark) {
-				editor.setTheme(ace_everforest_dark);
-			} else {
-				editor.setTheme(ace_everforest_light);
+
+			if (!editorDiv.isConnected) return;
+			editor = aceEditor.edit(editorDiv);
+			editor.renderer.scrollBarV['width'] = editorScrollbarWidth;
+			editor.renderer.scrollBarH['height'] = editorScrollbarHeight;
+			editor.resize(true);
+			if (mode) {
+				editor.session.setMode(new mode.Mode());
 			}
-		});
+			if (readOnly) {
+				editor.setValue(code, -1);
+				editor.setHighlightActiveLine(false);
+				editor.setHighlightGutterLine(false);
+			} else {
+				if (vimMode) {
+					editor.setKeyboardHandler(vimHandler?.handler ?? null);
+				} else {
+					editor.setKeyboardHandler(vscodeHandler?.handler ?? null);
+				}
+			}
+			editor.setFontSize(editorFontSize);
+			editor.session.setUseWrapMode(wrap);
+			editor.setReadOnly(readOnly);
+			editor.session.setTabSize(editorTabSize);
+			editor.session.setUseSoftTabs(true);
+			editor.setShowPrintMargin(false);
+		})();
+
+		return () => {
+			clearTimeout(copyTimeout);
+			editor?.destroy();
+		};
+	});
+
+	$effect(() => {
+		editor?.setTheme(theme);
 	});
 
 	const onFrameFullscreenChange = () => {
+		if (!editor) return;
 		editor.resize();
 	};
 </script>
@@ -185,7 +217,7 @@
 					viewBox="0 0 16 16"
 					width="16"
 					xmlns="http://www.w3.org/2000/svg">
-					<line x1="0" x2="16" y1="0" y2="16" />
+					<line stroke="currentColor" stroke-width="1" x1="0" x2="16" y1="0" y2="16" />
 					<path
 						d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h9a2.5 2.5 0 0 1 0 5h-1.293l.647.646a.5.5 0 0 1-.708.708l-1.5-1.5a.5.5 0 0 1 0-.708l1.5-1.5a.5.5 0 0 1 .708.708l-.647.646H11.5a1.5 1.5 0 0 0 0-3h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5"
 						fill-rule="evenodd" />
@@ -249,27 +281,18 @@
 	<div bind:this={editorDiv} class="editor-height"></div>
 </Frame>
 {#if readOnly && output}
-	<div class="output zeltron-component-border">
+	<div class="zeltron-component-border">
 		<div class="zeltron-component"><span>Output</span></div>
 		<pre>{output}</pre>
 	</div>
 {/if}
 
 <style>
-	.output {
-		box-sizing: border-box;
-	}
-
-	:global(.frame-wrapper) {
-		margin-top: 1em;
-		margin-bottom: 1em;
-	}
-
 	:global(.codeeditor-frame) {
 		width: 100%;
 		box-sizing: border-box;
 		overflow: auto;
-		height: calc(100vh - 20vh - 50px - 50px);
+		height: calc(100vh - 20vh - var(--codeeditor-frame-offset));
 		display: flex;
 		flex-direction: column;
 	}
@@ -279,7 +302,7 @@
 	}
 
 	pre {
-		margin: 0px;
+		margin: 0;
 		padding: 3px;
 		height: 100px;
 		overflow: auto;
@@ -301,63 +324,42 @@
 
 	:global(.ace_editor) {
 		font-family: Roboto-Mono;
-		font-size: 15px;
 	}
 
-	:global(.ace-everforest-light .ace_gutter-layer) {
-		border-right: 2px solid var(--color-light-component-background);
-		color: var(--color-light-foreground);
+	:global(.ace_scrollbar),
+	:global(.ace_scrollbar-h) {
+		scrollbar-width: none;
 	}
 
+	:global(.ace_scrollbar::-webkit-scrollbar),
+	:global(.ace_scrollbar-h::-webkit-scrollbar) {
+		display: none;
+	}
+
+	:global(.ace-everforest-light .ace_gutter-layer),
 	:global(.ace-everforest-dark .ace_gutter-layer) {
-		border-right: 2px solid var(--color-dark-component-background);
-		color: var(--color-dark-foreground);
+		border-right: 2px solid var(--color-component-background);
+		color: var(--color-foreground);
 	}
 
-	:global(.ace-everforest-light .ace_indent-guide) {
-		background: unset;
-		border-right: 1px solid var(--color-light-component-background);
-	}
-
-	:global(.ace-everforest-light .ace_indent-guide-active) {
-		border-right: 1px solid var(--color-light-component-background);
-		background: unset;
-	}
-
-	:global(.ace-everforest-dark .ace_indent-guide) {
-		border-right: 1px solid var(--color-dark-component-background);
-		background: unset;
-	}
-
+	:global(.ace-everforest-light .ace_indent-guide),
+	:global(.ace-everforest-light .ace_indent-guide-active),
+	:global(.ace-everforest-dark .ace_indent-guide),
 	:global(.ace-everforest-dark .ace_indent-guide-active) {
-		border-right: 1px solid var(--color-dark-component-background);
-		background: unset;
+		border-right: 1px solid var(--color-component-background);
 	}
 
-	:global(.ace-everforest-dark .ace_fold) {
-		background-color: var(--color-dark-visual);
-		border: none;
-		border-radius: 3px;
-	}
-
+	:global(.ace-everforest-dark .ace_fold),
 	:global(.ace-everforest-light .ace_fold) {
-		background-color: var(--color-light-visual);
+		background-color: var(--color-visual);
 		border: none;
 		border-radius: 3px;
 	}
 
 	:global(.ace-everforest-dark .ace_fold-widget:hover),
-	:global(.ace-everforest-dark .ace_fold:hover) {
-		border: 2px solid var(--color-dark-anchor);
-	}
-
+	:global(.ace-everforest-dark .ace_fold:hover),
 	:global(.ace-everforest-light .ace_fold-widget:hover),
 	:global(.ace-everforest-light .ace_fold:hover) {
-		border: 2px solid var(--color-light-anchor);
-	}
-
-	line {
-		stroke: currentColor;
-		stroke-width: 1;
+		border: 2px solid var(--color-anchor);
 	}
 </style>

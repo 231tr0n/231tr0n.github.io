@@ -1,4 +1,23 @@
 :root {
+	--layout-header-height: 45px;
+	--layout-footer-height: 45px;
+	--layout-content-width: 900px;
+	--layout-background-width: 950px;
+	--layout-content-max-width: 85vw;
+	--layout-page-bg-offset: 44px;
+	--sandbox-iframe-offset: 65px;
+	--codeeditor-frame-offset: 100px;
+
+	--z-index-background: 1;
+	--z-index-background-opacity: 2;
+	--z-index-cursor: 2;
+	--z-index-main: 3;
+	--z-index-page-background: 4;
+	--z-index-content: 5;
+	--z-index-scrollspy: 6;
+	--z-index-navbar: 7;
+	--z-index-footer: 7;
+
 	--color-everforest-dark-aqua: #83c092;
 	--color-everforest-dark-bg-dim: #232a2e;
 	--color-everforest-dark-bg-visual: #543a48;
@@ -24,6 +43,7 @@
 	--color-everforest-light-bg-visual: #eaedc8;
 	--color-everforest-light-bg0: #fdf6e3;
 	--color-everforest-light-bg1: #f4f0d9;
+	--color-everforest-light-bg2: #efebd4;
 	--color-everforest-light-bg3: #e6e2cc;
 	--color-everforest-light-bg4: #e0dcc7;
 	--color-everforest-light-bg5: #bdc3af;
@@ -38,37 +58,39 @@
 	--color-everforest-light-red: #f85552;
 	--color-everforest-light-yellow: #dfa000;
 
-	--color-dark-anchor: var(--color-everforest-dark-purple);
-	--color-dark-background: var(--color-everforest-dark-bg0);
-	--color-dark-visual: var(--color-everforest-dark-bg-visual);
-	--color-dark-badge-background: transparent;
-	--color-dark-badge-foreground: var(--color-everforest-dark-green);
-	--color-dark-button-background: var(--color-dark-component-background);
-	--color-dark-button-foreground: var(--color-dark-component-foreground);
-	--color-dark-component-background: var(--color-everforest-dark-bg2);
-	--color-dark-component-foreground: var(--color-everforest-dark-fg);
-	--color-dark-error: var(--color-everforest-dark-orange);
-	--color-dark-foreground: var(--color-everforest-dark-fg);
-	--color-dark-heading: var(--color-everforest-dark-grey2);
-	--color-dark-keyword: var(--color-everforest-dark-green);
-	--color-dark-scrollbar: var(--color-everforest-dark-green);
-	--color-dark-strong-background: var(--color-everforest-dark-bg1);
+	--color-anchor: var(--color-everforest-light-orange);
+	--color-background: var(--color-everforest-light-bg0);
+	--color-badge-background: transparent;
+	--color-badge-foreground: var(--color-everforest-light-blue);
+	--color-button-background: var(--color-everforest-light-bg5);
+	--color-button-foreground: var(--color-everforest-light-fg);
+	--color-component-background: var(--color-everforest-light-bg5);
+	--color-component-foreground: var(--color-everforest-light-fg);
+	--color-error: var(--color-everforest-light-red);
+	--color-foreground: var(--color-everforest-light-fg);
+	--color-heading: var(--color-everforest-light-grey2);
+	--color-keyword: var(--color-everforest-light-blue);
+	--color-scrollbar: var(--color-everforest-light-blue);
+	--color-strong-background: var(--color-everforest-light-bg1);
+	--color-visual: var(--color-everforest-light-bg-visual);
+}
 
-	--color-light-anchor: var(--color-everforest-light-purple);
-	--color-light-background: var(--color-everforest-light-bg0);
-	--color-light-visual: var(--color-everforest-light-bg-visual);
-	--color-light-badge-background: transparent;
-	--color-light-badge-foreground: var(--color-everforest-light-blue);
-	--color-light-button-background: var(--color-light-component-background);
-	--color-light-button-foreground: var(--color-light-component-foreground);
-	--color-light-component-background: var(--color-everforest-light-bg5);
-	--color-light-component-foreground: var(--color-everforest-light-fg);
-	--color-light-error: var(--color-everforest-light-red);
-	--color-light-foreground: var(--color-everforest-light-fg);
-	--color-light-heading: var(--color-everforest-light-grey2);
-	--color-light-keyword: var(--color-everforest-light-blue);
-	--color-light-scrollbar: var(--color-everforest-light-blue);
-	--color-light-strong-background: var(--color-everforest-light-bg1);
+body.dark {
+	--color-anchor: var(--color-everforest-dark-orange);
+	--color-background: var(--color-everforest-dark-bg0);
+	--color-badge-background: transparent;
+	--color-badge-foreground: var(--color-everforest-dark-green);
+	--color-button-background: var(--color-everforest-dark-bg5);
+	--color-button-foreground: var(--color-everforest-dark-fg);
+	--color-component-background: var(--color-everforest-dark-bg5);
+	--color-component-foreground: var(--color-everforest-dark-fg);
+	--color-error: var(--color-everforest-dark-red);
+	--color-foreground: var(--color-everforest-dark-fg);
+	--color-heading: var(--color-everforest-dark-grey2);
+	--color-keyword: var(--color-everforest-dark-green);
+	--color-scrollbar: var(--color-everforest-dark-green);
+	--color-strong-background: var(--color-everforest-dark-bg1);
+	--color-visual: var(--color-everforest-dark-bg-visual);
 }
 
 @font-face {
@@ -84,107 +106,62 @@
 }
 
 * {
-	transition:
-		background-color 300ms linear,
-		color 300ms linear;
 	caret-color: transparent;
 }
 
-.custom-scrollbar-track-v {
+.custom-scrollbar-track-v,
+.custom-scrollbar-track-h {
 	position: absolute;
-	top: 0;
-	right: 0;
-	width: 5px;
-	height: 100%;
 	background: transparent;
-	pointer-events: none;
+}
+
+.custom-scrollbar-thumb-v,
+.custom-scrollbar-thumb-h {
+	position: absolute;
+	background: var(--color-scrollbar);
+	border: none;
+	padding: 0;
+	margin: 0;
+	cursor: default;
 }
 
 .custom-scrollbar-thumb-v {
-	position: absolute;
-	top: 0;
 	right: 0;
-	width: 5px;
-	min-height: 20px;
-	background: var(--color-light-scrollbar);
-	border-radius: 0;
-	cursor: default;
-	pointer-events: auto;
-}
-
-body.dark .custom-scrollbar-thumb-v {
-	background: var(--color-dark-scrollbar);
-}
-
-.custom-scrollbar-track-h {
-	position: absolute;
-	bottom: 0;
-	left: 0;
-	height: 5px;
-	width: 100%;
-	background: transparent;
-	pointer-events: none;
 }
 
 .custom-scrollbar-thumb-h {
-	position: absolute;
 	bottom: 0;
-	left: 0;
-	height: 5px;
-	min-width: 40px;
-	background: var(--color-light-scrollbar);
-	border-radius: 0;
-	cursor: default;
-	pointer-events: auto;
 }
 
-body.dark .custom-scrollbar-thumb-h {
-	background: var(--color-dark-scrollbar);
+.custom-scrollbar-thumb-v:hover,
+.custom-scrollbar-thumb-h:hover {
+	background: var(--color-anchor);
+	border: none;
 }
 
 progress {
-	background-color: var(--color-light-component-background);
+	background-color: var(--color-component-background);
 	width: 90%;
-	padding: 0px;
+	padding: 0;
 	height: 5px;
-	border: 0px;
-}
-
-body.dark progress {
-	background-color: var(--color-dark-component-background);
+	border: 0;
 }
 
 progress::-moz-progress-bar {
-	background-color: var(--color-light-component-foreground);
-}
-
-body.dark progress::-moz-progress-bar {
-	background-color: var(--color-dark-component-foreground);
+	background-color: var(--color-component-foreground);
 }
 
 progress::-webkit-progress-value {
-	background-color: var(--color-light-component-foreground);
-}
-
-body.dark progress::-webkit-progress-value {
-	background-color: var(--color-dark-component-foreground);
+	background-color: var(--color-component-foreground);
 }
 
 progress::-webkit-progress-bar {
-	background-color: var(--color-light-component-background);
-}
-
-body.dark progress::-webkit-progress-bar {
-	background-color: var(--color-dark-component-background);
+	background-color: var(--color-component-background);
 }
 
 a {
 	text-decoration: none;
-	color: var(--color-light-anchor);
-}
-
-body.dark a {
-	color: var(--color-dark-anchor);
+	color: var(--color-anchor);
 }
 
 a:hover {
@@ -195,63 +172,34 @@ a img {
 	border: 2px solid transparent;
 }
 
-a img:hover {
-	border: 2px solid var(--color-light-anchor);
-}
-
-body.dark a img:hover {
-	border: 2px solid var(--color-dark-anchor);
+a img:hover,
+a img.border-img:hover {
+	border: 2px solid var(--color-anchor);
 }
 
 a img.border-img {
-	border: 2px solid var(--color-light-component-background);
-}
-
-body.dark a img.border-img {
-	border: 2px solid var(--color-dark-component-background);
-}
-
-a img.border-img:hover {
-	border: 2px solid var(--color-light-anchor);
-}
-
-body.dark a img.border-img:hover {
-	border: 2px solid var(--color-dark-anchor);
+	border: 2px solid var(--color-component-background);
 }
 
 body {
 	font-family: Roboto-Condensed, monospace;
-	background-color: var(--color-light-background);
-	color: var(--color-light-foreground);
-	margin: 0px;
-	padding: 0px;
+	background-color: var(--color-background);
+	color: var(--color-foreground);
+	margin: 0;
+	padding: 0;
 	overflow: auto;
-}
-
-body.dark {
-	background-color: var(--color-dark-background);
-	color: var(--color-dark-foreground);
 }
 
 button {
 	font-family: Roboto-Condensed, monospace;
-	background-color: var(--color-light-button-background);
-	color: var(--color-light-button-foreground);
+	background-color: var(--color-button-background);
+	color: var(--color-button-foreground);
 	border: 2px solid transparent;
 	outline: none;
 }
 
-body.dark button {
-	background-color: var(--color-dark-button-background);
-	color: var(--color-dark-button-foreground);
-}
-
 button:hover {
-	border: 2px solid var(--color-light-anchor);
-}
-
-body.dark button:hover {
-	border: 2px solid var(--color-dark-anchor);
+	border: 2px solid var(--color-anchor);
 }
 
 img {
@@ -259,21 +207,9 @@ img {
 	outline: none;
 }
 
-select {
-	font-family: Roboto-Condensed, monospace;
-	outline: none;
-}
-
-select > option {
-	font-family: Roboto-Condensed, monospace;
-	outline: none;
-}
-
-option {
-	font-family: Roboto-Condensed, monospace;
-	outline: none;
-}
-
+select,
+select > option,
+option,
 input {
 	font-family: Roboto-Condensed, monospace;
 	outline: none;
@@ -281,86 +217,54 @@ input {
 
 h1 {
 	margin-bottom: 15px;
-	padding-left: 5px;
-	padding-right: 5px;
+	padding: 0 5px;
 	font-weight: bold;
-	border-bottom: 1px solid var(--color-light-component-background);
-	color: var(--color-light-heading);
-}
-
-body.dark h1 {
-	border-bottom: 1px solid var(--color-dark-component-background);
-	color: var(--color-dark-heading);
+	border-bottom: 1px solid var(--color-component-background);
+	color: var(--color-heading);
 }
 
 h2 {
 	margin-bottom: 10px;
-	padding-left: 5px;
-	padding-right: 5px;
+	padding: 0 5px;
 	font-weight: bold;
-	border-bottom: 1px solid var(--color-light-component-background);
-	color: var(--color-light-heading);
-}
-
-body.dark h2 {
-	border-bottom: 1px solid var(--color-dark-component-background);
-	color: var(--color-dark-heading);
+	border-bottom: 1px solid var(--color-component-background);
+	color: var(--color-heading);
 }
 
 h3 {
 	margin-bottom: 10px;
 	text-align: center;
 	font-weight: bold;
-	color: var(--color-light-heading);
-}
-
-body.dark h3 {
-	color: var(--color-dark-heading);
+	color: var(--color-heading);
 }
 
 ul {
-	margin: 0px;
+	margin: 0;
 	padding-left: 26px;
 	text-align: justify;
 }
 
 ol {
 	text-align: justify;
-	margin: 0px;
+	margin: 0;
 	padding-left: 27px;
 }
 
-li {
-	text-align: justify;
-}
-
+li,
 p {
 	text-align: justify;
 }
 
-pre {
-	font-family: Roboto-Mono, monospace;
-}
-
+pre,
 code {
 	font-family: Roboto-Mono, monospace;
 }
 
 hr {
-	border-top: 1px solid var(--color-light-component-background);
-	border-left: 0px solid var(--color-light-component-background);
-	border-right: 0px solid var(--color-light-component-background);
-	border-bottom: 0px solid var(--color-light-component-background);
+	border: 0 solid var(--color-component-background);
+	border-top-width: 1px;
 }
 
-body.dark hr {
-	border-top: 1px solid var(--color-dark-component-background);
-	border-left: 0px solid var(--color-dark-component-background);
-	border-right: 0px solid var(--color-dark-component-background);
-	border-bottom: 0px solid var(--color-dark-component-background);
-}
-
-/* Helper css */
 .zeltron-flex-middle {
 	display: flex;
 	justify-content: center;
@@ -373,34 +277,20 @@ body.dark hr {
 	align-items: center;
 }
 
-/* Generic css */
 .zeltron-box-shadow {
-	box-shadow: 0px 0px 5px var(--color-light-foreground);
-}
-
-body.dark .zeltron-box-shadow {
-	box-shadow: 0px 0px 5px var(--color-dark-foreground);
+	box-shadow: 0 0 5px var(--color-foreground);
 }
 
 .zeltron-error {
 	font-size: 30px;
 	padding: 1em;
 	text-align: center;
-	color: var(--color-light-error);
-}
-
-body.dark .zeltron-error {
-	color: var(--color-dark-error);
+	color: var(--color-error);
 }
 
 .zeltron-body-background {
-	background-color: var(--color-light-background);
-	color: var(--color-light-foreground);
-}
-
-body.dark .zeltron-body-background {
-	background-color: var(--color-dark-background);
-	color: var(--color-dark-foreground);
+	background-color: var(--color-background);
+	color: var(--color-foreground);
 }
 
 .zeltron-anchor {
@@ -408,85 +298,57 @@ body.dark .zeltron-body-background {
 }
 
 .zeltron-anchor:hover {
-	border: 2px solid var(--color-light-anchor);
+	border: 2px solid var(--color-anchor);
 }
 
-body.dark .zeltron-anchor:hover {
-	border: 2px solid var(--color-dark-anchor);
-}
-
-.zeltron-border {
-	border: 1px solid var(--color-light-component-background);
-}
-
-body.dark .zeltron-border {
-	border: 1px solid var(--color-dark-component-background);
-}
-
+.zeltron-border,
 .zeltron-component-border {
-	border: 1px solid var(--color-light-component-background);
+	border: 1px solid var(--color-component-background);
 }
 
-body.dark .zeltron-component-border {
-	border: 1px solid var(--color-dark-component-background);
-}
-
-.zeltron-thick-border {
-	border: 2px solid var(--color-light-component-background);
-}
-
-body.dark .zeltron-thick-border {
-	border: 2px solid var(--color-dark-component-background);
-}
-
+.zeltron-thick-border,
 .zeltron-thick-component-border {
-	border: 2px solid var(--color-light-component-background);
-}
-
-body.dark .zeltron-thick-component-border {
-	border: 2px solid var(--color-dark-component-background);
+	border: 2px solid var(--color-component-background);
 }
 
 .zeltron-component {
-	background-color: var(--color-light-component-background);
-	color: var(--color-light-component-foreground);
-}
-
-body.dark .zeltron-component {
-	background-color: var(--color-dark-component-background);
-	color: var(--color-dark-component-foreground);
+	background-color: var(--color-component-background);
+	color: var(--color-component-foreground);
 }
 
 .zeltron-strong-component {
-	background-color: var(--color-light-badge-foreground);
-	color: var(--color-light-background);
+	background-color: var(--color-badge-foreground);
+	color: var(--color-background);
 }
 
-body.dark .zeltron-strong-component {
-	background-color: var(--color-dark-badge-foreground);
-	color: var(--color-dark-background);
+.zeltron-strong-component:hover {
+	background-color: var(--color-anchor);
+	border-color: transparent;
 }
 
 .zeltron-highlightkeyword {
-	color: var(--color-light-keyword);
+	color: var(--color-keyword);
 	font-weight: bold;
-}
-
-body.dark .zeltron-highlightkeyword {
-	color: var(--color-dark-keyword);
 }
 
 .zeltron-badge {
 	display: inline-block;
 	margin: 5px;
 	padding: 5px 10px;
-	background-color: var(--color-light-badge-background);
-	border: 2px solid var(--color-light-badge-foreground);
-	color: var(--color-light-badge-foreground);
+	background-color: var(--color-badge-background);
+	border: 2px solid var(--color-badge-foreground);
+	color: var(--color-badge-foreground);
 }
 
-body.dark .zeltron-badge {
-	background-color: var(--color-dark-badge-background);
-	border: 2px solid var(--color-dark-badge-foreground);
-	color: var(--color-dark-badge-foreground);
+.tooltip {
+	position: fixed;
+	padding: 4px 8px;
+	border-radius: 4px;
+	font-size: 12px;
+	font-family: 'Roboto-Condensed', monospace;
+	white-space: nowrap;
+	background-color: var(--color-component-background);
+	color: var(--color-component-foreground);
+	pointer-events: none;
+	opacity: 0;
 }

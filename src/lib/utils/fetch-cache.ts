@@ -1,37 +1,39 @@
-const CACHE_TTL = 86400000;
+import { cacheTtl, cacheKeyPrefix } from '$lib/constants/app.constants';
 
-interface CacheEntry {
-	data: string;
-	timestamp: number;
-}
+const parseCacheEntry = (raw: string): { data: string; timestamp: number } | null => {
+	try {
+		const obj = JSON.parse(raw) as unknown;
+		if (typeof obj !== 'object' || obj === null) return null;
+		const entry = obj as { data?: unknown; timestamp?: unknown };
+		if (typeof entry.data === 'string' && typeof entry.timestamp === 'number') {
+			return { data: entry.data, timestamp: entry.timestamp };
+		}
+		return null;
+	} catch (error) {
+		console.error('Failed to parse cache entry', error);
+		return null;
+	}
+};
 
 export const cachedFetch = async (url: string): Promise<string> => {
-	const cacheKey = `fetch:${url}`;
+	const cacheKey = `${cacheKeyPrefix}${url}`;
 	try {
-		const cached = localStorage.getItem(cacheKey);
-		if (cached != null) {
-			const parsed: unknown = JSON.parse(cached);
-			if (typeof parsed !== 'object' || parsed === null) throw new Error('Invalid cache');
-			const rawData = 'data' in parsed ? parsed.data : null;
-			const rawTimestamp = 'timestamp' in parsed ? parsed.timestamp : null;
-			if (typeof rawData !== 'string' || typeof rawTimestamp !== 'number')
-				throw new Error('Invalid cache');
-			const entry: CacheEntry = { data: rawData, timestamp: rawTimestamp };
-			if (Date.now() - entry.timestamp < CACHE_TTL) {
-				return entry.data;
-			}
+		const raw = localStorage.getItem(cacheKey);
+		if (raw !== null) {
+			const entry = parseCacheEntry(raw);
+			if (entry !== null && Date.now() - entry.timestamp < cacheTtl) return entry.data;
 		}
-	} catch {
-		// ignore
+	} catch (error) {
+		console.error('Failed to read cache', error);
 	}
 
 	const response = await fetch(url);
 	if (!response.ok) throw new Error(`Fetch failed: ${String(response.status)}`);
-	const data = await response.text();
+	const text = await response.text();
 	try {
-		localStorage.setItem(cacheKey, JSON.stringify({ data, timestamp: Date.now() }));
-	} catch {
-		// ignore
+		localStorage.setItem(cacheKey, JSON.stringify({ data: text, timestamp: Date.now() }));
+	} catch (error) {
+		console.error('Failed to write cache', error);
 	}
-	return data;
+	return text;
 };

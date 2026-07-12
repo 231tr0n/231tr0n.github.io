@@ -1,32 +1,34 @@
 <script lang="ts">
 	import '$lib/css/main.css';
-	import '$lib/utils/tooltip.js';
+	import '$lib/utils/tooltip';
 
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
+	import Cursor from '$lib/components/Cursor.svelte';
 	import { page } from '$app/state';
 	import { fade } from 'svelte/transition';
-	import { animationDelay, animationDuration } from '$lib/constants/animation.constants';
-	import Cursor from '$lib/components/Cursor.svelte';
+	import { animationDelay, animationDuration } from '$lib/constants/app.constants';
 	import { onMount, type Snippet } from 'svelte';
 	import { setupScrollbars } from '$lib/utils/scrollbar';
 	import { setupExternalLinks } from '$lib/utils/anchor';
 
 	let { children }: { children?: Snippet } = $props();
 
-	$effect(() => setupExternalLinks());
+	$effect(() => {
+		return setupExternalLinks();
+	});
 
 	onMount(() => {
+		const style = document.createElement('style');
+		style.textContent = `* { transition: background-color ${String(animationDuration)}ms linear, color ${String(animationDuration)}ms linear; }`;
+		document.head.appendChild(style);
 		const scrollbars = setupScrollbars();
 		document.onfullscreenchange = () => {
-			if (document.fullscreenElement) {
-				document.body.classList.add('full-screen');
-			} else {
-				document.body.classList.remove('full-screen');
-			}
+			document.body.classList.toggle('full-screen', !!document.fullscreenElement);
 		};
 		return () => {
 			scrollbars.destroy();
+			style.remove();
 			document.onfullscreenchange = null;
 		};
 	});
@@ -52,7 +54,7 @@
 		width: 100%;
 		height: 100%;
 		opacity: 85%;
-		z-index: 2;
+		z-index: var(--z-index-background-opacity);
 	}
 
 	.background {
@@ -63,23 +65,23 @@
 		position: fixed;
 		width: 100%;
 		height: 100%;
-		top: 0px;
-		left: 0px;
-		right: 0px;
-		bottom: 0px;
-		z-index: 1;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: var(--z-index-background);
 	}
 
 	main {
 		position: fixed;
-		top: 45px;
-		left: 0px;
-		right: 0px;
-		bottom: 45px;
-		padding: 0px;
-		margin: 0px;
+		top: var(--layout-header-height);
+		left: 0;
+		right: 0;
+		bottom: var(--layout-footer-height);
+		padding: 0;
+		margin: 0;
 		box-sizing: border-box;
 		overflow: hidden;
-		z-index: 3;
+		z-index: var(--z-index-main);
 	}
 </style>

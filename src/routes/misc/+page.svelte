@@ -26,7 +26,7 @@
 <Page>
 	<h1>Miscellaneous</h1>
 
-	{#each miscPosts as miscPost, _ (_)}
+	{#each miscPosts as miscPost (miscPost.url)}
 		<Post post={miscPost} />
 	{/each}
 </Page>

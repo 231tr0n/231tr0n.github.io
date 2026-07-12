@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import { slide } from 'svelte/transition';
-
-	type onSetSelectedItemType = (item: number) => void;
+	import { selectPaddingOffset } from '$lib/constants/app.constants';
+	import type { OnSetSelectedItem } from '$lib/types';
 
 	let {
 		items,
@@ -15,53 +14,50 @@
 		emptyItem?: boolean;
 		currentItem: number;
 		colored: boolean;
-		onSetSelectedItem: onSetSelectedItemType | null;
+		onSetSelectedItem: OnSetSelectedItem | null;
 	} = $props();
 
 	let open = $state(false);
 	let selectContext: HTMLElement;
 	const localItems = $derived(emptyItem ? ['', ...items] : [...items]);
+	const largest = $derived.by(() => {
+		let longest = '';
+		for (const item of localItems) {
+			if (longest.length < item.length) longest = item;
+		}
+		return longest;
+	});
+
+	const setWidth = (node: HTMLSpanElement, initial: string) => {
+		node.textContent = initial;
+		selectContext.style.width = `${String(Math.ceil(node.clientWidth) + selectPaddingOffset)}px`;
+		return {
+			update(largestVal: string) {
+				node.textContent = largestVal;
+				selectContext.style.width = `${String(Math.ceil(node.clientWidth) + selectPaddingOffset)}px`;
+			}
+		};
+	};
 
 	const selectItem = (item: number) => {
-		currentItem = item;
-		onSetSelectedItem?.(currentItem);
+		onSetSelectedItem?.(item);
 		toggleSelectionMenu();
 	};
 
 	const toggleSelectionMenu = () => {
-		open = open ? false : true;
+		open = !open;
 	};
-
-	onMount(() => {
-		if (colored) {
-			selectContext.classList.add('zeltron-strong-component');
-		}
-	});
-
-	$effect(() => {
-		let largestItem = '';
-		for (const item of localItems) {
-			if (largestItem.length < item.length) {
-				largestItem = item;
-			}
-		}
-
-		const button = document.createElement('button');
-		button.innerText = largestItem;
-		document.body.appendChild(button);
-		selectContext.style.width = (Math.ceil(button.clientWidth) + 30).toString() + 'px';
-		document.body.removeChild(button);
-	});
 </script>
 
 <div>
 	<button
 		bind:this={selectContext}
 		class="select-context"
+		class:zeltron-strong-component={colored}
 		aria-label="Select menu toggler"
 		onclick={toggleSelectionMenu}
 		type="button">
-		{localItems[currentItem]}
+		{localItems.at(currentItem)}
 		{#if open}
 			<svg
 				fill="currentColor"
@@ -86,6 +82,7 @@
 			</svg>
 		{/if}
 	</button>
+	<span class="measure" aria-hidden="true" use:setWidth={largest}></span>
 	{#if open}
 		<div
 			class="select-menu zeltron-flex-middle zeltron-component zeltron-thick-component-border"
@@ -106,6 +103,12 @@
 </div>
 
 <style>
+	.measure {
+		visibility: hidden;
+		position: absolute;
+		pointer-events: none;
+	}
+
 	svg {
 		width: 10px;
 		height: 10px;

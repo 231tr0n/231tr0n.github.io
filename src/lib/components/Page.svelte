@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
 	import Select from './Select.svelte';
-	import { animationDelay, animationDuration } from '$lib/constants/animation.constants.js';
+	import { scrollspyOffset, scrollspyThreshold } from '$lib/constants/app.constants';
 
 	let {
 		scrollspy = false,
@@ -11,64 +11,50 @@
 		children?: Snippet;
 	} = $props();
 
-	let name: HTMLElement;
-	let sections: HTMLElement[] = [];
+	let sections = $state<HTMLElement[]>([]);
 	let currentItem = $state(0);
 	let breadcrumb: HTMLHeadingElement | undefined = $state();
-	const selectionMenuArray: string[] = $state([]);
+	const items: string[] = $state([]);
 	let pageDiv: HTMLDivElement;
 
-	let selectedItem = $state(0);
 	const onSetSelectedItem = (value: number) => {
-		selectedItem = value;
+		if (!scrollspy || !breadcrumb) return;
+		const div = sections.at(value);
+		if (!div) return;
+		const rect = div.getBoundingClientRect();
+		pageDiv.scrollBy(0, rect.top - rect.height - breadcrumb.offsetHeight - scrollspyOffset);
 	};
 
-	$effect(() => {
-		if (!scrollspy) return;
-		if (!breadcrumb) return;
-		if (selectedItem >= 0 && selectedItem < sections.length) {
-			const currentDiv = sections[selectedItem];
-			if (!currentDiv) return;
-			const currentDivBoundingClientRect = currentDiv.getBoundingClientRect();
-			pageDiv.scrollBy(
-				0,
-				currentDivBoundingClientRect.top -
-					currentDivBoundingClientRect.height -
-					breadcrumb.offsetHeight -
-					15
-			);
-		}
-	});
+	let scrollRafId = 0;
 
 	onMount(() => {
 		if (!scrollspy) return;
-		const breadcrumbEl = breadcrumb;
-		if (!breadcrumbEl) return;
+		const el = breadcrumb;
+		if (!el) return;
 		pageDiv.onscroll = () => {
-			let prev = null;
-			for (const [index, section] of sections.entries()) {
-				if (breadcrumbEl.offsetTop + breadcrumbEl.offsetHeight + 5 < section.offsetTop) {
-					if (prev) {
-						currentItem = index - 1;
+			cancelAnimationFrame(scrollRafId);
+			scrollRafId = requestAnimationFrame(() => {
+				let prev: HTMLElement | null = null;
+				for (const [i, section] of sections.entries()) {
+					if (el.offsetTop + el.offsetHeight + scrollspyThreshold < section.offsetTop) {
+						currentItem = prev ? i - 1 : i;
+						break;
 					} else {
-						currentItem = index;
+						currentItem = i;
 					}
-					break;
-				} else {
-					currentItem = index;
+					prev = section;
 				}
-				prev = section;
-			}
+			});
 		};
+		const name =
+			pageDiv.querySelector<HTMLElement>('div.content h1') ?? document.createElement('div');
+		sections = [name, ...Array.from(pageDiv.querySelectorAll<HTMLElement>('div.content h2'))];
+		for (const section of sections) items.push(section.innerText);
 
-		setTimeout(() => {
-			name = document.querySelector('div.page div.content h1') ?? document.createElement('div');
-			sections = Array.from(document.querySelectorAll('div.page div.content h2'));
-			sections.unshift(name);
-			for (const section of sections) {
-				selectionMenuArray.push(section.innerText);
-			}
-		}, animationDelay + animationDuration);
+		return () => {
+			pageDiv.onscroll = null;
+			cancelAnimationFrame(scrollRafId);
+		};
 	});
 </script>
 
@@ -76,7 +62,7 @@
 	<div class="content">
 		{#if scrollspy}
 			<h4 bind:this={breadcrumb} class="zeltron-component zeltron-flex-middle">
-				<Select colored={true} {currentItem} items={selectionMenuArray} {onSetSelectedItem} />
+				<Select colored={true} {currentItem} {items} {onSetSelectedItem} />
 			</h4>
 		{/if}
 		{@render children?.()}
@@ -94,32 +80,29 @@
 		scroll-behavior: smooth;
 	}
 
-	h4 {
-		display: flex;
-	}
-
 	.content {
-		z-index: 5;
 		padding-bottom: 100px;
-		max-width: 85vw;
-		width: 900px;
+		max-width: var(--layout-content-max-width);
+		width: var(--layout-content-width);
 		height: max-content;
 		text-align: justify;
+		z-index: var(--z-index-content);
 	}
 
 	div.zeltron-body-background {
 		position: fixed;
-		top: 44px;
-		bottom: 44px;
-		z-index: 4;
-		width: 950px;
+		top: var(--layout-page-bg-offset);
+		bottom: var(--layout-page-bg-offset);
+		width: var(--layout-background-width);
 		max-width: 90vw;
+		z-index: var(--z-index-page-background);
 	}
 
 	h4 {
-		z-index: 6;
 		padding: 5px;
 		position: sticky;
-		top: 0px;
+		top: 0;
+		display: flex;
+		z-index: var(--z-index-scrollspy);
 	}
 </style>

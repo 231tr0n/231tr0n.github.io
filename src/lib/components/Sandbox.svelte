@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { UIEventHandler } from 'svelte/elements';
 	import Frame from './Frame.svelte';
-	import { darkMode } from '$lib/utils/dark.svelte.js';
+	import { sandboxPolicy } from '$lib/constants/app.constants';
+	import { darkMode } from '$lib/utils/dark.svelte';
 
 	let {
 		title,
@@ -17,25 +17,23 @@
 
 	let iframe: HTMLIFrameElement | undefined;
 
-	const resized: UIEventHandler<HTMLIFrameElement> = (element) => {
-		element.currentTarget.style.height = '100%';
-	};
-
 	$effect(() => {
-		const isDark = darkMode().dark;
-		if (!iframe || srcDoc.length === 0) return;
+		if (!iframe || !srcDoc) return;
 		const hasBodyBg =
 			/<body[^>]*\bbackground\s*[=:]/i.test(srcDoc) ||
 			/(?:body|html)\s*\{[^}]*\bbackground\b/i.test(srcDoc);
 		if (hasBodyBg) {
 			iframe.srcdoc = srcDoc;
 		} else {
-			const root = document.documentElement;
-			const style = getComputedStyle(root);
-			const bg = style
-				.getPropertyValue(isDark ? '--color-dark-background' : '--color-light-background')
-				.trim();
-			iframe.srcdoc = `<html style="background:${bg}"><body>${srcDoc}</body></html>`;
+			void darkMode().dark;
+			const bg = getComputedStyle(document.body).getPropertyValue('--color-background').trim();
+			if (/<html/i.test(srcDoc)) {
+				iframe.srcdoc = srcDoc.replace(/<html/i, `<html style="background:${bg}"`);
+			} else if (/<body/i.test(srcDoc)) {
+				iframe.srcdoc = `<html style="background:${bg}">${srcDoc}</html>`;
+			} else {
+				iframe.srcdoc = `<html style="background:${bg}"><body>${srcDoc}</body></html>`;
+			}
 		}
 	});
 </script>
@@ -70,31 +68,22 @@
 			{/if}
 		</button>
 	{/snippet}
-	<iframe
-		bind:this={iframe}
-		allowfullscreen
-		onresize={resized}
-		sandbox="allow-forms allow-modals allow-popups allow-scripts allow-downloads"
-		{src}
-		{title}>
-	</iframe>
+	<iframe bind:this={iframe} allowfullscreen sandbox={sandboxPolicy} {src} {title}> </iframe>
 </Frame>
 
 <style>
 	:global(.iframe) {
 		width: 100%;
-		max-width: 85vw;
-		margin-top: 1em;
-		margin-bottom: 1em;
+		max-width: var(--layout-content-max-width);
 		box-sizing: border-box;
-		height: calc(100vh - 10vh - 45px - 45px);
+		height: calc(100vh - 10vh - var(--layout-header-height) - var(--layout-footer-height));
 	}
 
 	iframe {
-		border: 0px;
+		border: 0;
 		overflow: auto;
 		width: 100%;
-		height: calc(100% - 34px - 31px);
+		height: calc(100% - var(--sandbox-iframe-offset));
 	}
 
 	button {

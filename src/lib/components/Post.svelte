@@ -7,7 +7,7 @@
 
 <Accordion name={post.name} external={post.external} open={post.open} url={post.url}>
 	<div>
-		{#each post.badges as badge, _ (_)}
+		{#each post.badges as badge (badge)}
 			<span class="zeltron-badge">{badge}</span>
 		{/each}
 		<div>

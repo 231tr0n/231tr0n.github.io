@@ -1,6 +1,8 @@
 <script lang="ts">
+	import { cacheKeyPrefix } from '$lib/constants/app.constants';
+
 	const clearCache = () => {
-		const keys = Object.keys(localStorage).filter((k) => k.startsWith('fetch:'));
+		const keys = Object.keys(localStorage).filter((k) => k.startsWith(cacheKeyPrefix));
 		keys.forEach((k) => {
 			localStorage.removeItem(k);
 		});
@@ -58,44 +60,31 @@
 
 	footer {
 		position: fixed;
-		bottom: 0px;
-		left: 0px;
-		right: 0px;
-		height: 45px;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		height: var(--layout-footer-height);
 		box-sizing: border-box;
-		z-index: 7;
-		border-top: 1px solid var(--color-light-component-background);
+		z-index: var(--z-index-footer);
+		border-top: 1px solid var(--color-component-background);
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding-left: 12px;
-		padding-right: 12px;
-	}
-
-	:global(body.dark) footer {
-		border-top: 1px solid var(--color-dark-component-background);
+		padding: 0 12px;
 	}
 
 	img,
 	button {
 		padding: 1px;
-		margin-left: 1px;
-		margin-right: 1px;
+		margin: 0 1px;
 		width: 26px;
 		height: 26px;
 		cursor: pointer;
 	}
 
 	button {
-		padding: 1px;
-		margin-left: 1px;
-		margin-right: 1px;
-		width: 26px;
-		height: 26px;
-		cursor: pointer;
 		display: inline-flex;
 		justify-content: center;
 		align-items: center;
-		border: none;
 	}
 </style>

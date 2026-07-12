@@ -18,7 +18,7 @@
 <Page>
 	<h1>Blog</h1>
 
-	{#each blogPosts as blogPost, _ (_)}
+	{#each blogPosts as blogPost (blogPost.url)}
 		<Post post={blogPost} />
 	{/each}
 </Page>

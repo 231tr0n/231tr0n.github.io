@@ -25,23 +25,23 @@
 	);
 
 	let table: HTMLTableElement;
-	const bars: Record<string, HTMLDivElement> = $state({});
+	const bars: Map<string, HTMLDivElement> = $state(new Map<string, HTMLDivElement>());
+
+	const setBarRef = (el: HTMLDivElement, key: string) => {
+		bars.set(key, el);
+		return { destroy: () => bars.delete(key) };
+	};
 
 	const onGraphFullscreenChange = (fullscreen: boolean) => {
-		if (fullscreen) {
-			table.style.height = '100%';
-		} else {
-			table.style.height = height.toString() + 'vh';
-		}
+		table.style.height = fullscreen ? '100%' : String(height) + 'vh';
 	};
 
 	onMount(() => {
 		for (const [key, value] of Object.entries(sortedData)) {
-			const bar = bars[key];
-			if (bar) bar.style.height = value.toString() + '%';
+			const bar = bars.get(key);
+			if (bar) bar.style.height = String(value) + '%';
 		}
-
-		table.style.height = height.toString() + 'vh';
+		table.style.height = String(height) + 'vh';
 	});
 </script>
 
@@ -87,14 +87,14 @@
 					<tr>
 						{#each Object.keys(sortedData) as key, _ (_)}
 							<td class="plot">
-								<div bind:this={bars[key]} class="bar zeltron-component"></div>
+								<div class="bar zeltron-component" use:setBarRef={key}></div>
 							</td>
 						{/each}
 					</tr>
 					<tr>
 						{#each Object.entries(sortedData) as [key, value], _ (_)}
 							<td class="label">
-								<span class="zeltron-badge">{key} - {value.toString() + '%'}</span>
+								<span class="zeltron-badge">{key} - {String(value) + '%'}</span>
 							</td>
 						{/each}
 					</tr>
@@ -105,11 +105,6 @@
 </Frame>
 
 <style>
-	:global(.frame-wrapper) {
-		margin-top: 1em;
-		margin-bottom: 1em;
-	}
-
 	:global(.bar-graph) {
 		display: flex;
 		flex-direction: column;
@@ -118,7 +113,7 @@
 		box-sizing: border-box;
 	}
 
-	div.bottom {
+	.bottom {
 		flex: 1;
 		min-height: 0;
 		min-width: 0;
@@ -126,17 +121,17 @@
 		flex-direction: column;
 	}
 
-	div.padding {
+	.padding {
 		padding-top: 5px;
 	}
 
 	@supports (-moz-appearance: none) {
-		div.padding {
+		.padding {
 			padding-bottom: 10px;
 		}
 	}
 
-	div.overflow {
+	.overflow {
 		flex: 1;
 		min-height: 0;
 		min-width: 0;
@@ -154,7 +149,7 @@
 	}
 
 	span.zeltron-badge {
-		margin: 0px;
+		margin: 0;
 		display: inline;
 	}
 
@@ -168,7 +163,7 @@
 		height: inherit;
 	}
 
-	div.bar {
+	.bar {
 		position: absolute;
 		bottom: 0;
 		left: 0;
@@ -176,6 +171,6 @@
 	}
 
 	table {
-		margin: 2px 8px;
+		margin: 2px 4px;
 	}
 </style>

@@ -1,116 +1,71 @@
 <script lang="ts">
 	import { Tween } from 'svelte/motion';
-	import { animationDuration } from '$lib/constants/animation.constants';
+	import {
+		animationDuration,
+		cursorRadius,
+		cursorClickRadius,
+		cursorStrokeWidth
+	} from '$lib/constants/app.constants';
 	import { linear } from 'svelte/easing';
 	import { onDestroy, onMount } from 'svelte';
 	import { on } from 'svelte/events';
 
 	const controller = new AbortController();
 
-	const circleRadius = 50;
-	const circleClickRadius = 100;
-	const strokeWidth = 10;
-
-	const radius = new Tween(circleRadius, { duration: animationDuration, delay: 0, easing: linear });
+	const radius = new Tween(cursorRadius, { duration: animationDuration, delay: 0, easing: linear });
 	const cursor = new Tween(
 		{ x: 0, y: 0 },
 		{ duration: animationDuration, delay: 0, easing: linear }
 	);
 
 	onMount(() => {
+		const listenerOptions = { signal: controller.signal };
 		on(
 			document,
 			'mousemove',
-			(event) => {
-				cursor.target = { x: event.clientX, y: event.clientY };
+			(e) => {
+				cursor.target = { x: e.clientX, y: e.clientY };
 			},
-			{ signal: controller.signal }
+			listenerOptions
 		);
 		on(
 			document,
 			'touchmove',
-			(event) => {
-				const touch = event.touches[event.touches.length - 1];
-				if (!touch) return;
-				cursor.target = {
-					x: touch.clientX,
-					y: touch.clientY
-				};
+			(e) => {
+				const touch = e.touches[e.touches.length - 1];
+				if (touch) cursor.target = { x: touch.clientX, y: touch.clientY };
 			},
-			{ signal: controller.signal }
+			listenerOptions
 		);
-		on(
-			document,
-			'mouseleave',
-			() => {
-				radius.target = 0;
-			},
-			{ signal: controller.signal }
-		);
-		on(
-			document,
-			'mouseout',
-			() => {
-				radius.target = 0;
-			},
-			{ signal: controller.signal }
-		);
-		on(
-			document,
-			'mouseover',
-			() => {
-				radius.target = circleRadius;
-			},
-			{ signal: controller.signal }
-		);
-		on(
-			document,
-			'mouseenter',
-			() => {
-				radius.target = circleRadius;
-			},
-			{ signal: controller.signal }
-		);
-		on(
-			document,
-			'mouseup',
-			() => {
-				radius.target = circleRadius;
-			},
-			{ signal: controller.signal }
-		);
+		const hide = () => {
+			radius.target = 0;
+		};
+		const show = () => {
+			radius.target = cursorRadius;
+		};
+		on(document, 'mouseleave', hide, listenerOptions);
+		on(document, 'mouseout', hide, listenerOptions);
+		on(document, 'mouseover', show, listenerOptions);
+		on(document, 'mouseenter', show, listenerOptions);
+		on(document, 'mouseup', show, listenerOptions);
 		on(
 			document,
 			'mousedown',
 			() => {
-				radius.target = circleClickRadius;
+				radius.target = cursorClickRadius;
 			},
-			{ signal: controller.signal }
+			listenerOptions
 		);
-		on(
-			document,
-			'touchcancel',
-			() => {
-				radius.target = circleRadius;
-			},
-			{ signal: controller.signal }
-		);
+		on(document, 'touchcancel', show, listenerOptions);
 		on(
 			document,
 			'touchstart',
 			() => {
-				radius.target = circleClickRadius;
+				radius.target = cursorClickRadius;
 			},
-			{ signal: controller.signal }
+			listenerOptions
 		);
-		on(
-			document,
-			'touchend',
-			() => {
-				radius.target = circleRadius;
-			},
-			{ signal: controller.signal }
-		);
+		on(document, 'touchend', show, listenerOptions);
 	});
 
 	onDestroy(() => {
@@ -125,29 +80,25 @@
 			cx={cursor.current.x}
 			cy={cursor.current.y}
 			r={radius.current}
-			stroke-width={strokeWidth} />
+			stroke-width={cursorStrokeWidth} />
 	</svg>
 {/if}
 
 <style>
 	svg {
-		z-index: 2;
 		position: fixed;
-		top: 0px;
-		bottom: 0px;
-		left: 0px;
-		right: 0px;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
 		width: 100%;
 		height: 100%;
 		pointer-events: none;
+		z-index: var(--z-index-cursor);
 	}
 
 	.circle {
 		fill: none;
-		stroke: var(--color-light-component-background);
-	}
-
-	:global(body.dark) .circle {
-		stroke: var(--color-dark-component-background);
+		stroke: var(--color-component-background);
 	}
 </style>

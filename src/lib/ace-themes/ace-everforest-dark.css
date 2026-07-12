@@ -1,0 +1,124 @@
+.ace-everforest-dark .ace_gutter {
+	background: #343f44;
+	color: #859289;
+}
+
+.ace-everforest-dark .ace_print-margin {
+	width: 1px;
+	background: #4f585e;
+}
+
+.ace-everforest-dark {
+	background-color: #2d353b;
+	color: #d3c6aa;
+}
+
+.ace-everforest-dark .ace_entity.ace_other.ace_attribute-name {
+	color: #d3c6aa;
+}
+
+.ace-everforest-dark .ace_storage {
+	color: #e69875;
+}
+
+.ace-everforest-dark .ace_cursor {
+	color: #e67e80;
+}
+
+.ace-everforest-dark .ace_string.ace_regexp {
+	color: #a7c080;
+}
+
+.ace-everforest-dark .ace_marker-layer .ace_active-line {
+	background: #343f44;
+}
+
+.ace-everforest-dark .ace_marker-layer .ace_selection {
+	background: #543a48;
+}
+
+.ace-everforest-dark.ace_multiselect .ace_selection.ace_start {
+	box-shadow: 0 0 3px 0 #2d353b;
+}
+
+.ace-everforest-dark .ace_marker-layer .ace_step {
+	background: rgb(102, 82, 0);
+}
+
+.ace-everforest-dark .ace_marker-layer .ace_bracket {
+	margin: -1px 0 0 -1px;
+	border: 1px solid rgba(133, 146, 137, 0.5);
+}
+
+.ace-everforest-dark .ace_gutter-active-line {
+	background-color: #3d484d;
+}
+
+.ace-everforest-dark .ace_marker-layer .ace_selected-word {
+	border: 1px solid #475258;
+}
+
+.ace-everforest-dark .ace_invisible {
+	color: rgba(133, 146, 137, 0.5);
+}
+
+.ace-everforest-dark .ace_keyword,
+.ace-everforest-dark .ace_support.ace_class,
+.ace-everforest-dark .ace_support.ace_type {
+	color: #e67e80;
+}
+
+.ace-everforest-dark .ace_meta {
+	color: #d699b6;
+}
+
+.ace-everforest-dark .ace_constant.ace_character,
+.ace-everforest-dark .ace_constant.ace_other {
+	color: #83c092;
+}
+
+.ace-everforest-dark .ace_constant.ace_language {
+	color: #d699b6;
+}
+
+.ace-everforest-dark .ace_constant.ace_numeric {
+	color: #d699b6;
+}
+
+.ace-everforest-dark .ace_fold {
+	background-color: #7a8478;
+	border-color: #859289;
+}
+
+.ace-everforest-dark .ace_entity.ace_name.ace_function,
+.ace-everforest-dark .ace_support.ace_function {
+	color: #a7c080;
+}
+
+.ace-everforest-dark .ace_entity.ace_name.ace_tag {
+	color: #e69875;
+}
+
+.ace-everforest-dark .ace_variable,
+.ace-everforest-dark .ace_variable.ace_language {
+	color: #7fbbb3;
+}
+
+.ace-everforest-dark .ace_string {
+	color: #a7c080;
+}
+
+.ace-everforest-dark .ace_comment {
+	font-style: italic;
+	color: #859289;
+}
+
+.ace-everforest-dark .ace_indent-guide {
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNg0Db1ZVCxc/sPAAd4AlUHlLenAAAAAElFTkSuQmCC)
+		right repeat-y;
+}
+
+.ace-everforest-dark .ace_indent-guide-active {
+	background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQIW2PQ1dX9zzBz5sz/ABCcBFFentLlAAAAAElFTkSuQmCC)
+		right repeat-y;
+}

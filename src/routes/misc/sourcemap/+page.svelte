@@ -3,19 +3,21 @@
 	import Sandbox from '$lib/components/Sandbox.svelte';
 	import Loading from '$lib/components/Loading.svelte';
 	import { onMount } from 'svelte';
-	import { cachedFetch } from '$lib/utils/fetch-cache.js';
+	import { cachedFetch } from '$lib/utils/fetch-cache';
 
 	let sourceMap = $state<string | null>(null);
 	let sourceMapError = $state<string | null>(null);
 
 	onMount(async () => {
 		try {
-			sourceMap = await cachedFetch(
+			const data = await cachedFetch(
 				'https://raw.githubusercontent.com/231tr0n/231tr0n.github.io/main/stats.html'
 			);
-			if (!sourceMap) throw new Error('Error loading stats file');
-		} catch (e) {
-			sourceMapError = e instanceof Error ? e.message : 'Unknown error';
+			if (!data) throw new Error('Error loading stats file');
+			sourceMap = data;
+		} catch (error) {
+			console.error('Failed to load sourcemap', error);
+			sourceMapError = error instanceof Error ? error.message : 'Unknown error';
 		}
 	});
 </script>
