@@ -148,7 +148,7 @@
 	}
 
 	span.zeltron-badge {
-		margin: 0px;
+		margin: 0;
 		display: inline;
 	}
 

@@ -79,16 +79,16 @@
 
 	header {
 		position: fixed;
-		top: 0px;
-		left: 0px;
-		right: 0px;
+		top: 0;
+		left: 0;
+		right: 0;
 		height: var(--layout-header-height);
 		padding: 0 7px;
 		box-sizing: border-box;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		z-index: 7;
+		z-index: var(--z-index-navbar);
 		border-bottom: 1px solid var(--color-component-background);
 	}
 </style>

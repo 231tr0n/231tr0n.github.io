@@ -8,7 +8,7 @@ export const themeStorageKey = 'theme';
 export const themeDark = 'dark';
 export const themeLight = 'light';
 
-export const editorFontSize = 15;
+export const editorFontSize = 13;
 export const editorTabSize = 2;
 export const editorScrollbarWidth = 6;
 export const editorScrollbarHeight = 7;

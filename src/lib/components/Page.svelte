@@ -90,28 +90,28 @@
 	}
 
 	.content {
-		z-index: 5;
 		padding-bottom: 100px;
 		max-width: var(--layout-content-max-width);
 		width: var(--layout-content-width);
 		height: max-content;
 		text-align: justify;
+		z-index: var(--z-index-content);
 	}
 
 	div.zeltron-body-background {
 		position: fixed;
 		top: var(--layout-page-bg-offset);
 		bottom: var(--layout-page-bg-offset);
-		z-index: 4;
 		width: var(--layout-background-width);
 		max-width: 90vw;
+		z-index: var(--z-index-page-background);
 	}
 
 	h4 {
-		z-index: 6;
 		padding: 5px;
 		position: sticky;
-		top: 0px;
+		top: 0;
 		display: flex;
+		z-index: var(--z-index-scrollspy);
 	}
 </style>

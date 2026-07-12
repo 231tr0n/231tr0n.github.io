@@ -86,15 +86,15 @@
 
 <style>
 	svg {
-		z-index: 2;
 		position: fixed;
-		top: 0px;
-		bottom: 0px;
-		left: 0px;
-		right: 0px;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
 		width: 100%;
 		height: 100%;
 		pointer-events: none;
+		z-index: var(--z-index-cursor);
 	}
 
 	.circle {

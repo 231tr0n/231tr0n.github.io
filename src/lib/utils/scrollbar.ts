@@ -1,161 +1,15 @@
 import { on } from 'svelte/events';
 import {
-	scrollbarMinThumbV,
-	scrollbarMinThumbH,
-	scrollbarTrackSize,
-	scrollbarZIndex,
-	scrollbarAceSetupTimeout,
-	scrollbarHideEpsilon,
-	scrollbarTrackOverhang
-} from '$lib/constants/app.constants';
-
-const makeTrack = (dir: 'v' | 'h') => {
-	const track = document.createElement('div');
-	track.className = `custom-scrollbar-track-${dir}`;
-	const thumb = document.createElement('button');
-	thumb.type = 'button';
-	thumb.className = `custom-scrollbar-thumb-${dir}`;
-	if (dir === 'v') {
-		thumb.style.minHeight = `${String(scrollbarMinThumbV)}px`;
-		thumb.style.width = `${String(scrollbarTrackSize)}px`;
-	} else {
-		thumb.style.minWidth = `${String(scrollbarMinThumbH)}px`;
-		thumb.style.height = `${String(scrollbarTrackSize)}px`;
-	}
-	thumb.setAttribute('data-custom-scrollbar-thumb', '');
-	track.appendChild(thumb);
-	return { track, thumb };
-};
-
-const doubleRAF = (fn: () => void) => {
-	requestAnimationFrame(() => requestAnimationFrame(fn));
-};
-
-const syncScroll = (node: HTMLElement, track: HTMLElement, thumb: HTMLElement, dir: 'v' | 'h') => {
-	const isVertical = dir === 'v';
-	const scrollSize = isVertical ? node.scrollHeight : node.scrollWidth;
-	const clientSize = isVertical ? node.clientHeight : node.clientWidth;
-	const scrollPos = isVertical ? node.scrollTop : node.scrollLeft;
-	const trackSize = isVertical ? track.clientHeight : track.clientWidth;
-
-	if (scrollSize <= clientSize + scrollbarHideEpsilon) {
-		track.style.display = 'none';
-		return;
-	}
-	track.style.display = '';
-	if (!trackSize) return;
-
-	const thumbSize = Math.max(
-		isVertical ? scrollbarMinThumbV : scrollbarMinThumbH,
-		(clientSize / scrollSize) * trackSize
-	);
-	const maxPos = trackSize - thumbSize;
-	if (maxPos <= 0) return;
-
-	const thumbPos = Math.min((scrollPos / (scrollSize - clientSize)) * maxPos, maxPos);
-	if (isVertical) {
-		thumb.style.height = `${String(thumbSize)}px`;
-		thumb.style.top = `${String(thumbPos)}px`;
-	} else {
-		thumb.style.width = `${String(thumbSize)}px`;
-		thumb.style.left = `${String(thumbPos)}px`;
-	}
-};
-
-let activeDragCleanup: (() => void) | null = null;
-
-const cleanupActiveDrag = () => {
-	if (activeDragCleanup) {
-		activeDragCleanup();
-		activeDragCleanup = null;
-	}
-};
-
-const setupDrag = (thumb: HTMLElement, node: HTMLElement, track: HTMLElement, dir: 'v' | 'h') => {
-	const isVertical = dir === 'v';
-	on(thumb, 'mousedown', (event: MouseEvent) => {
-		event.preventDefault();
-		node.style.setProperty('scroll-behavior', 'auto');
-
-		const startPos = isVertical ? event.clientY : event.clientX;
-		const startScrollPos = isVertical ? node.scrollTop : node.scrollLeft;
-		const scrollSize = isVertical ? node.scrollHeight : node.scrollWidth;
-		const clientSize = isVertical ? node.clientHeight : node.clientWidth;
-		const scrollRange = scrollSize - clientSize;
-		if (!scrollRange) return;
-
-		const trackSize = isVertical ? track.clientHeight : track.clientWidth;
-		const thumbSize = Math.max(
-			isVertical ? scrollbarMinThumbV : scrollbarMinThumbH,
-			(clientSize / scrollSize) * trackSize
-		);
-		const maxPos = trackSize - thumbSize;
-		if (maxPos <= 0) return;
-
-		const startThumbPos = (startScrollPos / scrollRange) * maxPos;
-		if (isVertical) {
-			thumb.style.top = `${String(startThumbPos)}px`;
-		} else {
-			thumb.style.left = `${String(startThumbPos)}px`;
-		}
-
-		const onMove = (moveEvent: MouseEvent) => {
-			moveEvent.preventDefault();
-			const delta = (isVertical ? moveEvent.clientY : moveEvent.clientX) - startPos;
-			const thumbPos = Math.max(0, Math.min(maxPos, startThumbPos + delta));
-			if (isVertical) {
-				thumb.style.top = `${String(thumbPos)}px`;
-				node.scrollTop = (thumbPos / maxPos) * scrollRange;
-			} else {
-				thumb.style.left = `${String(thumbPos)}px`;
-				node.scrollLeft = (thumbPos / maxPos) * scrollRange;
-			}
-		};
-
-		cleanupActiveDrag();
-		const cleanupMove = on(document, 'mousemove', onMove);
-		const cleanupUp = on(document, 'mouseup', cleanupActiveDrag);
-		activeDragCleanup = () => {
-			node.style.removeProperty('scroll-behavior');
-			cleanupMove();
-			cleanupUp();
-			activeDragCleanup = null;
-		};
-	});
-};
-
-const setupTrackClick = (track: HTMLElement, node: HTMLElement, dir: 'v' | 'h') => {
-	const isVertical = dir === 'v';
-	on(track, 'click', (event: MouseEvent) => {
-		if (event.target !== track) return;
-		const scrollRange =
-			(isVertical ? node.scrollHeight : node.scrollWidth) -
-			(isVertical ? node.clientHeight : node.clientWidth);
-		if (!scrollRange) return;
-
-		const rect = track.getBoundingClientRect();
-		node.style.setProperty('scroll-behavior', 'auto');
-		if (isVertical) {
-			node.scrollTop = ((event.clientY - rect.top) / rect.height) * scrollRange;
-		} else {
-			node.scrollLeft = ((event.clientX - rect.left) / rect.width) * scrollRange;
-		}
-		node.style.removeProperty('scroll-behavior');
-	});
-};
-
-const updateThumbAriaLabel = (node: HTMLElement, thumb: HTMLElement, dir: 'v' | 'h') => {
-	const isVertical = dir === 'v';
-	const scrollSize = isVertical ? node.scrollHeight : node.scrollWidth;
-	const clientSize = isVertical ? node.clientHeight : node.clientWidth;
-	const scrollPos = isVertical ? node.scrollTop : node.scrollLeft;
-	if (scrollSize <= clientSize + scrollbarHideEpsilon) {
-		thumb.removeAttribute('aria-label');
-		return;
-	}
-	const percent = Math.round((scrollPos / (scrollSize - clientSize)) * 100);
-	thumb.setAttribute('aria-label', `Scroll: ${String(percent)}%`);
-};
+	syncScroll,
+	setupDrag,
+	setupTrackClick,
+	updateThumbAriaLabel,
+	cleanupActiveDrag,
+	doubleAnimationFrame,
+	makeTrack
+} from './scrollbar-core';
+import { processAce, ensureAceProcessed, type AceScrollbarInstance } from './scrollbar-ace';
+import { scrollbarTrackSize, scrollbarTrackOverhang } from '$lib/constants/app.constants';
 
 const setupAxis = (node: HTMLElement, track: HTMLElement, thumb: HTMLElement, dir: 'v' | 'h') => {
 	on(node, 'scroll', () => {
@@ -203,7 +57,7 @@ const initScrollbar = (
 	});
 	mutationObserver.observe(node, { attributes: true, subtree: true });
 
-	doubleRAF(() => {
+	doubleAnimationFrame(() => {
 		if (vTrack && vThumb) syncScroll(node, vTrack, vThumb, 'v');
 		if (hTrack && hThumb) syncScroll(node, hTrack, hThumb, 'h');
 	});
@@ -238,22 +92,13 @@ const getScrollAxes = (el: HTMLElement): { v: boolean; h: boolean } => {
 	};
 };
 
-interface TrackEntry {
-	el: HTMLElement;
-	track: HTMLElement;
-	thumb: HTMLElement;
-	dir: 'v' | 'h';
-}
-
 interface ScrollbarInstance {
-	tracks?: TrackEntry[];
-	resizeObserver?: ResizeObserver;
-	mutationObserver?: MutationObserver;
 	destroy: () => void;
 }
 
 export const setupScrollbars = (container: HTMLElement = document.body) => {
 	const instances = new Map<HTMLElement, ScrollbarInstance>();
+	const aceInstances = new Map<HTMLElement, AceScrollbarInstance>();
 	const posRefCount = new Map<HTMLElement, number>();
 
 	const revertEnsurePos = (elem: HTMLElement) => {
@@ -272,6 +117,12 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 			if (!document.body.contains(el)) {
 				inst.destroy();
 				instances.delete(el);
+			}
+		}
+		for (const [el, inst] of aceInstances) {
+			if (!document.body.contains(el)) {
+				inst.destroy();
+				aceInstances.delete(el);
 			}
 		}
 	};
@@ -333,141 +184,15 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 		}
 	};
 
-	const setupAceTrack = (editorEl: HTMLElement, el: HTMLElement, dir: 'v' | 'h') => {
-		el.setAttribute('data-custom-scrollbar', '');
-		el.style.setProperty('scrollbar-width', 'none');
-		el.style.pointerEvents = 'none';
-		el.style.background = 'transparent';
-
-		const { track, thumb } = makeTrack(dir);
-		track.style.zIndex = String(scrollbarZIndex);
-		if (dir === 'v') {
-			track.style.top = '0';
-			track.style.right = '0';
-			track.style.width = `${String(scrollbarTrackSize)}px`;
-			track.style.height = `calc(100% + ${String(scrollbarTrackOverhang)}px)`;
-		} else {
-			track.style.bottom = '0';
-			track.style.left = '0';
-			track.style.right = '0';
-			track.style.height = `${String(scrollbarTrackSize)}px`;
-		}
-		editorEl.appendChild(track);
-		on(el, 'scroll', () => {
-			syncScroll(el, track, thumb, dir);
-			updateThumbAriaLabel(el, thumb, dir);
-		});
-		setupDrag(thumb, el, track, dir);
-		setupTrackClick(track, el, dir);
-		updateThumbAriaLabel(el, thumb, dir);
-		return { el, track, thumb, dir };
-	};
-
-	const processAce = (editorEl: HTMLElement) => {
-		const pending: { el: HTMLElement; dir: 'v' | 'h' }[] = [];
-		const vScrollbarEl = editorEl.querySelector<HTMLElement>('.ace_scrollbar');
-		const hScrollbarEl = editorEl.querySelector<HTMLElement>('.ace_scrollbar-h');
-		if (vScrollbarEl && !vScrollbarEl.hasAttribute('data-custom-scrollbar'))
-			pending.push({ el: vScrollbarEl, dir: 'v' });
-		if (hScrollbarEl && !hScrollbarEl.hasAttribute('data-custom-scrollbar'))
-			pending.push({ el: hScrollbarEl, dir: 'h' });
-		if (!pending.length) return;
-
-		const scroller = editorEl.querySelector<HTMLElement>('.ace_scroller');
-		const existing = instances.get(editorEl);
-
-		const tracks = existing?.tracks ?? [];
-
-		for (const { el, dir } of pending) {
-			const trackInfo = setupAceTrack(editorEl, el, dir);
-			tracks.push(trackInfo);
-			if (existing != null) {
-				existing.resizeObserver?.observe(trackInfo.el);
-				if (trackInfo.el.firstElementChild != null)
-					existing.resizeObserver?.observe(trackInfo.el.firstElementChild);
-				existing.mutationObserver?.observe(trackInfo.el, { attributes: true, subtree: true });
-				doubleRAF(() => {
-					syncScroll(trackInfo.el, trackInfo.track, trackInfo.thumb, trackInfo.dir);
-				});
-			}
-		}
-
-		if (existing != null) return;
-
-		editorEl.style.setProperty('isolation', 'isolate');
-
-		const resizeObserver = new ResizeObserver(() => {
-			for (const trackEntry of tracks)
-				syncScroll(trackEntry.el, trackEntry.track, trackEntry.thumb, trackEntry.dir);
-		});
-		for (const trackEntry of tracks) {
-			resizeObserver.observe(trackEntry.el);
-			if (trackEntry.el.firstElementChild != null)
-				resizeObserver.observe(trackEntry.el.firstElementChild);
-		}
-		if (scroller?.firstElementChild) resizeObserver.observe(scroller.firstElementChild);
-
-		const mutationObserver = new MutationObserver(() => {
-			for (const trackEntry of tracks) {
-				requestAnimationFrame(() => {
-					syncScroll(trackEntry.el, trackEntry.track, trackEntry.thumb, trackEntry.dir);
-				});
-			}
-		});
-		for (const trackEntry of tracks)
-			mutationObserver.observe(trackEntry.el, { attributes: true, subtree: true });
-
-		doubleRAF(() => {
-			for (const trackEntry of tracks)
-				syncScroll(trackEntry.el, trackEntry.track, trackEntry.thumb, trackEntry.dir);
-		});
-
-		const instance = {
-			tracks,
-			resizeObserver,
-			mutationObserver,
-			destroy() {
-				resizeObserver.disconnect();
-				mutationObserver.disconnect();
-				for (const trackEntry of tracks) {
-					trackEntry.track.remove();
-					trackEntry.el.removeAttribute('data-custom-scrollbar');
-					trackEntry.el.style.removeProperty('scrollbar-width');
-					trackEntry.el.style.removeProperty('pointer-events');
-					trackEntry.el.style.removeProperty('background');
-				}
-				editorEl.style.removeProperty('isolation');
-			}
-		};
-		instances.set(editorEl, instance);
-	};
-
-	const ensureAceProcessed = (editorEl: HTMLElement) => {
-		processAce(editorEl);
-
-		const unprocessedSelector =
-			'.ace_scrollbar:not([data-custom-scrollbar]), .ace_scrollbar-h:not([data-custom-scrollbar])';
-		if (!editorEl.querySelector(unprocessedSelector)) return;
-
-		const mutationObserver = new MutationObserver(() => {
-			processAce(editorEl);
-			if (!editorEl.querySelector(unprocessedSelector)) mutationObserver.disconnect();
-		});
-		mutationObserver.observe(editorEl, { childList: true, subtree: true });
-		setTimeout(() => {
-			mutationObserver.disconnect();
-		}, scrollbarAceSetupTimeout);
-	};
-
 	const processAddedNode = (node: HTMLElement) => {
 		const editor = node.classList.contains('ace_editor')
 			? node
 			: node.closest<HTMLElement>('.ace_editor');
 		if (editor) {
-			ensureAceProcessed(editor);
+			ensureAceProcessed(editor, aceInstances);
 		} else {
 			const editors = node.querySelectorAll<HTMLElement>('.ace_editor');
-			for (const aceEditor of editors) ensureAceProcessed(aceEditor);
+			for (const aceEditor of editors) ensureAceProcessed(aceEditor, aceInstances);
 		}
 
 		processScrollable(node);
@@ -478,7 +203,7 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 	for (const element of allElements) processScrollable(element);
 
 	const aceEditors = container.querySelectorAll<HTMLElement>('.ace_editor');
-	for (const editor of aceEditors) processAce(editor);
+	for (const editor of aceEditors) processAce(editor, aceInstances);
 
 	const observer = new MutationObserver((mutations) => {
 		for (const mutation of mutations) {
@@ -494,7 +219,9 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 		destroy() {
 			observer.disconnect();
 			for (const instance of instances.values()) instance.destroy();
+			for (const instance of aceInstances.values()) instance.destroy();
 			instances.clear();
+			aceInstances.clear();
 		}
 	};
 };

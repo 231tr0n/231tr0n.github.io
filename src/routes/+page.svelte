@@ -171,7 +171,7 @@
 			<img class="logo" alt="Docker" src="/images/docker.svg" />
 		</a>
 		<a href="https://kubernetes.io/">
-			<img class="logo" alt="Docker" src="/images/kubernetes.svg" />
+			<img class="logo" alt="Kubernetes" src="/images/kubernetes.svg" />
 		</a>
 		<a href="https://git-scm.com">
 			<img class="logo" alt="Git" src="/images/git.avif" />

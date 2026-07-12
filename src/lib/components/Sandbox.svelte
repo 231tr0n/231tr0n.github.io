@@ -71,7 +71,7 @@
 	}
 
 	iframe {
-		border: 0px;
+		border: 0;
 		overflow: auto;
 		width: 100%;
 		height: calc(100% - var(--sandbox-iframe-offset));

@@ -60,12 +60,12 @@
 
 	footer {
 		position: fixed;
-		bottom: 0px;
-		left: 0px;
-		right: 0px;
+		bottom: 0;
+		left: 0;
+		right: 0;
 		height: var(--layout-footer-height);
 		box-sizing: border-box;
-		z-index: 7;
+		z-index: var(--z-index-footer);
 		border-top: 1px solid var(--color-component-background);
 		display: flex;
 		justify-content: space-between;

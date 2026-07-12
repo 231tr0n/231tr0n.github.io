@@ -301,7 +301,7 @@
 	}
 
 	pre {
-		margin: 0px;
+		margin: 0;
 		padding: 3px;
 		height: 100px;
 		overflow: auto;

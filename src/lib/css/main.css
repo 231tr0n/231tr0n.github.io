@@ -4,9 +4,19 @@
 	--layout-content-width: 900px;
 	--layout-background-width: 950px;
 	--layout-content-max-width: 85vw;
-	--layout-page-bg-offset: 0px;
+	--layout-page-bg-offset: 0;
 	--sandbox-iframe-offset: 65px;
 	--codeeditor-frame-offset: 100px;
+
+	--z-index-background: 1;
+	--z-index-background-opacity: 2;
+	--z-index-cursor: 2;
+	--z-index-main: 3;
+	--z-index-page-background: 4;
+	--z-index-content: 5;
+	--z-index-scrollspy: 6;
+	--z-index-navbar: 7;
+	--z-index-footer: 7;
 
 	--color-everforest-dark-aqua: #83c092;
 	--color-everforest-dark-bg-dim: #232a2e;
@@ -131,9 +141,9 @@ body.dark {
 progress {
 	background-color: var(--color-component-background);
 	width: 90%;
-	padding: 0px;
+	padding: 0;
 	height: 5px;
-	border: 0px;
+	border: 0;
 }
 
 progress::-moz-progress-bar {
@@ -174,8 +184,8 @@ body {
 	font-family: Roboto-Condensed, monospace;
 	background-color: var(--color-background);
 	color: var(--color-foreground);
-	margin: 0px;
-	padding: 0px;
+	margin: 0;
+	padding: 0;
 	overflow: auto;
 }
 
@@ -228,14 +238,14 @@ h3 {
 }
 
 ul {
-	margin: 0px;
+	margin: 0;
 	padding-left: 26px;
 	text-align: justify;
 }
 
 ol {
 	text-align: justify;
-	margin: 0px;
+	margin: 0;
 	padding-left: 27px;
 }
 
@@ -250,7 +260,7 @@ code {
 }
 
 hr {
-	border: 0px solid var(--color-component-background);
+	border: 0 solid var(--color-component-background);
 	border-top-width: 1px;
 }
 
@@ -267,7 +277,7 @@ hr {
 }
 
 .zeltron-box-shadow {
-	box-shadow: 0px 0px 5px var(--color-foreground);
+	box-shadow: 0 0 5px var(--color-foreground);
 }
 
 .zeltron-error {

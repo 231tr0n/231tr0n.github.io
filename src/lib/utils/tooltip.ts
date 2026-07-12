@@ -40,14 +40,14 @@ const positionTooltip = (tip: HTMLDivElement, cx: number, cy: number) => {
 
 const attach = (target: HTMLElement) => {
 	let tip: HTMLDivElement | null = null;
-	let timeout: ReturnType<typeof setTimeout> | null = null;
+	let showTimeout: ReturnType<typeof setTimeout> | null = null;
 	let hideTimeout: ReturnType<typeof setTimeout> | null = null;
 	let lastX = 0,
 		lastY = 0;
 
 	const show = (cx: number, cy: number) => {
 		const label = getLabel(target);
-		if (label === null || timeout) return;
+		if (label === null || showTimeout) return;
 
 		if (tip) {
 			if (hideTimeout) {
@@ -61,8 +61,8 @@ const attach = (target: HTMLElement) => {
 
 		lastX = cx;
 		lastY = cy;
-		timeout = setTimeout(() => {
-			timeout = null;
+		showTimeout = setTimeout(() => {
+			showTimeout = null;
 			tip = createTooltip(label);
 			document.body.appendChild(tip);
 			positionTooltip(tip, lastX, lastY);
@@ -73,9 +73,9 @@ const attach = (target: HTMLElement) => {
 	};
 
 	const hide = () => {
-		if (timeout) {
-			clearTimeout(timeout);
-			timeout = null;
+		if (showTimeout) {
+			clearTimeout(showTimeout);
+			showTimeout = null;
 		}
 		if (!tip) return;
 		if (hideTimeout) clearTimeout(hideTimeout);
@@ -112,9 +112,9 @@ const attach = (target: HTMLElement) => {
 
 	return {
 		destroy() {
-			if (timeout) {
-				clearTimeout(timeout);
-				timeout = null;
+			if (showTimeout) {
+				clearTimeout(showTimeout);
+				showTimeout = null;
 			}
 			if (hideTimeout) {
 				clearTimeout(hideTimeout);
