@@ -9,13 +9,13 @@
 		name,
 		url = '',
 		external = false,
-		open,
+		open = $bindable(false),
 		children
 	}: {
 		name: string;
 		url?: string;
 		external?: boolean;
-		open: boolean;
+		open?: boolean;
 		children?: Snippet;
 	} = $props();
 
