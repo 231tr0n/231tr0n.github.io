@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Frame from './Frame.svelte';
 	import { sandboxPolicy } from '$lib/constants/app.constants';
+	import { darkMode } from '$lib/utils/dark.svelte.ts';
 
 	let {
 		title,
@@ -17,14 +18,12 @@
 	let iframe: HTMLIFrameElement | undefined;
 
 	$effect(() => {
+		void darkMode().dark;
 		if (!iframe || !srcDoc) return;
-		if (
-			/<body[^>]*\bbackground\s*[=:]/i.test(srcDoc) ||
-			/(?:body|html)\s*\{[^}]*\bbackground\b/i.test(srcDoc)
-		) {
-			iframe.srcdoc = srcDoc;
+		const bg = getComputedStyle(document.body).getPropertyValue('--color-background').trim();
+		if (/<body/i.test(srcDoc)) {
+			iframe.srcdoc = srcDoc.replace(/<html/i, `<html style="background:${bg}"`);
 		} else {
-			const bg = getComputedStyle(document.body).getPropertyValue('--color-background').trim();
 			iframe.srcdoc = `<html style="background:${bg}"><body>${srcDoc}</body></html>`;
 		}
 	});
@@ -67,8 +66,6 @@
 	:global(.iframe) {
 		width: 100%;
 		max-width: 85vw;
-		margin-top: 1em;
-		margin-bottom: 1em;
 		box-sizing: border-box;
 		height: calc(100vh - 10vh - 45px - 45px);
 	}

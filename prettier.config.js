@@ -7,15 +7,7 @@ const config = {
 	printWidth: 100,
 	singleQuote: true,
 	trailingComma: 'none',
-	useTabs: true,
-	overrides: [
-		{
-			files: '*.svelte',
-			options: {
-				parser: 'svelte'
-			}
-		}
-	]
+	useTabs: true
 };
 
 export default config;

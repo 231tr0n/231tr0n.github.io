@@ -8,7 +8,7 @@ export const themeStorageKey = 'theme';
 export const themeDark = 'dark';
 export const themeLight = 'light';
 
-export const editorFontSize = 11;
+export const editorFontSize = 15;
 export const editorTabSize = 2;
 export const editorScrollbarWidth = 6;
 export const editorScrollbarHeight = 6;
@@ -27,7 +27,6 @@ export const tooltipAttachSelector = 'a, button';
 export const tooltipGap = 8;
 export const tooltipMinMargin = 4;
 export const tooltipZIndex = 10000;
-export const tooltipFontFamily = 'Roboto-Condensed, monospace';
 
 export const scrollbarMinThumbV = 20;
 export const scrollbarMinThumbH = 20;

@@ -10,7 +10,6 @@ export default defineConfig({
 		{
 			name: 'static-watch',
 			configureServer(server) {
-				server.watcher.add('static/**/*');
 				server.watcher.on('change', (path) => {
 					if (path.startsWith('static/')) {
 						server.ws.send({ type: 'full-reload' });

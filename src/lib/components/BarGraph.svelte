@@ -104,11 +104,6 @@
 </Frame>
 
 <style>
-	:global(.frame-wrapper) {
-		margin-top: 1em;
-		margin-bottom: 1em;
-	}
-
 	:global(.bar-graph) {
 		display: flex;
 		flex-direction: column;

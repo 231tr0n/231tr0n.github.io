@@ -1,4 +1,3 @@
-import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import prettier from 'eslint-config-prettier';
 import css from '@eslint/css';
@@ -16,28 +15,15 @@ import eslintComments from '@eslint-community/eslint-plugin-eslint-comments';
 
 const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
 
-const resolveTarget = () => {
-	try {
-		const tsconfig = JSON.parse(readFileSync('./tsconfig.json', 'utf-8'));
-		if (tsconfig.compilerOptions?.target) return tsconfig.compilerOptions.target;
-		const parentConfig = JSON.parse(readFileSync('./.svelte-kit/tsconfig.json', 'utf-8'));
-		return parentConfig.compilerOptions?.target ?? 'ESNext';
-	} catch {
-		return 'ESNext';
-	}
-};
-const target = resolveTarget();
 const esRestrictConfigKeys = Object.keys(esx.configs).filter(
 	(k) => k.startsWith('flat/restrict-to-es') && !k.includes('intl')
 );
-const latestEsConfigKey = esRestrictConfigKeys.sort((a, b) => {
+const esxConfigKey = esRestrictConfigKeys.sort((a, b) => {
 	const va = parseInt(a.match(/es(\d+)/)?.[1] ?? '0', 10);
 	const vb = parseInt(b.match(/es(\d+)/)?.[1] ?? '0', 10);
 	return vb - va;
 })[0];
-const esConfigKey = `flat/restrict-to-${target.toLowerCase()}`;
-const esxConfigsMap = new Map(Object.entries(esx.configs));
-const esxConfig = esxConfigsMap.get(esConfigKey) ?? esxConfigsMap.get(latestEsConfigKey);
+const esxConfig = new Map(Object.entries(esx.configs)).get(esxConfigKey);
 
 export default defineConfig(
 	includeIgnoreFile(gitignorePath),

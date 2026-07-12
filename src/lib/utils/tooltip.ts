@@ -5,7 +5,6 @@ import {
 	tooltipAttachSelector as ATTACH_SELECTOR,
 	tooltipGap as GAP,
 	tooltipZIndex,
-	tooltipFontFamily,
 	tooltipMinMargin
 } from '$lib/constants/app.constants';
 
@@ -27,7 +26,7 @@ const createTooltip = (label: string) => {
 		padding: '4px 8px',
 		borderRadius: '4px',
 		fontSize: '12px',
-		fontFamily: tooltipFontFamily,
+		fontFamily: 'Roboto-Condensed, monospace',
 		whiteSpace: 'nowrap',
 		backgroundColor: 'var(--color-component-background)',
 		color: 'var(--color-component-foreground)',
