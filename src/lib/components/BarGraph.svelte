@@ -29,6 +29,7 @@
 
 	const setBarRef = (el: HTMLDivElement, key: string) => {
 		bars.set(key, el);
+		return { destroy: () => bars.delete(key) };
 	};
 
 	const onGraphFullscreenChange = (fullscreen: boolean) => {

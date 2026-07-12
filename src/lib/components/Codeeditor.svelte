@@ -21,8 +21,8 @@
 		readOnly = false,
 		fileName,
 		setCode = null,
-		vimMode = false,
-		wrap = false,
+		vimMode = $bindable(false),
+		wrap = $bindable(false),
 		code = ''
 	}: {
 		langName: string;

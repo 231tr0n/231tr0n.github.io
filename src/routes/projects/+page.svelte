@@ -48,32 +48,35 @@
 		}
 
 		const repoDataList: PostData[] = [];
-		for (const repo of filteredRepos) {
-			const raw: unknown = JSON.parse(await cachedFetch(repo.languagesUrl));
-			if (!isRecord(raw)) throw new Error('Invalid API response');
-			if ('message' in raw) throw new Error('Github api rate limit exceeded');
+		const results = await Promise.all(
+			filteredRepos.map(async (repo) => {
+				const raw: unknown = JSON.parse(await cachedFetch(repo.languagesUrl));
+				if (!isRecord(raw)) throw new Error('Invalid API response');
+				if ('message' in raw) throw new Error('Github api rate limit exceeded');
 
-			const languages: GithubLanguages = new SvelteMap<string, number>();
-			for (const [key, value] of Object.entries(raw)) languages.set(key, Number(value));
+				const languages: GithubLanguages = new SvelteMap<string, number>();
+				for (const [key, value] of Object.entries(raw)) languages.set(key, Number(value));
 
-			const repoData: PostData = {
-				name: repo.name,
-				url: repo.htmlUrl,
-				description: repo.description,
-				badges: [...languages.keys()],
-				open: false,
-				external: true
-			};
+				const repoData: PostData = {
+					name: repo.name,
+					url: repo.htmlUrl,
+					description: repo.description,
+					badges: [...languages.keys()],
+					open: false,
+					external: true
+				};
 
-			for (const key of languages.keys()) {
-				const prev = languageBytes.get(key) ?? 0;
-				const lang = languages.get(key) ?? 0;
-				languageBytes.set(key, prev + lang);
-			}
+				for (const key of languages.keys()) {
+					const prev = languageBytes.get(key) ?? 0;
+					const lang = languages.get(key) ?? 0;
+					languageBytes.set(key, prev + lang);
+				}
 
-			repoDataList.push(repoData);
-			processedRepos += 1;
-		}
+				processedRepos += 1;
+				return repoData;
+			})
+		);
+		repoDataList.push(...results);
 
 		let totalBytes = 0;
 		for (const byteCount of languageBytes.values()) totalBytes += byteCount;

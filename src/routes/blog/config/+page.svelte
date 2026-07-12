@@ -82,7 +82,7 @@
 	<h2>Introduction</h2>
 	<ul>
 		<li>
-			I was facinated by <span class="zeltron-highlightkeyword">vim</span> from the time I was introduced
+			I was fascinated by <span class="zeltron-highlightkeyword">vim</span> from the time I was introduced
 			to it by one of my professors in my university during my first year of bachelors.
 		</li>
 		<li>
@@ -93,7 +93,7 @@
 		</li>
 		<li>
 			Getting used to <span class="zeltron-highlightkeyword">vim keybinds</span>
-			took me around one month of time and by the time I got good at it, I became intrested in creating
+			took me around one month of time and by the time I got good at it, I became interested in creating
 			my own workflow using custom <span class="zeltron-highlightkeyword">vim script</span>
 			and <span class="zeltron-highlightkeyword">vim keybinds</span>
 			and wrote my first <span class="zeltron-highlightkeyword">vim configuration</span>
@@ -112,7 +112,7 @@
 		</li>
 		<li>
 			<span class="zeltron-highlightkeyword">Neovim</span> also supported
-			<span class="zeltron-highlightkeyword">lua</span> for configuring itself altough I was a bit
+			<span class="zeltron-highlightkeyword">lua</span> for configuring itself although I was a bit
 			hesitant to learn a new language again after going through the pain of learning
 			<span class="zeltron-highlightkeyword">vim script</span> which I felt was cryptic than your
 			regular languages at that time and hence migrated my
@@ -138,7 +138,7 @@
 		</li>
 		<li>
 			Additionally I also needed debuggers to debug stuff unlike before when I used to make do with
-			print statements. Altough there was a plugin for it like <a
+			print statements. Although there was a plugin for it like <a
 				href="https://github.com/puremourning/vimspector">Vimspector</a>
 			, I felt like dabbling anymore with
 			<span class="zeltron-highlightkeyword">vim script</span>
@@ -205,7 +205,7 @@
 	</ul>
 	<h2>Acknowledgement</h2>
 	<p>
-		I am really greatful to all <span class="zeltron-highlightkeyword"
+		I am really grateful to all <span class="zeltron-highlightkeyword"
 			>neovim contributors, maintainers and plugin authors</span>
 		who do such a great job of patching neovim, developing features in it and creating such high quality
 		plugins.

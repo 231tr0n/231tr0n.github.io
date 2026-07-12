@@ -21,8 +21,10 @@
 		void darkMode().dark;
 		if (!iframe || !srcDoc) return;
 		const bg = getComputedStyle(document.body).getPropertyValue('--color-background').trim();
-		if (/<body/i.test(srcDoc)) {
+		if (/<html/i.test(srcDoc)) {
 			iframe.srcdoc = srcDoc.replace(/<html/i, `<html style="background:${bg}"`);
+		} else if (/<body/i.test(srcDoc)) {
+			iframe.srcdoc = `<html style="background:${bg}">${srcDoc}</html>`;
 		} else {
 			iframe.srcdoc = `<html style="background:${bg}"><body>${srcDoc}</body></html>`;
 		}

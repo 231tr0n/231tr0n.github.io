@@ -14,11 +14,10 @@
 		children?: Snippet;
 	} = $props();
 
-	const progressValue = $derived(value);
 	const progress = new Tween(0, { duration: animationDuration, easing: linear });
 
 	$effect(() => {
-		progress.target = progressValue;
+		progress.target = value;
 	});
 </script>
 
