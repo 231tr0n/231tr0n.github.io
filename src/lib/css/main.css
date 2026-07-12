@@ -1,4 +1,13 @@
 :root {
+	--layout-header-height: 45px;
+	--layout-footer-height: 45px;
+	--layout-content-width: 900px;
+	--layout-background-width: 950px;
+	--layout-content-max-width: 85vw;
+	--layout-page-bg-offset: 0px;
+	--sandbox-iframe-offset: 65px;
+	--codeeditor-frame-offset: 100px;
+
 	--color-everforest-dark-aqua: #83c092;
 	--color-everforest-dark-bg-dim: #232a2e;
 	--color-everforest-dark-bg-visual: #543a48;
@@ -318,4 +327,17 @@ hr {
 	background-color: var(--color-badge-background);
 	border: 2px solid var(--color-badge-foreground);
 	color: var(--color-badge-foreground);
+}
+
+.tooltip {
+	position: fixed;
+	padding: 4px 8px;
+	border-radius: 4px;
+	font-size: 12px;
+	font-family: 'Roboto-Condensed', monospace;
+	white-space: nowrap;
+	background-color: var(--color-component-background);
+	color: var(--color-component-foreground);
+	pointer-events: none;
+	opacity: 0;
 }

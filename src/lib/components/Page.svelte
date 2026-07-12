@@ -52,7 +52,7 @@
 				prev = section;
 			}
 		};
-		setTimeout(() => {
+		const initTimeout = setTimeout(() => {
 			const name =
 				document.querySelector<HTMLElement>('div.page div.content h1') ??
 				document.createElement('div');
@@ -60,6 +60,10 @@
 			sections.unshift(name);
 			for (const section of sections) items.push(section.innerText);
 		}, animationDelay + animationDuration);
+
+		return () => {
+			clearTimeout(initTimeout);
+		};
 	});
 </script>
 
@@ -88,18 +92,18 @@
 	.content {
 		z-index: 5;
 		padding-bottom: 100px;
-		max-width: 85vw;
-		width: 900px;
+		max-width: var(--layout-content-max-width);
+		width: var(--layout-content-width);
 		height: max-content;
 		text-align: justify;
 	}
 
 	div.zeltron-body-background {
 		position: fixed;
-		top: 44px;
-		bottom: 44px;
+		top: var(--layout-page-bg-offset);
+		bottom: var(--layout-page-bg-offset);
 		z-index: 4;
-		width: 950px;
+		width: var(--layout-background-width);
 		max-width: 90vw;
 	}
 

@@ -84,44 +84,54 @@
 		vimMode = !vimMode;
 	};
 
-	onMount(async () => {
-		const { default: aceEditor } = await import('ace-code');
+	let destroying = false;
 
-		if (!readOnly) {
-			const [vimMod, vscodeMod, beautifyMod] = await Promise.all([
-				import('ace-code/src/keyboard/vim'),
-				import('ace-code/src/keyboard/vscode'),
-				import('ace-code/src/ext/beautify')
-			]);
-			vimHandler = vimMod.default;
-			vscodeHandler = vscodeMod.default;
-			beautifyModule = beautifyMod.default;
-		}
+	onMount(() => {
+		void (async () => {
+			const { default: aceEditor } = await import('ace-code');
 
-		editor = aceEditor.edit(editorDiv);
-		editor.renderer.scrollBarV['width'] = editorScrollbarWidth;
-		editor.renderer.scrollBarH['height'] = editorScrollbarHeight;
-		editor.resize(true);
-		if (mode) {
-			editor.session.setMode(new mode.Mode());
-		}
-		if (readOnly) {
-			editor.setValue(code, -1);
-			editor.setHighlightActiveLine(false);
-			editor.setHighlightGutterLine(false);
-		} else {
-			if (vimMode) {
-				editor.setKeyboardHandler(vimHandler?.handler ?? null);
-			} else {
-				editor.setKeyboardHandler(vscodeHandler?.handler ?? null);
+			if (!readOnly) {
+				const [vimMod, vscodeMod, beautifyMod] = await Promise.all([
+					import('ace-code/src/keyboard/vim'),
+					import('ace-code/src/keyboard/vscode'),
+					import('ace-code/src/ext/beautify')
+				]);
+				vimHandler = vimMod.default;
+				vscodeHandler = vscodeMod.default;
+				beautifyModule = beautifyMod.default;
 			}
-		}
-		editor.setFontSize(editorFontSize);
-		editor.session.setUseWrapMode(wrap);
-		editor.setReadOnly(readOnly);
-		editor.session.setTabSize(editorTabSize);
-		editor.session.setUseSoftTabs(true);
-		editor.setShowPrintMargin(false);
+
+			if (destroying) return;
+			editor = aceEditor.edit(editorDiv);
+			editor.renderer.scrollBarV['width'] = editorScrollbarWidth;
+			editor.renderer.scrollBarH['height'] = editorScrollbarHeight;
+			editor.resize(true);
+			if (mode) {
+				editor.session.setMode(new mode.Mode());
+			}
+			if (readOnly) {
+				editor.setValue(code, -1);
+				editor.setHighlightActiveLine(false);
+				editor.setHighlightGutterLine(false);
+			} else {
+				if (vimMode) {
+					editor.setKeyboardHandler(vimHandler?.handler ?? null);
+				} else {
+					editor.setKeyboardHandler(vscodeHandler?.handler ?? null);
+				}
+			}
+			editor.setFontSize(editorFontSize);
+			editor.session.setUseWrapMode(wrap);
+			editor.setReadOnly(readOnly);
+			editor.session.setTabSize(editorTabSize);
+			editor.session.setUseSoftTabs(true);
+			editor.setShowPrintMargin(false);
+		})();
+
+		return () => {
+			destroying = true;
+			editor?.destroy();
+		};
 	});
 
 	$effect(() => {
@@ -281,7 +291,7 @@
 		width: 100%;
 		box-sizing: border-box;
 		overflow: auto;
-		height: calc(100vh - 20vh - 50px - 50px);
+		height: calc(100vh - 20vh - var(--codeeditor-frame-offset));
 		display: flex;
 		flex-direction: column;
 	}

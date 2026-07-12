@@ -72,10 +72,10 @@
 
 	main {
 		position: fixed;
-		top: 45px;
+		top: var(--layout-header-height);
 		left: 0;
 		right: 0;
-		bottom: 45px;
+		bottom: var(--layout-footer-height);
 		padding: 0;
 		margin: 0;
 		box-sizing: border-box;

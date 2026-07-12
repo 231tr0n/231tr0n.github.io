@@ -5,7 +5,11 @@
 	import BarGraph from '$lib/components/BarGraph.svelte';
 	import Post from '$lib/components/Post.svelte';
 	import type { PostData, GithubLanguages } from '$lib/types';
-	import { animationDuration } from '$lib/constants/app.constants';
+	import {
+		animationDuration,
+		percentageScale,
+		decimalPrecision
+	} from '$lib/constants/app.constants';
 	import { onMount } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
 	import { cachedFetch } from '$lib/utils/fetch-cache.ts';
@@ -76,7 +80,10 @@
 
 		const percentages = new SvelteMap<string, number>();
 		for (const [key, byteCount] of languageBytes.entries()) {
-			percentages.set(key, parseFloat(((byteCount / totalBytes) * 100).toFixed(2)));
+			percentages.set(
+				key,
+				parseFloat(((byteCount / totalBytes) * percentageScale).toFixed(decimalPrecision))
+			);
 		}
 
 		await new Promise((resolve) => setTimeout(resolve, animationDuration));

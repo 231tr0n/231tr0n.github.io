@@ -63,7 +63,7 @@
 		bottom: 0px;
 		left: 0px;
 		right: 0px;
-		height: 45px;
+		height: var(--layout-footer-height);
 		box-sizing: border-box;
 		z-index: 7;
 		border-top: 1px solid var(--color-component-background);

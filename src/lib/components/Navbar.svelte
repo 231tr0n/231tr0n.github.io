@@ -82,7 +82,7 @@
 		top: 0px;
 		left: 0px;
 		right: 0px;
-		height: 45px;
+		height: var(--layout-header-height);
 		padding: 0 7px;
 		box-sizing: border-box;
 		display: flex;

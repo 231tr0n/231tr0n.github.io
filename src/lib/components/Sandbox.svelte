@@ -65,16 +65,16 @@
 <style>
 	:global(.iframe) {
 		width: 100%;
-		max-width: 85vw;
+		max-width: var(--layout-content-max-width);
 		box-sizing: border-box;
-		height: calc(100vh - 10vh - 45px - 45px);
+		height: calc(100vh - 10vh - var(--layout-header-height) - var(--layout-footer-height));
 	}
 
 	iframe {
 		border: 0px;
 		overflow: auto;
 		width: 100%;
-		height: calc(100% - 65px);
+		height: calc(100% - var(--sandbox-iframe-offset));
 	}
 
 	button {

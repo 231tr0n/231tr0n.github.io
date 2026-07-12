@@ -22,17 +22,7 @@ const createTooltip = (label: string) => {
 	tip.className = 'tooltip';
 	tip.textContent = label;
 	Object.assign(tip.style, {
-		position: 'fixed',
-		padding: '4px 8px',
-		borderRadius: '4px',
-		fontSize: '12px',
-		fontFamily: 'Roboto-Condensed, monospace',
-		whiteSpace: 'nowrap',
-		backgroundColor: 'var(--color-component-background)',
-		color: 'var(--color-component-foreground)',
 		zIndex: tooltipZIndex,
-		pointerEvents: 'none',
-		opacity: '0',
 		transition: `opacity ${String(animationDuration)}ms ease, background-color ${String(animationDuration)}ms linear, color ${String(animationDuration)}ms linear`
 	});
 	return tip;
@@ -142,9 +132,28 @@ const attach = (target: HTMLElement) => {
 	};
 };
 
-const instances = new WeakMap<HTMLElement, { destroy: () => void }>();
+const instances = new Map<HTMLElement, { destroy: () => void }>();
 
-const attachToUnattachedElements = () => {
+const attachToUnattachedElements = (mutations?: MutationRecord[]) => {
+	if (mutations) {
+		for (const mutation of mutations) {
+			for (const node of mutation.removedNodes) {
+				if (!(node instanceof HTMLElement)) continue;
+				const inst = instances.get(node);
+				if (inst) {
+					inst.destroy();
+					instances.delete(node);
+				}
+				node.querySelectorAll<HTMLElement>(ATTACH_SELECTOR).forEach((el) => {
+					const childInst = instances.get(el);
+					if (childInst) {
+						childInst.destroy();
+						instances.delete(el);
+					}
+				});
+			}
+		}
+	}
 	for (const el of document.querySelectorAll<HTMLElement>(ATTACH_SELECTOR)) {
 		if (
 			instances.has(el) ||
@@ -162,7 +171,9 @@ if (typeof document !== 'undefined') {
 	const observer = new MutationObserver(attachToUnattachedElements);
 	observer.observe(document.body, { childList: true, subtree: true });
 	if (document.readyState === 'loading') {
-		on(document, 'DOMContentLoaded', attachToUnattachedElements);
+		on(document, 'DOMContentLoaded', () => {
+			attachToUnattachedElements();
+		});
 	} else {
 		attachToUnattachedElements();
 	}

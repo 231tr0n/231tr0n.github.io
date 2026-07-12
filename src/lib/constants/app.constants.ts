@@ -11,7 +11,7 @@ export const themeLight = 'light';
 export const editorFontSize = 15;
 export const editorTabSize = 2;
 export const editorScrollbarWidth = 6;
-export const editorScrollbarHeight = 6;
+export const editorScrollbarHeight = 7;
 export const copyFeedbackTimeout = 2000;
 
 export const cursorRadius = 50;
@@ -33,6 +33,11 @@ export const scrollbarMinThumbH = 20;
 export const scrollbarTrackSize = 5;
 export const scrollbarZIndex = 7;
 export const scrollbarAceSetupTimeout = 3000;
+export const scrollbarHideEpsilon = 1;
+export const scrollbarTrackOverhang = 2;
+
+export const percentageScale = 100;
+export const decimalPrecision = 2;
 
 export const externalLinkRel = 'noopener noreferrer';
 

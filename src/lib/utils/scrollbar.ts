@@ -4,7 +4,9 @@ import {
 	scrollbarMinThumbH,
 	scrollbarTrackSize,
 	scrollbarZIndex,
-	scrollbarAceSetupTimeout
+	scrollbarAceSetupTimeout,
+	scrollbarHideEpsilon,
+	scrollbarTrackOverhang
 } from '$lib/constants/app.constants';
 
 const makeTrack = (dir: 'v' | 'h') => {
@@ -36,7 +38,7 @@ const syncScroll = (node: HTMLElement, track: HTMLElement, thumb: HTMLElement, d
 	const scrollPos = isVertical ? node.scrollTop : node.scrollLeft;
 	const trackSize = isVertical ? track.clientHeight : track.clientWidth;
 
-	if (scrollSize <= clientSize + 1) {
+	if (scrollSize <= clientSize + scrollbarHideEpsilon) {
 		track.style.display = 'none';
 		return;
 	}
@@ -57,6 +59,15 @@ const syncScroll = (node: HTMLElement, track: HTMLElement, thumb: HTMLElement, d
 	} else {
 		thumb.style.width = `${String(thumbSize)}px`;
 		thumb.style.left = `${String(thumbPos)}px`;
+	}
+};
+
+let activeDragCleanup: (() => void) | null = null;
+
+const cleanupActiveDrag = () => {
+	if (activeDragCleanup) {
+		activeDragCleanup();
+		activeDragCleanup = null;
 	}
 };
 
@@ -101,12 +112,15 @@ const setupDrag = (thumb: HTMLElement, node: HTMLElement, track: HTMLElement, di
 			}
 		};
 
+		cleanupActiveDrag();
 		const cleanupMove = on(document, 'mousemove', onMove);
-		const cleanupUp = on(document, 'mouseup', () => {
+		const cleanupUp = on(document, 'mouseup', cleanupActiveDrag);
+		activeDragCleanup = () => {
 			node.style.removeProperty('scroll-behavior');
 			cleanupMove();
 			cleanupUp();
-		});
+			activeDragCleanup = null;
+		};
 	});
 };
 
@@ -135,7 +149,7 @@ const updateThumbAriaLabel = (node: HTMLElement, thumb: HTMLElement, dir: 'v' | 
 	const scrollSize = isVertical ? node.scrollHeight : node.scrollWidth;
 	const clientSize = isVertical ? node.clientHeight : node.clientWidth;
 	const scrollPos = isVertical ? node.scrollTop : node.scrollLeft;
-	if (scrollSize <= clientSize + 1) {
+	if (scrollSize <= clientSize + scrollbarHideEpsilon) {
 		thumb.removeAttribute('aria-label');
 		return;
 	}
@@ -205,6 +219,7 @@ const initScrollbar = (
 			mutationObserver.disconnect();
 			if (vTrack) vTrack.remove();
 			if (hTrack) hTrack.remove();
+			cleanupActiveDrag();
 			onDestroy?.();
 		}
 	};
@@ -289,7 +304,7 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 				vTrack.style.top = '0';
 				vTrack.style.right = '0';
 				vTrack.style.width = `${String(scrollbarTrackSize)}px`;
-				vTrack.style.height = 'calc(100% + 2px)';
+				vTrack.style.height = `calc(100% + ${String(scrollbarTrackOverhang)}px)`;
 				parent.appendChild(vTrack);
 			}
 		}
@@ -330,7 +345,7 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 			track.style.top = '0';
 			track.style.right = '0';
 			track.style.width = `${String(scrollbarTrackSize)}px`;
-			track.style.height = 'calc(100% + 2px)';
+			track.style.height = `calc(100% + ${String(scrollbarTrackOverhang)}px)`;
 		} else {
 			track.style.bottom = '0';
 			track.style.left = '0';
