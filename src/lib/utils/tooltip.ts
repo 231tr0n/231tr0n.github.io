@@ -132,7 +132,7 @@ const attach = (target: HTMLElement) => {
 	};
 };
 
-const instances = new Map<HTMLElement, { destroy: () => void }>();
+const instances = new WeakMap<HTMLElement, { destroy: () => void }>();
 
 const attachToUnattachedElements = (mutations?: MutationRecord[]) => {
 	if (mutations) {

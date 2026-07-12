@@ -27,6 +27,7 @@ export interface AceScrollbarInstance {
 	resizeObserver: ResizeObserver;
 	mutationObserver: MutationObserver;
 	setupObserver?: MutationObserver;
+	setupTimeoutId?: ReturnType<typeof setTimeout>;
 	destroy: () => void;
 }
 
@@ -133,6 +134,7 @@ export const processAce = (
 			resizeObserver.disconnect();
 			mutationObserver.disconnect();
 			instance.setupObserver?.disconnect();
+			if (instance.setupTimeoutId !== undefined) clearTimeout(instance.setupTimeoutId);
 			for (const trackEntry of tracks) {
 				trackEntry.cleanups.forEach((cleanup) => {
 					cleanup();
@@ -162,13 +164,17 @@ export const ensureAceProcessed = (
 	const instance = instances.get(editorEl);
 	if (!instance) return;
 
+	instance.setupObserver?.disconnect();
+	if (instance.setupTimeoutId !== undefined) clearTimeout(instance.setupTimeoutId);
+
 	const setupObserver = new MutationObserver(() => {
 		processAce(editorEl, instances);
 		if (!editorEl.querySelector(unprocessedSelector)) setupObserver.disconnect();
 	});
 	setupObserver.observe(editorEl, { childList: true, subtree: true });
 	instance.setupObserver = setupObserver;
-	setTimeout(() => {
+	instance.setupTimeoutId = setTimeout(() => {
 		setupObserver.disconnect();
+		delete instance.setupTimeoutId;
 	}, scrollbarAceSetupTimeout);
 };

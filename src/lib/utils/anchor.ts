@@ -10,7 +10,12 @@ export const setupExternalLinks = () => {
 			)
 				return;
 			anchor.target = '_blank';
-			anchor.rel = externalLinkRel;
+			const existingRel = anchor.getAttribute('rel') ?? '';
+			const relSet = new Set([
+				...existingRel.split(/\s+/).filter(Boolean),
+				...externalLinkRel.split(/\s+/)
+			]);
+			anchor.rel = [...relSet].join(' ');
 		});
 	};
 	addTarget();
