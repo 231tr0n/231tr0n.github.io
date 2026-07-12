@@ -7,18 +7,12 @@ import {
 	scrollbarAceSetupTimeout
 } from '$lib/constants/app.constants';
 
-const getColor = (node: HTMLElement, key: string): string => {
-	const dark = document.body.classList.contains('dark');
-	const prefix = dark ? 'dark' : 'light';
-	return getComputedStyle(node).getPropertyValue(`--color-${prefix}-${key}`).trim();
-};
-
 const makeTrack = (dir: 'v' | 'h') => {
 	const track = document.createElement('div');
 	track.className = `custom-scrollbar-track-${dir}`;
 	const thumb = document.createElement('button');
 	thumb.type = 'button';
-	thumb.className = `custom-scrollbar-thumb-${dir} zeltron-scrollbar`;
+	thumb.className = `custom-scrollbar-thumb-${dir}`;
 	if (dir === 'v') {
 		thumb.style.minHeight = `${String(scrollbarMinThumbV)}px`;
 		thumb.style.width = `${String(scrollbarTrackSize)}px`;
@@ -150,7 +144,6 @@ const updateThumbAriaLabel = (node: HTMLElement, thumb: HTMLElement, dir: 'v' | 
 };
 
 const setupAxis = (node: HTMLElement, track: HTMLElement, thumb: HTMLElement, dir: 'v' | 'h') => {
-	thumb.style.background = getColor(node, 'scrollbar');
 	on(node, 'scroll', () => {
 		syncScroll(node, track, thumb, dir);
 		updateThumbAriaLabel(node, thumb, dir);
@@ -189,15 +182,12 @@ const initScrollbar = (
 	if (hTrack?.parentElement) resizeObserver.observe(hTrack.parentElement);
 
 	const mutationObserver = new MutationObserver(() => {
-		if (vThumb) vThumb.style.background = getColor(node, 'scrollbar');
-		if (hThumb) hThumb.style.background = getColor(node, 'scrollbar');
 		requestAnimationFrame(() => {
 			if (vTrack && vThumb) syncScroll(node, vTrack, vThumb, 'v');
 			if (hTrack && hThumb) syncScroll(node, hTrack, hThumb, 'h');
 		});
 	});
 	mutationObserver.observe(node, { attributes: true, subtree: true });
-	mutationObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
 	doubleRAF(() => {
 		if (vTrack && vThumb) syncScroll(node, vTrack, vThumb, 'v');
@@ -348,7 +338,6 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 			track.style.height = `${String(scrollbarTrackSize)}px`;
 		}
 		editorEl.appendChild(track);
-		thumb.style.background = getColor(el, 'scrollbar');
 		on(el, 'scroll', () => {
 			syncScroll(el, track, thumb, dir);
 			updateThumbAriaLabel(el, thumb, dir);
@@ -405,7 +394,6 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 
 		const mutationObserver = new MutationObserver(() => {
 			for (const trackEntry of tracks) {
-				trackEntry.thumb.style.background = getColor(trackEntry.el, 'scrollbar');
 				requestAnimationFrame(() => {
 					syncScroll(trackEntry.el, trackEntry.track, trackEntry.thumb, trackEntry.dir);
 				});
@@ -413,7 +401,6 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 		});
 		for (const trackEntry of tracks)
 			mutationObserver.observe(trackEntry.el, { attributes: true, subtree: true });
-		mutationObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
 
 		doubleRAF(() => {
 			for (const trackEntry of tracks)
@@ -427,8 +414,8 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 			destroy() {
 				resizeObserver.disconnect();
 				mutationObserver.disconnect();
-				for (const trackEntry of tracks) trackEntry.track.remove();
 				for (const trackEntry of tracks) {
+					trackEntry.track.remove();
 					trackEntry.el.removeAttribute('data-custom-scrollbar');
 					trackEntry.el.style.removeProperty('scrollbar-width');
 					trackEntry.el.style.removeProperty('pointer-events');
