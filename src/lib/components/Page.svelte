@@ -16,20 +16,14 @@
 	let breadcrumb: HTMLHeadingElement | undefined = $state();
 	const items: string[] = $state([]);
 	let pageDiv: HTMLDivElement;
-	let selectedItem = $state(0);
 
 	const onSetSelectedItem = (value: number) => {
-		selectedItem = value;
-	};
-
-	$effect(() => {
-		const idx = selectedItem;
 		if (!scrollspy || !breadcrumb) return;
-		const div = sections.at(idx);
+		const div = sections.at(value);
 		if (!div) return;
 		const rect = div.getBoundingClientRect();
 		pageDiv.scrollBy(0, rect.top - rect.height - breadcrumb.offsetHeight - scrollspyOffset);
-	});
+	};
 
 	let scrollRafId = 0;
 
@@ -53,12 +47,8 @@
 			});
 		};
 		const name =
-			document.querySelector<HTMLElement>('div.page div.content h1') ??
-			document.createElement('div');
-		sections = [
-			name,
-			...Array.from(document.querySelectorAll<HTMLElement>('div.page div.content h2'))
-		];
+			pageDiv.querySelector<HTMLElement>('div.content h1') ?? document.createElement('div');
+		sections = [name, ...Array.from(pageDiv.querySelectorAll<HTMLElement>('div.content h2'))];
 		for (const section of sections) items.push(section.innerText);
 
 		return () => {
