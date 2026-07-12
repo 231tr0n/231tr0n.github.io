@@ -4,7 +4,7 @@
 	--layout-content-width: 900px;
 	--layout-background-width: 950px;
 	--layout-content-max-width: 85vw;
-	--layout-page-bg-offset: 0;
+	--layout-page-bg-offset: 44px;
 	--sandbox-iframe-offset: 65px;
 	--codeeditor-frame-offset: 100px;
 
@@ -43,6 +43,7 @@
 	--color-everforest-light-bg-visual: #eaedc8;
 	--color-everforest-light-bg0: #fdf6e3;
 	--color-everforest-light-bg1: #f4f0d9;
+	--color-everforest-light-bg2: #efebd4;
 	--color-everforest-light-bg3: #e6e2cc;
 	--color-everforest-light-bg4: #e0dcc7;
 	--color-everforest-light-bg5: #bdc3af;
@@ -61,8 +62,8 @@
 	--color-background: var(--color-everforest-light-bg0);
 	--color-badge-background: transparent;
 	--color-badge-foreground: var(--color-everforest-light-blue);
-	--color-button-background: var(--color-component-background);
-	--color-button-foreground: var(--color-component-foreground);
+	--color-button-background: var(--color-everforest-light-bg5);
+	--color-button-foreground: var(--color-everforest-light-fg);
 	--color-component-background: var(--color-everforest-light-bg5);
 	--color-component-foreground: var(--color-everforest-light-fg);
 	--color-error: var(--color-everforest-light-red);
@@ -79,9 +80,9 @@ body.dark {
 	--color-background: var(--color-everforest-dark-bg0);
 	--color-badge-background: transparent;
 	--color-badge-foreground: var(--color-everforest-dark-green);
-	--color-button-background: var(--color-everforest-dark-bg2);
+	--color-button-background: var(--color-everforest-dark-bg5);
 	--color-button-foreground: var(--color-everforest-dark-fg);
-	--color-component-background: var(--color-everforest-dark-bg2);
+	--color-component-background: var(--color-everforest-dark-bg5);
 	--color-component-foreground: var(--color-everforest-dark-fg);
 	--color-error: var(--color-everforest-dark-red);
 	--color-foreground: var(--color-everforest-dark-fg);

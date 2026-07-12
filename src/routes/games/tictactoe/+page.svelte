@@ -7,7 +7,7 @@
 	import cssMode from 'ace-code/src/mode/css';
 	import javascriptMode from 'ace-code/src/mode/javascript';
 	import { onMount } from 'svelte';
-	import { cachedFetch } from '$lib/utils/fetch-cache.ts';
+	import { cachedFetch } from '$lib/utils/fetch-cache';
 	import type { FileState } from '$lib/types';
 
 	let jsFile = $state<FileState>({ code: null, error: null });

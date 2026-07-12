@@ -1,6 +1,6 @@
 <script lang="ts">
 	import '$lib/css/main.css';
-	import '$lib/utils/tooltip.ts';
+	import '$lib/utils/tooltip';
 
 	import Navbar from '$lib/components/Navbar.svelte';
 	import Footer from '$lib/components/Footer.svelte';
@@ -14,7 +14,9 @@
 
 	let { children }: { children?: Snippet } = $props();
 
-	$effect(() => setupExternalLinks());
+	$effect(() => {
+		return setupExternalLinks();
+	});
 
 	onMount(() => {
 		const style = document.createElement('style');

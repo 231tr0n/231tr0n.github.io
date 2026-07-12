@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type ace from 'ace-code';
-	import aceEverforestLight from '$lib/ace-themes/ace-everforest-light.ts';
-	import aceEverforestDark from '$lib/ace-themes/ace-everforest-dark.ts';
-	import { darkMode } from '$lib/utils/dark.svelte.ts';
+	import aceEverforestLight from '$lib/ace-themes/ace-everforest-light';
+	import aceEverforestDark from '$lib/ace-themes/ace-everforest-dark';
+	import { darkMode } from '$lib/utils/dark.svelte';
 	import {
 		editorFontSize,
 		editorTabSize,
@@ -87,8 +87,6 @@
 		vimMode = !vimMode;
 	};
 
-	let destroying = false;
-
 	onMount(() => {
 		void (async () => {
 			const { default: aceEditor } = await import('ace-code');
@@ -104,7 +102,7 @@
 				beautifyModule = beautifyMod.default;
 			}
 
-			if (destroying) return;
+			if (!editorDiv.isConnected) return;
 			editor = aceEditor.edit(editorDiv);
 			editor.renderer.scrollBarV['width'] = editorScrollbarWidth;
 			editor.renderer.scrollBarH['height'] = editorScrollbarHeight;
@@ -133,7 +131,6 @@
 
 		return () => {
 			clearTimeout(copyTimeout);
-			destroying = true;
 			editor?.destroy();
 		};
 	});

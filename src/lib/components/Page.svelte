@@ -1,12 +1,7 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
 	import Select from './Select.svelte';
-	import {
-		animationDelay,
-		animationDuration,
-		scrollspyOffset,
-		scrollspyThreshold
-	} from '$lib/constants/app.constants.ts';
+	import { scrollspyOffset, scrollspyThreshold } from '$lib/constants/app.constants';
 
 	let {
 		scrollspy = false,
@@ -16,7 +11,7 @@
 		children?: Snippet;
 	} = $props();
 
-	let sections: HTMLElement[] = [];
+	let sections = $state<HTMLElement[]>([]);
 	let currentItem = $state(0);
 	let breadcrumb: HTMLHeadingElement | undefined = $state();
 	const items: string[] = $state([]);
@@ -57,19 +52,18 @@
 				}
 			});
 		};
-		const initTimeout = setTimeout(() => {
-			const name =
-				document.querySelector<HTMLElement>('div.page div.content h1') ??
-				document.createElement('div');
-			sections = Array.from(document.querySelectorAll<HTMLElement>('div.page div.content h2'));
-			sections.unshift(name);
-			for (const section of sections) items.push(section.innerText);
-		}, animationDelay + animationDuration);
+		const name =
+			document.querySelector<HTMLElement>('div.page div.content h1') ??
+			document.createElement('div');
+		sections = [
+			name,
+			...Array.from(document.querySelectorAll<HTMLElement>('div.page div.content h2'))
+		];
+		for (const section of sections) items.push(section.innerText);
 
 		return () => {
 			pageDiv.onscroll = null;
 			cancelAnimationFrame(scrollRafId);
-			clearTimeout(initTimeout);
 		};
 	});
 </script>

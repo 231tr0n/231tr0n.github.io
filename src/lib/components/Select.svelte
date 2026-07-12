@@ -20,6 +20,24 @@
 	let open = $state(false);
 	let selectContext: HTMLElement;
 	const localItems = $derived(emptyItem ? ['', ...items] : [...items]);
+	const largest = $derived.by(() => {
+		let longest = '';
+		for (const item of localItems) {
+			if (longest.length < item.length) longest = item;
+		}
+		return longest;
+	});
+
+	const setWidth = (node: HTMLSpanElement, initial: string) => {
+		node.textContent = initial;
+		selectContext.style.width = `${String(Math.ceil(node.clientWidth) + selectPaddingOffset)}px`;
+		return {
+			update(largestVal: string) {
+				node.textContent = largestVal;
+				selectContext.style.width = `${String(Math.ceil(node.clientWidth) + selectPaddingOffset)}px`;
+			}
+		};
+	};
 
 	const selectItem = (item: number) => {
 		onSetSelectedItem?.(item);
@@ -29,18 +47,6 @@
 	const toggleSelectionMenu = () => {
 		open = !open;
 	};
-
-	$effect(() => {
-		let largest = '';
-		for (const item of localItems) {
-			if (largest.length < item.length) largest = item;
-		}
-		const btn = document.createElement('button');
-		btn.innerText = largest;
-		document.body.appendChild(btn);
-		selectContext.style.width = `${String(Math.ceil(btn.clientWidth) + selectPaddingOffset)}px`;
-		document.body.removeChild(btn);
-	});
 </script>
 
 <div>
@@ -76,6 +82,7 @@
 			</svg>
 		{/if}
 	</button>
+	<span class="measure" aria-hidden="true" use:setWidth={largest}></span>
 	{#if open}
 		<div
 			class="select-menu zeltron-flex-middle zeltron-component zeltron-thick-component-border"
@@ -96,6 +103,12 @@
 </div>
 
 <style>
+	.measure {
+		visibility: hidden;
+		position: absolute;
+		pointer-events: none;
+	}
+
 	svg {
 		width: 10px;
 		height: 10px;

@@ -12,7 +12,7 @@
 	} from '$lib/constants/app.constants';
 	import { onMount } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
-	import { cachedFetch } from '$lib/utils/fetch-cache.ts';
+	import { cachedFetch } from '$lib/utils/fetch-cache';
 
 	let processedRepos = $state(0);
 	let totalRepos = $state(0);
@@ -89,14 +89,13 @@
 			);
 		}
 
-		await new Promise((resolve) => setTimeout(resolve, animationDuration));
-
 		return { repoData: repoDataList, languagePercentages: Object.fromEntries(percentages) };
 	};
 
 	onMount(async () => {
 		try {
 			const result = await fetchGithubRepoData('https://api.github.com/users/231tr0n/repos');
+			await new Promise((resolve) => setTimeout(resolve, animationDuration));
 			repoList = result.repoData;
 			languagePercentages = result.languagePercentages;
 		} catch (error) {

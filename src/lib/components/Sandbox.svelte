@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Frame from './Frame.svelte';
 	import { sandboxPolicy } from '$lib/constants/app.constants';
-	import { darkMode } from '$lib/utils/dark.svelte.ts';
+	import { darkMode } from '$lib/utils/dark.svelte';
 
 	let {
 		title,
@@ -18,15 +18,22 @@
 	let iframe: HTMLIFrameElement | undefined;
 
 	$effect(() => {
-		void darkMode().dark;
 		if (!iframe || !srcDoc) return;
-		const bg = getComputedStyle(document.body).getPropertyValue('--color-background').trim();
-		if (/<html/i.test(srcDoc)) {
-			iframe.srcdoc = srcDoc.replace(/<html/i, `<html style="background:${bg}"`);
-		} else if (/<body/i.test(srcDoc)) {
-			iframe.srcdoc = `<html style="background:${bg}">${srcDoc}</html>`;
+		const hasBodyBg =
+			/<body[^>]*\bbackground\s*[=:]/i.test(srcDoc) ||
+			/(?:body|html)\s*\{[^}]*\bbackground\b/i.test(srcDoc);
+		if (hasBodyBg) {
+			iframe.srcdoc = srcDoc;
 		} else {
-			iframe.srcdoc = `<html style="background:${bg}"><body>${srcDoc}</body></html>`;
+			void darkMode().dark;
+			const bg = getComputedStyle(document.body).getPropertyValue('--color-background').trim();
+			if (/<html/i.test(srcDoc)) {
+				iframe.srcdoc = srcDoc.replace(/<html/i, `<html style="background:${bg}"`);
+			} else if (/<body/i.test(srcDoc)) {
+				iframe.srcdoc = `<html style="background:${bg}">${srcDoc}</html>`;
+			} else {
+				iframe.srcdoc = `<html style="background:${bg}"><body>${srcDoc}</body></html>`;
+			}
 		}
 	});
 </script>

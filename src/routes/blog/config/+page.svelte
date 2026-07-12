@@ -5,7 +5,7 @@
 	import luaMode from 'ace-code/src/mode/lua';
 	import { onMount } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
-	import { cachedFetch } from '$lib/utils/fetch-cache.ts';
+	import { cachedFetch } from '$lib/utils/fetch-cache';
 
 	let configData = $state<string | null>(null);
 	let configError = $state<string | null>(null);
