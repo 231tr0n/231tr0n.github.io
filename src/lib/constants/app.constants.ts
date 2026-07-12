@@ -23,7 +23,7 @@ export const scrollspyThreshold = 5;
 
 export const selectPaddingOffset = 30;
 
-export const tooltipAttachSelector = 'a, button';
+export const tooltipAttachSelector = 'a, button, [aria-label]';
 export const tooltipGap = 8;
 export const tooltipMinMargin = 4;
 export const tooltipZIndex = 10000;

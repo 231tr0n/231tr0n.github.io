@@ -171,6 +171,6 @@
 	}
 
 	table {
-		margin: 2px 8px;
+		margin: 2px 4px;
 	}
 </style>

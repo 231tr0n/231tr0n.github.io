@@ -54,9 +54,8 @@ const attach = (target: HTMLElement) => {
 				clearTimeout(hideTimeout);
 				hideTimeout = null;
 			}
-			const t = tip;
+			tip.remove();
 			tip = null;
-			t.remove();
 		}
 
 		lastX = cx;
@@ -64,7 +63,11 @@ const attach = (target: HTMLElement) => {
 		showTimeout = setTimeout(() => {
 			showTimeout = null;
 			tip = createTooltip(label);
-			document.body.appendChild(tip);
+			const container =
+				document.fullscreenElement?.contains(target) === true
+					? document.fullscreenElement
+					: document.body;
+			container.appendChild(tip);
 			positionTooltip(tip, lastX, lastY);
 			requestAnimationFrame(() => {
 				if (tip) tip.style.opacity = '1';
@@ -154,12 +157,18 @@ const attachToUnattachedElements = (mutations?: MutationRecord[]) => {
 			}
 		}
 	}
+	document.querySelectorAll<HTMLElement>('[title]').forEach((el) => {
+		const label = el.getAttribute('title');
+		if (label !== null) {
+			el.setAttribute('aria-label', label);
+			el.removeAttribute('title');
+		}
+	});
 	for (const el of document.querySelectorAll<HTMLElement>(tooltipAttachSelector)) {
 		if (
 			instances.has(el) ||
 			el.querySelector(tooltipAttachSelector) ||
-			el.hasAttribute('title') ||
-			(el.closest('.ace_editor') && !el.hasAttribute('data-custom-scrollbar-thumb'))
+			(el.closest('.ace_editor') && !el.hasAttribute('aria-label'))
 		)
 			continue;
 		if (getLabel(el) === null) continue;
@@ -169,7 +178,12 @@ const attachToUnattachedElements = (mutations?: MutationRecord[]) => {
 
 if (typeof document !== 'undefined') {
 	const observer = new MutationObserver(attachToUnattachedElements);
-	observer.observe(document.body, { childList: true, subtree: true });
+	observer.observe(document.body, {
+		childList: true,
+		subtree: true,
+		attributes: true,
+		attributeFilter: ['title']
+	});
 	if (document.readyState === 'loading') {
 		on(document, 'DOMContentLoaded', () => {
 			attachToUnattachedElements();
