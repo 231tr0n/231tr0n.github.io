@@ -112,8 +112,10 @@
 	}
 
 	h2 {
-		width: 100%;
-		margin: 0px;
-		border: 0px;
+		flex: 1;
+		min-width: 0;
+		margin: 0;
+		border: 0;
+		overflow-wrap: anywhere;
 	}
 </style>
