@@ -13,6 +13,7 @@
 * {
 	font-family: Roboto-Condensed, monospace;
 	-webkit-user-select: none;
+	/* eslint-disable-next-line css/use-baseline -- widely supported, not experimental */
 	user-select: none;
 }
 

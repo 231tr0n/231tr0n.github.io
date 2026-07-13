@@ -127,6 +127,7 @@
 			editor.session.setTabSize(editorTabSize);
 			editor.session.setUseSoftTabs(true);
 			editor.setShowPrintMargin(false);
+			editor.setOption('enableMobileMenu', false);
 		})();
 
 		return () => {

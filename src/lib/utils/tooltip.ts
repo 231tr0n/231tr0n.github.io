@@ -42,10 +42,13 @@ const attach = (target: HTMLElement) => {
 	let tip: HTMLDivElement | null = null;
 	let showTimeout: ReturnType<typeof setTimeout> | null = null;
 	let hideTimeout: ReturnType<typeof setTimeout> | null = null;
+	let touchHideTimeout: ReturnType<typeof setTimeout> | null = null;
+	let touchedResetTimeout: ReturnType<typeof setTimeout> | null = null;
 	let lastX = 0,
 		lastY = 0;
+	let touched = false;
 
-	const show = (cx: number, cy: number) => {
+	const show = (cx: number, cy: number, immediate = false) => {
 		const label = getLabel(target);
 		if (label === null || showTimeout) return;
 
@@ -54,25 +57,32 @@ const attach = (target: HTMLElement) => {
 				clearTimeout(hideTimeout);
 				hideTimeout = null;
 			}
+			if (touchHideTimeout) {
+				clearTimeout(touchHideTimeout);
+				touchHideTimeout = null;
+			}
 			tip.remove();
 			tip = null;
 		}
 
 		lastX = cx;
 		lastY = cy;
-		showTimeout = setTimeout(() => {
-			showTimeout = null;
-			tip = createTooltip(label);
-			const container =
-				document.fullscreenElement?.contains(target) === true
-					? document.fullscreenElement
-					: document.body;
-			container.appendChild(tip);
-			positionTooltip(tip, lastX, lastY);
-			requestAnimationFrame(() => {
-				if (tip) tip.style.opacity = '1';
-			});
-		}, animationDelay);
+		showTimeout = setTimeout(
+			() => {
+				showTimeout = null;
+				tip = createTooltip(label);
+				const container =
+					document.fullscreenElement?.contains(target) === true
+						? document.fullscreenElement
+						: document.body;
+				container.appendChild(tip);
+				positionTooltip(tip, lastX, lastY);
+				requestAnimationFrame(() => {
+					if (tip) tip.style.opacity = '1';
+				});
+			},
+			immediate ? 0 : animationDelay
+		);
 	};
 
 	const hide = () => {
@@ -91,6 +101,25 @@ const attach = (target: HTMLElement) => {
 		}, animationDuration);
 	};
 
+	const clearTouched = () => {
+		touched = false;
+		if (touchedResetTimeout) {
+			clearTimeout(touchedResetTimeout);
+			touchedResetTimeout = null;
+		}
+	};
+
+	const handleTouchEnd = () => {
+		touchHideTimeout = setTimeout(() => {
+			touchHideTimeout = null;
+			hide();
+		}, 500);
+		touchedResetTimeout = setTimeout(() => {
+			touched = false;
+			touchedResetTimeout = null;
+		}, 1000);
+	};
+
 	const updateTipContent = () => {
 		if (tip) {
 			const label = getLabel(target);
@@ -103,14 +132,45 @@ const attach = (target: HTMLElement) => {
 
 	const cleanups = [
 		on(target, 'mouseenter', (e: MouseEvent) => {
+			if (touched) return;
 			show(e.clientX, e.clientY);
 		}),
 		on(target, 'mousemove', (e: MouseEvent) => {
+			if (touched) return;
 			lastX = e.clientX;
 			lastY = e.clientY;
 			if (tip) positionTooltip(tip, e.clientX, e.clientY);
 		}),
-		on(target, 'mouseleave', hide)
+		on(target, 'mouseleave', () => {
+			if (touched) return;
+			hide();
+		}),
+		on(
+			target,
+			'touchstart',
+			(e: TouchEvent) => {
+				clearTouched();
+				touched = true;
+				const touch = e.touches[0];
+				if (!touch) return;
+				show(touch.clientX, touch.clientY, true);
+			},
+			{ passive: true }
+		),
+		on(
+			target,
+			'touchmove',
+			(e: TouchEvent) => {
+				const touch = e.touches[0];
+				if (!touch) return;
+				lastX = touch.clientX;
+				lastY = touch.clientY;
+				if (tip) positionTooltip(tip, touch.clientX, touch.clientY);
+			},
+			{ passive: true }
+		),
+		on(target, 'touchend', handleTouchEnd),
+		on(target, 'touchcancel', handleTouchEnd)
 	];
 
 	return {
@@ -122,6 +182,14 @@ const attach = (target: HTMLElement) => {
 			if (hideTimeout) {
 				clearTimeout(hideTimeout);
 				hideTimeout = null;
+			}
+			if (touchHideTimeout) {
+				clearTimeout(touchHideTimeout);
+				touchHideTimeout = null;
+			}
+			if (touchedResetTimeout) {
+				clearTimeout(touchedResetTimeout);
+				touchedResetTimeout = null;
 			}
 			if (tip) {
 				tip.remove();
