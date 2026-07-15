@@ -4,8 +4,6 @@
 	"description": "Personal Blog Website of Srikar (231tr0n)",
 	"start_url": ".",
 	"display": "standalone",
-	"background_color": "#1e1e2e",
-	"theme_color": "#89b4fa",
 	"icons": [
 		{
 			"src": "images/pwa-192x192.png",
