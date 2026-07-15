@@ -43,6 +43,7 @@ export default defineConfig(
 		language: 'html/html',
 		extends: [html.configs.recommended],
 		rules: {
+			'html/use-baseline': 'warn',
 			'html/indent': ['error', 'tab'],
 			'html/no-extra-spacing-tags': [
 				'error',
@@ -170,5 +171,11 @@ export default defineConfig(
 	{
 		files: ['**/*.js', '**/*.svelte.js'],
 		extends: [ts.configs.disableTypeChecked]
+	},
+	{
+		files: ['src/service-worker.js'],
+		rules: {
+			'svelte/no-add-event-listener': 'off'
+		}
 	}
 );

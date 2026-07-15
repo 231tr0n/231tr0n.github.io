@@ -1,0 +1,21 @@
+{
+	"name": "231tr0n",
+	"short_name": "231tr0n",
+	"description": "Personal Blog Website of Srikar (231tr0n)",
+	"start_url": ".",
+	"display": "standalone",
+	"background_color": "#1e1e2e",
+	"theme_color": "#89b4fa",
+	"icons": [
+		{
+			"src": "images/pwa-192x192.png",
+			"sizes": "192x192",
+			"type": "image/png"
+		},
+		{
+			"src": "images/pwa-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png"
+		}
+	]
+}
