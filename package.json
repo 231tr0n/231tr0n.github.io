@@ -2,6 +2,7 @@
 	"name": "231tr0n.github.io",
 	"private": true,
 	"version": "1",
+	"url": "https://231tr0n.github.io",
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",

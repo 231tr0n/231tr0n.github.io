@@ -2,8 +2,14 @@ import { defineConfig } from 'vitest/config';
 import { type PluginOption } from 'vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { visualizer } from 'rollup-plugin-visualizer';
+import pkg from './package.json';
+
+const SITE_URL = pkg.url;
 
 export default defineConfig({
+	define: {
+		__SITE_URL__: JSON.stringify(SITE_URL)
+	},
 	plugins: [
 		sveltekit(),
 		visualizer() as PluginOption,

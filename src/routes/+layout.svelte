@@ -16,10 +16,12 @@
 
 	let title = $derived.by(() => {
 		const path = page.url.pathname;
-		if (path === '/') return '231tr0n';
+		if (path === '/') return '231tr0n — Linux Enthusiast, Programmer and Gopher';
 		const seg = path.replace(/\/$/, '').split('/').pop() ?? '';
 		return seg.charAt(0).toUpperCase() + seg.slice(1) + ' — 231tr0n';
 	});
+
+	let canonicalUrl = $derived(`${__SITE_URL__}${page.url.pathname}`);
 
 	$effect(() => {
 		return setupExternalLinks();
@@ -42,10 +44,15 @@
 </script>
 
 <svelte:head>
-	<title>{title}</title>
 	<meta content={title} property="og:title" />
-	<meta content={page.url.href} property="og:url" />
+	<meta content={canonicalUrl} property="og:url" />
 	<meta name="twitter:title" content={title} />
+	<meta content="{__SITE_URL__}/images/banner.avif" property="og:image" />
+	<meta content="image/avif" property="og:image:type" />
+	<meta content="1200" property="og:image:width" />
+	<meta content="630" property="og:image:height" />
+	<meta content="231tr0n banner" property="og:image:alt" />
+	<meta name="twitter:image" content="{__SITE_URL__}/images/banner.avif" />
 </svelte:head>
 
 <Cursor />
