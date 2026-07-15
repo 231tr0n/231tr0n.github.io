@@ -14,6 +14,13 @@
 
 	let { children }: { children?: Snippet } = $props();
 
+	let title = $derived.by(() => {
+		const path = page.url.pathname;
+		if (path === '/') return '231tr0n';
+		const seg = path.replace(/\/$/, '').split('/').pop() ?? '';
+		return seg.charAt(0).toUpperCase() + seg.slice(1) + ' — 231tr0n';
+	});
+
 	$effect(() => {
 		return setupExternalLinks();
 	});
@@ -33,6 +40,13 @@
 		};
 	});
 </script>
+
+<svelte:head>
+	<title>{title}</title>
+	<meta content={title} property="og:title" />
+	<meta content={page.url.href} property="og:url" />
+	<meta name="twitter:title" content={title} />
+</svelte:head>
 
 <Cursor />
 <Navbar />
