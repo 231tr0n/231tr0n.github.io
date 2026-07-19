@@ -9,6 +9,8 @@
 	import { fade } from 'svelte/transition';
 	import { animationDelay, animationDuration } from '$lib/constants/app.constants';
 	import { onMount, type Snippet } from 'svelte';
+	import { on } from 'svelte/events';
+	import { afterNavigate } from '$app/navigation';
 	import { setupScrollbars } from '$lib/utils/scrollbar';
 	import { setupExternalLinks } from '$lib/utils/anchor';
 
@@ -35,11 +37,46 @@
 		document.onfullscreenchange = () => {
 			document.body.classList.toggle('full-screen', !!document.fullscreenElement);
 		};
+
+		if ('serviceWorker' in navigator) {
+			void (async () => {
+				try {
+					const registration = await navigator.serviceWorker.ready;
+					on(registration, 'updatefound', () => {
+						const newWorker = registration.installing;
+						if (!newWorker) return;
+
+						on(newWorker, 'statechange', () => {
+							if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+								newWorker.postMessage({ type: 'SKIP_WAITING' });
+								window.location.reload();
+							}
+						});
+					});
+				} catch (error) {
+					console.error('Failed to get service worker registration', error);
+				}
+			})();
+		}
+
 		return () => {
 			scrollbars.destroy();
 			style.remove();
 			document.onfullscreenchange = null;
 		};
+	});
+
+	afterNavigate(() => {
+		if ('serviceWorker' in navigator) {
+			void (async () => {
+				try {
+					const registration = await navigator.serviceWorker.getRegistration();
+					await registration?.update();
+				} catch (error) {
+					console.error('Failed to update service worker', error);
+				}
+			})();
+		}
 	});
 </script>
 

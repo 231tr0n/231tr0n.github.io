@@ -18,6 +18,7 @@ self.addEventListener('install', (event) => {
 	};
 
 	event.waitUntil(addFilesToCache());
+	self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -28,6 +29,13 @@ self.addEventListener('activate', (event) => {
 	};
 
 	event.waitUntil(deleteOldCaches());
+	self.clients.claim();
+});
+
+self.addEventListener('message', (event) => {
+	if (event.data?.type === 'SKIP_WAITING') {
+		self.skipWaiting();
+	}
 });
 
 self.addEventListener('fetch', (event) => {
