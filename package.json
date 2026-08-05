@@ -39,7 +39,7 @@
 		"npm-check-updates": "^23.0.0",
 		"prettier": "^3.9.6",
 		"prettier-plugin-svelte": "^4.1.1",
-		"rollup": "^4.62.3",
+		"rollup": "^4.62.4",
 		"rollup-plugin-visualizer": "^7.0.1",
 		"svelte": "^5.56.8",
 		"svelte-check": "^4.7.4",
