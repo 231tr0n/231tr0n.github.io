@@ -112,7 +112,6 @@ body.dark {
 .custom-scrollbar-track-v,
 .custom-scrollbar-track-h {
 	position: absolute;
-	background: transparent;
 }
 
 .custom-scrollbar-thumb-v,
@@ -136,7 +135,6 @@ body.dark {
 .custom-scrollbar-thumb-v:hover,
 .custom-scrollbar-thumb-h:hover {
 	background: var(--color-anchor);
-	border: none;
 }
 
 progress {
