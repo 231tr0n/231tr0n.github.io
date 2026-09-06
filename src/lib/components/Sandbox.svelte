@@ -25,7 +25,7 @@
 		if (hasBodyBg) {
 			iframe.srcdoc = srcDoc;
 		} else {
-			void darkMode().dark;
+			void (() => darkMode().dark)();
 			const bg = getComputedStyle(document.body).getPropertyValue('--color-background').trim();
 			if (/<html/i.test(srcDoc)) {
 				iframe.srcdoc = srcDoc.replace(/<html/i, `<html style="background:${bg}"`);

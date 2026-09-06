@@ -2,7 +2,7 @@ import { defineConfig } from 'vitest/config';
 import { type PluginOption } from 'vite';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { visualizer } from 'rollup-plugin-visualizer';
-import pkg from './package.json';
+import pkg from './package.json' with { type: 'json' };
 
 const SITE_URL = pkg.url;
 
