@@ -25,7 +25,7 @@
 		"@eslint/css": "^2.0.0",
 		"@eslint/js": "^10.0.1",
 		"@html-eslint/eslint-plugin": "^0.66.1",
-		"@sveltejs/adapter-static": "^3.0.10",
+		"@sveltejs/adapter-static": "^4.0.0",
 		"@sveltejs/kit": "^2.70.3",
 		"@sveltejs/vite-plugin-svelte": "^7.3.1",
 		"@types/node": "^26.6.4",
