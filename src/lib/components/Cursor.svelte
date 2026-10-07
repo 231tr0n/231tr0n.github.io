@@ -5,7 +5,7 @@
 		cursorRadius,
 		cursorClickRadius,
 		cursorStrokeWidth
-	} from '$lib/constants/app.constants';
+	} from '#lib/constants/app.constants.js';
 	import { linear } from 'svelte/easing';
 	import { onDestroy, onMount } from 'svelte';
 	import { on } from 'svelte/events';

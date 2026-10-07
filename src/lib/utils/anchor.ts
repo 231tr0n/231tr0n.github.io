@@ -1,4 +1,4 @@
-import { externalLinkRel } from '$lib/constants/app.constants';
+import { externalLinkRel } from '#lib/constants/app.constants.js';
 
 export const setupExternalLinks = () => {
 	const addTarget = () => {

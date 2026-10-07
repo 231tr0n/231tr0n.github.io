@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { slide, fade } from 'svelte/transition';
-	import { animationDelay, animationDuration } from '$lib/constants/app.constants';
+	import { animationDelay, animationDuration } from '#lib/constants/app.constants.js';
 	import { resolve } from '$app/paths';
 	import type { Snippet } from 'svelte';
 	import type { RouteId } from '$app/types';

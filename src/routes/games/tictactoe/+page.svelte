@@ -1,14 +1,14 @@
 <script lang="ts">
-	import Page from '$lib/components/Page.svelte';
-	import Loading from '$lib/components/Loading.svelte';
-	import Codeeditor from '$lib/components/Codeeditor.svelte';
-	import Sandbox from '$lib/components/Sandbox.svelte';
+	import Page from '#lib/components/Page.svelte';
+	import Loading from '#lib/components/Loading.svelte';
+	import Codeeditor from '#lib/components/Codeeditor.svelte';
+	import Sandbox from '#lib/components/Sandbox.svelte';
 	import htmlMode from 'ace-code/src/mode/html';
 	import cssMode from 'ace-code/src/mode/css';
 	import javascriptMode from 'ace-code/src/mode/javascript';
 	import { onMount } from 'svelte';
-	import { cachedFetch } from '$lib/utils/fetch-cache';
-	import type { FileState } from '$lib/types';
+	import { cachedFetch } from '#lib/utils/fetch-cache.js';
+	import type { FileState } from '#lib/types/index.js';
 
 	let jsFile = $state<FileState>({ code: null, error: null });
 	let cssFile = $state<FileState>({ code: null, error: null });

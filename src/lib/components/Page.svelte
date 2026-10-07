@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
 	import Select from './Select.svelte';
-	import { scrollspyOffset, scrollspyThreshold } from '$lib/constants/app.constants';
+	import { scrollspyOffset, scrollspyThreshold } from '#lib/constants/app.constants.js';
 
 	let {
 		scrollspy = false,

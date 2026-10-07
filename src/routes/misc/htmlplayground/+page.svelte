@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Page from '$lib/components/Page.svelte';
-	import Codeeditor from '$lib/components/Codeeditor.svelte';
-	import Sandbox from '$lib/components/Sandbox.svelte';
+	import Page from '#lib/components/Page.svelte';
+	import Codeeditor from '#lib/components/Codeeditor.svelte';
+	import Sandbox from '#lib/components/Sandbox.svelte';
 	import htmlMode from 'ace-code/src/mode/html';
 
 	let htmlPlayground = $state('');

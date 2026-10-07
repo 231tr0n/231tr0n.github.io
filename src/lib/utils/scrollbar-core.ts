@@ -4,7 +4,7 @@ import {
 	scrollbarMinThumbH,
 	scrollbarTrackSize,
 	scrollbarHideEpsilon
-} from '$lib/constants/app.constants';
+} from '#lib/constants/app.constants.js';
 
 export const makeTrack = (dir: 'v' | 'h') => {
 	const track = document.createElement('div');

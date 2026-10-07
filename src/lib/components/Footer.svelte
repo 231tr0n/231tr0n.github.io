@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { cacheKeyPrefix } from '$lib/constants/app.constants';
+	import { cacheKeyPrefix } from '#lib/constants/app.constants.js';
 
 	const clearCache = () => {
 		const keys = Object.keys(localStorage).filter((k) => k.startsWith(cacheKeyPrefix));

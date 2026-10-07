@@ -1,7 +1,7 @@
 <script lang="ts">
-	import Page from '$lib/components/Page.svelte';
-	import Post from '$lib/components/Post.svelte';
-	import type { PostData } from '$lib/types';
+	import Page from '#lib/components/Page.svelte';
+	import Post from '#lib/components/Post.svelte';
+	import type { PostData } from '#lib/types/index.js';
 
 	const games: PostData[] = [
 		{

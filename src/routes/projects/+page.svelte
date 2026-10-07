@@ -1,18 +1,18 @@
 <script lang="ts">
-	import Page from '$lib/components/Page.svelte';
-	import Accordion from '$lib/components/Accordion.svelte';
-	import Progress from '$lib/components/Progress.svelte';
-	import BarGraph from '$lib/components/BarGraph.svelte';
-	import Post from '$lib/components/Post.svelte';
-	import type { PostData, GithubLanguages } from '$lib/types';
+	import Page from '#lib/components/Page.svelte';
+	import Accordion from '#lib/components/Accordion.svelte';
+	import Progress from '#lib/components/Progress.svelte';
+	import BarGraph from '#lib/components/BarGraph.svelte';
+	import Post from '#lib/components/Post.svelte';
+	import type { PostData, GithubLanguages } from '#lib/types/index.js';
 	import {
 		animationDuration,
 		percentageScale,
 		decimalPrecision
-	} from '$lib/constants/app.constants';
+	} from '#lib/constants/app.constants.js';
 	import { onMount } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
-	import { cachedFetch } from '$lib/utils/fetch-cache';
+	import { cachedFetch } from '#lib/utils/fetch-cache.js';
 
 	let processedRepos = $state(0);
 	let totalRepos = $state(0);

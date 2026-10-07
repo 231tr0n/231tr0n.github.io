@@ -6,7 +6,7 @@ import {
 	tooltipGap,
 	tooltipZIndex,
 	tooltipMinMargin
-} from '$lib/constants/app.constants';
+} from '#lib/constants/app.constants.js';
 
 const getLabel = (element: HTMLElement): string | null => {
 	const anchor = element instanceof HTMLAnchorElement ? element : element.closest('a');
