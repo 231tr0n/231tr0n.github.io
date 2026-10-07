@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Frame from './Frame.svelte';
-	import { sandboxPolicy } from '$lib/constants/app.constants';
-	import { darkMode } from '$lib/utils/dark.svelte';
+	import { sandboxPolicy } from '#lib/constants/app.constants.js';
+	import { darkMode } from '#lib/utils/dark.svelte.js';
 
 	let {
 		title,

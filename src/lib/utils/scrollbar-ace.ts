@@ -4,7 +4,7 @@ import {
 	scrollbarZIndex,
 	scrollbarAceSetupTimeout,
 	scrollbarTrackOverhang
-} from '$lib/constants/app.constants';
+} from '#lib/constants/app.constants.js';
 import {
 	makeTrack,
 	syncScroll,

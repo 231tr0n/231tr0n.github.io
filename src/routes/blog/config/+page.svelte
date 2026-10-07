@@ -1,11 +1,11 @@
 <script lang="ts">
-	import Page from '$lib/components/Page.svelte';
-	import Loading from '$lib/components/Loading.svelte';
-	import Codeeditor from '$lib/components/Codeeditor.svelte';
+	import Page from '#lib/components/Page.svelte';
+	import Loading from '#lib/components/Loading.svelte';
+	import Codeeditor from '#lib/components/Codeeditor.svelte';
 	import luaMode from 'ace-code/src/mode/lua';
 	import { onMount } from 'svelte';
 	import { SvelteMap } from 'svelte/reactivity';
-	import { cachedFetch } from '$lib/utils/fetch-cache';
+	import { cachedFetch } from '#lib/utils/fetch-cache.js';
 
 	let configData = $state<string | null>(null);
 	let configError = $state<string | null>(null);

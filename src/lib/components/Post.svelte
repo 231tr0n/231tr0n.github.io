@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Accordion from '$lib/components/Accordion.svelte';
-	import type { PostData } from '$lib/types';
+	import Accordion from '#lib/components/Accordion.svelte';
+	import type { PostData } from '#lib/types/index.js';
 
 	let { post }: { post: PostData } = $props();
 </script>

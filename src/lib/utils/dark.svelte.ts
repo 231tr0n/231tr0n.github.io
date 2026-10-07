@@ -1,4 +1,4 @@
-import { themeStorageKey, themeLight } from '$lib/constants/app.constants';
+import { themeStorageKey, themeLight } from '#lib/constants/app.constants.js';
 
 const stored = typeof localStorage !== 'undefined' ? localStorage.getItem(themeStorageKey) : null;
 let dark = $state(stored !== themeLight);

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
-	import { selectPaddingOffset } from '$lib/constants/app.constants';
-	import type { OnSetSelectedItem } from '$lib/types';
+	import { selectPaddingOffset } from '#lib/constants/app.constants.js';
+	import type { OnSetSelectedItem } from '#lib/types/index.js';
 
 	let {
 		items,

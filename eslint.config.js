@@ -7,11 +7,13 @@ import svelte from 'eslint-plugin-svelte';
 import { defineConfig, globalIgnores, includeIgnoreFile } from 'eslint/config';
 import globals from 'globals';
 import ts from 'typescript-eslint';
-import svelteConfig from './svelte.config.js';
+import { loadConfig } from '@sveltejs/load-config';
 import esx from 'eslint-plugin-es-x';
 import promise from 'eslint-plugin-promise';
 import security from 'eslint-plugin-security';
 import eslintComments from '@eslint-community/eslint-plugin-eslint-comments';
+
+const svelteConfig = (await loadConfig('./', { traverse: false }))?.config;
 
 const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
 
@@ -173,7 +175,7 @@ export default defineConfig(
 		extends: [ts.configs.disableTypeChecked]
 	},
 	{
-		files: ['src/service-worker.js'],
+		files: ['src/service-worker/**/*.js'],
 		rules: {
 			'svelte/no-add-event-listener': 'off'
 		}

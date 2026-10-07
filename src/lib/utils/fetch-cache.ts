@@ -1,4 +1,4 @@
-import { cacheTtl, cacheKeyPrefix } from '$lib/constants/app.constants';
+import { cacheTtl, cacheKeyPrefix } from '#lib/constants/app.constants.js';
 
 const parseCacheEntry = (raw: string): { data: string; timestamp: number } | null => {
 	try {

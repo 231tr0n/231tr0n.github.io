@@ -1,18 +1,18 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type ace from 'ace-code';
-	import aceEverforestLight from '$lib/ace-themes/ace-everforest-light';
-	import aceEverforestDark from '$lib/ace-themes/ace-everforest-dark';
-	import { darkMode } from '$lib/utils/dark.svelte';
+	import aceEverforestLight from '#lib/ace-themes/ace-everforest-light.js';
+	import aceEverforestDark from '#lib/ace-themes/ace-everforest-dark.js';
+	import { darkMode } from '#lib/utils/dark.svelte.js';
 	import {
 		editorFontSize,
 		editorTabSize,
 		editorScrollbarWidth,
 		editorScrollbarHeight,
 		copyFeedbackTimeout
-	} from '$lib/constants/app.constants';
+	} from '#lib/constants/app.constants.js';
 	import Frame from './Frame.svelte';
-	import type { AceMode, SetCode } from '$lib/types';
+	import type { AceMode, SetCode } from '#lib/types/index.js';
 
 	let {
 		langName,

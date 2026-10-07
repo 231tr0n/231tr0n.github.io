@@ -9,7 +9,7 @@ import {
 	makeTrack
 } from './scrollbar-core';
 import { processAce, ensureAceProcessed, type AceScrollbarInstance } from './scrollbar-ace';
-import { scrollbarTrackSize, scrollbarTrackOverhang } from '$lib/constants/app.constants';
+import { scrollbarTrackSize, scrollbarTrackOverhang } from '#lib/constants/app.constants.js';
 
 const setupAxis = (node: HTMLElement, track: HTMLElement, thumb: HTMLElement, dir: 'v' | 'h') => {
 	const cleanups: (() => void)[] = [];

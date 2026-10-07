@@ -1,18 +1,18 @@
 <script lang="ts">
-	import '$lib/css/main.css';
-	import '$lib/utils/tooltip';
+	import '#lib/css/main.css';
+	import '#lib/utils/tooltip.js';
 
-	import Navbar from '$lib/components/Navbar.svelte';
-	import Footer from '$lib/components/Footer.svelte';
-	import Cursor from '$lib/components/Cursor.svelte';
+	import Navbar from '#lib/components/Navbar.svelte';
+	import Footer from '#lib/components/Footer.svelte';
+	import Cursor from '#lib/components/Cursor.svelte';
 	import { page } from '$app/state';
 	import { fade } from 'svelte/transition';
-	import { animationDelay, animationDuration } from '$lib/constants/app.constants';
+	import { animationDelay, animationDuration } from '#lib/constants/app.constants.js';
 	import { onMount, type Snippet } from 'svelte';
 	import { on } from 'svelte/events';
 	import { afterNavigate } from '$app/navigation';
-	import { setupScrollbars } from '$lib/utils/scrollbar';
-	import { setupExternalLinks } from '$lib/utils/anchor';
+	import { setupScrollbars } from '#lib/utils/scrollbar.js';
+	import { setupExternalLinks } from '#lib/utils/anchor.js';
 
 	let { children }: { children?: Snippet } = $props();
 
@@ -66,7 +66,9 @@
 		};
 	});
 
-	afterNavigate(() => {
+	afterNavigate(({ shallow, type }) => {
+		if (shallow && type === 'goto') return;
+
 		if ('serviceWorker' in navigator) {
 			void (async () => {
 				try {

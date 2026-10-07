@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Page from '$lib/components/Page.svelte';
-	import Sandbox from '$lib/components/Sandbox.svelte';
-	import Loading from '$lib/components/Loading.svelte';
+	import Page from '#lib/components/Page.svelte';
+	import Sandbox from '#lib/components/Sandbox.svelte';
+	import Loading from '#lib/components/Loading.svelte';
 	import { onMount } from 'svelte';
-	import { cachedFetch } from '$lib/utils/fetch-cache';
+	import { cachedFetch } from '#lib/utils/fetch-cache.js';
 
 	let sourceMap = $state<string | null>(null);
 	let sourceMapError = $state<string | null>(null);

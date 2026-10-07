@@ -1,15 +1,18 @@
-/// <reference no-default-lib="true"/>
-/// <reference lib="esnext" />
-/// <reference lib="webworker" />
-/// <reference types="@sveltejs/kit" />
-
-import { build, files, prerendered, version } from '$service-worker';
-
-const self = /** @type {ServiceWorkerGlobalScope} */ (/** @type {unknown} */ (globalThis.self));
+import { version } from '$app/env';
+import { assets, immutable, prerendered } from '$app/manifest';
+import { resolve } from '$app/paths';
+import { self } from '$app/service-worker';
 
 const CACHE = `cache-${version}`;
 
-const ASSETS = [...build, ...files, ...prerendered];
+// `immutable`/`assets`/`prerendered` paths from `$app/manifest` are relative to
+// the base path, so resolve them to absolute pathnames that can be matched
+// against `url.pathname` in the `fetch` handler
+const ASSETS = [
+	...immutable.map((entry) => resolve(entry.path)),
+	...assets.map((entry) => resolve(entry.path)),
+	...prerendered.map((entry) => resolve(entry.path))
+];
 
 self.addEventListener('install', (event) => {
 	const addFilesToCache = async () => {
@@ -67,7 +70,7 @@ self.addEventListener('fetch', (event) => {
 			if (response) return response;
 
 			if (url.pathname.startsWith('/') && url.pathname.endsWith('/')) {
-				const fallback = await cache.match('/');
+				const fallback = await cache.match(resolve('/'));
 				if (fallback) return fallback;
 			}
 
