@@ -94,7 +94,9 @@
 
 	onMount(async () => {
 		try {
-			const result = await fetchGithubRepoData('https://api.github.com/users/231tr0n/repos');
+			const result = await fetchGithubRepoData(
+				'https://api.github.com/users/231tr0n/repos?per_page=100'
+			);
 			await new Promise((resolve) => setTimeout(resolve, animationDuration));
 			repoList = result.repoData;
 			languagePercentages = result.languagePercentages;
