@@ -24,7 +24,7 @@
 		"@eslint-community/eslint-plugin-eslint-comments": "^4.8.1",
 		"@eslint/css": "^2.0.0",
 		"@eslint/js": "^10.0.1",
-		"@html-eslint/eslint-plugin": "^0.66.1",
+		"@html-eslint/eslint-plugin": "^0.67.0",
 		"@sveltejs/adapter-static": "^4.0.0",
 		"@sveltejs/kit": "^3.0.1",
 		"@sveltejs/load-config": "^0.2.3",
