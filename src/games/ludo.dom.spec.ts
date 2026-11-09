@@ -3,10 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { loadStaticSnippet } from '../test/static-snippet.js';
 
 const loadLudo = () => {
-	const dom = loadStaticSnippet(
-		'static/resources/snippets/ludo/index.html',
-		'static/resources/snippets/ludo/index.js'
-	);
+	const dom = loadStaticSnippet('ludo');
 	Object.defineProperty(dom.window, 'setTimeout', {
 		configurable: true,
 		value: (handler: TimerHandler) => {
@@ -97,15 +94,16 @@ describe('Ludo game', () => {
 		})`);
 		expect(adjacent).toEqual([true, true, true, true]);
 		expect(run<number[]>('HOME_LANES.map((lane) => lane.length)')).toEqual([5, 5, 5, 5]);
-		const loop = run<{ unique: number; contiguous: boolean }>(`(() => {
+		const loop = run<{ unique: number; contiguous: boolean; bounds: boolean }>(`(() => {
 			const unique = new Set(PATH.map(([column, row]) => column + ',' + row)).size;
 			const contiguous = PATH.every(([column, row], index) => {
 				const [nextColumn, nextRow] = PATH[(index + 1) % PATH.length];
 				return Math.max(Math.abs(nextColumn - column), Math.abs(nextRow - row)) === 1;
 			});
-			return { unique, contiguous };
+			const bounds = PATH.every(([column, row]) => column >= 0 && column < 15 && row >= 0 && row < 15);
+			return { unique, contiguous, bounds };
 		})()`);
-		expect(loop).toEqual({ unique: 52, contiguous: true });
+		expect(loop).toEqual({ unique: 52, contiguous: true, bounds: true });
 	});
 
 	it('uses opposite corners for two players', () => {
@@ -670,6 +668,15 @@ describe('Ludo game', () => {
 		expect(dom?.window.document.querySelectorAll('.star')).toHaveLength(4);
 		expect(dom?.window.document.querySelectorAll('.center-star')).toHaveLength(0);
 		expect(dom?.window.document.querySelectorAll('.center-circle')).toHaveLength(1);
+		const stars = run<{ x: number; y: number }[]>(
+			'[...document.querySelectorAll(".star")].map((element) => ({ x: Number(element.getAttribute("x")), y: Number(element.getAttribute("y")) }))'
+		);
+		const expectedStars = run<[number, number][]>(
+			'[8, 21, 34, 47].map((index) => cellCenter(PATH[index]))'
+		);
+		expect(stars).toEqual(
+			expectedStars.map(([x, y]) => ({ x: Number(x.toFixed(2)), y: Number(y.toFixed(2)) }))
+		);
 		for (let seat = 0; seat < 4; seat++) {
 			expect(
 				dom?.window.document.querySelectorAll(`.ring-cell.start.p${String(seat)}`)

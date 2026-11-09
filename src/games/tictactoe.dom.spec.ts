@@ -2,11 +2,7 @@ import type { JSDOM } from 'jsdom';
 import { afterEach, describe, expect, it } from 'vitest';
 import { loadStaticSnippet } from '../test/static-snippet.js';
 
-const loadGame = () =>
-	loadStaticSnippet(
-		'static/resources/snippets/tictactoe/index.html',
-		'static/resources/snippets/tictactoe/index.js'
-	);
+const loadGame = () => loadStaticSnippet('tictactoe');
 
 const cell = (dom: JSDOM, id: string) => {
 	const element = dom.window.document.getElementById(id);

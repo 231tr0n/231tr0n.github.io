@@ -93,6 +93,7 @@
 		display: flex;
 		flex-direction: column;
 		height: calc(100vh - var(--layout-header-height) - var(--layout-footer-height));
+		min-height: 360px;
 		max-width: 100%;
 	}
 
