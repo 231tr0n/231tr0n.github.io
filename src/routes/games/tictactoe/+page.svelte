@@ -14,11 +14,20 @@
 	let cssFile = $state<FileState>({ code: null, error: null });
 	let htmlFile = $state<FileState>({ code: null, error: null });
 
+	const editors = $derived([
+		{ file: jsFile, fileName: 'index.js', langName: 'javascript', mode: javascriptMode },
+		{ file: cssFile, fileName: 'style.css', langName: 'css', mode: cssMode },
+		{ file: htmlFile, fileName: 'index.html', langName: 'html', mode: htmlMode }
+	]);
+
 	const extractFileState = (result: PromiseSettledResult<string>): FileState => {
 		if (result.status === 'fulfilled') {
 			return { code: result.value, error: null };
 		}
-		return { code: null, error: 'Failed to load file' };
+		return {
+			code: null,
+			error: result.reason instanceof Error ? result.reason.message : 'Failed to load file'
+		};
 	};
 
 	onMount(async () => {
@@ -37,42 +46,15 @@
 	<h1>TicTacToe</h1>
 
 	<h2>Source Code</h2>
-	{#if jsFile.error}
-		<div class="zeltron-error">{jsFile.error}</div>
-	{:else if jsFile.code}
-		<Codeeditor
-			code={jsFile.code}
-			fileName="index.js"
-			langName="javascript"
-			mode={javascriptMode}
-			readOnly={true} />
-	{:else}
-		<Loading />
-	{/if}
-	{#if cssFile.error}
-		<div class="zeltron-error">{cssFile.error}</div>
-	{:else if cssFile.code}
-		<Codeeditor
-			code={cssFile.code}
-			fileName="style.css"
-			langName="css"
-			mode={cssMode}
-			readOnly={true} />
-	{:else}
-		<Loading />
-	{/if}
-	{#if htmlFile.error}
-		<div class="zeltron-error">{htmlFile.error}</div>
-	{:else if htmlFile.code}
-		<Codeeditor
-			code={htmlFile.code}
-			fileName="index.html"
-			langName="html"
-			mode={htmlMode}
-			readOnly={true} />
-	{:else}
-		<Loading />
-	{/if}
+	{#each editors as { file, fileName, langName, mode } (fileName)}
+		{#if file.error}
+			<div class="zeltron-error">{file.error}</div>
+		{:else if file.code !== null}
+			<Codeeditor code={file.code} {fileName} {langName} {mode} readOnly={true} />
+		{:else}
+			<Loading />
+		{/if}
+	{/each}
 
 	<h2>Output</h2>
 	<Sandbox description="Game" src="/resources/snippets/tictactoe/index.html" title="tic-tac-toe" />

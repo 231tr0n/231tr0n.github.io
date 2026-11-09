@@ -4,7 +4,6 @@
 	import Codeeditor from '#lib/components/Codeeditor.svelte';
 	import luaMode from 'ace-code/src/mode/lua';
 	import { onMount } from 'svelte';
-	import { SvelteMap } from 'svelte/reactivity';
 	import { cachedFetch } from '#lib/utils/fetch-cache.js';
 
 	let configData = $state<string | null>(null);
@@ -21,16 +20,19 @@
 		}
 	});
 
-	const getSectionsInConfig = (data: string) => {
-		const contents = data.split('\n\n');
-		const map = new SvelteMap<string, string>();
-		for (const block of contents) {
-			const lines = block.split('\n');
-			const heading = lines[0]?.substring(3);
-			if (heading === undefined) continue;
-			map.set(heading, lines.slice(1).join('\n'));
+	interface ConfigSection {
+		heading: string;
+		block: string;
+	}
+
+	const getSectionsInConfig = (data: string): ConfigSection[] => {
+		const sections: ConfigSection[] = [];
+		for (const block of data.split('\n\n')) {
+			const [first = '', ...rest] = block.split('\n');
+			if (!first.startsWith('-- ')) continue;
+			sections.push({ heading: first.slice(3), block: rest.join('\n') });
 		}
-		return map;
+		return sections;
 	};
 
 	const getPluginsInConfig = (data: string) => {
@@ -73,7 +75,7 @@
 				}
 			}
 		}
-		return plugins;
+		return [...new Set(plugins)];
 	};
 </script>
 
@@ -213,7 +215,7 @@
 	<h2>Configuration</h2>
 	{#if configError}
 		<div class="zeltron-error">{configError}</div>
-	{:else if configData}
+	{:else if configData !== null}
 		<h3>Plugins used in the configuration</h3>
 		<ol>
 			{#each getPluginsInConfig(configData) as plugin (plugin)}
@@ -228,14 +230,16 @@
 		</ol>
 		<h3>Configuration split into meaningful chunks</h3>
 		<ol>
-			{#each getSectionsInConfig(configData) as [heading, block] (heading)}
-				<li>{heading}</li>
-				<Codeeditor
-					code={block}
-					fileName="init.lua"
-					langName="lua"
-					mode={luaMode}
-					readOnly={true} />
+			{#each getSectionsInConfig(configData) as { heading, block }, index (index)}
+				<li>
+					{heading}
+					<Codeeditor
+						code={block}
+						fileName="init.lua"
+						langName="lua"
+						mode={luaMode}
+						readOnly={true} />
+				</li>
 			{/each}
 		</ol>
 	{:else}

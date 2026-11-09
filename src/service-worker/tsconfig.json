@@ -1,3 +1,13 @@
 {
-	"extends": "$app/tsconfig/service-worker"
+	"extends": "$app/tsconfig/service-worker",
+	"compilerOptions": {
+		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"noImplicitOverride": true,
+		"noImplicitReturns": true,
+		"noUnusedLocals": true,
+		"noUnusedParameters": true,
+		"allowUnreachableCode": false,
+		"allowUnusedLabels": false
+	}
 }

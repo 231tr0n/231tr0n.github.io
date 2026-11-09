@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import Frame from './Frame.svelte';
 
 	let {
@@ -24,25 +23,24 @@
 			: data
 	);
 
-	let table: HTMLTableElement;
-	const bars: Map<string, HTMLDivElement> = $state(new Map<string, HTMLDivElement>());
+	let table: HTMLTableElement | undefined;
+	let isFullscreen = $state(false);
 
-	const setBarRef = (el: HTMLDivElement, key: string) => {
-		bars.set(key, el);
-		return { destroy: () => bars.delete(key) };
+	const onGraphFullscreenChange = (value: boolean) => {
+		isFullscreen = value;
 	};
 
-	const onGraphFullscreenChange = (fullscreen: boolean) => {
-		table.style.height = fullscreen ? '100%' : String(height) + 'vh';
-	};
-
-	onMount(() => {
-		for (const [key, value] of Object.entries(sortedData)) {
-			const bar = bars.get(key);
-			if (bar) bar.style.height = String(value) + '%';
-		}
-		table.style.height = String(height) + 'vh';
+	$effect(() => {
+		if (table) table.style.height = isFullscreen ? '100%' : `${String(height)}vh`;
 	});
+
+	const setBarHeight = (el: HTMLDivElement, value: number) => {
+		const apply = (barHeight: number) => {
+			el.style.height = `${String(barHeight)}%`;
+		};
+		apply(value);
+		return { update: apply };
+	};
 </script>
 
 <Frame
@@ -85,14 +83,14 @@
 			<table bind:this={table}>
 				<tbody>
 					<tr>
-						{#each Object.keys(sortedData) as key, _ (_)}
+						{#each Object.entries(sortedData) as [key, value] (key)}
 							<td class="plot">
-								<div class="bar zeltron-component" use:setBarRef={key}></div>
+								<div class="bar zeltron-component" use:setBarHeight={value}></div>
 							</td>
 						{/each}
 					</tr>
 					<tr>
-						{#each Object.entries(sortedData) as [key, value], _ (_)}
+						{#each Object.entries(sortedData) as [key, value] (key)}
 							<td class="label">
 								<span class="zeltron-badge">{key} - {String(value) + '%'}</span>
 							</td>

@@ -1,5 +1,5 @@
 <br />
-<div class="zeltron-flex-middle">
+<div class="zeltron-flex-middle" aria-label="Loading" role="status">
 	<svg
 		fill="currentColor"
 		height="24"

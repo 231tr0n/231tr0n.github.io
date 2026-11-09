@@ -8,13 +8,12 @@ import {
 	tooltipMinMargin
 } from '#lib/constants/app.constants.js';
 
-const getLabel = (element: HTMLElement): string | null => {
+const getTooltipText = (element: HTMLElement): string | null => {
 	const anchor = element instanceof HTMLAnchorElement ? element : element.closest('a');
-	if (anchor) {
-		const href = anchor.getAttribute('href');
-		if (href !== null) return href;
-	}
-	return element.getAttribute('aria-label') ?? (element.textContent.trim() || null);
+	const href = anchor?.getAttribute('href');
+	if (href !== null && href !== undefined && href !== '') return href;
+	const label = element.getAttribute('aria-label') ?? element.textContent;
+	return label.trim() || null;
 };
 
 const createTooltip = (label: string) => {
@@ -49,7 +48,7 @@ const attach = (target: HTMLElement) => {
 	let touched = false;
 
 	const show = (cx: number, cy: number, immediate = false) => {
-		const label = getLabel(target);
+		const label = getTooltipText(target);
 		if (label === null || showTimeout) return;
 
 		if (tip) {
@@ -121,10 +120,10 @@ const attach = (target: HTMLElement) => {
 	};
 
 	const updateTipContent = () => {
-		if (tip) {
-			const label = getLabel(target);
-			if (label !== null) tip.textContent = label;
-		}
+		if (!tip) return;
+		const label = getTooltipText(target);
+		if (label === null) hide();
+		else tip.textContent = label;
 	};
 
 	const labelObserver = new MutationObserver(updateTipContent);
@@ -151,7 +150,7 @@ const attach = (target: HTMLElement) => {
 			(e: TouchEvent) => {
 				clearTouched();
 				touched = true;
-				const touch = e.touches[0];
+				const [touch] = e.touches;
 				if (!touch) return;
 				show(touch.clientX, touch.clientY, true);
 			},
@@ -161,7 +160,7 @@ const attach = (target: HTMLElement) => {
 			target,
 			'touchmove',
 			(e: TouchEvent) => {
-				const touch = e.touches[0];
+				const [touch] = e.touches;
 				if (!touch) return;
 				lastX = touch.clientX;
 				lastY = touch.clientY;
@@ -205,58 +204,80 @@ const attach = (target: HTMLElement) => {
 
 const instances = new WeakMap<HTMLElement, { destroy: () => void }>();
 
-const attachToUnattachedElements = (mutations?: MutationRecord[]) => {
-	if (mutations) {
-		for (const mutation of mutations) {
-			for (const node of mutation.removedNodes) {
-				if (!(node instanceof HTMLElement)) continue;
-				const inst = instances.get(node);
-				if (inst) {
-					inst.destroy();
-					instances.delete(node);
-				}
-				node.querySelectorAll<HTMLElement>(tooltipAttachSelector).forEach((el) => {
-					const childInst = instances.get(el);
-					if (childInst) {
-						childInst.destroy();
-						instances.delete(el);
-					}
-				});
-			}
-		}
+const canAttach = (el: HTMLElement): boolean =>
+	el.matches(tooltipAttachSelector) &&
+	!instances.has(el) &&
+	!el.querySelector(tooltipAttachSelector) &&
+	!(el.closest('.ace_editor') && !el.hasAttribute('aria-label')) &&
+	getTooltipText(el) !== null;
+
+const attachTo = (el: HTMLElement) => {
+	if (!canAttach(el)) return;
+	instances.set(el, attach(el));
+};
+
+const migrateTitle = (el: HTMLElement) => {
+	const label = el.getAttribute('title');
+	if (label === null) return;
+	el.setAttribute('aria-label', label);
+	el.removeAttribute('title');
+};
+
+const migrateTitles = (root: ParentNode) => {
+	if (root instanceof HTMLElement) migrateTitle(root);
+	root.querySelectorAll<HTMLElement>('[title]').forEach(migrateTitle);
+};
+
+const attachTree = (root: ParentNode) => {
+	if (root instanceof HTMLElement && root.matches(tooltipAttachSelector)) attachTo(root);
+	root.querySelectorAll<HTMLElement>(tooltipAttachSelector).forEach(attachTo);
+};
+
+const detachTree = (root: ParentNode) => {
+	if (root instanceof HTMLElement) {
+		instances.get(root)?.destroy();
+		instances.delete(root);
 	}
-	document.querySelectorAll<HTMLElement>('[title]').forEach((el) => {
-		const label = el.getAttribute('title');
-		if (label !== null) {
-			el.setAttribute('aria-label', label);
-			el.removeAttribute('title');
-		}
+	root.querySelectorAll<HTMLElement>(tooltipAttachSelector).forEach((el) => {
+		instances.get(el)?.destroy();
+		instances.delete(el);
 	});
-	for (const el of document.querySelectorAll<HTMLElement>(tooltipAttachSelector)) {
-		if (
-			instances.has(el) ||
-			el.querySelector(tooltipAttachSelector) ||
-			(el.closest('.ace_editor') && !el.hasAttribute('aria-label'))
-		)
-			continue;
-		if (getLabel(el) === null) continue;
-		instances.set(el, attach(el));
+};
+
+const handleMutations = (mutations: MutationRecord[]) => {
+	for (const mutation of mutations) {
+		if (mutation.type === 'childList') {
+			for (const node of mutation.removedNodes) {
+				if (node instanceof HTMLElement) detachTree(node);
+			}
+			for (const node of mutation.addedNodes) {
+				if (!(node instanceof HTMLElement)) continue;
+				migrateTitles(node);
+				attachTree(node);
+			}
+			if (mutation.target instanceof HTMLElement) attachTo(mutation.target);
+		} else if (mutation.target instanceof HTMLElement) {
+			if (mutation.attributeName === 'title') migrateTitle(mutation.target);
+			attachTo(mutation.target);
+		}
 	}
 };
 
 if (typeof document !== 'undefined') {
-	const observer = new MutationObserver(attachToUnattachedElements);
+	const observer = new MutationObserver(handleMutations);
 	observer.observe(document.body, {
 		childList: true,
 		subtree: true,
 		attributes: true,
-		attributeFilter: ['title']
+		attributeFilter: ['title', 'aria-label']
 	});
+	const init = () => {
+		migrateTitles(document);
+		attachTree(document);
+	};
 	if (document.readyState === 'loading') {
-		on(document, 'DOMContentLoaded', () => {
-			attachToUnattachedElements();
-		});
+		on(document, 'DOMContentLoaded', init);
 	} else {
-		attachToUnattachedElements();
+		init();
 	}
 }

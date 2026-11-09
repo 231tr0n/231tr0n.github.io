@@ -10,7 +10,7 @@
 </script>
 
 <footer class="zeltron-body-background">
-	<div>
+	<div class="links">
 		<a href="mailto:zeltronsrikar@gmail.com">
 			<img alt="Gmail" src="/images/gmail.svg" />
 		</a>
@@ -69,15 +69,26 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 0 12px;
+		gap: clamp(2px, 1vw, 8px);
+		padding: 0 clamp(2px, 2vw, 12px);
+	}
+
+	.links {
+		display: flex;
+		align-items: center;
+		gap: clamp(0px, 0.5vw, 2px);
+		flex-shrink: 0;
 	}
 
 	img,
 	button {
-		padding: 1px;
-		margin: 0 1px;
-		width: 26px;
-		height: 26px;
+		display: block;
+		box-sizing: border-box;
+		width: clamp(18px, 8vw, 26px);
+		height: clamp(18px, 8vw, 26px);
+		padding: 0;
+		margin: 0;
+		flex-shrink: 0;
 		cursor: pointer;
 	}
 

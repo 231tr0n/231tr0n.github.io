@@ -25,6 +25,7 @@
 		if (hasBodyBg) {
 			iframe.srcdoc = srcDoc;
 		} else {
+			// Read the theme so the effect reruns when the user toggles it.
 			void (() => darkMode().dark)();
 			const bg = getComputedStyle(document.body).getPropertyValue('--color-background').trim();
 			if (/<html/i.test(srcDoc)) {

@@ -8,12 +8,14 @@
 		emptyItem = false,
 		currentItem,
 		colored,
+		fixedWidth = false,
 		onSetSelectedItem
 	}: {
 		items: string[];
 		emptyItem?: boolean;
 		currentItem: number;
 		colored: boolean;
+		fixedWidth?: boolean;
 		onSetSelectedItem: OnSetSelectedItem | null;
 	} = $props();
 
@@ -39,22 +41,24 @@
 		};
 	};
 
+	const toggleSelectionMenu = () => {
+		open = !open;
+	};
+
 	const selectItem = (item: number) => {
 		onSetSelectedItem?.(item);
 		toggleSelectionMenu();
 	};
-
-	const toggleSelectionMenu = () => {
-		open = !open;
-	};
 </script>
 
-<div>
+<div class="select-root" class:fixedWidth>
 	<button
 		bind:this={selectContext}
 		class="select-context"
+		class:fixedWidth
 		class:zeltron-strong-component={colored}
-		aria-label="Select menu toggler"
+		aria-expanded={open}
+		aria-label="Select item, current: {localItems.at(currentItem) ?? ''}"
 		onclick={toggleSelectionMenu}
 		type="button">
 		{localItems.at(currentItem)}
@@ -82,7 +86,9 @@
 			</svg>
 		{/if}
 	</button>
-	<span class="measure" aria-hidden="true" use:setWidth={largest}></span>
+	{#if !fixedWidth}
+		<span class="measure" aria-hidden="true" use:setWidth={largest}></span>
+	{/if}
 	{#if open}
 		<div
 			class="select-menu zeltron-flex-middle zeltron-component zeltron-thick-component-border"
@@ -90,6 +96,7 @@
 			<div class="content">
 				{#each localItems.entries() as [index, item] (index)}
 					<button
+						aria-current={index === currentItem ? 'true' : undefined}
 						onclick={() => {
 							selectItem(index);
 						}}
@@ -110,9 +117,20 @@
 	}
 
 	svg {
-		width: 10px;
-		height: 10px;
+		width: 15px;
+		height: 15px;
 		margin-left: 10px;
+	}
+
+	.select-root {
+		position: relative;
+		width: fit-content;
+	}
+
+	.select-root.fixedWidth {
+		width: 100%;
+		display: flex;
+		justify-content: center;
 	}
 
 	.select-context {
@@ -122,8 +140,13 @@
 		position: relative;
 	}
 
+	.select-context.fixedWidth {
+		width: min(100%, 10rem);
+	}
+
 	.select-menu {
 		position: absolute;
+		top: 100%;
 		left: 50%;
 		transform: translate(-50%, 0%);
 	}

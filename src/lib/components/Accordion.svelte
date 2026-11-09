@@ -19,6 +19,8 @@
 		children?: Snippet;
 	} = $props();
 
+	const contentId = $props.id();
+
 	const summaryToggler = () => {
 		open = !open;
 	};
@@ -30,6 +32,8 @@
 			<h2>{name}</h2>
 			<button
 				class="summary-toggler"
+				aria-controls={contentId}
+				aria-expanded={open}
 				aria-label="Accordion summary toggler"
 				onclick={summaryToggler}
 				type="button">
@@ -57,27 +61,27 @@
 			</button>
 			{#if url}
 				{#if external}
-					<a href={url} rel="external">
-						<button type="button">Open</button>
-					</a>
+					<a class="open-link" href={url} rel="external">Open</a>
 				{:else}
 					<!-- eslint-disable-next-line @typescript-eslint/no-unsafe-type-assertion -->
-					<a href={resolve(url as RouteId)}><button type="button">Open</button></a>
+					<a class="open-link" href={resolve(url as RouteId)}>Open</a>
 				{/if}
 			{/if}
 		</div>
 	</div>
-	{#if open}
-		<div
-			in:slide={{ duration: animationDuration }}
-			out:slide={{ delay: animationDelay, duration: animationDuration }}>
+	<div id={contentId}>
+		{#if open}
 			<div
-				in:fade={{ duration: animationDelay + animationDuration }}
-				out:fade={{ duration: animationDuration }}>
-				{@render children?.()}
+				in:slide={{ duration: animationDuration }}
+				out:slide={{ delay: animationDelay, duration: animationDuration }}>
+				<div
+					in:fade={{ duration: animationDelay + animationDuration }}
+					out:fade={{ duration: animationDuration }}>
+					{@render children?.()}
+				</div>
 			</div>
-		</div>
-	{/if}
+		{/if}
+	</div>
 </div>
 
 <style>
@@ -100,10 +104,19 @@
 		margin-bottom: 5px;
 	}
 
-	a > button {
+	.open-link {
+		display: inline-block;
 		margin-left: 5px;
-		padding: 2px;
+		padding: 2px 6px;
 		font-size: 14px;
+		background-color: var(--color-button-background);
+		color: var(--color-button-foreground);
+		border: 2px solid transparent;
+	}
+
+	.open-link:hover {
+		border-color: var(--color-anchor);
+		text-decoration: none;
 	}
 
 	.spacer {

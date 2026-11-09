@@ -210,7 +210,12 @@
 				</svg>
 			{/if}
 		</button>
-		<button class="zeltron-inline-flex-middle" aria-label="Wrap" onclick={toggleWrap} type="button">
+		<button
+			class="zeltron-inline-flex-middle"
+			aria-label="Wrap"
+			aria-pressed={wrap}
+			onclick={toggleWrap}
+			type="button">
 			{#if wrap}
 				<svg
 					fill="currentColor"
@@ -240,6 +245,7 @@
 			<button
 				class="zeltron-inline-flex-middle"
 				aria-label="Toggle keybindings"
+				aria-pressed={vimMode}
 				onclick={toggleKeybinds}
 				type="button">
 				{#if vimMode}

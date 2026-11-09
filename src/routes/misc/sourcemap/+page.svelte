@@ -5,8 +5,8 @@
 	import { onMount } from 'svelte';
 	import { cachedFetch } from '#lib/utils/fetch-cache.js';
 
-	let sourceMap = $state<string | null>(null);
-	let sourceMapError = $state<string | null>(null);
+	let bundleStats = $state<string | null>(null);
+	let bundleStatsError = $state<string | null>(null);
 
 	onMount(async () => {
 		try {
@@ -14,28 +14,28 @@
 				'https://raw.githubusercontent.com/231tr0n/231tr0n.github.io/main/stats.html'
 			);
 			if (!data) throw new Error('Error loading stats file');
-			sourceMap = data;
+			bundleStats = data;
 		} catch (error) {
-			console.error('Failed to load sourcemap', error);
-			sourceMapError = error instanceof Error ? error.message : 'Unknown error';
+			console.error('Failed to load bundle stats', error);
+			bundleStatsError = error instanceof Error ? error.message : 'Unknown error';
 		}
 	});
 </script>
 
 <Page scrollspy={true}>
-	<h1>Website Sourcemap</h1>
+	<h1>Website Bundle Statistics</h1>
 
 	<h2>Information</h2>
 	<ul>
-		<li>The below sandbox shows the source map of the website output bundle.</li>
-		<li>The sourcemap is calculated as of the last push to the code repository.</li>
+		<li>The below sandbox shows the bundle report of the website output.</li>
+		<li>The report is calculated as of the last push to the code repository.</li>
 	</ul>
 
-	<h2>Sourcemap</h2>
-	{#if sourceMapError}
-		<div class="zeltron-error">{sourceMapError}</div>
-	{:else if sourceMap}
-		<Sandbox description="" srcDoc={sourceMap} title="Source Map" />
+	<h2>Bundle Report</h2>
+	{#if bundleStatsError}
+		<div class="zeltron-error">{bundleStatsError}</div>
+	{:else if bundleStats}
+		<Sandbox description="" srcDoc={bundleStats} title="Bundle Report" />
 	{:else}
 		<Loading />
 	{/if}
