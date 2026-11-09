@@ -8,6 +8,14 @@ const gameCss = [
 const tokenCss = readFileSync('static/resources/snippets/everforest.css', 'utf8');
 const page = readFileSync('src/lib/components/Page.svelte', 'utf8');
 const frame = readFileSync('src/lib/components/Frame.svelte', 'utf8');
+const sandbox = readFileSync('src/lib/components/Sandbox.svelte', 'utf8');
+const componentSources = Object.values(
+	import.meta.glob('/src/lib/components/**/*.svelte', {
+		query: '?raw',
+		import: 'default',
+		eager: true
+	}) as Record<string, string>
+);
 const main = readFileSync('src/lib/css/main.css', 'utf8');
 
 const definitions = new Set(
@@ -21,8 +29,16 @@ describe('semantic color tokens', () => {
 	});
 
 	it('keeps components free of Everforest and raw colors', () => {
-		expect(gameCss).not.toMatch(/--ef-/);
-		expect(gameCss).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/i);
+		for (const source of [gameCss, ...componentSources]) {
+			expect(source).not.toMatch(/--ef-/);
+			expect(source).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/i);
+		}
+	});
+
+	it('never hides Ludo UI responsively', () => {
+		expect(gameCss).not.toMatch(
+			/(?:\.brand|\.player-name|\.player-strip|\.turn|\.home-count|\.move-button-label|\.subtitle|\.hint)[^{]*\{[^}]*display:\s*none/s
+		);
 	});
 
 	it('maps the site anchor through the palette', () => {
@@ -37,9 +53,11 @@ describe('layout contracts', () => {
 		expect(page).toMatch(/h4\s*\{[^}]*top:\s*0/s);
 	});
 
-	it('keeps the compact frame chrome visible', () => {
+	it('keeps the compact frame chrome and fullscreen visible', () => {
 		expect(frame).not.toMatch(/compact[^}]*display:\s*none/s);
 		expect(frame).toMatch(/\.filename\s*\{/);
 		expect(frame).toMatch(/\.context\s*\{/);
+		expect(sandbox).toContain('min-height: 360px');
+		expect(sandbox).toMatch(/:fullscreen[^}]*display:\s*flex/s);
 	});
 });

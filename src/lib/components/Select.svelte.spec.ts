@@ -63,6 +63,27 @@ describe('Select', () => {
 		});
 	});
 
+	it('allows a null selection callback', async () => {
+		render(Select, {
+			props: {
+				items: ['One'],
+				currentItem: 0,
+				colored: false,
+				fixedWidth: true,
+				onSetSelectedItem: null
+			}
+		});
+		const context = screen.getByRole('button', { name: /Select item, current: One/ });
+		context.click();
+		await vi.waitFor(() => {
+			expect(screen.getByRole('button', { name: 'One' })).toBeInTheDocument();
+		});
+		screen.getByRole('button', { name: 'One' }).click();
+		await vi.waitFor(() => {
+			expect(screen.queryByRole('button', { name: 'One' })).not.toBeInTheDocument();
+		});
+	});
+
 	it('measures and updates the width for the longest item', async () => {
 		const original = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'clientWidth');
 		Object.defineProperty(HTMLElement.prototype, 'clientWidth', {
