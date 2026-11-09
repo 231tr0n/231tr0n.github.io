@@ -17,38 +17,36 @@
 	const items: string[] = $state([]);
 	let pageDiv: HTMLDivElement;
 
+	const getSpyBottom = () => (breadcrumb?.getBoundingClientRect().bottom ?? 0) + scrollspyOffset;
+
 	const onSetSelectedItem = (value: number) => {
 		if (!scrollspy || !breadcrumb) return;
 		const div = sections.at(value);
 		if (!div) return;
-		const rect = div.getBoundingClientRect();
-		pageDiv.scrollBy(0, rect.top - rect.height - breadcrumb.offsetHeight - scrollspyOffset);
+		currentItem = value;
+		pageDiv.scrollBy(0, div.getBoundingClientRect().top - getSpyBottom());
 	};
 
 	let scrollRafId = 0;
 
 	onMount(() => {
 		if (!scrollspy) return;
-		const el = breadcrumb;
-		if (!el) return;
+		if (!breadcrumb) return;
 		pageDiv.onscroll = () => {
 			cancelAnimationFrame(scrollRafId);
 			scrollRafId = requestAnimationFrame(() => {
-				let prev: HTMLElement | null = null;
+				const threshold = getSpyBottom() + scrollspyThreshold;
+				let nextItem = 0;
 				for (const [i, section] of sections.entries()) {
-					if (el.offsetTop + el.offsetHeight + scrollspyThreshold < section.offsetTop) {
-						currentItem = prev ? i - 1 : i;
-						break;
-					} else {
-						currentItem = i;
-					}
-					prev = section;
+					if (section.getBoundingClientRect().top < threshold) nextItem = i;
+					else break;
 				}
+				currentItem = nextItem;
 			});
 		};
-		const name =
-			pageDiv.querySelector<HTMLElement>('div.content h1') ?? document.createElement('div');
-		sections = [name, ...Array.from(pageDiv.querySelectorAll<HTMLElement>('div.content h2'))];
+		const heading = pageDiv.querySelector<HTMLElement>('div.content h1');
+		const subheadings = Array.from(pageDiv.querySelectorAll<HTMLElement>('div.content h2'));
+		sections = heading ? [heading, ...subheadings] : subheadings;
 		for (const section of sections) items.push(section.innerText);
 
 		return () => {
@@ -62,7 +60,7 @@
 	<div class="content">
 		{#if scrollspy}
 			<h4 bind:this={breadcrumb} class="zeltron-component zeltron-flex-middle">
-				<Select colored={true} {currentItem} {items} {onSetSelectedItem} />
+				<Select colored={true} {currentItem} fixedWidth={true} {items} {onSetSelectedItem} />
 			</h4>
 		{/if}
 		{@render children?.()}

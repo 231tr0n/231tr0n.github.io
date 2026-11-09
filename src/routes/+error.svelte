@@ -5,7 +5,6 @@
 </script>
 
 <svelte:head>
-	<title>{page.status} — 231tr0n</title>
 	<meta content="{page.status} — 231tr0n" property="og:title" />
 	<meta content={canonicalUrl} property="og:url" />
 	<meta name="twitter:title" content="{page.status} — 231tr0n" />

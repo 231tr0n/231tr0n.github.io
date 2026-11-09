@@ -22,6 +22,7 @@ export const cachedFetch = async (url: string): Promise<string> => {
 		if (raw !== null) {
 			const entry = parseCacheEntry(raw);
 			if (entry !== null && Date.now() - entry.timestamp < cacheTtl) return entry.data;
+			localStorage.removeItem(cacheKey);
 		}
 	} catch (error) {
 		console.error('Failed to read cache', error);

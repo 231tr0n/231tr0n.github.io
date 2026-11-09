@@ -1,20 +1,12 @@
-import { on } from 'svelte/events';
 import {
 	scrollbarTrackSize,
 	scrollbarZIndex,
 	scrollbarAceSetupTimeout,
 	scrollbarTrackOverhang
 } from '#lib/constants/app.constants.js';
-import {
-	makeTrack,
-	syncScroll,
-	setupDrag,
-	setupTrackClick,
-	updateThumbAriaLabel,
-	doubleAnimationFrame
-} from './scrollbar-core';
+import { makeTrack, syncScroll, attachAxis, doubleAnimationFrame } from './scrollbar-core';
 
-export interface AceTrackEntry {
+interface AceTrackEntry {
 	el: HTMLElement;
 	track: HTMLElement;
 	thumb: HTMLElement;
@@ -51,16 +43,7 @@ const setupAceTrack = (editorEl: HTMLElement, el: HTMLElement, dir: 'v' | 'h') =
 		track.style.height = `${String(scrollbarTrackSize)}px`;
 	}
 	editorEl.appendChild(track);
-	const cleanups: (() => void)[] = [];
-	cleanups.push(
-		on(el, 'scroll', () => {
-			syncScroll(el, track, thumb, dir);
-			updateThumbAriaLabel(el, thumb, dir);
-		})
-	);
-	cleanups.push(setupDrag(thumb, el, track, dir));
-	cleanups.push(setupTrackClick(track, el, dir));
-	updateThumbAriaLabel(el, thumb, dir);
+	const cleanups = attachAxis(el, track, thumb, dir);
 	return { el, track, thumb, dir, cleanups };
 };
 

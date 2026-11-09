@@ -16,10 +16,27 @@
 
 	let { children }: { children?: Snippet } = $props();
 
+	const getRouteTitle = (routeId: string | null): string | null => {
+		switch (routeId) {
+			case '/misc/htmlplayground':
+				return 'HTML Playground';
+			case '/misc/sourcemap':
+				return 'Bundle Statistics';
+			case '/games/tictactoe':
+				return 'Tic Tac Toe';
+			case '/blog/config':
+				return 'Neovim Configuration';
+			case null:
+			default:
+				return null;
+		}
+	};
+
 	let title = $derived.by(() => {
-		const path = page.url.pathname;
-		if (path === '/') return '231tr0n — Linux Enthusiast, Programmer and Gopher';
-		const seg = path.replace(/\/$/, '').split('/').pop() ?? '';
+		if (page.route.id === '/') return '231tr0n — Linux Enthusiast, Programmer and Gopher';
+		const mapped = getRouteTitle(page.route.id);
+		if (mapped !== null) return `${mapped} — 231tr0n`;
+		const seg = page.url.pathname.replace(/\/$/, '').split('/').pop() ?? '';
 		return seg.charAt(0).toUpperCase() + seg.slice(1) + ' — 231tr0n';
 	});
 
@@ -34,14 +51,27 @@
 		style.textContent = `* { transition: background-color ${String(animationDuration)}ms linear, color ${String(animationDuration)}ms linear; }`;
 		document.head.appendChild(style);
 		const scrollbars = setupScrollbars();
-		document.onfullscreenchange = () => {
-			document.body.classList.toggle('full-screen', !!document.fullscreenElement);
-		};
+		let offControllerChange: (() => void) | null = null;
 
 		if ('serviceWorker' in navigator) {
+			let hadController = navigator.serviceWorker.controller !== null;
+			let reloading = false;
+			offControllerChange = on(navigator.serviceWorker, 'controllerchange', () => {
+				if (!hadController) {
+					hadController = true;
+					return;
+				}
+				if (reloading) return;
+				reloading = true;
+				window.location.reload();
+			});
+
 			void (async () => {
 				try {
 					const registration = await navigator.serviceWorker.ready;
+					if (navigator.serviceWorker.controller && registration.waiting) {
+						registration.waiting.postMessage({ type: 'SKIP_WAITING' });
+					}
 					on(registration, 'updatefound', () => {
 						const newWorker = registration.installing;
 						if (!newWorker) return;
@@ -49,7 +79,6 @@
 						on(newWorker, 'statechange', () => {
 							if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
 								newWorker.postMessage({ type: 'SKIP_WAITING' });
-								window.location.reload();
 							}
 						});
 					});
@@ -62,7 +91,7 @@
 		return () => {
 			scrollbars.destroy();
 			style.remove();
-			document.onfullscreenchange = null;
+			offControllerChange?.();
 		};
 	});
 
@@ -83,9 +112,17 @@
 </script>
 
 <svelte:head>
-	<meta content={title} property="og:title" />
-	<meta content={canonicalUrl} property="og:url" />
-	<meta name="twitter:title" content={title} />
+	{#if !page.error}
+		<meta content={title} property="og:title" />
+		<meta content={canonicalUrl} property="og:url" />
+		<meta name="twitter:title" content={title} />
+		<meta
+			content="Personal website of Srikar (231tr0n) — Linux enthusiast, Gopher, programmer, badminton player and gamer."
+			property="og:description" />
+		<meta
+			name="twitter:description"
+			content="Personal website of Srikar (231tr0n) — Linux enthusiast, Gopher, programmer, badminton player and gamer." />
+	{/if}
 	<meta content="{__SITE_URL__}/images/banner.avif" property="og:image" />
 	<meta content="image/avif" property="og:image:type" />
 	<meta content="1200" property="og:image:width" />

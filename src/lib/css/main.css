@@ -205,7 +205,6 @@ img {
 }
 
 select,
-select > option,
 option,
 input {
 	font-family: Roboto-Condensed, monospace;

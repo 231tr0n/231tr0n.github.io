@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { type Snippet } from 'svelte';
+	import type { Snippet } from 'svelte';
 	import { on } from 'svelte/events';
 
 	let {
@@ -26,7 +26,7 @@
 	let fullscreenState = $state(false);
 
 	const toggleFullscreen = async () => {
-		if (document.fullscreenElement) {
+		if (document.fullscreenElement === frameDiv) {
 			await document.exitFullscreen();
 		} else {
 			await frameDiv.requestFullscreen();

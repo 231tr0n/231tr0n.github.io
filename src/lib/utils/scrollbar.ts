@@ -1,29 +1,6 @@
-import { on } from 'svelte/events';
-import {
-	syncScroll,
-	setupDrag,
-	setupTrackClick,
-	updateThumbAriaLabel,
-	cleanupActiveDrag,
-	doubleAnimationFrame,
-	makeTrack
-} from './scrollbar-core';
+import { syncScroll, attachAxis, doubleAnimationFrame, makeTrack } from './scrollbar-core';
 import { processAce, ensureAceProcessed, type AceScrollbarInstance } from './scrollbar-ace';
 import { scrollbarTrackSize, scrollbarTrackOverhang } from '#lib/constants/app.constants.js';
-
-const setupAxis = (node: HTMLElement, track: HTMLElement, thumb: HTMLElement, dir: 'v' | 'h') => {
-	const cleanups: (() => void)[] = [];
-	cleanups.push(
-		on(node, 'scroll', () => {
-			syncScroll(node, track, thumb, dir);
-			updateThumbAriaLabel(node, thumb, dir);
-		})
-	);
-	cleanups.push(setupDrag(thumb, node, track, dir));
-	cleanups.push(setupTrackClick(track, node, dir));
-	updateThumbAriaLabel(node, thumb, dir);
-	return cleanups;
-};
 
 const initScrollbar = (
 	node: HTMLElement,
@@ -33,18 +10,12 @@ const initScrollbar = (
 	hThumb: HTMLElement | null,
 	onDestroy?: () => void
 ) => {
-	const prevScrollTop = node.scrollTop;
-	const prevScrollLeft = node.scrollLeft;
-
 	node.setAttribute('data-custom-scrollbar', '');
 	node.style.setProperty('scrollbar-width', 'none');
 
-	node.scrollTop = prevScrollTop;
-	node.scrollLeft = prevScrollLeft;
-
 	const eventCleanups: (() => void)[] = [];
-	if (vTrack && vThumb) eventCleanups.push(...setupAxis(node, vTrack, vThumb, 'v'));
-	if (hTrack && hThumb) eventCleanups.push(...setupAxis(node, hTrack, hThumb, 'h'));
+	if (vTrack && vThumb) eventCleanups.push(...attachAxis(node, vTrack, vThumb, 'v'));
+	if (hTrack && hThumb) eventCleanups.push(...attachAxis(node, hTrack, hThumb, 'h'));
 
 	const resizeObserver = new ResizeObserver(() => {
 		if (vTrack && vThumb) syncScroll(node, vTrack, vThumb, 'v');
@@ -81,7 +52,6 @@ const initScrollbar = (
 			});
 			if (vTrack) vTrack.remove();
 			if (hTrack) hTrack.remove();
-			cleanupActiveDrag();
 			onDestroy?.();
 		}
 	};
@@ -91,9 +61,10 @@ const getScrollAxes = (el: HTMLElement): { v: boolean; h: boolean } => {
 	if (el === document.body || el === document.documentElement) return { v: false, h: false };
 	if (el.hasAttribute('data-custom-scrollbar')) return { v: false, h: false };
 	if (el.closest('.ace_editor')) return { v: false, h: false };
-	if (getComputedStyle(el).position === 'fixed') return { v: false, h: false };
 
 	const computedStyle = getComputedStyle(el);
+	if (computedStyle.position === 'fixed') return { v: false, h: false };
+
 	return {
 		v: computedStyle.overflowY === 'auto' || computedStyle.overflowY === 'scroll',
 		h: computedStyle.overflowX === 'auto' || computedStyle.overflowX === 'scroll'
@@ -108,16 +79,20 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 	const instances = new Map<HTMLElement, ScrollbarInstance>();
 	const aceInstances = new Map<HTMLElement, AceScrollbarInstance>();
 	const posRefCount = new Map<HTMLElement, number>();
+	const forcedParents = new WeakSet<HTMLElement>();
 
 	const revertEnsurePos = (elem: HTMLElement) => {
 		const count = posRefCount.get(elem);
 		if (count === undefined) return;
-		if (count <= 1) {
-			elem.style.removeProperty('position');
-			posRefCount.delete(elem);
-		} else {
+		if (count > 1) {
 			posRefCount.set(elem, count - 1);
+			return;
 		}
+		if (forcedParents.has(elem)) {
+			elem.style.removeProperty('position');
+			forcedParents.delete(elem);
+		}
+		posRefCount.delete(elem);
 	};
 
 	const pruneDetached = () => {
@@ -136,10 +111,11 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 	};
 
 	const ensurePos = (elem: HTMLElement) => {
-		if (getComputedStyle(elem).position === 'static') {
+		if (!posRefCount.has(elem) && getComputedStyle(elem).position === 'static') {
 			elem.style.position = 'relative';
-			posRefCount.set(elem, (posRefCount.get(elem) ?? 0) + 1);
+			forcedParents.add(elem);
 		}
+		posRefCount.set(elem, (posRefCount.get(elem) ?? 0) + 1);
 	};
 
 	const processScrollable = (el: HTMLElement) => {
@@ -214,8 +190,8 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 	for (const editor of aceEditors) processAce(editor, aceInstances);
 
 	const observer = new MutationObserver((mutations) => {
+		pruneDetached();
 		for (const mutation of mutations) {
-			pruneDetached();
 			for (const node of mutation.addedNodes) {
 				if (node instanceof HTMLElement) processAddedNode(node);
 			}

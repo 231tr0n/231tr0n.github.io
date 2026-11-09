@@ -18,13 +18,24 @@
 		{ duration: animationDuration, delay: 0, easing: linear }
 	);
 
+	let visible = $state(false);
+
+	const moveCursor = (x: number, y: number) => {
+		if (visible) {
+			cursor.target = { x, y };
+			return;
+		}
+		void cursor.set({ x, y }, { duration: 0 });
+		visible = true;
+	};
+
 	onMount(() => {
 		const listenerOptions = { signal: controller.signal };
 		on(
 			document,
 			'mousemove',
 			(e) => {
-				cursor.target = { x: e.clientX, y: e.clientY };
+				moveCursor(e.clientX, e.clientY);
 			},
 			listenerOptions
 		);
@@ -32,8 +43,8 @@
 			document,
 			'touchmove',
 			(e) => {
-				const touch = e.touches[e.touches.length - 1];
-				if (touch) cursor.target = { x: touch.clientX, y: touch.clientY };
+				const touch = Array.from(e.touches).at(-1);
+				if (touch) moveCursor(touch.clientX, touch.clientY);
 			},
 			listenerOptions
 		);
@@ -44,14 +55,13 @@
 			radius.target = cursorRadius;
 		};
 		on(document, 'mouseleave', hide, listenerOptions);
-		on(document, 'mouseout', hide, listenerOptions);
-		on(document, 'mouseover', show, listenerOptions);
 		on(document, 'mouseenter', show, listenerOptions);
 		on(document, 'mouseup', show, listenerOptions);
 		on(
 			document,
 			'mousedown',
-			() => {
+			(e) => {
+				moveCursor(e.clientX, e.clientY);
 				radius.target = cursorClickRadius;
 			},
 			listenerOptions
@@ -60,7 +70,9 @@
 		on(
 			document,
 			'touchstart',
-			() => {
+			(e) => {
+				const touch = e.touches.item(0);
+				if (touch) moveCursor(touch.clientX, touch.clientY);
 				radius.target = cursorClickRadius;
 			},
 			listenerOptions
@@ -73,7 +85,7 @@
 	});
 </script>
 
-{#if cursor.target.x !== 0 && cursor.target.y !== 0}
+{#if visible}
 	<svg>
 		<circle
 			class="circle"

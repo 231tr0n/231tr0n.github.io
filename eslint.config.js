@@ -13,7 +13,9 @@ import promise from 'eslint-plugin-promise';
 import security from 'eslint-plugin-security';
 import eslintComments from '@eslint-community/eslint-plugin-eslint-comments';
 
-const svelteConfig = (await loadConfig('./', { traverse: false }))?.config;
+const loadedConfig = await loadConfig('./', { traverse: false });
+if (loadedConfig && 'error' in loadedConfig) throw loadedConfig.error;
+const svelteConfig = loadedConfig?.config;
 
 const gitignorePath = fileURLToPath(new URL('./.gitignore', import.meta.url));
 
@@ -30,6 +32,11 @@ const esxConfig = new Map(Object.entries(esx.configs)).get(esxConfigKey);
 export default defineConfig(
 	includeIgnoreFile(gitignorePath),
 	globalIgnores(['stats.html']),
+	{
+		linterOptions: {
+			reportUnusedDisableDirectives: 'error'
+		}
+	},
 	{
 		files: ['**/*.css'],
 		plugins: { css },
@@ -65,9 +72,7 @@ export default defineConfig(
 		files: ['**/*.js', '**/*.svelte', '**/*.svelte.js', '**/*.svelte.ts', '**/*.ts'],
 		extends: [
 			js.configs.recommended,
-			ts.configs.eslintRecommended,
-			ts.configs.strictTypeChecked,
-			ts.configs.stylisticTypeChecked,
+			ts.configs.all,
 			svelte.configs.all,
 			prettier,
 			svelte.configs.prettier,
@@ -89,23 +94,59 @@ export default defineConfig(
 			}
 		},
 		rules: {
+			// Keep the strictest preset, except for rules that are impractical here.
+			'@typescript-eslint/consistent-return': 'off',
+			'@typescript-eslint/explicit-function-return-type': 'off',
+			'@typescript-eslint/explicit-module-boundary-types': 'off',
+			'@typescript-eslint/max-params': 'off',
+			'@typescript-eslint/no-magic-numbers': 'off',
+			'@typescript-eslint/prefer-readonly-parameter-types': 'off',
+			'@typescript-eslint/consistent-type-imports': ['error', { disallowTypeAnnotations: false }],
+			'@typescript-eslint/naming-convention': [
+				'error',
+				{
+					selector: 'variable',
+					format: null,
+					filter: { regex: '^__SITE_URL__$', match: true }
+				},
+				{
+					selector: 'objectLiteralProperty',
+					format: null,
+					filter: { regex: '^__SITE_URL__$', match: true }
+				},
+				{
+					selector: 'default',
+					format: ['camelCase', 'PascalCase'],
+					leadingUnderscore: 'allow',
+					trailingUnderscore: 'allow'
+				},
+				{
+					selector: 'variable',
+					format: ['camelCase', 'UPPER_CASE', 'PascalCase'],
+					leadingUnderscore: 'allow',
+					trailingUnderscore: 'allow'
+				},
+				{
+					selector: 'typeProperty',
+					format: ['camelCase', 'PascalCase'],
+					leadingUnderscore: 'allow',
+					trailingUnderscore: 'allow'
+				}
+			],
+			'no-undef': 'off',
 			'@eslint-community/eslint-comments/disable-enable-pair': 'error',
 			'@eslint-community/eslint-comments/no-aggregating-enable': 'error',
 			'@eslint-community/eslint-comments/no-duplicate-disable': 'error',
-			'@eslint-community/eslint-comments/no-restricted-disable': 'error',
+			'@eslint-community/eslint-comments/no-restricted-disable': [
+				'error',
+				'security/detect-object-injection'
+			],
 			'@eslint-community/eslint-comments/no-unlimited-disable': 'error',
-			'@eslint-community/eslint-comments/no-unused-disable': 'error',
 			'@eslint-community/eslint-comments/no-unused-enable': 'error',
-			'@eslint-community/eslint-comments/no-use': 'error',
 			'@eslint-community/eslint-comments/require-description': 'error',
-			'promise/catch-or-return': 'error',
-			'promise/no-return-wrap': 'error',
-			'promise/param-names': 'error',
-			'promise/always-return': 'error',
 			'promise/no-nesting': 'error',
 			'promise/no-promise-in-callback': 'error',
 			'promise/no-callback-in-promise': 'error',
-			'promise/no-new-statics': 'error',
 			'promise/no-return-in-finally': 'error',
 			'promise/valid-params': 'error',
 			'promise/no-multiple-resolved': 'error',
@@ -113,8 +154,6 @@ export default defineConfig(
 			'promise/prefer-await-to-then': 'error',
 			'promise/prefer-catch': 'error',
 			'promise/spec-only': 'error',
-			'promise/no-native': 'off',
-			'promise/avoid-new': 'off',
 			'security/detect-unsafe-regex': 'error',
 			'security/detect-non-literal-regexp': 'error',
 			'security/detect-non-literal-require': 'error',
@@ -129,7 +168,6 @@ export default defineConfig(
 			'security/detect-object-injection': 'error',
 			'security/detect-new-buffer': 'error',
 			'security/detect-bidi-characters': 'error',
-			'no-undef': 'off',
 			'prefer-const': 'off',
 			'svelte/block-lang': [
 				'error',
@@ -144,27 +182,13 @@ export default defineConfig(
 					allowedClassNames: ['/^zeltron-.*$/']
 				}
 			],
-			'svelte/consistent-selector-style': 'off',
-			'@typescript-eslint/non-nullable-type-assertion-style': 'off',
-			'svelte/no-target-blank': 'error',
-			'svelte/no-at-debug-tags': 'warn',
-			'svelte/button-has-type': 'error',
-			// Remove below line after deprecated rule is removed
-			'svelte/no-navigation-without-base': 'off',
-			'@typescript-eslint/no-unsafe-type-assertion': 'error',
-			'@typescript-eslint/strict-boolean-expressions': 'error',
-			'@typescript-eslint/switch-exhaustiveness-check': 'error',
-			'@typescript-eslint/no-shadow': 'error',
-			'@typescript-eslint/prefer-readonly': 'error',
-			'@typescript-eslint/require-array-sort-compare': 'error'
+			'svelte/consistent-selector-style': 'off'
 		}
 	},
 	{
 		files: ['**/*.svelte', '**/*.svelte.ts', '**/*.svelte.js'],
 		languageOptions: {
 			parserOptions: {
-				projectService: true,
-				extraFileExtensions: ['.svelte'],
 				parser: ts.parser,
 				svelteConfig
 			}

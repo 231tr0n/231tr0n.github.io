@@ -13,9 +13,9 @@
 			external: false
 		},
 		{
-			name: 'Website Sourcemap',
+			name: 'Website Bundle Statistics',
 			badges: ['html', 'css', 'javascript', 'svelte', 'browser'],
-			description: 'Shows a source map of the website output bundle, useful for optimization.',
+			description: 'Shows a bundle report of the website output, useful for optimization.',
 			url: '/misc/sourcemap',
 			open: false,
 			external: false

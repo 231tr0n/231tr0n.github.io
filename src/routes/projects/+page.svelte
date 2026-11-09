@@ -23,13 +23,26 @@
 	const isRecord = (value: unknown): value is Record<string, unknown> =>
 		typeof value === 'object' && value !== null;
 
-	const fetchGithubRepoData = async (url: string) => {
-		const languageBytes = new SvelteMap<string, number>();
-		const repos: unknown = JSON.parse(await cachedFetch(url));
-		if (!isRecord(repos)) throw new Error('Invalid API response');
-		if ('message' in repos) throw new Error('Github api rate limit exceeded');
+	const fetchJson = async (url: string): Promise<unknown> => {
+		try {
+			return JSON.parse(await cachedFetch(url)) as unknown;
+		} catch (error) {
+			const message = error instanceof Error ? error.message : '';
+			if (message.includes('Fetch failed: 403') || message.includes('Fetch failed: 429')) {
+				throw new Error('GitHub API rate limit exceeded', { cause: error });
+			}
+			throw error;
+		}
+	};
+
+	const fetchGithubRepoData = async (
+		url: string,
+		onProgress: (processed: number, total: number) => void
+	) => {
+		const repos = await fetchJson(url);
 		if (!Array.isArray(repos)) throw new Error('Invalid API response');
 
+		const languageBytes = new SvelteMap<string, number>();
 		const filteredRepos: {
 			languagesUrl: string;
 			htmlUrl: string;
@@ -44,20 +57,21 @@
 				name: typeof repo['name'] === 'string' ? repo['name'] : '',
 				description: typeof repo['description'] === 'string' ? repo['description'] : ''
 			});
-			totalRepos += 1;
 		}
 
-		const repoDataList: PostData[] = [];
-		const results = await Promise.all(
+		const total = filteredRepos.length;
+		let processed = 0;
+		onProgress(processed, total);
+
+		const repoData = await Promise.all(
 			filteredRepos.map(async (repo) => {
-				const raw: unknown = JSON.parse(await cachedFetch(repo.languagesUrl));
+				const raw = await fetchJson(repo.languagesUrl);
 				if (!isRecord(raw)) throw new Error('Invalid API response');
-				if ('message' in raw) throw new Error('Github api rate limit exceeded');
 
 				const languages: GithubLanguages = new SvelteMap<string, number>();
 				for (const [key, value] of Object.entries(raw)) languages.set(key, Number(value));
 
-				const repoData: PostData = {
+				const data: PostData = {
 					name: repo.name,
 					url: repo.htmlUrl,
 					description: repo.description,
@@ -72,34 +86,43 @@
 					languageBytes.set(key, prev + lang);
 				}
 
-				processedRepos += 1;
-				return repoData;
+				processed += 1;
+				onProgress(processed, total);
+				return data;
 			})
 		);
-		repoDataList.push(...results);
 
 		let totalBytes = 0;
 		for (const byteCount of languageBytes.values()) totalBytes += byteCount;
 
 		const percentages = new SvelteMap<string, number>();
-		for (const [key, byteCount] of languageBytes.entries()) {
-			percentages.set(
-				key,
-				parseFloat(((byteCount / totalBytes) * percentageScale).toFixed(decimalPrecision))
-			);
+		if (totalBytes > 0) {
+			for (const [key, byteCount] of languageBytes.entries()) {
+				percentages.set(
+					key,
+					parseFloat(((byteCount / totalBytes) * percentageScale).toFixed(decimalPrecision))
+				);
+			}
 		}
 
-		return { repoData: repoDataList, languagePercentages: Object.fromEntries(percentages) };
+		return { repoData, languagePercentages: Object.fromEntries(percentages) };
 	};
 
 	onMount(async () => {
 		try {
 			const result = await fetchGithubRepoData(
-				'https://api.github.com/users/231tr0n/repos?per_page=100'
+				'https://api.github.com/users/231tr0n/repos?per_page=100',
+				(processed, total) => {
+					processedRepos = processed;
+					totalRepos = total;
+				}
 			);
-			await new Promise((resolve) => setTimeout(resolve, animationDuration));
-			repoList = result.repoData;
-			languagePercentages = result.languagePercentages;
+			await new Promise((resolve) => {
+				setTimeout(resolve, animationDuration);
+			});
+			const { repoData, languagePercentages: percentages } = result;
+			repoList = repoData;
+			languagePercentages = percentages;
 		} catch (error) {
 			console.error('Failed to fetch projects', error);
 			fetchError = error instanceof Error ? error.message : 'Unknown error';
