@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Frame from './Frame.svelte';
+	import FullscreenButton from './FullscreenButton.svelte';
 	import { sandboxPolicy } from '#lib/constants/app.constants.js';
 	import { darkMode } from '#lib/utils/dark.svelte.js';
 
@@ -7,69 +8,78 @@
 		title,
 		description,
 		src = '',
-		srcDoc = ''
+		srcDoc = '',
+		compact = false
 	}: {
 		title: string;
 		description: string;
 		src?: string;
 		srcDoc?: string;
+		compact?: boolean;
 	} = $props();
 
 	let iframe: HTMLIFrameElement | undefined;
 
+	const syncTheme = (dark: boolean) => {
+		if (!iframe?.contentWindow) return;
+		iframe.contentWindow.postMessage({ type: 'theme', dark }, '*');
+	};
+
 	$effect(() => {
-		if (!iframe || !srcDoc) return;
+		// Keep the sandboxed document in sync with the site theme.
+		syncTheme(darkMode().dark);
+	});
+
+	$effect(() => {
+		if (!iframe) return;
+		if (!srcDoc) {
+			iframe.removeAttribute('srcdoc');
+			return;
+		}
 		const hasBodyBg =
-			/<body[^>]*\bbackground\s*[=:]/i.test(srcDoc) ||
+			/<body\b[^>]*\bbackground\s*[=:]/i.test(srcDoc) ||
+			/<html\b[^>]*\bbackground\s*[=:]/i.test(srcDoc) ||
 			/(?:body|html)\s*\{[^}]*\bbackground\b/i.test(srcDoc);
 		if (hasBodyBg) {
 			iframe.srcdoc = srcDoc;
+			return;
+		}
+		const { dark } = darkMode();
+		const bg =
+			getComputedStyle(document.body).getPropertyValue('--color-background').trim() ||
+			(dark ? '#2d353b' : '#fdf6e3');
+		const style = `<style>html { background: ${bg}; }</style>`;
+		if (/<head\b[^>]*>/i.test(srcDoc)) {
+			iframe.srcdoc = srcDoc.replace(/<head\b[^>]*>/i, (head) => `${head}${style}`);
+		} else if (/<html\b[^>]*>/i.test(srcDoc)) {
+			iframe.srcdoc = srcDoc.replace(/<html\b[^>]*>/i, (html) => `${html}<head>${style}</head>`);
+		} else if (/<body\b[^>]*>/i.test(srcDoc)) {
+			iframe.srcdoc = `<html><head>${style}</head>${srcDoc}</html>`;
 		} else {
-			// Read the theme so the effect reruns when the user toggles it.
-			void (() => darkMode().dark)();
-			const bg = getComputedStyle(document.body).getPropertyValue('--color-background').trim();
-			if (/<html/i.test(srcDoc)) {
-				iframe.srcdoc = srcDoc.replace(/<html/i, `<html style="background:${bg}"`);
-			} else if (/<body/i.test(srcDoc)) {
-				iframe.srcdoc = `<html style="background:${bg}">${srcDoc}</html>`;
-			} else {
-				iframe.srcdoc = `<html style="background:${bg}"><body>${srcDoc}</body></html>`;
-			}
+			iframe.srcdoc = `<html><head>${style}</head><body>${srcDoc}</body></html>`;
 		}
 	});
 </script>
 
-<Frame caption={title} contextLabel={description} frameClass="iframe" label="Sandbox">
+<Frame
+	caption={title}
+	{compact}
+	contextLabel={description}
+	frameClass={compact ? 'iframe compact' : 'iframe'}
+	label="Sandbox">
 	{#snippet toolbar({ toggleFullscreen, fullscreen })}
-		<button
-			class="zeltron-inline-flex-middle"
-			aria-label="Toggle fullscreen"
-			onclick={toggleFullscreen}
-			type="button">
-			{#if fullscreen === false}
-				<svg
-					fill="currentColor"
-					height="16"
-					viewBox="0 0 16 16"
-					width="16"
-					xmlns="http://www.w3.org/2000/svg">
-					<path
-						d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z" />
-				</svg>
-			{:else}
-				<svg
-					fill="currentColor"
-					height="16"
-					viewBox="0 0 16 16"
-					width="16"
-					xmlns="http://www.w3.org/2000/svg">
-					<path
-						d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5zM0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zm10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4z" />
-				</svg>
-			{/if}
-		</button>
+		<FullscreenButton {fullscreen} {toggleFullscreen} />
 	{/snippet}
-	<iframe bind:this={iframe} allowfullscreen sandbox={sandboxPolicy} {src} {title}> </iframe>
+	<iframe
+		bind:this={iframe}
+		allowfullscreen
+		onload={() => {
+			syncTheme(document.body.classList.contains('dark'));
+		}}
+		sandbox={sandboxPolicy}
+		{src}
+		{title}>
+	</iframe>
 </Frame>
 
 <style>
@@ -80,19 +90,19 @@
 		height: calc(100vh - 10vh - var(--layout-header-height) - var(--layout-footer-height));
 	}
 
+	:global(.iframe.compact) {
+		height: calc(100vh - var(--layout-header-height) - var(--layout-footer-height));
+		max-width: 100%;
+	}
+
+	:global(.iframe.compact iframe) {
+		height: 100%;
+	}
+
 	iframe {
 		border: 0;
 		overflow: auto;
 		width: 100%;
 		height: calc(100% - var(--sandbox-iframe-offset));
-	}
-
-	button {
-		padding: 3px;
-	}
-
-	svg {
-		width: 16px;
-		height: 16px;
 	}
 </style>

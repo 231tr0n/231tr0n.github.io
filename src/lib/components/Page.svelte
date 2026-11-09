@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
+	import { on } from 'svelte/events';
 	import Select from './Select.svelte';
 	import { scrollspyOffset, scrollspyThreshold } from '#lib/constants/app.constants.js';
 
@@ -32,7 +33,7 @@
 	onMount(() => {
 		if (!scrollspy) return;
 		if (!breadcrumb) return;
-		pageDiv.onscroll = () => {
+		const off = on(pageDiv, 'scroll', () => {
 			cancelAnimationFrame(scrollRafId);
 			scrollRafId = requestAnimationFrame(() => {
 				const threshold = getSpyBottom() + scrollspyThreshold;
@@ -43,14 +44,14 @@
 				}
 				currentItem = nextItem;
 			});
-		};
+		});
 		const heading = pageDiv.querySelector<HTMLElement>('div.content h1');
 		const subheadings = Array.from(pageDiv.querySelectorAll<HTMLElement>('div.content h2'));
 		sections = heading ? [heading, ...subheadings] : subheadings;
-		for (const section of sections) items.push(section.innerText);
+		for (const section of sections) items.push(section.textContent.trim());
 
 		return () => {
-			pageDiv.onscroll = null;
+			off();
 			cancelAnimationFrame(scrollRafId);
 		};
 	});
@@ -102,5 +103,11 @@
 		top: 0;
 		display: flex;
 		z-index: var(--z-index-scrollspy);
+	}
+
+	@media (max-height: 430px) {
+		h4 {
+			display: none;
+		}
 	}
 </style>

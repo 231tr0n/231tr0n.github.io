@@ -1,13 +1,26 @@
+/* eslint-disable css/no-invalid-properties -- palette variables are defined in the imported everforest.css */
+@import url('/resources/snippets/everforest.css');
+
 :root {
-	--c1: #149414;
-	--c2: #9ccc9c;
-	--c3: #2b5329;
+	--color-background: var(--ef-bg0);
+	--color-surface: var(--ef-bg2);
+	--color-surface-hover: var(--ef-bg3);
+	--color-border: var(--ef-bg4);
+	--color-grid: #7a8478;
+	--color-foreground: var(--ef-fg);
+	--color-muted: var(--ef-grey2);
+	--color-accent: var(--ef-orange);
+	--color-x: #687800;
+	--color-o: var(--ef-blue);
+	--color-message-bg: var(--ef-green);
+	--color-message-fg: #1f2529;
+	--shadow: rgb(92 106 114 / 22%);
 }
 
-@font-face {
-	font-family: Roboto-Condensed;
-	src: url('/fonts/roboto-condensed.woff2') format('woff2');
-	font-display: swap;
+html.dark {
+	--color-grid: #9da9a0;
+	--color-x: var(--ef-yellow);
+	--shadow: rgb(0 0 0 / 45%);
 }
 
 * {
@@ -17,55 +30,211 @@
 	user-select: none;
 }
 
+html,
 body {
-	background: #000;
+	height: 100%;
+}
+
+body {
+	margin: 0;
+	background: var(--color-background);
+	color: var(--color-foreground);
+	transition:
+		background-color 0.3s linear,
+		color 0.3s linear;
+}
+
+.center {
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	min-height: 100%;
+	padding: 1.5em;
+	text-align: center;
 }
 
 .game-board {
-	margin: 1em;
 	display: grid;
-	grid: 50px 50px 50px / 50px 50px 50px;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
 	gap: 10px;
-	width: max-content;
+	width: min(72vw, 280px);
+	aspect-ratio: 1;
+	margin-bottom: 1.2em;
+	padding: 10px;
+	box-sizing: border-box;
+	background: var(--color-surface);
+	border: 2px solid var(--color-grid);
+	border-radius: 12px;
+	box-shadow: 0 8px 24px var(--shadow);
 }
 
 .box {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	color: var(--c2);
-	font-size: 30px;
-	background: var(--c3);
+	box-sizing: border-box;
+	aspect-ratio: 1;
+	background: var(--color-background);
+	border: 2px solid var(--color-grid);
+	border-radius: 8px;
+	color: var(--color-foreground);
+	font-size: clamp(28px, 11vw, 56px);
+	font-weight: 700;
+	line-height: 1;
+	cursor: default;
+	transition:
+		background-color 0.15s ease,
+		border-color 0.15s ease,
+		color 0.15s ease,
+		transform 0.15s ease;
 }
 
-.box:hover {
-	background: var(--c1);
+.box:not(.x):not(.o) {
+	cursor: pointer;
+}
+
+.box:not(.x):not(.o):hover {
+	background: var(--color-surface-hover);
+	border-color: var(--color-accent);
+	transform: translateY(-2px);
+}
+
+.box:focus-visible {
+	outline: 3px solid var(--color-foreground);
+	outline-offset: 2px;
+}
+
+.game-board.game-over .box {
+	cursor: default;
+}
+
+.game-board.game-over .box:hover {
+	background: var(--color-background);
+	border-color: var(--color-border);
+	transform: none;
+}
+
+.box.x {
+	color: var(--color-x);
+}
+
+.box.o {
+	color: var(--color-o);
 }
 
 button {
-	background: var(--c3);
-	color: var(--c2);
-	padding: 5px;
-	border: 2px solid var(--c3);
+	padding: 8px 22px;
+	background: var(--color-surface);
+	color: var(--color-foreground);
+	border: 2px solid var(--color-grid);
+	border-radius: 8px;
+	font-size: 16px;
+	cursor: pointer;
+	transition:
+		background-color 0.15s ease,
+		border-color 0.15s ease,
+		color 0.15s ease;
 }
 
 button:hover {
-	background: transparent;
-	color: var(--c2);
-}
-
-.center {
-	display: flex;
-	flex-direction: column;
-	align-items: center;
-	justify-content: center;
-	text-align: center;
+	background: var(--color-surface-hover);
+	border-color: var(--color-accent);
 }
 
 #message {
+	min-width: 8em;
 	margin-bottom: 1em;
-	padding: 5px;
-	background: var(--c2);
-	border: 2px solid var(--c3);
-	color: var(--c3);
+	padding: 8px 16px;
+	background: var(--color-message-bg);
+	border: 2px solid var(--color-message-bg);
+	border-radius: 8px;
+	color: var(--color-message-fg);
+	font-size: 18px;
+}
+
+@media (max-width: 380px), (max-height: 430px) {
+	.center {
+		padding: 8px;
+	}
+
+	.game-board {
+		width: min(76vw, 62vh, 224px);
+		gap: 6px;
+		margin-bottom: 8px;
+		padding: 6px;
+		border-width: 1px;
+		border-radius: 10px;
+	}
+
+	.box {
+		border-width: 1px;
+		border-radius: 6px;
+		font-size: clamp(24px, 12vw, 40px);
+	}
+
+	#message {
+		margin-bottom: 6px;
+		padding: 5px 12px;
+		border-width: 1px;
+		font-size: 14px;
+	}
+
+	button {
+		min-height: 30px;
+		padding: 5px 16px;
+		font-size: 13px;
+	}
+}
+
+@media (max-height: 260px) {
+	.center {
+		padding: 4px;
+	}
+
+	.game-board {
+		width: min(76vw, 62vh, 224px);
+		gap: 4px;
+		margin-bottom: 4px;
+		padding: 4px;
+	}
+
+	.box {
+		font-size: clamp(18px, 10vw, 32px);
+	}
+
+	#message {
+		min-width: 0;
+		margin-bottom: 3px;
+		padding: 2px 8px;
+		font-size: 11px;
+	}
+
+	button {
+		padding: 3px 10px;
+		font-size: 11px;
+	}
+}
+
+@media (max-height: 180px) {
+	.game-board {
+		width: min(76vw, 54vh, 224px);
+	}
+
+	#message {
+		margin-bottom: 3px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	body,
+	.box,
+	button {
+		transition: none;
+	}
+
+	.box:not(.x):not(.o):hover {
+		transform: none;
+	}
 }

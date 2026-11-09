@@ -12,6 +12,7 @@
 		copyFeedbackTimeout
 	} from '#lib/constants/app.constants.js';
 	import Frame from './Frame.svelte';
+	import FullscreenButton from './FullscreenButton.svelte';
 	import type { AceMode, SetCode } from '#lib/types/index.js';
 
 	let {
@@ -50,12 +51,16 @@
 
 	const copy = async () => {
 		if (!editor) return;
-		await navigator.clipboard.writeText(editor.session.getValue());
-		copied = true;
-		clearTimeout(copyTimeout);
-		copyTimeout = setTimeout(() => {
-			copied = false;
-		}, copyFeedbackTimeout);
+		try {
+			await navigator.clipboard.writeText(editor.session.getValue());
+			copied = true;
+			clearTimeout(copyTimeout);
+			copyTimeout = setTimeout(() => {
+				copied = false;
+			}, copyFeedbackTimeout);
+		} catch (error) {
+			console.error('Failed to copy editor contents', error);
+		}
 	};
 
 	const toggleWrap = () => {
@@ -89,45 +94,49 @@
 
 	onMount(() => {
 		void (async () => {
-			const { default: aceEditor } = await import('ace-code');
+			try {
+				const { default: aceEditor } = await import('ace-code');
 
-			if (!readOnly) {
-				const [vimMod, vscodeMod, beautifyMod] = await Promise.all([
-					import('ace-code/src/keyboard/vim'),
-					import('ace-code/src/keyboard/vscode'),
-					import('ace-code/src/ext/beautify')
-				]);
-				vimHandler = vimMod.default;
-				vscodeHandler = vscodeMod.default;
-				beautifyModule = beautifyMod.default;
-			}
-
-			if (!editorDiv.isConnected) return;
-			editor = aceEditor.edit(editorDiv);
-			editor.renderer.scrollBarV['width'] = editorScrollbarWidth;
-			editor.renderer.scrollBarH['height'] = editorScrollbarHeight;
-			editor.resize(true);
-			if (mode) {
-				editor.session.setMode(new mode.Mode());
-			}
-			if (readOnly) {
-				editor.setValue(code, -1);
-				editor.setHighlightActiveLine(false);
-				editor.setHighlightGutterLine(false);
-			} else {
-				if (vimMode) {
-					editor.setKeyboardHandler(vimHandler?.handler ?? null);
-				} else {
-					editor.setKeyboardHandler(vscodeHandler?.handler ?? null);
+				if (!readOnly) {
+					const [vimMod, vscodeMod, beautifyMod] = await Promise.all([
+						import('ace-code/src/keyboard/vim'),
+						import('ace-code/src/keyboard/vscode'),
+						import('ace-code/src/ext/beautify')
+					]);
+					vimHandler = vimMod.default;
+					vscodeHandler = vscodeMod.default;
+					beautifyModule = beautifyMod.default;
 				}
+
+				if (!editorDiv.isConnected) return;
+				editor = aceEditor.edit(editorDiv);
+				editor.renderer.scrollBarV['width'] = editorScrollbarWidth;
+				editor.renderer.scrollBarH['height'] = editorScrollbarHeight;
+				editor.resize(true);
+				if (mode) {
+					editor.session.setMode(new mode.Mode());
+				}
+				editor.setValue(code, -1);
+				if (readOnly) {
+					editor.setHighlightActiveLine(false);
+					editor.setHighlightGutterLine(false);
+				} else {
+					if (vimMode) {
+						editor.setKeyboardHandler(vimHandler?.handler ?? null);
+					} else {
+						editor.setKeyboardHandler(vscodeHandler?.handler ?? null);
+					}
+				}
+				editor.setFontSize(editorFontSize);
+				editor.session.setUseWrapMode(wrap);
+				editor.setReadOnly(readOnly);
+				editor.session.setTabSize(editorTabSize);
+				editor.session.setUseSoftTabs(true);
+				editor.setShowPrintMargin(false);
+				editor.setOption('enableMobileMenu', false);
+			} catch (error) {
+				console.error('Failed to initialize editor', error);
 			}
-			editor.setFontSize(editorFontSize);
-			editor.session.setUseWrapMode(wrap);
-			editor.setReadOnly(readOnly);
-			editor.session.setTabSize(editorTabSize);
-			editor.session.setUseSoftTabs(true);
-			editor.setShowPrintMargin(false);
-			editor.setOption('enableMobileMenu', false);
 		})();
 
 		return () => {
@@ -183,64 +192,40 @@
 				</svg>
 			{/if}
 		</button>
-		<button
-			class="zeltron-inline-flex-middle"
-			aria-label="Toggle fullscreen"
-			onclick={toggleFullscreen}
-			type="button">
-			{#if fullscreen === false}
-				<svg
-					fill="currentColor"
-					height="16"
-					viewBox="0 0 16 16"
-					width="16"
-					xmlns="http://www.w3.org/2000/svg">
-					<path
-						d="M1.5 1a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4A1.5 1.5 0 0 1 1.5 0h4a.5.5 0 0 1 0 1h-4zM10 .5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 16 1.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zM.5 10a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 0 14.5v-4a.5.5 0 0 1 .5-.5zm15 0a.5.5 0 0 1 .5.5v4a1.5 1.5 0 0 1-1.5 1.5h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5z" />
-				</svg>
-			{:else}
-				<svg
-					fill="currentColor"
-					height="16"
-					viewBox="0 0 16 16"
-					width="16"
-					xmlns="http://www.w3.org/2000/svg">
-					<path
-						d="M5.5 0a.5.5 0 0 1 .5.5v4A1.5 1.5 0 0 1 4.5 6h-4a.5.5 0 0 1 0-1h4a.5.5 0 0 0 .5-.5v-4a.5.5 0 0 1 .5-.5zm5 0a.5.5 0 0 1 .5.5v4a.5.5 0 0 0 .5.5h4a.5.5 0 0 1 0 1h-4A1.5 1.5 0 0 1 10 4.5v-4a.5.5 0 0 1 .5-.5zM0 10.5a.5.5 0 0 1 .5-.5h4A1.5 1.5 0 0 1 6 11.5v4a.5.5 0 0 1-1 0v-4a.5.5 0 0 0-.5-.5h-4a.5.5 0 0 1-.5-.5zm10 1a1.5 1.5 0 0 1 1.5-1.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 0-.5.5v4a.5.5 0 0 1-1 0v-4z" />
-				</svg>
-			{/if}
-		</button>
-		<button
-			class="zeltron-inline-flex-middle"
-			aria-label="Wrap"
-			aria-pressed={wrap}
-			onclick={toggleWrap}
-			type="button">
-			{#if wrap}
-				<svg
-					fill="currentColor"
-					height="16"
-					viewBox="0 0 16 16"
-					width="16"
-					xmlns="http://www.w3.org/2000/svg">
-					<line stroke="currentColor" stroke-width="1" x1="0" x2="16" y1="0" y2="16" />
-					<path
-						d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h9a2.5 2.5 0 0 1 0 5h-1.293l.647.646a.5.5 0 0 1-.708.708l-1.5-1.5a.5.5 0 0 1 0-.708l1.5-1.5a.5.5 0 0 1 .708.708l-.647.646H11.5a1.5 1.5 0 0 0 0-3h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5"
-						fill-rule="evenodd" />
-				</svg>
-			{:else}
-				<svg
-					fill="currentColor"
-					height="16"
-					viewBox="0 0 16 16"
-					width="16"
-					xmlns="http://www.w3.org/2000/svg">
-					<path
-						d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h9a2.5 2.5 0 0 1 0 5h-1.293l.647.646a.5.5 0 0 1-.708.708l-1.5-1.5a.5.5 0 0 1 0-.708l1.5-1.5a.5.5 0 0 1 .708.708l-.647.646H11.5a1.5 1.5 0 0 0 0-3h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5"
-						fill-rule="evenodd" />
-				</svg>
-			{/if}
-		</button>
+		<FullscreenButton {fullscreen} {toggleFullscreen} />
+		{#if !readOnly}
+			<button
+				class="zeltron-inline-flex-middle"
+				aria-label="Wrap"
+				aria-pressed={wrap}
+				onclick={toggleWrap}
+				type="button">
+				{#if wrap}
+					<svg
+						fill="currentColor"
+						height="16"
+						viewBox="0 0 16 16"
+						width="16"
+						xmlns="http://www.w3.org/2000/svg">
+						<line stroke="currentColor" stroke-width="1" x1="0" x2="16" y1="0" y2="16" />
+						<path
+							d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h9a2.5 2.5 0 0 1 0 5h-1.293l.647.646a.5.5 0 0 1-.708.708l-1.5-1.5a.5.5 0 0 1 0-.708l1.5-1.5a.5.5 0 0 1 .708.708l-.647.646H11.5a1.5 1.5 0 0 0 0-3h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5"
+							fill-rule="evenodd" />
+					</svg>
+				{:else}
+					<svg
+						fill="currentColor"
+						height="16"
+						viewBox="0 0 16 16"
+						width="16"
+						xmlns="http://www.w3.org/2000/svg">
+						<path
+							d="M2 3.5a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5h9a2.5 2.5 0 0 1 0 5h-1.293l.647.646a.5.5 0 0 1-.708.708l-1.5-1.5a.5.5 0 0 1 0-.708l1.5-1.5a.5.5 0 0 1 .708.708l-.647.646H11.5a1.5 1.5 0 0 0 0-3h-9a.5.5 0 0 1-.5-.5m0 4a.5.5 0 0 1 .5-.5H7a.5.5 0 0 1 0 1H2.5a.5.5 0 0 1-.5-.5"
+							fill-rule="evenodd" />
+					</svg>
+				{/if}
+			</button>
+		{/if}
 		{#if !readOnly}
 			<button
 				class="zeltron-inline-flex-middle"
@@ -271,18 +256,20 @@
 						d="M6.854 4.646a.5.5 0 0 1 0 .708L4.207 8l2.647 2.646a.5.5 0 0 1-.708.708l-3-3a.5.5 0 0 1 0-.708l3-3a.5.5 0 0 1 .708 0zm2.292 0a.5.5 0 0 0 0 .708L11.793 8l-2.647 2.646a.5.5 0 0 0 .708.708l3-3a.5.5 0 0 0 0-.708l-3-3a.5.5 0 0 0-.708 0z" />
 				</svg>
 			</button>
-			<button class="zeltron-inline-flex-middle" aria-label="Run" onclick={execute} type="button">
-				<svg
-					fill="currentColor"
-					height="16"
-					viewBox="0 0 16 16"
-					width="16"
-					xmlns="http://www.w3.org/2000/svg">
-					<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
-					<path
-						d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z" />
-				</svg>
-			</button>
+			{#if setCode}
+				<button class="zeltron-inline-flex-middle" aria-label="Run" onclick={execute} type="button">
+					<svg
+						fill="currentColor"
+						height="16"
+						viewBox="0 0 16 16"
+						width="16"
+						xmlns="http://www.w3.org/2000/svg">
+						<path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z" />
+						<path
+							d="M6.271 5.055a.5.5 0 0 1 .52.038l3.5 2.5a.5.5 0 0 1 0 .814l-3.5 2.5A.5.5 0 0 1 6 10.5v-5a.5.5 0 0 1 .271-.445z" />
+					</svg>
+				</button>
+			{/if}
 		{/if}
 	{/snippet}
 	<div bind:this={editorDiv} class="editor-height"></div>
@@ -321,7 +308,7 @@
 	}
 
 	button {
-		padding: 3px;
+		padding: 4px;
 	}
 
 	svg {

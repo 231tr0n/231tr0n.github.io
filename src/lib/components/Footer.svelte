@@ -15,13 +15,13 @@
 			<img alt="Gmail" src="/images/gmail.svg" />
 		</a>
 		<a href="https://www.github.com/231tr0n">
-			<img class="github" alt="Github" src="/images/github-dark.svg" />
+			<img class="github" alt="GitHub" src="/images/github-dark.svg" />
 		</a>
 		<a href="https://codeberg.org/231tr0n">
 			<img alt="Codeberg" src="/images/codeberg.svg" />
 		</a>
 		<a href="https://www.gitlab.com/231tr0n">
-			<img alt="Gitlab" src="/images/gitlab.svg" />
+			<img alt="GitLab" src="/images/gitlab.svg" />
 		</a>
 		<a href="https://www.linkedin.com/in/231tr0n">
 			<img alt="LinkedIn" src="/images/linkedin.svg" />
@@ -49,10 +49,6 @@
 </footer>
 
 <style>
-	.github {
-		content: url('/images/github-dark.svg');
-	}
-
 	:global(body.dark) .github {
 		content: url('/images/github-light.svg');
 	}

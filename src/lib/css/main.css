@@ -19,7 +19,6 @@
 	--z-index-footer: 7;
 
 	--color-everforest-dark-aqua: #83c092;
-	--color-everforest-dark-bg-dim: #232a2e;
 	--color-everforest-dark-bg-visual: #543a48;
 	--color-everforest-dark-bg0: #2d353b;
 	--color-everforest-dark-bg1: #343f44;
@@ -39,7 +38,6 @@
 	--color-everforest-dark-yellow: #dbbc7f;
 
 	--color-everforest-light-aqua: #35a77c;
-	--color-everforest-light-bg-dim: #efebd4;
 	--color-everforest-light-bg-visual: #eaedc8;
 	--color-everforest-light-bg0: #fdf6e3;
 	--color-everforest-light-bg1: #f4f0d9;
@@ -58,7 +56,7 @@
 	--color-everforest-light-red: #f85552;
 	--color-everforest-light-yellow: #dfa000;
 
-	--color-anchor: var(--color-everforest-light-orange);
+	--color-anchor: #b45309;
 	--color-background: var(--color-everforest-light-bg0);
 	--color-badge-background: transparent;
 	--color-badge-foreground: var(--color-everforest-light-blue);
@@ -158,6 +156,7 @@ progress::-webkit-progress-bar {
 
 a {
 	text-decoration: none;
+	overflow-wrap: anywhere;
 	color: var(--color-anchor);
 }
 
@@ -169,13 +168,8 @@ a img {
 	border: 2px solid transparent;
 }
 
-a img:hover,
-a img.border-img:hover {
+a img:hover {
 	border: 2px solid var(--color-anchor);
-}
-
-a img.border-img {
-	border: 2px solid var(--color-component-background);
 }
 
 body {
@@ -193,6 +187,14 @@ button {
 	color: var(--color-button-foreground);
 	border: 2px solid transparent;
 	outline: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+	outline: 2px solid var(--color-anchor);
+	outline-offset: 2px;
 }
 
 button:hover {
@@ -245,6 +247,7 @@ ol {
 
 li,
 p {
+	overflow-wrap: anywhere;
 	text-align: justify;
 }
 
@@ -270,10 +273,6 @@ hr {
 	align-items: center;
 }
 
-.zeltron-box-shadow {
-	box-shadow: 0 0 5px var(--color-foreground);
-}
-
 .zeltron-error {
 	font-size: 30px;
 	padding: 1em;
@@ -286,20 +285,11 @@ hr {
 	color: var(--color-foreground);
 }
 
-.zeltron-anchor {
-	border: 2px solid transparent;
-}
-
-.zeltron-anchor:hover {
-	border: 2px solid var(--color-anchor);
-}
-
 .zeltron-border,
 .zeltron-component-border {
 	border: 1px solid var(--color-component-background);
 }
 
-.zeltron-thick-border,
 .zeltron-thick-component-border {
 	border: 2px solid var(--color-component-background);
 }

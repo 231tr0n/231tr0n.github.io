@@ -8,6 +8,7 @@
 		contextLabel = '',
 		frameClass = '',
 		noBackground = false,
+		compact = false,
 		children,
 		toolbar,
 		onFullscreenChange
@@ -17,6 +18,7 @@
 		contextLabel?: string;
 		frameClass?: string;
 		noBackground?: boolean;
+		compact?: boolean;
 		children: Snippet;
 		toolbar?: Snippet<[{ toggleFullscreen: () => Promise<void>; fullscreen: boolean }]>;
 		onFullscreenChange?: (fullscreen: boolean) => void;
@@ -26,10 +28,14 @@
 	let fullscreenState = $state(false);
 
 	const toggleFullscreen = async () => {
-		if (document.fullscreenElement === frameDiv) {
-			await document.exitFullscreen();
-		} else {
-			await frameDiv.requestFullscreen();
+		try {
+			if (document.fullscreenElement === frameDiv) {
+				await document.exitFullscreen();
+			} else {
+				await frameDiv.requestFullscreen();
+			}
+		} catch (error) {
+			console.error('Failed to toggle fullscreen', error);
 		}
 	};
 
@@ -42,7 +48,10 @@
 	});
 </script>
 
-<div class="frame-wrapper zeltron-flex-middle" class:zeltron-body-background={!noBackground}>
+<div
+	class="frame-wrapper zeltron-flex-middle"
+	class:compact
+	class:zeltron-body-background={!noBackground}>
 	<div
 		bind:this={frameDiv}
 		class="zeltron-thick-component-border {frameClass}"
@@ -70,6 +79,15 @@
 		flex-direction: column;
 		margin-top: 1em;
 		margin-bottom: 1em;
+	}
+
+	.frame-wrapper.compact {
+		margin: 0;
+	}
+
+	.frame-wrapper.compact .filename,
+	.frame-wrapper.compact .context {
+		display: none;
 	}
 
 	.filename {

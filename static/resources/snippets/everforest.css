@@ -1,0 +1,45 @@
+:root {
+	--ef-bg0: #fdf6e3;
+	--ef-bg1: #f4f0d9;
+	--ef-bg2: #efebd4;
+	--ef-bg3: #e6e2cc;
+	--ef-bg4: #e0dcc7;
+	--ef-bg5: #bdc3af;
+	--ef-fg: #5c6a72;
+	--ef-grey0: #a6b0a0;
+	--ef-grey1: #939f91;
+	--ef-grey2: #829181;
+	--ef-red: #f85552;
+	--ef-green: #8da101;
+	--ef-yellow: #dfa000;
+	--ef-blue: #3a94c5;
+	--ef-purple: #df69ba;
+	--ef-aqua: #35a77c;
+	--ef-orange: #f57d26;
+}
+
+html.dark {
+	--ef-bg0: #2d353b;
+	--ef-bg1: #343f44;
+	--ef-bg2: #3d484d;
+	--ef-bg3: #475258;
+	--ef-bg4: #4f585e;
+	--ef-bg5: #56635f;
+	--ef-fg: #d3c6aa;
+	--ef-grey0: #7a8478;
+	--ef-grey1: #859289;
+	--ef-grey2: #9da9a0;
+	--ef-red: #e67e80;
+	--ef-green: #a7c080;
+	--ef-yellow: #dbbc7f;
+	--ef-blue: #7fbbb3;
+	--ef-purple: #d699b6;
+	--ef-aqua: #83c092;
+	--ef-orange: #e69875;
+}
+
+@font-face {
+	font-family: Roboto-Condensed;
+	src: url('/fonts/roboto-condensed.woff2') format('woff2');
+	font-display: swap;
+}

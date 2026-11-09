@@ -32,7 +32,6 @@ export const scrollbarMinThumbV = 20;
 export const scrollbarMinThumbH = 20;
 export const scrollbarTrackSize = 5;
 export const scrollbarZIndex = 7;
-export const scrollbarAceSetupTimeout = 3000;
 export const scrollbarHideEpsilon = 1;
 export const scrollbarTrackOverhang = 2;
 

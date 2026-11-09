@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { slide } from 'svelte/transition';
 	import { selectPaddingOffset } from '#lib/constants/app.constants.js';
-	import type { OnSetSelectedItem } from '#lib/types/index.js';
+	import type { SetSelectedItem } from '#lib/types/index.js';
 
 	let {
 		items,
@@ -16,7 +16,7 @@
 		currentItem: number;
 		colored: boolean;
 		fixedWidth?: boolean;
-		onSetSelectedItem: OnSetSelectedItem | null;
+		onSetSelectedItem: SetSelectedItem | null;
 	} = $props();
 
 	let open = $state(false);
@@ -138,6 +138,7 @@
 		justify-content: space-between;
 		align-items: center;
 		position: relative;
+		min-height: 24px;
 	}
 
 	.select-context.fixedWidth {
@@ -155,7 +156,7 @@
 		width: fit-content;
 		display: flex;
 		flex-direction: column;
-		max-height: 250px;
+		max-height: min(250px, calc(100vh - 150px));
 		overflow: auto;
 	}
 

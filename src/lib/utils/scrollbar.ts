@@ -1,6 +1,11 @@
-import { syncScroll, attachAxis, doubleAnimationFrame, makeTrack } from './scrollbar-core';
-import { processAce, ensureAceProcessed, type AceScrollbarInstance } from './scrollbar-ace';
-import { scrollbarTrackSize, scrollbarTrackOverhang } from '#lib/constants/app.constants.js';
+import {
+	syncScroll,
+	attachAxis,
+	doubleAnimationFrame,
+	makeTrack,
+	styleTrack
+} from './scrollbar-core.js';
+import { processAce, type AceScrollbarInstance } from './scrollbar-ace.js';
 
 const initScrollbar = (
 	node: HTMLElement,
@@ -136,10 +141,7 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 				const trackParts = makeTrack('v');
 				vTrack = trackParts.track;
 				vThumb = trackParts.thumb;
-				vTrack.style.top = '0';
-				vTrack.style.right = '0';
-				vTrack.style.width = `${String(scrollbarTrackSize)}px`;
-				vTrack.style.height = `calc(100% + ${String(scrollbarTrackOverhang)}px)`;
+				styleTrack(vTrack, 'v');
 				parent.appendChild(vTrack);
 			}
 		}
@@ -152,10 +154,7 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 				const trackParts = makeTrack('h');
 				hTrack = trackParts.track;
 				hThumb = trackParts.thumb;
-				hTrack.style.bottom = '0';
-				hTrack.style.left = '0';
-				hTrack.style.right = '0';
-				hTrack.style.height = `${String(scrollbarTrackSize)}px`;
+				styleTrack(hTrack, 'h');
 				parent.appendChild(hTrack);
 			}
 		}
@@ -173,10 +172,10 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 			? node
 			: node.closest<HTMLElement>('.ace_editor');
 		if (editor) {
-			ensureAceProcessed(editor, aceInstances);
+			processAce(editor, aceInstances);
 		} else {
 			const editors = node.querySelectorAll<HTMLElement>('.ace_editor');
-			for (const aceEditor of editors) ensureAceProcessed(aceEditor, aceInstances);
+			for (const aceEditor of editors) processAce(aceEditor, aceInstances);
 		}
 
 		processScrollable(node);

@@ -3,8 +3,20 @@ import {
 	scrollbarMinThumbV,
 	scrollbarMinThumbH,
 	scrollbarTrackSize,
-	scrollbarHideEpsilon
+	scrollbarHideEpsilon,
+	scrollbarTrackOverhang,
+	percentageScale
 } from '#lib/constants/app.constants.js';
+
+const disableSmoothScroll = (node: HTMLElement): (() => void) => {
+	const value = node.style.getPropertyValue('scroll-behavior');
+	const priority = node.style.getPropertyPriority('scroll-behavior');
+	node.style.setProperty('scroll-behavior', 'auto');
+	return () => {
+		if (value) node.style.setProperty('scroll-behavior', value, priority);
+		else node.style.removeProperty('scroll-behavior');
+	};
+};
 
 export const makeTrack = (dir: 'v' | 'h') => {
 	const track = document.createElement('div');
@@ -24,6 +36,20 @@ export const makeTrack = (dir: 'v' | 'h') => {
 	return { track, thumb };
 };
 
+export const styleTrack = (track: HTMLElement, dir: 'v' | 'h'): void => {
+	if (dir === 'v') {
+		track.style.top = '0';
+		track.style.right = '0';
+		track.style.width = `${String(scrollbarTrackSize)}px`;
+		track.style.height = `calc(100% + ${String(scrollbarTrackOverhang)}px)`;
+	} else {
+		track.style.bottom = '0';
+		track.style.left = '0';
+		track.style.right = '0';
+		track.style.height = `${String(scrollbarTrackSize)}px`;
+	}
+};
+
 export const doubleAnimationFrame = (fn: () => void) => {
 	requestAnimationFrame(() => {
 		requestAnimationFrame(fn);
@@ -40,7 +66,6 @@ const getThumbGeometry = (node: HTMLElement, track: HTMLElement, dir: 'v' | 'h')
 		(clientSize / scrollSize) * trackSize
 	);
 	return {
-		isVertical,
 		scrollSize,
 		clientSize,
 		trackSize,
@@ -105,7 +130,7 @@ export const setupDrag = (
 		const scrollRange = scrollSize - clientSize;
 		if (scrollRange <= 0 || maxPos <= 0) return;
 
-		node.style.setProperty('scroll-behavior', 'auto');
+		const restoreScrollBehavior = disableSmoothScroll(node);
 
 		const startThumbPos = (startScrollPos / scrollRange) * maxPos;
 		if (isVertical) {
@@ -130,7 +155,7 @@ export const setupDrag = (
 		const cleanupMove = on(document, 'mousemove', onMove);
 		const cleanupUp = on(document, 'mouseup', cleanupDrag);
 		dragCleanup = () => {
-			node.style.removeProperty('scroll-behavior');
+			restoreScrollBehavior();
 			cleanupMove();
 			cleanupUp();
 		};
@@ -152,13 +177,13 @@ export const setupTrackClick = (track: HTMLElement, node: HTMLElement, dir: 'v' 
 		if (!scrollRange) return;
 
 		const rect = track.getBoundingClientRect();
-		node.style.setProperty('scroll-behavior', 'auto');
+		const restoreScrollBehavior = disableSmoothScroll(node);
 		if (isVertical) {
 			node.scrollTop = ((event.clientY - rect.top) / rect.height) * scrollRange;
 		} else {
 			node.scrollLeft = ((event.clientX - rect.left) / rect.width) * scrollRange;
 		}
-		node.style.removeProperty('scroll-behavior');
+		restoreScrollBehavior();
 	});
 	return cleanup;
 };
@@ -173,7 +198,7 @@ export const updateThumbAriaLabel = (node: HTMLElement, thumb: HTMLElement, dir:
 		return;
 	}
 	const clamped = Math.max(0, Math.min(scrollPos, scrollSize - clientSize));
-	const percent = Math.round((clamped / (scrollSize - clientSize)) * 100);
+	const percent = Math.round((clamped / (scrollSize - clientSize)) * percentageScale);
 	thumb.setAttribute('aria-label', `Scroll: ${String(percent)}%`);
 };
 

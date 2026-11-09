@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
 
-	let canonicalUrl = $derived(`${__SITE_URL__}${page.url.pathname}`);
+	const canonicalUrl = $derived(`${__SITE_URL__}${page.url.pathname}`);
 </script>
 
 <svelte:head>

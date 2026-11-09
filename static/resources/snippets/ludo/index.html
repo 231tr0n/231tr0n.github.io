@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<link rel="stylesheet" href="style.css" />
+		<script src="../theme.js"></script>
+		<title>Ludo</title>
+	</head>
+
+	<body>
+		<main class="app">
+			<section id="setup" class="overlay setup-overlay">
+				<div class="panel">
+					<h1>Ludo</h1>
+					<p class="subtitle">Choose the number of players.</p>
+					<div id="count-row" class="count-row">
+						<button class="count-button" data-count="2">2</button>
+						<button class="count-button" data-count="3">3</button>
+						<button class="count-button" data-count="4">4</button>
+					</div>
+					<button id="start" class="primary">Start Game</button>
+					<p class="hint">4 tokens each. Roll a 6 to leave the yard.</p>
+				</div>
+			</section>
+
+			<section id="game" class="game">
+				<header class="topbar">
+					<div class="brand">Ludo</div>
+					<div id="player-strip" class="player-strip"></div>
+					<button id="restart" class="icon-button">↻</button>
+				</header>
+
+				<div class="board-wrap">
+					<div class="board">
+						<svg id="board-svg" class="board-svg"></svg>
+						<div id="token-layer" class="token-layer"></div>
+					</div>
+				</div>
+
+				<footer class="controls">
+					<div class="status">
+						<div id="turn" class="turn"></div>
+						<div id="message" class="message">Best of luck.</div>
+						<div id="move-bar" class="move-bar"></div>
+					</div>
+					<button id="dice" class="dice">
+						<span class="dice-face">
+							<span class="pip"></span>
+							<span class="pip"></span>
+							<span class="pip"></span>
+							<span class="pip"></span>
+							<span class="pip"></span>
+							<span class="pip"></span>
+							<span class="pip"></span>
+							<span class="pip"></span>
+							<span class="pip"></span>
+						</span>
+						<span class="dice-label">Roll</span>
+					</button>
+				</footer>
+			</section>
+
+			<section class="overlay gameover-overlay" hidden>
+				<div class="panel gameover-panel">
+					<div id="winner-dot" class="winner-dot"></div>
+					<h2 id="winner-label">Winner</h2>
+					<p id="winner-sub" class="subtitle">All 4 tokens made it home.</p>
+					<button id="again" class="primary">Play Again</button>
+				</div>
+			</section>
+		</main>
+		<script src="index.js"></script>
+	</body>
+</html>

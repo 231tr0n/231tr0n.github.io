@@ -5,6 +5,7 @@
 	import luaMode from 'ace-code/src/mode/lua';
 	import { onMount } from 'svelte';
 	import { cachedFetch } from '#lib/utils/fetch-cache.js';
+	import { getPluginsInConfig, getSectionsInConfig } from '#lib/utils/neovim-config.js';
 
 	let configData = $state<string | null>(null);
 	let configError = $state<string | null>(null);
@@ -19,64 +20,6 @@
 			configError = error instanceof Error ? error.message : 'Unknown error';
 		}
 	});
-
-	interface ConfigSection {
-		heading: string;
-		block: string;
-	}
-
-	const getSectionsInConfig = (data: string): ConfigSection[] => {
-		const sections: ConfigSection[] = [];
-		for (const block of data.split('\n\n')) {
-			const [first = '', ...rest] = block.split('\n');
-			if (!first.startsWith('-- ')) continue;
-			sections.push({ heading: first.slice(3), block: rest.join('\n') });
-		}
-		return sections;
-	};
-
-	const getPluginsInConfig = (data: string) => {
-		const plugins: string[] = [];
-		const addRegex = /vim\.pack\.add\s*\(/g;
-		let match;
-		while ((match = addRegex.exec(data)) !== null) {
-			let depth = 1;
-			let pos = match.index + match[0].length;
-			while (depth > 0 && pos < data.length) {
-				if (data.at(pos) === '(') depth++;
-				else if (data.at(pos) === ')') depth--;
-				if (depth > 0) pos++;
-			}
-			const body = data.slice(match.index + match[0].length, pos);
-			let braceDepth = 0;
-			let lastKey: string | null = null;
-			for (let i = 0; i < body.length; i++) {
-				const ch = body.at(i);
-				if (ch === undefined) continue;
-				if (ch === '{' || ch === '}') {
-					braceDepth += ch === '{' ? 1 : -1;
-					lastKey = null;
-				} else if (ch === ',') {
-					lastKey = null;
-				} else if (ch === '"') {
-					const end = body.indexOf('"', i + 1);
-					if (end === -1) break;
-					const str = body.slice(i + 1, end);
-					if (braceDepth === 0 || (braceDepth >= 1 && (lastKey === null || lastKey === 'src'))) {
-						plugins.push(str);
-					}
-					i = end;
-					lastKey = null;
-				} else if (/[a-zA-Z_]/.test(ch)) {
-					const start = i;
-					while (i < body.length && /[\w]/.test(body.at(i) ?? '')) i++;
-					lastKey = body.slice(start, i);
-					i--;
-				}
-			}
-		}
-		return [...new Set(plugins)];
-	};
 </script>
 
 <Page scrollspy={true}>
