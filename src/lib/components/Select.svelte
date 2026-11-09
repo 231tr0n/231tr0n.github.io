@@ -61,7 +61,7 @@
 		aria-label="Select item, current: {localItems.at(currentItem) ?? ''}"
 		onclick={toggleSelectionMenu}
 		type="button">
-		{localItems.at(currentItem)}
+		<span class="select-label">{localItems.at(currentItem)}</span>
 		{#if open}
 			<svg
 				fill="currentColor"
@@ -119,6 +119,7 @@
 	svg {
 		width: 15px;
 		height: 15px;
+		flex: 0 0 auto;
 		margin-left: 10px;
 	}
 
@@ -139,10 +140,19 @@
 		align-items: center;
 		position: relative;
 		min-height: 24px;
+		white-space: nowrap;
 	}
 
 	.select-context.fixedWidth {
-		width: min(100%, 10rem);
+		width: max-content;
+		max-width: 100%;
+	}
+
+	.select-label {
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.select-menu {

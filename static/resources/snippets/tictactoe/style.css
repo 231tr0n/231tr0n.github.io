@@ -1,28 +1,6 @@
 /* eslint-disable css/no-invalid-properties -- palette variables are defined in the imported everforest.css */
 @import url('/resources/snippets/everforest.css');
 
-:root {
-	--color-background: var(--ef-bg0);
-	--color-surface: var(--ef-bg2);
-	--color-surface-hover: var(--ef-bg3);
-	--color-border: var(--ef-bg4);
-	--color-grid: #7a8478;
-	--color-foreground: var(--ef-fg);
-	--color-muted: var(--ef-grey2);
-	--color-accent: var(--ef-orange);
-	--color-x: #687800;
-	--color-o: var(--ef-blue);
-	--color-message-bg: var(--ef-green);
-	--color-message-fg: #1f2529;
-	--shadow: rgb(92 106 114 / 22%);
-}
-
-html.dark {
-	--color-grid: #9da9a0;
-	--color-x: var(--ef-yellow);
-	--shadow: rgb(0 0 0 / 45%);
-}
-
 * {
 	font-family: Roboto-Condensed, monospace;
 	-webkit-user-select: none;
@@ -65,7 +43,7 @@ body {
 	padding: 10px;
 	box-sizing: border-box;
 	background: var(--color-surface);
-	border: 2px solid var(--color-grid);
+	border: 2px solid var(--color-border);
 	border-radius: 12px;
 	box-shadow: 0 8px 24px var(--shadow);
 }
@@ -77,7 +55,7 @@ body {
 	box-sizing: border-box;
 	aspect-ratio: 1;
 	background: var(--color-background);
-	border: 2px solid var(--color-grid);
+	border: 2px solid var(--color-border);
 	border-radius: 8px;
 	color: var(--color-foreground);
 	font-size: clamp(28px, 11vw, 56px);
@@ -128,7 +106,7 @@ button {
 	padding: 8px 22px;
 	background: var(--color-surface);
 	color: var(--color-foreground);
-	border: 2px solid var(--color-grid);
+	border: 2px solid var(--color-border);
 	border-radius: 8px;
 	font-size: 16px;
 	cursor: pointer;

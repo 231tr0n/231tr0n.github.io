@@ -85,11 +85,6 @@
 		margin: 0;
 	}
 
-	.frame-wrapper.compact .filename,
-	.frame-wrapper.compact .context {
-		display: none;
-	}
-
 	.filename {
 		border-bottom: 1px solid var(--color-component-foreground);
 	}

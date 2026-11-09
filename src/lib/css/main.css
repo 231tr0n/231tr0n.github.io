@@ -56,7 +56,7 @@
 	--color-everforest-light-red: #f85552;
 	--color-everforest-light-yellow: #dfa000;
 
-	--color-anchor: #b45309;
+	--color-anchor: var(--color-everforest-light-orange);
 	--color-background: var(--color-everforest-light-bg0);
 	--color-badge-background: transparent;
 	--color-badge-foreground: var(--color-everforest-light-blue);

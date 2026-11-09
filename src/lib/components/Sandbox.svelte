@@ -46,9 +46,8 @@
 		}
 		const { dark } = darkMode();
 		const bg =
-			getComputedStyle(document.body).getPropertyValue('--color-background').trim() ||
-			(dark ? '#2d353b' : '#fdf6e3');
-		const style = `<style>html { background: ${bg}; }</style>`;
+			getComputedStyle(document.body).getPropertyValue('--color-background').trim() || 'Canvas';
+		const style = `<style>html { background: ${bg}; color-scheme: ${dark ? 'dark' : 'light'}; }</style>`;
 		if (/<head\b[^>]*>/i.test(srcDoc)) {
 			iframe.srcdoc = srcDoc.replace(/<head\b[^>]*>/i, (head) => `${head}${style}`);
 		} else if (/<html\b[^>]*>/i.test(srcDoc)) {
@@ -91,12 +90,29 @@
 	}
 
 	:global(.iframe.compact) {
+		display: flex;
+		flex-direction: column;
 		height: calc(100vh - var(--layout-header-height) - var(--layout-footer-height));
 		max-width: 100%;
 	}
 
 	:global(.iframe.compact iframe) {
-		height: 100%;
+		flex: 1 1 auto;
+		height: auto;
+		min-height: 0;
+	}
+
+	:global(.iframe:fullscreen) {
+		display: flex;
+		flex-direction: column;
+		height: 100vh;
+		max-width: none;
+	}
+
+	:global(.iframe:fullscreen iframe) {
+		flex: 1 1 auto;
+		height: auto;
+		min-height: 0;
 	}
 
 	iframe {

@@ -1,7 +1,15 @@
 import { render, screen } from '@testing-library/svelte';
-import { describe, expect, it, vi } from 'vitest';
+import { afterEach, describe, expect, it, vi } from 'vitest';
 import { selectPaddingOffset } from '#lib/constants/app.constants.js';
 import Select from './Select.svelte';
+
+const originalClientWidth = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'clientWidth');
+
+afterEach(() => {
+	if (originalClientWidth)
+		Object.defineProperty(HTMLElement.prototype, 'clientWidth', originalClientWidth);
+	else Reflect.deleteProperty(HTMLElement.prototype, 'clientWidth');
+});
 
 describe('Select', () => {
 	it('opens, selects an item and closes', async () => {
@@ -17,6 +25,8 @@ describe('Select', () => {
 		});
 		const context = screen.getByRole('button', { name: /Select item, current: Two/ });
 		expect(context).toHaveClass('zeltron-strong-component');
+		expect(document.querySelector('.measure')).toBeNull();
+		expect(context.querySelector('.select-label')).toHaveTextContent('Two');
 
 		context.click();
 		await vi.waitFor(() => {
@@ -29,7 +39,8 @@ describe('Select', () => {
 		});
 	});
 
-	it('supports an empty item and a null callback', async () => {
+	it('supports an empty item and reports its shifted index', async () => {
+		const onSelect = vi.fn();
 		render(Select, {
 			props: {
 				items: ['One'],
@@ -37,7 +48,7 @@ describe('Select', () => {
 				currentItem: 0,
 				colored: false,
 				fixedWidth: true,
-				onSetSelectedItem: null
+				onSetSelectedItem: onSelect
 			}
 		});
 		const context = screen.getByRole('button', { name: /Select item, current:/ });
@@ -46,26 +57,38 @@ describe('Select', () => {
 			expect(screen.getByRole('button', { name: 'One' })).toBeInTheDocument();
 		});
 		screen.getByRole('button', { name: 'One' }).click();
+		expect(onSelect).toHaveBeenCalledWith(1);
 		await vi.waitFor(() => {
 			expect(screen.queryByRole('button', { name: 'One' })).not.toBeInTheDocument();
 		});
 	});
 
-	it('renders a width measurement when not fixed width', () => {
-		render(Select, {
-			props: {
-				items: ['Longer item', 'Short'],
-				currentItem: 0,
-				colored: false,
-				fixedWidth: false,
-				onSetSelectedItem: vi.fn()
+	it('measures and updates the width for the longest item', async () => {
+		const original = Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'clientWidth');
+		Object.defineProperty(HTMLElement.prototype, 'clientWidth', {
+			configurable: true,
+			get(this: HTMLElement) {
+				return (this.textContent?.length ?? 0) * 8;
 			}
 		});
+		const props = {
+			items: ['Longer item', 'Short'],
+			currentItem: 0,
+			colored: false,
+			fixedWidth: false,
+			onSetSelectedItem: vi.fn()
+		};
+		const { rerender } = render(Select, { props });
 		const measure = document.querySelector<HTMLElement>('.measure');
-		expect(measure).toBeInTheDocument();
 		expect(measure?.textContent).toBe('Longer item');
-		expect(screen.getByRole('button', { name: /Select item/ })).toHaveStyle({
-			width: `${String(Math.ceil(measure?.clientWidth ?? 0) + selectPaddingOffset)}px`
+		const context = screen.getByRole('button', { name: /Select item/ });
+		expect(context).toHaveStyle({ width: `${String(11 * 8 + selectPaddingOffset)}px` });
+
+		await rerender({ ...props, items: ['A much longer item', 'Short'] });
+		await vi.waitFor(() => {
+			expect(context).toHaveStyle({ width: `${String(18 * 8 + selectPaddingOffset)}px` });
 		});
+		if (original) Object.defineProperty(HTMLElement.prototype, 'clientWidth', original);
+		else Reflect.deleteProperty(HTMLElement.prototype, 'clientWidth');
 	});
 });

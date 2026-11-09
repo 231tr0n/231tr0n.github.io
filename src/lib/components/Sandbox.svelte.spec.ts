@@ -5,6 +5,9 @@ import Sandbox from './Sandbox.svelte';
 import { darkMode } from '#lib/utils/dark.svelte.js';
 import { sandboxPolicy } from '#lib/constants/app.constants.js';
 
+const themeStyle = (dark = false) =>
+	`<style>html { background: Canvas; color-scheme: ${dark ? 'dark' : 'light'}; }</style>`;
+
 beforeEach(() => {
 	darkMode().dark = false;
 	document.body.classList.remove('dark');
@@ -28,11 +31,25 @@ describe('Sandbox', () => {
 		expect(screen.getByText('A game')).toBeInTheDocument();
 	});
 
+	it('wires the fullscreen button to the frame', async () => {
+		const requestFullscreen = vi
+			.spyOn(HTMLElement.prototype, 'requestFullscreen')
+			.mockImplementation(async () => undefined);
+		render(Sandbox, {
+			props: { src: '/game.html', title: 'Game', description: 'A game', compact: true }
+		});
+		screen.getByRole('button', { name: 'Toggle fullscreen' }).click();
+		await vi.waitFor(() => {
+			expect(requestFullscreen).toHaveBeenCalled();
+		});
+	});
+
 	it('renders a compact frame for embedded games', () => {
 		const { container } = render(Sandbox, {
 			props: { src: '/game.html', title: 'Game', description: 'A game', compact: true }
 		});
 		expect(container.querySelector('.frame-wrapper')).toHaveClass('compact');
+		expect(screen.getByRole('button', { name: 'Toggle fullscreen' })).toBeInTheDocument();
 	});
 
 	it('posts theme changes and load events into the iframe', async () => {
@@ -67,10 +84,9 @@ describe('Sandbox', () => {
 		});
 		const iframe = screen.getByTitle('Doc');
 		await vi.waitFor(() => {
-			const srcdoc = iframe.getAttribute('srcdoc') ?? '';
-			expect(srcdoc).toContain('<p>Hello</p>');
-			expect(srcdoc).toContain('<body>');
-			expect(srcdoc).toContain('<style>html { background: #fdf6e3; }</style>');
+			expect(iframe.getAttribute('srcdoc')).toBe(
+				`<html><head>${themeStyle()}</head><body><p>Hello</p></body></html>`
+			);
 		});
 	});
 
@@ -84,9 +100,25 @@ describe('Sandbox', () => {
 		});
 		const iframe = screen.getByTitle('Doc');
 		await vi.waitFor(() => {
-			const srcdoc = iframe.getAttribute('srcdoc') ?? '';
-			expect(srcdoc).toContain('<head><style>html { background: #fdf6e3; }</style></head>');
-			expect(srcdoc).toContain('<body><p>Hello</p></body>');
+			expect(iframe.getAttribute('srcdoc')).toBe(
+				`<html><head>${themeStyle()}</head><body><p>Hello</p></body></html>`
+			);
+		});
+	});
+
+	it('inserts the theme into an existing head element', async () => {
+		render(Sandbox, {
+			props: {
+				srcDoc: '<html><head><meta charset="utf-8" /></head><body><p>Hello</p></body></html>',
+				title: 'Doc',
+				description: 'Doc'
+			}
+		});
+		const iframe = screen.getByTitle('Doc');
+		await vi.waitFor(() => {
+			expect(iframe.getAttribute('srcdoc')).toBe(
+				`<html><head>${themeStyle()}<meta charset="utf-8" /></head><body><p>Hello</p></body></html>`
+			);
 		});
 	});
 
@@ -96,9 +128,21 @@ describe('Sandbox', () => {
 		});
 		const iframe = screen.getByTitle('Doc');
 		await vi.waitFor(() => {
-			const srcdoc = iframe.getAttribute('srcdoc') ?? '';
-			expect(srcdoc).toContain('<head><style>html { background: #fdf6e3; }</style></head>');
-			expect(srcdoc).toContain('<body><p>Hello</p></body>');
+			expect(iframe.getAttribute('srcdoc')).toBe(
+				`<html><head>${themeStyle()}</head><body><p>Hello</p></body></html>`
+			);
+		});
+	});
+
+	it('uses a dark color scheme when the site is dark', async () => {
+		darkMode().dark = true;
+		document.body.classList.add('dark');
+		render(Sandbox, {
+			props: { srcDoc: '<p>Hello</p>', title: 'Doc', description: 'Doc' }
+		});
+		const iframe = screen.getByTitle('Doc');
+		await vi.waitFor(() => {
+			expect(iframe.getAttribute('srcdoc')).toContain(themeStyle(true));
 		});
 	});
 

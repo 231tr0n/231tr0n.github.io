@@ -69,5 +69,10 @@ describe('BarGraph', () => {
 		await vi.waitFor(() => {
 			expect(container.querySelector<HTMLElement>('table')?.style.height).toBe('100%');
 		});
+
+		screen.getByRole('button', { name: 'Toggle fullscreen' }).click();
+		await vi.waitFor(() => {
+			expect(container.querySelector<HTMLElement>('table')?.style.height).toBe('10vh');
+		});
 	});
 });

@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/svelte';
+import { cleanup, render, screen } from '@testing-library/svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 import FrameHarness from '../../test/FrameHarness.svelte';
 
@@ -55,6 +55,27 @@ describe('Frame', () => {
 		await vi.waitFor(() => {
 			expect(onFullscreenChange).toHaveBeenCalledWith(false);
 		});
+	});
+
+	it('ignores fullscreen changes for another element', async () => {
+		const onFullscreenChange = vi.fn();
+		Object.defineProperty(document, 'fullscreenElement', {
+			configurable: true,
+			get: () => document.createElement('div')
+		});
+		render(FrameHarness, { props: { onFullscreenChange } });
+		document.dispatchEvent(new Event('fullscreenchange'));
+		expect(onFullscreenChange).not.toHaveBeenCalledWith(true);
+	});
+
+	it('removes its fullscreen listener when unmounted', () => {
+		const onFullscreenChange = vi.fn();
+		mockFullscreen();
+		render(FrameHarness, { props: { onFullscreenChange } });
+		cleanup();
+		const calls = onFullscreenChange.mock.calls.length;
+		document.dispatchEvent(new Event('fullscreenchange'));
+		expect(onFullscreenChange.mock.calls.length).toBe(calls);
 	});
 
 	it('logs fullscreen failures without crashing', async () => {

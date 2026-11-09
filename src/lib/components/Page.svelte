@@ -104,10 +104,4 @@
 		display: flex;
 		z-index: var(--z-index-scrollspy);
 	}
-
-	@media (max-height: 430px) {
-		h4 {
-			display: none;
-		}
-	}
 </style>

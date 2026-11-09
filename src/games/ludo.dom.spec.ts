@@ -663,11 +663,13 @@ describe('Ludo game', () => {
 		}
 	});
 
-	it('colors and positions the classic board pieces', () => {
+	it('lays out the classic board pieces', () => {
 		run('startGame(4)');
 		expect(dom?.window.document.querySelectorAll('.ring-cell.safe')).toHaveLength(8);
 		expect(dom?.window.document.querySelectorAll('.ring-cell.start')).toHaveLength(4);
 		expect(dom?.window.document.querySelectorAll('.star')).toHaveLength(4);
+		expect(dom?.window.document.querySelectorAll('.center-star')).toHaveLength(0);
+		expect(dom?.window.document.querySelectorAll('.center-circle')).toHaveLength(1);
 		for (let seat = 0; seat < 4; seat++) {
 			expect(
 				dom?.window.document.querySelectorAll(`.ring-cell.start.p${String(seat)}`)

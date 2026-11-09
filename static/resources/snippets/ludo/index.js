@@ -508,8 +508,7 @@ const buildBoard = () => {
 		`<path class="center-wedge p1" d="M${middle.toFixed(2)} ${middle.toFixed(2)} L${left.toFixed(2)} ${top.toFixed(2)} L${right.toFixed(2)} ${top.toFixed(2)} Z"></path>`,
 		`<path class="center-wedge p2" d="M${middle.toFixed(2)} ${middle.toFixed(2)} L${right.toFixed(2)} ${top.toFixed(2)} L${right.toFixed(2)} ${bottom.toFixed(2)} Z"></path>`,
 		`<path class="center-wedge p3" d="M${middle.toFixed(2)} ${middle.toFixed(2)} L${left.toFixed(2)} ${bottom.toFixed(2)} L${right.toFixed(2)} ${bottom.toFixed(2)} Z"></path>`,
-		`<circle class="center-circle" cx="${middle.toFixed(2)}" cy="${middle.toFixed(2)}" r="${(CELL * 0.34).toFixed(2)}"></circle>`,
-		`<text class="center-star" x="${middle.toFixed(2)}" y="${middle.toFixed(2)}">★</text>`
+		`<circle class="center-circle" cx="${middle.toFixed(2)}" cy="${middle.toFixed(2)}" r="${(CELL * 0.34).toFixed(2)}"></circle>`
 	);
 
 	boardSvg.innerHTML = parts.join('');
