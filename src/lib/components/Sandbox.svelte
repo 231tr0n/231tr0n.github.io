@@ -87,7 +87,7 @@
 		bind:this={iframe}
 		allowfullscreen
 		onload={() => {
-			syncTheme(document.body.classList.contains('dark'));
+			syncTheme(darkMode().dark);
 		}}
 		sandbox={allowSameOrigin && !srcDoc && isSameOrigin(src) ? trustedSandboxPolicy : sandboxPolicy}
 		{src}

@@ -167,8 +167,8 @@ describe('layout contracts', () => {
 	});
 
 	it('keeps the scrollspy sticky', () => {
-		expect(page).toMatch(/h4\s*\{[^}]*position:\s*sticky/s);
-		expect(page).toMatch(/h4\s*\{[^}]*top:\s*0/s);
+		expect(page).toMatch(/\.scrollspy\s*\{[^}]*position:\s*sticky/s);
+		expect(page).toMatch(/\.scrollspy\s*\{[^}]*top:\s*0/s);
 	});
 
 	it('keeps Select menu options on one line at least as wide as the control', () => {

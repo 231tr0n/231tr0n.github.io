@@ -14,7 +14,7 @@
 
 	let sections = $state<HTMLElement[]>([]);
 	let currentItem = $state(0);
-	let breadcrumb: HTMLHeadingElement | undefined = $state();
+	let breadcrumb: HTMLDivElement | undefined = $state();
 	const items: string[] = $state([]);
 	let pageDiv: HTMLDivElement;
 
@@ -61,9 +61,9 @@
 <div bind:this={pageDiv} class="page">
 	<div class="content">
 		{#if scrollspy}
-			<h4 bind:this={breadcrumb} class="zeltron-component zeltron-flex-middle">
+			<div bind:this={breadcrumb} class="scrollspy zeltron-component zeltron-flex-middle">
 				<Select colored={true} {currentItem} fixedWidth={true} {items} {onSetSelectedItem} />
-			</h4>
+			</div>
 		{/if}
 		{@render children?.()}
 	</div>
@@ -98,7 +98,7 @@
 		z-index: var(--z-index-page-background);
 	}
 
-	h4 {
+	.scrollspy {
 		padding: 5px;
 		position: sticky;
 		top: 0;

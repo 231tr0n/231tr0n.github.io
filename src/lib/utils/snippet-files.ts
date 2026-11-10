@@ -3,6 +3,7 @@ import { cachedFetch } from './fetch-cache';
 
 interface SnippetFileStates {
 	js: FileState;
+	storage: FileState;
 	css: FileState;
 	html: FileState;
 }
@@ -20,15 +21,22 @@ export const snippetBasePath = (indexHtml: string): string => {
 	return slash === -1 ? '' : indexHtml.slice(0, slash);
 };
 
+const parentPath = (path: string): string => {
+	const slash = path.lastIndexOf('/');
+	return slash === -1 ? '' : path.slice(0, slash);
+};
+
 export const loadSnippetFiles = async (basePath: string): Promise<SnippetFileStates> => {
 	const results = await Promise.allSettled([
 		cachedFetch(`${basePath}/index.js`),
+		cachedFetch(`${parentPath(basePath)}/storage.js`),
 		cachedFetch(`${basePath}/style.css`),
 		cachedFetch(`${basePath}/index.html`)
 	]);
 	return {
 		js: toFileState(results[0]),
-		css: toFileState(results[1]),
-		html: toFileState(results[2])
+		storage: toFileState(results[1]),
+		css: toFileState(results[2]),
+		html: toFileState(results[3])
 	};
 };

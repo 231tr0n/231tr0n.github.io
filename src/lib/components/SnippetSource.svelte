@@ -11,11 +11,13 @@
 	let { basePath }: { basePath: string } = $props();
 
 	let jsFile = $state<FileState>({ code: null, error: null });
+	let storageFile = $state<FileState>({ code: null, error: null });
 	let cssFile = $state<FileState>({ code: null, error: null });
 	let htmlFile = $state<FileState>({ code: null, error: null });
 
 	const editors = $derived([
 		{ file: jsFile, fileName: 'index.js', langName: 'javascript', mode: javascriptMode },
+		{ file: storageFile, fileName: 'storage.js', langName: 'javascript', mode: javascriptMode },
 		{ file: cssFile, fileName: 'style.css', langName: 'css', mode: cssMode },
 		{ file: htmlFile, fileName: 'index.html', langName: 'html', mode: htmlMode }
 	]);
@@ -23,6 +25,7 @@
 	onMount(async () => {
 		const files = await loadSnippetFiles(basePath);
 		jsFile = files.js;
+		storageFile = files.storage;
 		cssFile = files.css;
 		htmlFile = files.html;
 	});

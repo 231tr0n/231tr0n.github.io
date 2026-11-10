@@ -18,6 +18,7 @@ describe('loadSnippetFiles', () => {
 			vi.fn((input: RequestInfo | URL) => {
 				const url =
 					typeof input === 'string' ? input : input instanceof URL ? input.href : input.url;
+				if (url.endsWith('/storage.js')) return Promise.resolve(new Response('storage'));
 				if (url.endsWith('.js')) return Promise.resolve(new Response('js'));
 				if (url.endsWith('.css')) return Promise.resolve(new Response('css'));
 				return Promise.resolve(new Response('html'));
@@ -26,6 +27,7 @@ describe('loadSnippetFiles', () => {
 
 		await expect(loadSnippetFiles('/snippets/ludo')).resolves.toEqual({
 			js: { code: 'js', error: null },
+			storage: { code: 'storage', error: null },
 			css: { code: 'css', error: null },
 			html: { code: 'html', error: null }
 		});
@@ -44,6 +46,7 @@ describe('loadSnippetFiles', () => {
 
 		const result = await loadSnippetFiles('/snippets/ludo');
 		expect(result.js).toEqual({ code: 'ok', error: null });
+		expect(result.storage).toEqual({ code: 'ok', error: null });
 		expect(result.css).toEqual({ code: null, error: 'Fetch failed: 500' });
 		expect(result.html).toEqual({ code: 'ok', error: null });
 	});
@@ -63,6 +66,7 @@ describe('loadSnippetFiles', () => {
 
 		const result = await loadSnippetFiles('/snippets/ludo');
 		expect(result.js).toEqual({ code: null, error: 'Failed to load file' });
+		expect(result.storage).toEqual({ code: null, error: 'Failed to load file' });
 	});
 	it('derives the snippet base path and tolerates a bare filename', () => {
 		expect(snippetBasePath('/resources/snippets/ludo/index.html')).toBe('/resources/snippets/ludo');

@@ -8,6 +8,7 @@ const instance = {
 	},
 	set dark(value) {
 		dark = value;
+		if (typeof document !== 'undefined') document.body.classList.toggle('dark', value);
 	}
 };
 

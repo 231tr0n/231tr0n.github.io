@@ -4,11 +4,9 @@
 	const noop = (_fullscreen: boolean) => undefined;
 
 	let {
-		onFullscreenChange = noop,
-		noBackground = false
+		onFullscreenChange = noop
 	}: {
 		onFullscreenChange?: (fullscreen: boolean) => void;
-		noBackground?: boolean;
 	} = $props();
 </script>
 
@@ -17,7 +15,6 @@
 	contextLabel="Context"
 	frameClass="test-frame"
 	label="Test frame"
-	{noBackground}
 	{onFullscreenChange}>
 	{#snippet toolbar({ toggleFullscreen, fullscreen })}
 		<button onclick={toggleFullscreen} type="button">

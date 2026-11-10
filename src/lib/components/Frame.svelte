@@ -7,7 +7,6 @@
 		caption = '',
 		contextLabel = '',
 		frameClass = '',
-		noBackground = false,
 		compact = false,
 		children,
 		toolbar,
@@ -17,7 +16,6 @@
 		caption?: string;
 		contextLabel?: string;
 		frameClass?: string;
-		noBackground?: boolean;
 		compact?: boolean;
 		children: Snippet;
 		toolbar?: Snippet<[{ toggleFullscreen: () => Promise<void>; fullscreen: boolean }]>;
@@ -48,10 +46,7 @@
 	});
 </script>
 
-<div
-	class="frame-wrapper zeltron-flex-middle"
-	class:compact
-	class:zeltron-body-background={!noBackground}>
+<div class="frame-wrapper zeltron-flex-middle zeltron-body-background" class:compact>
 	<div
 		bind:this={frameDiv}
 		class="zeltron-thick-component-border {frameClass}"

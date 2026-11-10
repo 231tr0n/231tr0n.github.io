@@ -40,9 +40,10 @@ describe('game routes', () => {
 		expect(screen.getByText(/5 home-lane steps/)).toBeInTheDocument();
 
 		const editors = await screen.findAllByTestId('fake-codeeditor');
-		expect(editors).toHaveLength(3);
+		expect(editors).toHaveLength(4);
 		expect(editors.map((editor) => editor.textContent?.trim())).toEqual([
 			'index.js',
+			'storage.js',
 			'style.css',
 			'index.html'
 		]);
@@ -59,7 +60,7 @@ describe('game routes', () => {
 		expect(screen.getByText(/three marks in a row/)).toBeInTheDocument();
 
 		const editors = await screen.findAllByTestId('fake-codeeditor');
-		expect(editors).toHaveLength(3);
+		expect(editors).toHaveLength(4);
 		expect(screen.getByTestId('fake-sandbox')).toHaveTextContent(
 			'/resources/snippets/tictactoe/index.html'
 		);
@@ -72,6 +73,6 @@ describe('game routes', () => {
 	])('shows source loading errors for %s', async (_name, page) => {
 		fetchMock.mockRejectedValue(new Error('source unavailable'));
 		render(page);
-		expect(await screen.findAllByText('source unavailable')).toHaveLength(3);
+		expect(await screen.findAllByText('source unavailable')).toHaveLength(4);
 	});
 });

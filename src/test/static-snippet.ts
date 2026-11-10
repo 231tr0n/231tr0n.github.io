@@ -1,4 +1,5 @@
 import { JSDOM } from 'jsdom';
+import storageScript from '../../static/resources/snippets/storage.js?raw';
 import ludoHtml from '../../static/resources/snippets/ludo/index.html?raw';
 import ludoScript from '../../static/resources/snippets/ludo/index.js?raw';
 import tictactoeHtml from '../../static/resources/snippets/tictactoe/index.html?raw';
@@ -19,6 +20,9 @@ export const loadStaticSnippet = (name: 'ludo' | 'tictactoe', storage?: SnippetS
 		dom.window.sessionStorage.setItem(key, value);
 	for (const [key, value] of Object.entries(storage?.localStorage ?? {}))
 		dom.window.localStorage.setItem(key, value);
+	const storageElement = dom.window.document.createElement('script');
+	storageElement.textContent = storageScript;
+	dom.window.document.body.appendChild(storageElement);
 	const script = dom.window.document.createElement('script');
 	script.textContent = source;
 	dom.window.document.body.appendChild(script);

@@ -258,7 +258,7 @@ describe('Ludo game', () => {
 	it('keeps the rolled dice at full visibility while it is disabled', () => {
 		run('startGame(2)');
 		expect(dom?.window.document.getElementById('dice')).not.toHaveClass('showing');
-		run('state.phase = "choose"; state.current = 0; state.die = 6; render()');
+		run('state.phase = "choose"; state.current = 0; state.die = 6; commit()');
 		const dice = dom?.window.document.getElementById('dice');
 		expect(dice).toBeDisabled();
 		expect(dice).toHaveClass('showing');
@@ -276,12 +276,12 @@ describe('Ludo game', () => {
 			6: [0, 2, 3, 5, 6, 8]
 		};
 		for (const [value, active] of Object.entries(layouts)) {
-			run(`state.die = ${value}; render()`);
+			run(`state.die = ${value}; commit()`);
 			const pips = [...(dom?.window.document.querySelectorAll('.pip') ?? [])];
 			const on = pips.flatMap((pip, index) => (pip.classList.contains('on') ? [index] : []));
 			expect(on).toEqual(active);
 		}
-		run('state.die = 0; render()');
+		run('state.die = 0; commit()');
 		expect(dom?.window.document.querySelectorAll('.pip.on')).toHaveLength(0);
 	});
 
@@ -304,15 +304,15 @@ describe('Ludo game', () => {
 		expect(dice?.disabled).toBe(false);
 		expect(restart?.disabled).toBe(false);
 
-		run('state.phase = "choose"; render()');
+		run('state.phase = "choose"; commit()');
 		expect(dice?.disabled).toBe(true);
 		expect(restart?.disabled).toBe(false);
 
-		run('state.phase = "rolling"; render()');
+		run('state.phase = "rolling"; commit()');
 		expect(dice?.disabled).toBe(true);
 		expect(restart?.disabled).toBe(true);
 
-		run('state.phase = "animating"; render()');
+		run('state.phase = "animating"; commit()');
 		expect(dice?.disabled).toBe(true);
 		expect(restart?.disabled).toBe(true);
 	});
@@ -624,7 +624,7 @@ describe('Ludo game', () => {
 	it('renders stacked tokens with a count badge and disabled state', () => {
 		run('startGame(2)');
 		run(
-			'state.tokens.at(0).pos = 8; state.tokens.at(1).pos = 8; state.phase = "await-roll"; render()'
+			'state.tokens.at(0).pos = 8; state.tokens.at(1).pos = 8; state.phase = "await-roll"; commit()'
 		);
 		const stacked = dom?.window.document.querySelectorAll('.token.stacked');
 		expect(stacked).toHaveLength(2);
@@ -704,7 +704,7 @@ describe('Ludo game', () => {
 		const base = dom?.window.document.querySelector<HTMLElement>('.token.p0');
 		expect(base?.style.left).toBe('13.33%');
 		expect(base?.style.top).toBe('13.33%');
-		run('state.tokens.at(0).pos = 0; render()');
+		run('state.tokens.at(0).pos = 0; commit()');
 		expect(base?.style.left).toBe('10%');
 		expect(base?.style.top).toBe('43.33%');
 	});
@@ -754,7 +754,7 @@ describe('Ludo game', () => {
 	it('renders a three-token stack on a shared safe square', () => {
 		run('startGame(3)');
 		run(
-			'state.tokens.at(0).pos = 8; state.tokens.at(4).pos = 47; state.tokens.at(8).pos = 34; state.phase = "await-roll"; render()'
+			'state.tokens.at(0).pos = 8; state.tokens.at(4).pos = 47; state.tokens.at(8).pos = 34; state.phase = "await-roll"; commit()'
 		);
 		expect(dom?.window.document.querySelectorAll('.token.stacked')).toHaveLength(3);
 		expect(dom?.window.document.querySelector('.stack-badge')?.textContent).toBe('×3');
@@ -763,7 +763,7 @@ describe('Ludo game', () => {
 	it('renders a large stack with the fan fallback', () => {
 		run('startGame(4)');
 		run(
-			'state.tokens.forEach((token) => { token.pos = (8 - startIndex(token.player) + RING_SIZE) % RING_SIZE; }); state.phase = "await-roll"; render()'
+			'state.tokens.forEach((token) => { token.pos = (8 - startIndex(token.player) + RING_SIZE) % RING_SIZE; }); state.phase = "await-roll"; commit()'
 		);
 		expect(dom?.window.document.querySelectorAll('.token.stacked')).toHaveLength(16);
 		expect(dom?.window.document.querySelector('.stack-badge')?.textContent).toBe('×16');
@@ -808,7 +808,7 @@ describe('Ludo game', () => {
 	it('labels the roll-off player correctly during the die animation', () => {
 		run('startGame(3)');
 		run(
-			'state.rolloff.pointer = 1; state.phase = "rolling"; state.roller = 1; state.rollingKind = "rolloff"; render()'
+			'state.rolloff.pointer = 1; state.phase = "rolling"; state.roller = 1; state.rollingKind = "rolloff"; commit()'
 		);
 		expect(run<string>('turnEl.textContent')).toBe('Green \u00b7 roll-off');
 		expect(dom?.window.document.getElementById('dice')?.getAttribute('aria-label')).toBe(
@@ -863,7 +863,7 @@ describe('Ludo game', () => {
 
 		run('startGame(2)');
 		run(
-			'state.phase = "choose"; state.legal = [0, 1, 2, 3].map((tokenId) => ({ tokenId, target: 0 })); render()'
+			'state.phase = "choose"; state.legal = [0, 1, 2, 3].map((tokenId) => ({ tokenId, target: 0 })); commit()'
 		);
 		dom?.window.document.querySelector<HTMLElement>('.token')?.click();
 		await vi.waitFor(() => {
@@ -874,7 +874,7 @@ describe('Ludo game', () => {
 	it('chooses the movable token nearest to a tap', async () => {
 		run('startGame(2)');
 		run(
-			'state.phase = "choose"; state.legal = [{ tokenId: 0, target: 0 }, { tokenId: 1, target: 0 }]; render(); const first = tokenEls.get(0); const second = tokenEls.get(1); first.getBoundingClientRect = () => ({ left: 90, top: 0, width: 20, height: 20, right: 110, bottom: 20, x: 90, y: 0 }); second.getBoundingClientRect = () => ({ left: -10, top: 0, width: 20, height: 20, right: 10, bottom: 20, x: -10, y: 0 });'
+			'state.phase = "choose"; state.legal = [{ tokenId: 0, target: 0 }, { tokenId: 1, target: 0 }]; commit(); const first = tokenEls.get(0); const second = tokenEls.get(1); first.getBoundingClientRect = () => ({ left: 90, top: 0, width: 20, height: 20, right: 110, bottom: 20, x: 90, y: 0 }); second.getBoundingClientRect = () => ({ left: -10, top: 0, width: 20, height: 20, right: 10, bottom: 20, x: -10, y: 0 });'
 		);
 		const first = dom?.window.document.querySelector<HTMLElement>('.token[data-token-id="0"]');
 		first?.dispatchEvent(
@@ -888,7 +888,7 @@ describe('Ludo game', () => {
 
 	it('ignores clicks on tokens that are not movable', () => {
 		run('startGame(2)');
-		run('state.phase = "choose"; state.legal = [{ tokenId: 2, target: 0 }]; render()');
+		run('state.phase = "choose"; state.legal = [{ tokenId: 2, target: 0 }]; commit()');
 		dom?.window.document.querySelector<HTMLElement>('.token[data-token-id="0"]')?.click();
 		expect(run<string>('state.phase')).toBe('choose');
 		expect(run<number>('state.tokens.at(0).pos')).toBe(-1);
@@ -897,7 +897,7 @@ describe('Ludo game', () => {
 	it('restarts safely while choosing a token', () => {
 		run('startGame(2)');
 		run(
-			'state.phase = "choose"; state.legal = [0, 1, 2, 3].map((tokenId) => ({ tokenId, target: 0 })); render()'
+			'state.phase = "choose"; state.legal = [0, 1, 2, 3].map((tokenId) => ({ tokenId, target: 0 })); commit()'
 		);
 		dom?.window.document.getElementById('restart')?.click();
 		expect(run<string>('state.phase')).toBe('setup');
@@ -922,7 +922,7 @@ describe('Ludo game', () => {
 
 	it('shows home counts and accessible player labels', () => {
 		run('startGame(2)');
-		run('state.tokens.at(0).pos = 57; state.tokens.at(1).pos = 57; render()');
+		run('state.tokens.at(0).pos = 57; state.tokens.at(1).pos = 57; commit()');
 		const player = dom?.window.document.querySelector<HTMLElement>('.player');
 		expect(player?.getAttribute('aria-label')).toBe('Red player, 2 of 4 tokens home');
 		expect(player?.querySelector('.home-count')?.textContent).toBe('2/4');
@@ -930,7 +930,7 @@ describe('Ludo game', () => {
 	it('restores a saved game and clears it on setup', () => {
 		run('startGame(4)');
 		run(
-			'state.phase = "choose"; state.current = 1; state.die = 4; state.sixes = 0; state.tokens.at(0).pos = 12; state.tokens.at(4).pos = 3; state.legal = [{ tokenId: 4, target: 7 }]; state.message = "Choose a token."; render()'
+			'state.phase = "choose"; state.current = 1; state.die = 4; state.sixes = 0; state.tokens.at(0).pos = 12; state.tokens.at(4).pos = 3; state.legal = [{ tokenId: 4, target: 7 }]; state.message = "Choose a token."; commit()'
 		);
 		expect(run<string | null>('sessionStorage.getItem(STORAGE_KEY)')).not.toBeNull();
 		run(
@@ -948,7 +948,7 @@ describe('Ludo game', () => {
 	it('restores a saved game on reload', () => {
 		run('startGame(4)');
 		run(
-			'state.phase = "choose"; state.current = 1; state.die = 4; state.sixes = 0; state.tokens.at(0).pos = 12; state.tokens.at(4).pos = 3; state.legal = [{ tokenId: 4, target: 7 }]; state.message = "Choose a token."; render()'
+			'state.phase = "choose"; state.current = 1; state.die = 4; state.sixes = 0; state.tokens.at(0).pos = 12; state.tokens.at(4).pos = 3; state.legal = [{ tokenId: 4, target: 7 }]; state.message = "Choose a token."; commit()'
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
@@ -970,7 +970,7 @@ describe('Ludo game', () => {
 	it('restores a roll-off in progress', () => {
 		run('startGame(3)');
 		run(
-			'state.rolloff.rolls.set(state.rolloff.participants.at(0), 4); state.rolloff.pointer = 1; render()'
+			'state.rolloff.rolls.set(state.rolloff.participants.at(0), 4); state.rolloff.pointer = 1; commit()'
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
@@ -996,7 +996,7 @@ describe('Ludo game', () => {
 	it('restores a finished game and focuses play again', () => {
 		run('startGame(2)');
 		run(
-			'state.phase = "gameover"; state.winner = 0; state.current = 0; state.tokens.forEach((token) => { if (token.player === 0) token.pos = 57; }); render()'
+			'state.phase = "gameover"; state.winner = 0; state.current = 0; state.tokens.forEach((token) => { if (token.player === 0) token.pos = 57; }); commit()'
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
@@ -1010,7 +1010,7 @@ describe('Ludo game', () => {
 	it('keeps yard tokens unstacked when opponents share a ring cell', () => {
 		run('startGame(2)');
 		run(
-			'state.tokens.at(0).pos = (startIndex(1) - 1 - startIndex(0) + RING_SIZE) % RING_SIZE; state.tokens.at(1).pos = state.tokens.at(0).pos; render()'
+			'state.tokens.at(0).pos = (startIndex(1) - 1 - startIndex(0) + RING_SIZE) % RING_SIZE; state.tokens.at(1).pos = state.tokens.at(0).pos; commit()'
 		);
 		const yardTokens = dom?.window.document.querySelectorAll('.token.in-base') ?? [];
 		expect(yardTokens).toHaveLength(6);
@@ -1021,7 +1021,7 @@ describe('Ludo game', () => {
 	it('turns an impossible choose state back into a roll', () => {
 		run('startGame(2)');
 		run(
-			'state.phase = "choose"; state.current = 0; state.die = 2; state.tokens.forEach((token) => { token.pos = token.player === 0 ? (token.id === 0 ? 56 : 57) : -1; }); state.legal = []; render()'
+			'state.phase = "choose"; state.current = 0; state.die = 2; state.tokens.forEach((token) => { token.pos = token.player === 0 ? (token.id === 0 ? 56 : 57) : -1; }); state.legal = []; commit()'
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
@@ -1034,7 +1034,7 @@ describe('Ludo game', () => {
 	it('rejects a non-gameover state with a finished player', () => {
 		run('startGame(2)');
 		run(
-			'state.phase = "await-roll"; state.tokens.forEach((token) => { token.pos = token.player === 0 ? 57 : -1; }); render()'
+			'state.phase = "await-roll"; state.tokens.forEach((token) => { token.pos = token.player === 0 ? 57 : -1; }); commit()'
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
@@ -1045,7 +1045,7 @@ describe('Ludo game', () => {
 	it('rejects a gameover state with two finished players', () => {
 		run('startGame(2)');
 		run(
-			'state.phase = "gameover"; state.winner = 0; state.current = 0; state.tokens.forEach((token) => { token.pos = 57; }); render()'
+			'state.phase = "gameover"; state.winner = 0; state.current = 0; state.tokens.forEach((token) => { token.pos = 57; }); commit()'
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
@@ -1055,7 +1055,7 @@ describe('Ludo game', () => {
 
 	it('rejects a gameover winner that has not finished', () => {
 		run('startGame(2)');
-		run('state.phase = "gameover"; state.winner = 0; state.current = 0; render()');
+		run('state.phase = "gameover"; state.winner = 0; state.current = 0; commit()');
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
 		dom = loadLudo({ localStorage: { 'ludo-game-state': saved ?? '' } });
@@ -1065,7 +1065,7 @@ describe('Ludo game', () => {
 	it('rejects gameover when the current player is not the winner', () => {
 		run('startGame(2)');
 		run(
-			'state.phase = "gameover"; state.winner = 0; state.current = 1; state.tokens.forEach((token) => { if (token.player === 0) token.pos = 57; }); render()'
+			'state.phase = "gameover"; state.winner = 0; state.current = 1; state.tokens.forEach((token) => { if (token.player === 0) token.pos = 57; }); commit()'
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
@@ -1076,7 +1076,7 @@ describe('Ludo game', () => {
 	it('rejects gameover when a different player finished', () => {
 		run('startGame(2)');
 		run(
-			'state.phase = "gameover"; state.winner = 0; state.current = 0; state.tokens.forEach((token) => { token.pos = token.player === 1 ? 57 : -1; }); render()'
+			'state.phase = "gameover"; state.winner = 0; state.current = 0; state.tokens.forEach((token) => { token.pos = token.player === 1 ? 57 : -1; }); commit()'
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
@@ -1087,7 +1087,7 @@ describe('Ludo game', () => {
 	it('restores the exact saved snapshot', () => {
 		run('startGame(2)');
 		run(
-			'state.phase = "choose"; state.current = 1; state.die = 6; state.sixes = 2; state.winner = -1; state.tokens.at(4).pos = 8; state.message = "Choose a token."; render()'
+			'state.phase = "choose"; state.current = 1; state.die = 6; state.sixes = 2; state.winner = -1; state.tokens.at(4).pos = 8; state.message = "Choose a token."; commit()'
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
@@ -1167,7 +1167,7 @@ describe('Ludo game', () => {
 			state.current = 0; state.die = 2; state.phase = 'choose';
 			state.legal = computeLegalMoves(0, 2);
 			state.message = 'Red rolled 2. Choose a token to move.';
-			render();
+			commit();
 		`);
 		const movable = [...(dom?.window.document.querySelectorAll('.token.movable') ?? [])];
 		expect(movable).toHaveLength(2);
@@ -1180,7 +1180,7 @@ describe('Ludo game', () => {
 	});
 	it('ignores pad taps on a neighbour but keeps taps on the movable token', async () => {
 		run('startGame(2)');
-		run('state.phase = "choose"; state.legal = [{ tokenId: 0, target: 0 }]; render()');
+		run('state.phase = "choose"; state.legal = [{ tokenId: 0, target: 0 }]; commit()');
 		const tokenElement = (id: string): HTMLElement => {
 			const element = dom?.window.document.querySelector<HTMLElement>(
 				`.token[data-token-id="${id}"]`
@@ -1233,7 +1233,7 @@ describe('Ludo game', () => {
 	it('keeps taps that land inside the nearest movable token pad', async () => {
 		run('startGame(2)');
 		run(
-			'state.phase = "choose"; state.legal = [{ tokenId: 0, target: 0 }, { tokenId: 1, target: 1 }]; render()'
+			'state.phase = "choose"; state.legal = [{ tokenId: 0, target: 0 }, { tokenId: 1, target: 1 }]; commit()'
 		);
 		const tokenElement = (id: string): HTMLElement => {
 			const element = dom?.window.document.querySelector<HTMLElement>(

@@ -215,53 +215,11 @@ let tokenEls = new Map();
 
 const STORAGE_KEY = 'ludo-game-state';
 
-const readStoredState = () => {
-	try {
-		const session = sessionStorage.getItem(STORAGE_KEY);
-		if (session !== null) return session;
-	} catch {
-		// Fall through to the persistent store.
-	}
-	try {
-		return localStorage.getItem(STORAGE_KEY);
-	} catch {
-		return null;
-	}
-};
-
-const writeStoredState = (value) => {
-	try {
-		sessionStorage.setItem(STORAGE_KEY, value);
-	} catch {
-		try {
-			sessionStorage.removeItem(STORAGE_KEY);
-		} catch {
-			// Ignore unavailable storage.
-		}
-	}
-	try {
-		localStorage.setItem(STORAGE_KEY, value);
-	} catch {
-		try {
-			localStorage.removeItem(STORAGE_KEY);
-		} catch {
-			// Ignore unavailable storage.
-		}
-	}
-};
-
-const clearStoredState = () => {
-	try {
-		sessionStorage.removeItem(STORAGE_KEY);
-	} catch {
-		// Ignore unavailable storage.
-	}
-	try {
-		localStorage.removeItem(STORAGE_KEY);
-	} catch {
-		// Ignore unavailable storage.
-	}
-};
+const {
+	read: readStoredState,
+	write: writeStoredState,
+	clear: clearStoredState
+} = window.createSnippetStorage(STORAGE_KEY);
 
 const resetState = () => {
 	state = createInitialState();
@@ -510,6 +468,10 @@ const render = () => {
 	}
 
 	renderTokens();
+};
+
+const commit = () => {
+	render();
 	saveState();
 };
 
@@ -700,7 +662,7 @@ const advanceTurn = () => {
 	state.current = (state.current + 1) % state.count;
 	state.phase = 'await-roll';
 	state.message = `${nameOf(state.current)}'s turn. Tap the dice in the center to roll.`;
-	render();
+	commit();
 	focusDice();
 };
 
@@ -740,7 +702,7 @@ const chooseToken = async (tokenId) => {
 		state.current = token.player;
 		state.phase = 'gameover';
 		state.message = `${nameOf(token.player)} wins!`;
-		render();
+		commit();
 		return;
 	}
 
@@ -761,7 +723,7 @@ const chooseToken = async (tokenId) => {
 			state.die === DIE_FACES
 				? `${nameOf(token.player)} rolled a 6. Tap the dice again.`
 				: `${nameOf(token.player)} captured a token. Tap the dice again.`;
-		render();
+		commit();
 		focusDice();
 		return;
 	}
@@ -806,7 +768,7 @@ const rolloffTurn = async () => {
 		state.phase = 'rolloff';
 		const nextPlayer = currentRolloffPlayer();
 		state.message = `${nameOf(player)} rolled ${value}. ${nameOf(nextPlayer)}, tap the dice for the highest roll.`;
-		render();
+		commit();
 		focusDice();
 		return;
 	}
@@ -826,7 +788,7 @@ const rolloffTurn = async () => {
 		state.sixes = 0;
 		state.phase = 'await-roll';
 		state.message = `${nameOf(winner)} rolled the highest and starts. Tap the dice in the center to roll.`;
-		render();
+		commit();
 		focusDice();
 		return;
 	}
@@ -834,7 +796,7 @@ const rolloffTurn = async () => {
 	state.rolloff = { participants: tied, pointer: 0, rolls: new Map() };
 	state.phase = 'rolloff';
 	state.message = `${tied.map((candidate) => nameOf(candidate)).join(', ')} tied at ${highest}. Tap the dice again.`;
-	render();
+	commit();
 	focusDice();
 };
 
@@ -874,7 +836,7 @@ const rollDice = async () => {
 			state.phase = 'await-roll';
 			state.legal = [];
 			state.message = `${nameOf(player)}, tap the dice again.`;
-			render();
+			commit();
 			focusDice();
 		} else {
 			advanceTurn();
@@ -887,7 +849,7 @@ const rollDice = async () => {
 	state.message = allFromYard
 		? `${nameOf(player)} rolled a 6. Tap a token in the yard to move it out.`
 		: `${nameOf(player)} rolled ${value}. Choose a token to move.`;
-	render();
+	commit();
 	focusFirstMove();
 };
 
@@ -915,7 +877,7 @@ const startGame = (count) => {
 	buildBoard();
 	buildTokens();
 	buildPlayerStrip();
-	render();
+	commit();
 	focusDice();
 };
 
@@ -934,7 +896,7 @@ const showSetup = () => {
 	state.legal = [];
 	state.message = 'Best of luck.';
 	updateCountButtons();
-	render();
+	commit();
 	startButton.focus();
 };
 
@@ -1035,100 +997,106 @@ restartButton.setAttribute('aria-label', 'Restart game');
 restartButton.title = 'Restart game';
 diceButton.setAttribute('aria-label', 'Roll the dice');
 
+const PHASES = ['rolloff', 'await-roll', 'choose', 'gameover'];
+
+const hasValidTokens = (stored, count) =>
+	Array.isArray(stored.tokens) &&
+	stored.tokens.length === count * TOKENS_PER_PLAYER &&
+	stored.tokens.every(
+		(token, index) =>
+			token !== null &&
+			token.id === index &&
+			token.player === Math.floor(index / TOKENS_PER_PLAYER) &&
+			token.slot === index % TOKENS_PER_PLAYER &&
+			Number.isInteger(token.pos) &&
+			token.pos >= -1 &&
+			token.pos <= FINISH_POS
+	);
+
+const hasValidWinner = (stored, count) => {
+	if (!Array.isArray(stored.tokens)) return false;
+	const homeCounts = new Map();
+	for (const token of stored.tokens) {
+		if (token.pos === FINISH_POS)
+			homeCounts.set(token.player, (homeCounts.get(token.player) ?? 0) + 1);
+	}
+	const finished = [...homeCounts]
+		.filter(([, tokensHome]) => tokensHome === TOKENS_PER_PLAYER)
+		.map(([player]) => player);
+	const winner = stored.winner;
+	if (stored.phase === 'gameover') {
+		return (
+			Number.isInteger(winner) &&
+			winner >= 0 &&
+			winner < count &&
+			stored.current === winner &&
+			finished.length === 1 &&
+			finished.at(0) === winner
+		);
+	}
+	return winner === -1 && finished.length === 0;
+};
+
+const hasValidRoll = (stored) =>
+	Number.isInteger(stored.die) &&
+	stored.die >= 0 &&
+	stored.die <= DIE_FACES &&
+	Number.isInteger(stored.sixes) &&
+	stored.sixes >= 0 &&
+	stored.sixes <= 2 &&
+	(stored.sixes === 0 || stored.die === DIE_FACES) &&
+	(stored.phase === 'rolloff' || stored.die !== DIE_FACES || stored.sixes >= 1) &&
+	(stored.phase !== 'choose' || stored.die >= 1);
+
+const hasValidRolloff = (stored, count) => {
+	if (stored.phase !== 'rolloff') return true;
+	const rolloff = stored.rolloff;
+	const participants = rolloff?.participants;
+	return (
+		Array.isArray(participants) &&
+		participants.length > 0 &&
+		new Set(participants).size === participants.length &&
+		participants.every((player) => Number.isInteger(player) && player >= 0 && player < count) &&
+		Number.isInteger(rolloff?.pointer) &&
+		rolloff.pointer >= 0 &&
+		rolloff.pointer < participants.length &&
+		Array.isArray(rolloff.rolls) &&
+		rolloff.rolls.length === rolloff.pointer &&
+		new Set(rolloff.rolls.map((pair) => pair[0])).size === rolloff.rolls.length &&
+		rolloff.rolls.every(
+			(pair, index) =>
+				Array.isArray(pair) &&
+				pair.length === 2 &&
+				pair[0] === participants.at(index) &&
+				Number.isInteger(pair[1]) &&
+				pair[1] >= 1 &&
+				pair[1] <= DIE_FACES
+		)
+	);
+};
+
+const isValidStoredState = (stored) =>
+	stored !== null &&
+	typeof stored === 'object' &&
+	Number.isInteger(stored.count) &&
+	stored.count >= MIN_PLAYERS &&
+	stored.count <= MAX_PLAYERS &&
+	PHASES.includes(stored.phase) &&
+	hasValidTokens(stored, stored.count) &&
+	Number.isInteger(stored.current) &&
+	stored.current >= 0 &&
+	stored.current < stored.count &&
+	hasValidWinner(stored, stored.count) &&
+	hasValidRoll(stored) &&
+	hasValidRolloff(stored, stored.count) &&
+	typeof stored.message === 'string';
+
 const restoreState = () => {
 	const raw = readStoredState();
 	if (raw === null) return false;
 	try {
 		const stored = JSON.parse(raw);
-		const phases = ['rolloff', 'await-roll', 'choose', 'gameover'];
-		const count = stored?.count;
-		const tokensValid =
-			Array.isArray(stored?.tokens) &&
-			stored.tokens.length === count * TOKENS_PER_PLAYER &&
-			stored.tokens.every(
-				(token, index) =>
-					token !== null &&
-					token.id === index &&
-					token.player === Math.floor(index / TOKENS_PER_PLAYER) &&
-					token.slot === index % TOKENS_PER_PLAYER &&
-					Number.isInteger(token.pos) &&
-					token.pos >= -1 &&
-					token.pos <= FINISH_POS
-			);
-		const currentValid =
-			Number.isInteger(stored?.current) && stored.current >= 0 && stored.current < count;
-		const winner = stored?.winner;
-		const homeCounts = new Map();
-		if (Array.isArray(stored?.tokens)) {
-			for (const token of stored.tokens) {
-				if (token?.pos === FINISH_POS) {
-					homeCounts.set(token.player, (homeCounts.get(token.player) ?? 0) + 1);
-				}
-			}
-		}
-		const finishedPlayers = [...homeCounts]
-			.filter(([, tokensHome]) => tokensHome === TOKENS_PER_PLAYER)
-			.map(([player]) => player);
-		const onlyWinnerFinished = finishedPlayers.length === 1 && finishedPlayers.at(0) === winner;
-		const noFinishedPlayers = finishedPlayers.length === 0;
-		const gameoverValid =
-			stored?.phase !== 'gameover' ||
-			(Number.isInteger(winner) &&
-				winner >= 0 &&
-				winner < count &&
-				stored.current === winner &&
-				onlyWinnerFinished);
-		const winnerValid =
-			stored?.phase === 'gameover' ? gameoverValid : winner === -1 && noFinishedPlayers;
-		const rollValid =
-			Number.isInteger(stored?.die) &&
-			stored.die >= 0 &&
-			stored.die <= DIE_FACES &&
-			Number.isInteger(stored?.sixes) &&
-			stored.sixes >= 0 &&
-			stored.sixes <= 2 &&
-			(stored.sixes === 0 || stored.die === DIE_FACES) &&
-			(stored.phase === 'rolloff' || stored.die !== DIE_FACES || stored.sixes >= 1) &&
-			(stored.phase !== 'choose' || stored.die >= 1);
-		const rolloff = stored?.rolloff;
-		const rolloffParticipants = rolloff?.participants;
-		const rolloffValid =
-			stored?.phase !== 'rolloff' ||
-			(Array.isArray(rolloffParticipants) &&
-				rolloffParticipants.length > 0 &&
-				new Set(rolloffParticipants).size === rolloffParticipants.length &&
-				rolloffParticipants.every(
-					(player) => Number.isInteger(player) && player >= 0 && player < count
-				) &&
-				Number.isInteger(rolloff?.pointer) &&
-				rolloff.pointer >= 0 &&
-				rolloff.pointer < rolloffParticipants.length &&
-				Array.isArray(rolloff?.rolls) &&
-				rolloff.rolls.length === rolloff.pointer &&
-				new Set(rolloff.rolls.map((pair) => pair[0])).size === rolloff.rolls.length &&
-				rolloff.rolls.every(
-					(pair, index) =>
-						Array.isArray(pair) &&
-						pair.length === 2 &&
-						pair[0] === rolloffParticipants.at(index) &&
-						Number.isInteger(pair[1]) &&
-						pair[1] >= 1 &&
-						pair[1] <= DIE_FACES
-				));
-		const valid =
-			stored !== null &&
-			typeof stored === 'object' &&
-			Number.isInteger(count) &&
-			count >= MIN_PLAYERS &&
-			count <= MAX_PLAYERS &&
-			phases.includes(stored.phase) &&
-			tokensValid &&
-			currentValid &&
-			winnerValid &&
-			rollValid &&
-			rolloffValid &&
-			typeof stored.message === 'string';
-		if (!valid) {
+		if (!isValidStoredState(stored)) {
 			clearStoredState();
 			return false;
 		}

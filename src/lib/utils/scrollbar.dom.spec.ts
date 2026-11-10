@@ -80,6 +80,20 @@ describe('setupScrollbars', () => {
 		expect(container.querySelectorAll('.custom-scrollbar-track-h')).toHaveLength(0);
 	});
 
+	it('restores pre-existing inline scrollbar and position styles', () => {
+		const container = createContainer();
+		container.style.setProperty('position', 'static');
+		const node = createNode(container, { overflowY: 'auto' });
+		node.style.setProperty('scrollbar-width', 'thin', 'important');
+
+		const scrollbars = setupScrollbars(container);
+		expect(node.style.getPropertyValue('scrollbar-width')).toBe('none');
+		scrollbars.destroy();
+		expect(node.style.getPropertyValue('scrollbar-width')).toBe('thin');
+		expect(node.style.getPropertyPriority('scrollbar-width')).toBe('important');
+		expect(container.style.getPropertyValue('position')).toBe('static');
+	});
+
 	it('ignores the body, processed nodes, Ace editors and fixed elements', () => {
 		const container = createContainer();
 		const processed = createNode(container, { overflowY: 'auto' });

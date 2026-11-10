@@ -45,7 +45,7 @@ describe('Page', () => {
 			name: /Select item, current: Page title/
 		});
 		context.click();
-		const second = await screen.findByRole('button', { name: 'Second section' });
+		const second = await screen.findByRole('option', { name: 'Second section' });
 		second.click();
 
 		await vi.waitFor(() => {

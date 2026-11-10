@@ -7,13 +7,26 @@ import {
 	scrollbarTrackOverhang
 } from '#lib/constants/app.constants.js';
 
+interface InlineStyle {
+	value: string;
+	priority: string;
+}
+
+export const readInlineStyle = (node: HTMLElement, property: string): InlineStyle => ({
+	value: node.style.getPropertyValue(property),
+	priority: node.style.getPropertyPriority(property)
+});
+
+export const restoreInlineStyle = (node: HTMLElement, property: string, previous: InlineStyle) => {
+	if (previous.value) node.style.setProperty(property, previous.value, previous.priority);
+	else node.style.removeProperty(property);
+};
+
 const disableSmoothScroll = (node: HTMLElement): (() => void) => {
-	const value = node.style.getPropertyValue('scroll-behavior');
-	const priority = node.style.getPropertyPriority('scroll-behavior');
+	const previous = readInlineStyle(node, 'scroll-behavior');
 	node.style.setProperty('scroll-behavior', 'auto');
 	return () => {
-		if (value) node.style.setProperty('scroll-behavior', value, priority);
-		else node.style.removeProperty('scroll-behavior');
+		restoreInlineStyle(node, 'scroll-behavior', previous);
 	};
 };
 

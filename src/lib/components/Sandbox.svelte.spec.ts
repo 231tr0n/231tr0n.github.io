@@ -10,12 +10,10 @@ const themeStyle = (dark = false) =>
 
 beforeEach(() => {
 	darkMode().dark = false;
-	document.body.classList.remove('dark');
 });
 
 afterEach(() => {
 	darkMode().dark = true;
-	document.body.classList.remove('dark');
 	vi.restoreAllMocks();
 });
 
@@ -128,12 +126,12 @@ describe('Sandbox', () => {
 		expect(postMessage).toHaveBeenCalledWith({ type: 'theme', dark: true }, '*');
 
 		postMessage.mockClear();
-		document.body.classList.add('dark');
+		darkMode().dark = true;
 		iframe.dispatchEvent(new Event('load'));
 		expect(postMessage).toHaveBeenCalledWith({ type: 'theme', dark: true }, '*');
 
 		postMessage.mockClear();
-		document.body.classList.remove('dark');
+		darkMode().dark = false;
 		iframe.dispatchEvent(new Event('load'));
 		expect(postMessage).toHaveBeenCalledWith({ type: 'theme', dark: false }, '*');
 	});
@@ -196,7 +194,6 @@ describe('Sandbox', () => {
 
 	it('uses a dark color scheme when the site is dark', async () => {
 		darkMode().dark = true;
-		document.body.classList.add('dark');
 		render(Sandbox, {
 			props: { srcDoc: '<p>Hello</p>', title: 'Doc', description: 'Doc' }
 		});

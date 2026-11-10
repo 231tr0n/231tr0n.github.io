@@ -169,20 +169,11 @@ describe('Codeeditor', () => {
 		screen.getByRole('button', { name: 'Run' }).click();
 		expect(setCode).toHaveBeenCalledWith('const value = 1;');
 	});
-
-	it('renders read-only output and destroys the editor', async () => {
+	it('destroys the editor on unmount', async () => {
 		render(Codeeditor, {
-			props: {
-				code: 'value',
-				fileName: 'index.js',
-				langName: 'javascript',
-				readOnly: true,
-				output: 'compiled output'
-			}
+			props: { code: 'value', fileName: 'index.js', langName: 'javascript' }
 		});
 		await waitForEditor();
-		expect(screen.getByText('compiled output')).toBeInTheDocument();
-
 		cleanup();
 		expect(mocks.editor.destroy).toHaveBeenCalled();
 	});

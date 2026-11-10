@@ -27,53 +27,11 @@ let gameOver = false;
 
 const STORAGE_KEY = 'tictactoe-game-state';
 
-const readStoredState = () => {
-	try {
-		const session = sessionStorage.getItem(STORAGE_KEY);
-		if (session !== null) return session;
-	} catch {
-		// Fall through to the persistent store.
-	}
-	try {
-		return localStorage.getItem(STORAGE_KEY);
-	} catch {
-		return null;
-	}
-};
-
-const writeStoredState = (value) => {
-	try {
-		sessionStorage.setItem(STORAGE_KEY, value);
-	} catch {
-		try {
-			sessionStorage.removeItem(STORAGE_KEY);
-		} catch {
-			// Ignore unavailable storage.
-		}
-	}
-	try {
-		localStorage.setItem(STORAGE_KEY, value);
-	} catch {
-		try {
-			localStorage.removeItem(STORAGE_KEY);
-		} catch {
-			// Ignore unavailable storage.
-		}
-	}
-};
-
-const clearStoredState = () => {
-	try {
-		sessionStorage.removeItem(STORAGE_KEY);
-	} catch {
-		// Ignore unavailable storage.
-	}
-	try {
-		localStorage.removeItem(STORAGE_KEY);
-	} catch {
-		// Ignore unavailable storage.
-	}
-};
+const {
+	read: readStoredState,
+	write: writeStoredState,
+	clear: clearStoredState
+} = window.createSnippetStorage(STORAGE_KEY);
 
 const winningMark = () => {
 	const marks = cells.map((cell) => cell.textContent ?? '');

@@ -18,7 +18,6 @@
 	let {
 		langName,
 		mode = null,
-		output = '',
 		readOnly = false,
 		fileName,
 		setCode = null,
@@ -28,7 +27,6 @@
 	}: {
 		langName: string;
 		mode?: AceMode | null;
-		output?: string;
 		readOnly?: boolean;
 		fileName: string;
 		setCode?: SetCode | null;
@@ -274,12 +272,6 @@
 	{/snippet}
 	<div bind:this={editorDiv} class="editor-height"></div>
 </Frame>
-{#if readOnly && output}
-	<div class="zeltron-component-border">
-		<div class="zeltron-component"><span>Output</span></div>
-		<pre>{output}</pre>
-	</div>
-{/if}
 
 <style>
 	:global(.codeeditor-frame:fullscreen) {
@@ -298,13 +290,6 @@
 
 	.editor-height {
 		flex: 1;
-	}
-
-	pre {
-		margin: 0;
-		padding: 3px;
-		height: 100px;
-		overflow: auto;
 	}
 
 	.logo {

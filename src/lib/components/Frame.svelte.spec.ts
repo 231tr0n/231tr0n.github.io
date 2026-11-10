@@ -91,9 +91,4 @@ describe('Frame', () => {
 		});
 		expect(screen.getByRole('button', { name: 'Toggle on' })).toBeInTheDocument();
 	});
-
-	it('can disable the background wrapper', () => {
-		const { container } = render(FrameHarness, { props: { noBackground: true } });
-		expect(container.querySelector('.frame-wrapper')).not.toHaveClass('zeltron-body-background');
-	});
 });
