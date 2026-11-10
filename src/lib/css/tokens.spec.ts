@@ -130,6 +130,8 @@ describe('layout contracts', () => {
 	it('keeps Select menu options on one line at least as wide as the control', () => {
 		expect(select).toMatch(/\.select-menu\s*\{[^}]*min-width:\s*100%/s);
 		expect(select).toMatch(/div\.select-menu button\s*\{[^}]*white-space:\s*nowrap/s);
+		expect(select).toMatch(/div\.select-menu button\s*\{[^}]*min-height:\s*24px/s);
+		expect(select).toMatch(/\.content\s*\{[^}]*flex:\s*1/s);
 	});
 
 	it('keeps the compact frame chrome and fullscreen visible', () => {

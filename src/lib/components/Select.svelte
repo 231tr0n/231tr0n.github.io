@@ -165,6 +165,7 @@
 
 	.content {
 		width: fit-content;
+		flex: 1;
 		display: flex;
 		flex-direction: column;
 		max-height: min(250px, calc(100vh - 150px));
@@ -173,6 +174,7 @@
 
 	div.select-menu button {
 		width: 100%;
+		min-height: 24px;
 		white-space: nowrap;
 	}
 </style>
