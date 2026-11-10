@@ -239,6 +239,15 @@ describe('Ludo game', () => {
 		expect(run<number>('state.tokens.at(4).pos')).toBe(34);
 	});
 
+	it('keeps the rolled dice at full visibility while it is disabled', () => {
+		run('startGame(2)');
+		expect(dom?.window.document.getElementById('dice')).not.toHaveClass('showing');
+		run('state.phase = "choose"; state.current = 0; state.die = 6; render()');
+		const dice = dom?.window.document.getElementById('dice');
+		expect(dice).toBeDisabled();
+		expect(dice).toHaveClass('showing');
+	});
+
 	it('places pips in the standard die patterns and mounts the dice on the board', () => {
 		run('startGame(2)');
 		expect(run<boolean>('document.querySelector(".board > #dice") !== null')).toBe(true);

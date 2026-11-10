@@ -102,10 +102,6 @@ button {
 	font-size: 12px;
 	line-height: 1.4;
 	white-space: nowrap;
-	transition:
-		background-color 0.25s ease,
-		border-color 0.25s ease,
-		color 0.25s ease;
 }
 
 .player.active {
@@ -203,6 +199,7 @@ button {
 
 .ring-cell.safe {
 	fill: var(--board-safe);
+	fill-opacity: 0.65;
 }
 
 .ring-cell.start {
@@ -295,6 +292,7 @@ svg * {
 	transition:
 		left 0.1s linear,
 		top 0.1s linear,
+		opacity 0.15s ease,
 		filter 0.15s ease;
 	pointer-events: auto;
 	cursor: default;
@@ -357,6 +355,7 @@ svg * {
 }
 
 .token.movable {
+	background: var(--token-pick);
 	outline: 3px solid var(--color-foreground);
 	outline-offset: 2px;
 	cursor: pointer;
@@ -367,20 +366,40 @@ svg * {
 	filter: brightness(1.2);
 }
 
-.token.movable:focus-visible {
+.token.movable.in-base {
+	width: clamp(7px, 8%, 32px);
+	outline: 2px solid var(--color-background);
+	outline-offset: 1px;
+	animation: base-token-pulse 0.95s ease-in-out infinite;
+	box-shadow:
+		0 0 0 2px var(--color-background),
+		0 0 0 4px var(--color-foreground),
+		0 0 10px 2px var(--color-foreground);
+}
+
+.token.movable:focus-visible,
+.token.movable.in-base:focus-visible {
 	outline: 3px solid var(--color-accent);
 	outline-offset: 3px;
 }
 
-.token.movable.in-base:focus-visible {
-	outline: 3px solid var(--color-foreground);
-	outline-offset: 2px;
-}
+@keyframes base-token-pulse {
+	0%,
+	100% {
+		transform: translate(-50%, -50%) scale(1.05);
+		box-shadow:
+			0 0 0 2px var(--color-background),
+			0 0 0 4px var(--color-foreground),
+			0 0 8px 1px var(--color-foreground);
+	}
 
-.token.movable.in-base {
-	outline: none;
-	animation: base-token-glow 1.2s ease-in-out infinite;
-	box-shadow: var(--shadow-token-selected);
+	50% {
+		transform: translate(-50%, -50%) scale(1.25);
+		box-shadow:
+			0 0 0 2px var(--color-background),
+			0 0 0 6px var(--color-foreground),
+			0 0 16px 4px var(--color-foreground);
+	}
 }
 
 @keyframes token-pulse {
@@ -391,17 +410,6 @@ svg * {
 
 	50% {
 		transform: translate(-50%, -50%) scale(1.12);
-	}
-}
-
-@keyframes base-token-glow {
-	0%,
-	100% {
-		filter: brightness(1);
-	}
-
-	50% {
-		filter: brightness(1.35);
 	}
 }
 
@@ -489,6 +497,10 @@ svg * {
 	opacity: 0.45;
 	cursor: default;
 	pointer-events: none;
+}
+
+.dice:disabled.showing {
+	opacity: 1;
 }
 
 .dice * {

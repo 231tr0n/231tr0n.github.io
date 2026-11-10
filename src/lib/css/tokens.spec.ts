@@ -55,6 +55,14 @@ describe('semantic color tokens', () => {
 		expect(ludoCss).toMatch(/\.dice\s*\{[^}]*margin:\s*auto/s);
 		expect(ludoCss).toMatch(/\.dice:not\(:disabled\)[^{]*\{[^}]*animation:\s*dice-ready/s);
 		expect(ludoCss).toMatch(/\.dice:disabled[^{]*\{[^}]*pointer-events:\s*none/s);
+		expect(ludoCss).toMatch(/\.dice:disabled\.showing\s*\{[^}]*opacity:\s*1/s);
+		expect(ludoCss).toMatch(
+			/\.token\.movable\.in-base\s*\{[^}]*width:\s*clamp\(7px,\s*8%,\s*32px\)[^}]*outline:\s*2px solid var\(--color-background\)[^}]*animation:\s*base-token-pulse/s
+		);
+		expect(ludoCss).toMatch(
+			/\.token\.movable\.in-base\s*\{[^}]*0 0 0 4px var\(--color-foreground\)/s
+		);
+		expect(ludoCss).toMatch(/@keyframes base-token-pulse\s*\{[\s\S]*?scale\(1.25\)/);
 		expect(ludoCss).toMatch(
 			/@media \(max-width: 380px\), \(max-height: 430px\)[\s\S]*?\.dice\s*\{[^}]*clamp\(15px/s
 		);
@@ -113,6 +121,16 @@ describe('semantic color tokens', () => {
 			const approachDistance = (Math.hypot(column - 7.5, row - 7.5) / 15) * board;
 			expect(diceHalf + tokenHalf).toBeLessThan(approachDistance);
 		}
+	});
+
+	it('tints star safe cells with a non-player color', () => {
+		expect(tokenCss).toContain('--board-safe: var(--ef-aqua);');
+		expect(ludoCss).toMatch(/\.ring-cell\.safe\s*\{[^}]*fill:\s*var\(--board-safe\)/s);
+	});
+
+	it('uses a dedicated pick color for movable yard tokens', () => {
+		expect(tokenCss).toContain('--token-pick: var(--ef-purple);');
+		expect(ludoCss).toMatch(/\.token\.movable\s*\{[^}]*background:\s*var\(--token-pick\)/s);
 	});
 
 	it('maps the site anchor through the palette', () => {

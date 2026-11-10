@@ -38,11 +38,12 @@
 	--color-player-3: var(--ef-blue);
 	--board-bg: var(--ef-bg0);
 	--board-cell: var(--ef-bg2);
-	--board-safe: var(--ef-bg3);
+	--board-safe: var(--ef-aqua);
 	--board-line: var(--ef-bg4);
 	--board-star: var(--ef-yellow);
 	--board-center: var(--ef-bg1);
 	--token-highlight: var(--ef-yellow);
+	--token-pick: var(--ef-purple);
 	--token-shine: rgb(255 255 255 / 58%);
 	--shadow: rgb(92 106 114 / 22%);
 	--shadow-token:

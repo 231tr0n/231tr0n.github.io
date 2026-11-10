@@ -338,7 +338,9 @@ const renderTokens = () => {
 		else groups.set(key, [token]);
 	}
 
-	for (const element of tokenEls.values()) element.querySelector('.stack-badge')?.remove();
+	for (const element of tokenEls.values()) {
+		element.querySelector('.stack-badge')?.remove();
+	}
 
 	for (const token of state.tokens) {
 		const element = tokenEls.get(token.id);
@@ -367,6 +369,7 @@ const renderTokens = () => {
 			position = [base.at(0) + offsetX, base.at(1) + offsetY];
 		}
 		setTokenPosition(element, position.at(0), position.at(1));
+		const onSafe = token.pos >= 0 && token.pos < HOME_START && state.safe.has(ringIndexOf(token));
 		element.classList.toggle('movable', movable.has(token.id));
 		element.classList.toggle('in-base', token.pos === -1);
 		element.classList.toggle('stacked', stacked);
@@ -374,6 +377,10 @@ const renderTokens = () => {
 		element.classList.toggle('finished', token.pos === FINISH_POS);
 		element.tabIndex = movable.has(token.id) ? 0 : -1;
 		element.setAttribute('aria-disabled', String(!movable.has(token.id)));
+		element.setAttribute(
+			'aria-label',
+			`${nameOf(token.player)} token ${token.slot + 1}${onSafe ? ', on a safe square' : ''}`
+		);
 		element.style.zIndex = movable.has(token.id)
 			? '9'
 			: token.pos === FINISH_POS
@@ -465,6 +472,7 @@ const render = () => {
 	}
 	diceButton.disabled = !(state.phase === 'await-roll' || state.phase === 'rolloff');
 	diceButton.classList.toggle('rolling', state.phase === 'rolling');
+	diceButton.classList.toggle('showing', state.die > 0);
 	restartButton.disabled = state.phase === 'rolling' || state.phase === 'animating';
 	diceButton.setAttribute(
 		'aria-label',
