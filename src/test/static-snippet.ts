@@ -11,7 +11,7 @@ export const loadStaticSnippet = (name: 'ludo' | 'tictactoe'): JSDOM => {
 			: { html: tictactoeHtml, script: tictactoeScript };
 	const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'http://localhost/' });
 	const script = dom.window.document.createElement('script');
-	script.textContent = `${source}\n//# sourceURL=${name}.js`;
+	script.textContent = source;
 	dom.window.document.body.appendChild(script);
 	return dom;
 };

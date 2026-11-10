@@ -236,8 +236,9 @@ describe('Ludo game', () => {
 		expect(run<number>('state.tokens.at(4).pos')).toBe(34);
 	});
 
-	it('places pips in the standard die patterns', () => {
+	it('places pips in the standard die patterns and centers the dice', () => {
 		run('startGame(2)');
+		expect(run<boolean>('document.querySelector(".board > #dice") !== null')).toBe(true);
 		const layouts: Record<number, number[]> = {
 			1: [4],
 			2: [0, 8],
@@ -373,9 +374,10 @@ describe('Ludo game', () => {
 		await runAsync('rollDice()');
 		expect(run<string>('state.phase')).toBe('choose');
 		expect(run<number>('state.legal.length')).toBe(4);
-		expect(dom?.window.document.querySelectorAll('.move-button')).toHaveLength(1);
-		expect(dom?.window.document.querySelector('.move-button')?.textContent).toBe('Start');
-		expect(run<string>('state.message')).toBe('Red rolled a 6. Tap Start to move a token out.');
+		expect(dom?.window.document.querySelector('.move-bar')).toBeNull();
+		expect(run<string>('state.message')).toBe(
+			'Red rolled a 6. Tap a token in the yard to move it out.'
+		);
 
 		await runAsync('chooseToken(0)');
 		expect(run<string>('state.phase')).toBe('await-roll');
@@ -442,13 +444,16 @@ describe('Ludo game', () => {
 		expect(run<string>('state.phase')).toBe('choose');
 	});
 
-	it('captures an opponent and grants another roll', async () => {
+	it('hides capture information until a token is chosen', async () => {
 		run('startGame(2)');
-		run('state.current = 0; state.die = 2; state.sixes = 0; state.phase = "choose"');
+		run('state.current = 0; state.sixes = 0; state.phase = "await-roll"');
 		run(
 			'state.tokens.at(0).pos = 7; state.tokens.at(1).pos = 57; state.tokens.at(2).pos = 57; state.tokens.at(3).pos = 57'
 		);
-		run('state.tokens.at(4).pos = 35; state.legal = computeLegalMoves(0, 2)');
+		run('state.tokens.at(4).pos = 35');
+		setDie(getDom(), 2);
+		await runAsync('rollDice()');
+		expect(run<string>('state.message')).not.toMatch(/captur/i);
 		expect(
 			run<boolean>('state.legal.some((move) => move.tokenId === 0 && move.target === 9)')
 		).toBe(true);
@@ -457,6 +462,7 @@ describe('Ludo game', () => {
 		expect(run<number>('state.tokens.at(0).pos')).toBe(9);
 		expect(run<number>('state.current')).toBe(0);
 		expect(run<string>('state.phase')).toBe('await-roll');
+		expect(run<string>('state.message')).toBe('Red captured a token. Tap the dice again.');
 	});
 
 	it('sends a non-winning token home and advances the turn', async () => {
@@ -587,34 +593,6 @@ describe('Ludo game', () => {
 		expect(run<boolean>('gameScreen.hidden')).toBe(true);
 	});
 
-	it('shows a deduplicated move shortcut bar and hides it when no moves exist', () => {
-		run('startGame(2)');
-		run(
-			'state.phase = "choose"; state.legal = [0, 1, 2, 3].map((tokenId) => ({ tokenId, target: 0 }))'
-		);
-		run('render()');
-		expect(run<boolean>('moveBar.hidden')).toBe(false);
-		expect(dom?.window.document.querySelectorAll('.move-button')).toHaveLength(1);
-		expect(dom?.window.document.querySelector('.move-button')?.textContent).toBe('Start');
-		expect(
-			dom?.window.document.querySelector<HTMLElement>('.move-button')?.dataset['tokenId']
-		).toBe('0');
-
-		run('state.phase = "await-roll"; state.legal = []; render()');
-		expect(run<boolean>('moveBar.hidden')).toBe(true);
-	});
-
-	it('labels non-yard moves with their token number', () => {
-		run('startGame(2)');
-		run(
-			'state.tokens.at(0).pos = 5; state.tokens.at(1).pos = 6; state.phase = "choose"; state.legal = [{ tokenId: 0, target: 11 }, { tokenId: 1, target: 12 }]; render()'
-		);
-		const labels = [...(dom?.window.document.querySelectorAll('.move-button') ?? [])].map(
-			(button) => button.textContent
-		);
-		expect(labels).toEqual(['Token 1', 'Token 2']);
-	});
-
 	it('renders stacked tokens with a count badge and disabled state', () => {
 		run('startGame(2)');
 		run(
@@ -668,15 +646,22 @@ describe('Ludo game', () => {
 		expect(dom?.window.document.querySelectorAll('.star')).toHaveLength(4);
 		expect(dom?.window.document.querySelectorAll('.center-star')).toHaveLength(0);
 		expect(dom?.window.document.querySelectorAll('.center-circle')).toHaveLength(1);
-		const stars = run<{ x: number; y: number }[]>(
-			'[...document.querySelectorAll(".star")].map((element) => ({ x: Number(element.getAttribute("x")), y: Number(element.getAttribute("y")) }))'
-		);
-		const expectedStars = run<[number, number][]>(
-			'[8, 21, 34, 47].map((index) => cellCenter(PATH[index]))'
-		);
-		expect(stars).toEqual(
-			expectedStars.map(([x, y]) => ({ x: Number(x.toFixed(2)), y: Number(y.toFixed(2)) }))
-		);
+		const stars = run<{ cell: number; x: number; y: number }[]>(`(() => {
+			return [...document.querySelectorAll('.star')].map((element) => {
+				const points = element.getAttribute('points').split(' ').map((point) => point.split(',').map(Number));
+				const x = points.reduce((sum, point) => sum + point[0], 0) / points.length;
+				const y = points.reduce((sum, point) => sum + point[1], 0) / points.length;
+				return { cell: Number(element.dataset.cell), x: Number(x.toFixed(2)), y: Number(y.toFixed(2)) };
+			});
+		})()`);
+		expect(stars.map((star) => star.cell)).toEqual([8, 21, 34, 47]);
+		for (const star of stars) {
+			const [x, y] = run<[number, number]>(`cellCenter(PATH[${String(star.cell)}])`);
+			expect({ x: star.x, y: star.y }).toEqual({
+				x: Number(x.toFixed(2)),
+				y: Number(y.toFixed(2))
+			});
+		}
 		for (let seat = 0; seat < 4; seat++) {
 			expect(
 				dom?.window.document.querySelectorAll(`.ring-cell.start.p${String(seat)}`)
@@ -695,6 +680,48 @@ describe('Ludo game', () => {
 		run('state.tokens.at(0).pos = 0; render()');
 		expect(base?.style.left).toBe('10%');
 		expect(base?.style.top).toBe('43.33%');
+	});
+
+	it('aligns every board element to the 15x15 grid', () => {
+		run('startGame(4)');
+		const aligned = run<boolean>(`(() => {
+			const near = (a, b) => Math.abs(a - b) < 0.01;
+			const center = (element) => [
+				Number(element.getAttribute('x')) + Number(element.getAttribute('width')) / 2,
+				Number(element.getAttribute('y')) + Number(element.getAttribute('height')) / 2
+			];
+			const rings = [...document.querySelectorAll('.ring-cell')];
+			for (let index = 0; index < RING_SIZE; index++) {
+				const [x, y] = center(rings[index]);
+				const [expectedX, expectedY] = cellCenter(PATH[index]);
+				if (!near(x, expectedX) || !near(y, expectedY)) return false;
+			}
+			const homes = [...document.querySelectorAll('.home-cell')];
+			let homeIndex = 0;
+			for (let seat = 0; seat < 4; seat++) {
+				for (const cell of HOME_LANES[seat]) {
+					const [x, y] = center(homes[homeIndex++]);
+					const [expectedX, expectedY] = cellCenter(cell);
+					if (!near(x, expectedX) || !near(y, expectedY)) return false;
+				}
+			}
+			const slots = [...document.querySelectorAll('.base-slot')];
+			let slotIndex = 0;
+			for (let seat = 0; seat < 4; seat++) {
+				for (const [column, row] of YARD_SLOTS[seat]) {
+					const slot = slots[slotIndex++];
+					if (!near(Number(slot.getAttribute('cx')), column * CELL)) return false;
+					if (!near(Number(slot.getAttribute('cy')), row * CELL)) return false;
+				}
+			}
+			const centerBg = document.querySelector('.center-bg');
+			return (
+				near(Number(centerBg.getAttribute('x')), 6 * CELL) &&
+				near(Number(centerBg.getAttribute('y')), 6 * CELL) &&
+				near(Number(centerBg.getAttribute('width')), 3 * CELL)
+			);
+		})()`);
+		expect(aligned).toBe(true);
 	});
 
 	it('renders a three-token stack on a shared safe square', () => {
@@ -743,7 +770,7 @@ describe('Ludo game', () => {
 		expect(run<string>('state.phase')).toBe('animating');
 	});
 
-	it('wires the dice, token and move-bar controls', async () => {
+	it('wires the dice and token controls', async () => {
 		run('startGame(2)');
 		run('state.phase = "await-roll"; state.current = 0; state.sixes = 0');
 		setDie(getDom(), 6);
@@ -751,14 +778,11 @@ describe('Ludo game', () => {
 		await vi.waitFor(() => {
 			expect(run<string>('state.phase')).toBe('choose');
 		});
-		expect(dom?.window.document.querySelectorAll('.move-button')).toHaveLength(1);
-		expect(dom?.window.document.activeElement).toBe(
-			dom?.window.document.querySelector('.move-button')
-		);
-
-		dom?.window.document.querySelector<HTMLElement>('.move-button')?.click();
+		const movable = dom?.window.document.querySelector<HTMLElement>('.token.movable');
+		expect(movable).toBeInTheDocument();
+		movable?.click();
 		await vi.waitFor(() => {
-			expect(run<number>('state.tokens.at(0).pos')).toBe(0);
+			expect(run<number>('state.tokens.some((token) => token.pos === 0) ? 1 : 0')).toBe(1);
 		});
 
 		run('startGame(2)');
@@ -804,11 +828,10 @@ describe('Ludo game', () => {
 		run(
 			'state.phase = "choose"; state.legal = [0, 1, 2, 3].map((tokenId) => ({ tokenId, target: 0 })); render()'
 		);
-		expect(run<boolean>('moveBar.hidden')).toBe(false);
+		expect(dom?.window.document.querySelector('.move-bar')).toBeNull();
 		dom?.window.document.getElementById('restart')?.click();
 		expect(run<string>('state.phase')).toBe('setup');
 		expect(run<number>('state.legal.length')).toBe(0);
-		expect(run<boolean>('moveBar.hidden')).toBe(true);
 		expect(dom?.window.document.activeElement?.id).toBe('start');
 	});
 

@@ -1,21 +1,27 @@
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
+const ludoCss = readFileSync('static/resources/snippets/ludo/style.css', 'utf8');
 const gameCss = [
-	readFileSync('static/resources/snippets/ludo/style.css', 'utf8'),
+	ludoCss,
 	readFileSync('static/resources/snippets/tictactoe/style.css', 'utf8')
 ].join('\n');
 const tokenCss = readFileSync('static/resources/snippets/everforest.css', 'utf8');
 const page = readFileSync('src/lib/components/Page.svelte', 'utf8');
 const frame = readFileSync('src/lib/components/Frame.svelte', 'utf8');
 const sandbox = readFileSync('src/lib/components/Sandbox.svelte', 'utf8');
-const componentSources = Object.values(
-	import.meta.glob('/src/lib/components/**/*.svelte', {
+const componentSources = Object.values({
+	...import.meta.glob('/src/lib/components/**/*.svelte', {
 		query: '?raw',
 		import: 'default',
 		eager: true
-	}) as Record<string, string>
-);
+	}),
+	...import.meta.glob('/src/routes/**/*.svelte', {
+		query: '?raw',
+		import: 'default',
+		eager: true
+	})
+}) as string[];
 const main = readFileSync('src/lib/css/main.css', 'utf8');
 
 const definitions = new Set(
@@ -38,6 +44,16 @@ describe('semantic color tokens', () => {
 	it('never hides Ludo UI responsively', () => {
 		expect(gameCss).not.toMatch(
 			/(?:\.brand|\.player-name|\.player-strip|\.turn|\.home-count|\.move-button-label|\.subtitle|\.hint)[^{]*\{[^}]*display:\s*none/s
+		);
+	});
+
+	it('centers the dice and gives it an enabled pulse', () => {
+		expect(ludoCss).toMatch(/\.dice\s*\{[^}]*position:\s*absolute/s);
+		expect(ludoCss).toMatch(/\.dice\s*\{[^}]*inset:\s*0/s);
+		expect(ludoCss).toMatch(/\.dice\s*\{[^}]*margin:\s*auto/s);
+		expect(ludoCss).toMatch(/\.dice:not\(:disabled\)[^{]*\{[^}]*animation:\s*dice-ready/s);
+		expect(ludoCss).toMatch(
+			/prefers-reduced-motion[\s\S]*\.dice:not\(:disabled\)[\s\S]*animation:\s*none/
 		);
 	});
 

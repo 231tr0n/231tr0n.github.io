@@ -7,7 +7,6 @@ const restartButton = document.getElementById('restart');
 const againButton = document.getElementById('again');
 const boardSvg = document.getElementById('board-svg');
 const tokenLayer = document.getElementById('token-layer');
-const moveBar = document.getElementById('move-bar');
 const playerStrip = document.getElementById('player-strip');
 const turnEl = document.getElementById('turn');
 const messageEl = document.getElementById('message');
@@ -139,17 +138,31 @@ const CENTER_APPROACHES = [
 	[8.85, 7.5],
 	[7.5, 8.85]
 ];
-const FINISH_CENTERS = [
-	[6.675, 7.5],
-	[7.5, 6.675],
-	[8.325, 7.5],
-	[7.5, 8.325]
-];
-const FINISH_OFFSETS = [
-	[-0.25, -0.25],
-	[0.25, -0.25],
-	[-0.25, 0.25],
-	[0.25, 0.25]
+const FINISH_LINES = [
+	[
+		[6.28, 6.6],
+		[6.28, 7.1],
+		[6.28, 7.9],
+		[6.28, 8.4]
+	],
+	[
+		[6.6, 6.28],
+		[7.1, 6.28],
+		[7.9, 6.28],
+		[8.4, 6.28]
+	],
+	[
+		[8.72, 6.6],
+		[8.72, 7.1],
+		[8.72, 7.9],
+		[8.72, 8.4]
+	],
+	[
+		[6.6, 8.72],
+		[7.1, 8.72],
+		[7.9, 8.72],
+		[8.4, 8.72]
+	]
 ];
 
 // Path model: -1 = yard, 0 = spawn square, 1..50 = remaining ring, 51..55 = home lane,
@@ -174,6 +187,7 @@ const TIMING = {
 	FORFEIT: 1300,
 	NO_MOVE: 900
 };
+
 const CENTER = 500;
 const GRID = 15;
 const CELL = (CENTER * 2) / GRID;
@@ -219,6 +233,16 @@ const buildSafeCells = () => {
 
 const cellCenter = ([column, row]) => [(column + 0.5) * CELL, (row + 0.5) * CELL];
 
+const starPoints = (centerX, centerY) => {
+	const outer = CELL * 0.3;
+	const inner = CELL * 0.12;
+	return Array.from({ length: 10 }, (_, index) => {
+		const radius = index % 2 === 0 ? outer : inner;
+		const angle = -Math.PI / 2 + (index * Math.PI) / 5;
+		return `${(centerX + radius * Math.cos(angle)).toFixed(2)},${(centerY + radius * Math.sin(angle)).toFixed(2)}`;
+	}).join(' ');
+};
+
 const currentRolloffPlayer = () => state.rolloff.participants.at(state.rolloff.pointer) ?? 0;
 
 const fanOffset = (index, total, spread) => {
@@ -253,9 +277,8 @@ const trianglePoint = (player, points) => {
 const centerApproach = (player) => trianglePoint(player, CENTER_APPROACHES);
 
 const finishedPosition = (token) => {
-	const [centerX, centerY] = FINISH_CENTERS.at(seatFor(token.player)) ?? [7.5, 7.5];
-	const [offsetX, offsetY] = FINISH_OFFSETS.at(token.slot) ?? [0, 0];
-	return [(centerX + offsetX) * CELL, (centerY + offsetY) * CELL];
+	const [column, row] = FINISH_LINES.at(seatFor(token.player))?.at(token.slot) ?? [7.5, 7.5];
+	return [column * CELL, row * CELL];
 };
 
 const tokenLocationKey = (token) => {
@@ -338,47 +361,6 @@ const renderTokens = () => {
 	}
 };
 
-const renderMoveBar = () => {
-	moveBar.replaceChildren();
-	if (state.phase !== 'choose' || state.legal.length === 0) {
-		moveBar.hidden = true;
-		return;
-	}
-	moveBar.hidden = false;
-	const uniqueMoves = new Map();
-	for (const move of state.legal) {
-		const token = state.tokens.at(move.tokenId);
-		if (!token) continue;
-		const key = `${token.player}:${token.pos}:${move.target}`;
-		if (!uniqueMoves.has(key)) uniqueMoves.set(key, { token, move });
-	}
-
-	for (const { token } of uniqueMoves.values()) {
-		const fromYard = token.pos === -1;
-		const button = document.createElement('button');
-		button.type = 'button';
-		button.className = `move-button p${seatFor(token.player)}`;
-		button.dataset.tokenId = String(token.id);
-		button.setAttribute(
-			'aria-label',
-			fromYard ? 'Move a token out of the yard' : `Move token ${token.slot + 1}`
-		);
-		if (fromYard) {
-			const label = document.createElement('span');
-			label.textContent = 'Start';
-			button.appendChild(label);
-		} else {
-			const label = document.createElement('span');
-			label.className = 'move-button-label';
-			label.textContent = 'Token ';
-			const number = document.createElement('span');
-			number.textContent = String(token.slot + 1);
-			button.append(label, number);
-		}
-		moveBar.appendChild(button);
-	}
-};
-
 const render = () => {
 	setupScreen.hidden = state.phase !== 'setup';
 	gameScreen.hidden = state.phase === 'setup';
@@ -417,7 +399,6 @@ const render = () => {
 	}
 
 	if (messageEl.textContent !== state.message) messageEl.textContent = state.message;
-	renderMoveBar();
 
 	const pips = state.die > 0 ? (PIP_LAYOUT.at(state.die - 1) ?? []) : [];
 	for (const [index, pip] of pipEls.entries()) {
@@ -485,7 +466,9 @@ const buildBoard = () => {
 		);
 		if (state.safe.has(index) && owner === undefined) {
 			const [starX, starY] = cellCenter([column, row]);
-			parts.push(`<text class="star" x="${starX.toFixed(2)}" y="${starY.toFixed(2)}">★</text>`);
+			parts.push(
+				`<polygon class="star" data-cell="${index}" points="${starPoints(starX, starY)}"></polygon>`
+			);
 		}
 	}
 
@@ -615,7 +598,7 @@ const sleep = (ms) =>
 	});
 
 const focusDice = () => diceButton.focus();
-const focusFirstMove = () => moveBar.querySelector('button')?.focus();
+const focusFirstMove = () => tokenEls.get(state.legal.at(0)?.tokenId)?.focus();
 
 const advanceTurn = () => {
 	state.sixes = 0;
@@ -623,7 +606,7 @@ const advanceTurn = () => {
 	state.die = 0;
 	state.current = (state.current + 1) % state.count;
 	state.phase = 'await-roll';
-	state.message = `${nameOf(state.current)}'s turn. Tap ROLL.`;
+	state.message = `${nameOf(state.current)}'s turn. Tap the dice in the center to roll.`;
 	render();
 	focusDice();
 };
@@ -670,7 +653,7 @@ const chooseToken = async (tokenId) => {
 	}
 
 	if (captured.length > 0) {
-		state.message = `${nameOf(token.player)} captured ${captured.length === 1 ? 'a token' : `${captured.length} tokens`}!`;
+		state.message = `${nameOf(token.player)} captured a token!`;
 		render();
 		await sleep(TIMING.CAPTURE);
 	} else if (reachedHome) {
@@ -684,8 +667,8 @@ const chooseToken = async (tokenId) => {
 		state.legal = [];
 		state.message =
 			state.die === DIE_FACES
-				? `${nameOf(token.player)} rolled a 6. Tap ROLL again.`
-				: `${nameOf(token.player)} captured a token. Tap ROLL again.`;
+				? `${nameOf(token.player)} rolled a 6. Tap the dice again.`
+				: `${nameOf(token.player)} captured a token. Tap the dice again.`;
 		render();
 		focusDice();
 		return;
@@ -726,7 +709,7 @@ const rolloffTurn = async () => {
 		state.rolloff.pointer = nextPointer;
 		state.phase = 'rolloff';
 		const nextPlayer = currentRolloffPlayer();
-		state.message = `${nameOf(player)} rolled ${value}. ${nameOf(nextPlayer)}, tap ROLL for the highest roll.`;
+		state.message = `${nameOf(player)} rolled ${value}. ${nameOf(nextPlayer)}, tap the dice for the highest roll.`;
 		render();
 		focusDice();
 		return;
@@ -746,7 +729,7 @@ const rolloffTurn = async () => {
 		state.die = 0;
 		state.sixes = 0;
 		state.phase = 'await-roll';
-		state.message = `${nameOf(winner)} rolled the highest and starts. Tap ROLL.`;
+		state.message = `${nameOf(winner)} rolled the highest and starts. Tap the dice in the center to roll.`;
 		render();
 		focusDice();
 		return;
@@ -754,7 +737,7 @@ const rolloffTurn = async () => {
 
 	state.rolloff = { participants: tied, pointer: 0, rolls: new Map() };
 	state.phase = 'rolloff';
-	state.message = `${tied.map((candidate) => nameOf(candidate)).join(', ')} tied at ${highest}. Tap ROLL again.`;
+	state.message = `${tied.map((candidate) => nameOf(candidate)).join(', ')} tied at ${highest}. Tap the dice again.`;
 	render();
 	focusDice();
 };
@@ -787,14 +770,14 @@ const rollDice = async () => {
 		const extraTurn = value === DIE_FACES;
 		state.phase = 'animating';
 		state.message = extraTurn
-			? `${nameOf(player)} rolled a 6 but has no legal move. Tap ROLL again.`
+			? `${nameOf(player)} rolled a 6 but has no legal move. Tap the dice again.`
 			: `${nameOf(player)} has no legal move. Turn passes.`;
 		render();
 		await sleep(TIMING.NO_MOVE);
 		if (extraTurn) {
 			state.phase = 'await-roll';
 			state.legal = [];
-			state.message = `${nameOf(player)}, tap ROLL again.`;
+			state.message = `${nameOf(player)}, tap the dice again.`;
 			render();
 			focusDice();
 		} else {
@@ -806,7 +789,7 @@ const rollDice = async () => {
 	state.phase = 'choose';
 	const allFromYard = moves.every((move) => state.tokens.at(move.tokenId)?.pos === -1);
 	state.message = allFromYard
-		? `${nameOf(player)} rolled a 6. Tap Start to move a token out.`
+		? `${nameOf(player)} rolled a 6. Tap a token in the yard to move it out.`
 		: `${nameOf(player)} rolled ${value}. Choose a token to move.`;
 	render();
 	focusFirstMove();
@@ -820,7 +803,7 @@ const startGame = (count) => {
 		current: 0,
 		die: 0,
 		sixes: 0,
-		message: `${nameOf(0)} rolls for the highest roll. Tap ROLL.`,
+		message: `${nameOf(0)} rolls for the highest roll. Tap the dice in the center to roll.`,
 		legal: [],
 		safe: buildSafeCells(),
 		rolloff: {
@@ -867,21 +850,20 @@ const selectCount = (event) => {
 	updateCountButtons();
 };
 
-const chooseTokenFromEvent = (event, selector) => {
+const clickToken = (event) => {
 	const target = event.target;
 	if (!(target instanceof Element)) return;
-	const element = target.closest(selector);
+	const element = target.closest('.token');
 	if (!(element instanceof HTMLElement)) return;
 	const tokenId = Number(element.dataset.tokenId);
 	if (!Number.isInteger(tokenId)) return;
 
-	if (selector === '.move-button' || (event.clientX === 0 && event.clientY === 0)) {
+	const movable = new Set(state.legal.map((move) => move.tokenId));
+	if (!movable.has(tokenId)) return;
+	if (event.clientX === 0 && event.clientY === 0) {
 		void chooseToken(tokenId);
 		return;
 	}
-
-	const movable = new Set(state.legal.map((move) => move.tokenId));
-	if (!movable.has(tokenId)) return;
 	let nearestId = tokenId;
 	let nearestDistance = Number.POSITIVE_INFINITY;
 	for (const id of movable) {
@@ -900,9 +882,6 @@ const chooseTokenFromEvent = (event, selector) => {
 	void chooseToken(nearestId);
 };
 
-const clickToken = (event) => chooseTokenFromEvent(event, '.token');
-const clickMove = (event) => chooseTokenFromEvent(event, '.move-button');
-
 countRow.onclick = selectCount;
 startButton.onclick = () => startGame(selectedCount);
 restartButton.onclick = showSetup;
@@ -911,7 +890,6 @@ diceButton.onclick = () => {
 	void rollDice();
 };
 tokenLayer.onclick = clickToken;
-moveBar.onclick = clickMove;
 
 boardSvg.setAttribute('viewBox', '0 0 1000 1000');
 boardSvg.setAttribute('role', 'img');
