@@ -130,4 +130,25 @@ describe('cachedFetch', () => {
 		await expect(cachedFetch('/data')).resolves.toBe('fresh');
 		expect(error).toHaveBeenCalled();
 	});
+	it('falls back to the stale entry when the refresh fails', async () => {
+		vi.spyOn(Date, 'now').mockReturnValue(cacheTtl + 10);
+		vi.stubGlobal(
+			'fetch',
+			vi.fn(() => Promise.reject(new Error('offline')))
+		);
+		localStorage.setItem(`${cacheKeyPrefix}/data`, JSON.stringify({ data: 'stale', timestamp: 0 }));
+
+		await expect(cachedFetch('/data')).resolves.toBe('stale');
+		expect(localStorage.getItem(`${cacheKeyPrefix}/data`)).toContain('stale');
+	});
+	it('rethrows HTTP errors instead of serving stale data', async () => {
+		vi.spyOn(Date, 'now').mockReturnValue(cacheTtl + 10);
+		vi.stubGlobal(
+			'fetch',
+			vi.fn(() => Promise.resolve(createResponse('rate limited', 500)))
+		);
+		localStorage.setItem(`${cacheKeyPrefix}/data`, JSON.stringify({ data: 'stale', timestamp: 0 }));
+
+		await expect(cachedFetch('/data')).rejects.toBeInstanceOf(HttpError);
+	});
 });

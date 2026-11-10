@@ -7,6 +7,7 @@
 	apply(matchMedia('(prefers-color-scheme: dark)').matches);
 
 	window.onmessage = (event) => {
+		if (event.source !== window.parent) return;
 		const data = event.data;
 		if (
 			typeof data === 'object' &&

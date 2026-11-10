@@ -20,7 +20,6 @@ const createAceEditor = () => {
 afterEach(() => {
 	document.body.innerHTML = '';
 	vi.restoreAllMocks();
-	vi.useRealTimers();
 });
 
 describe('processAce', () => {

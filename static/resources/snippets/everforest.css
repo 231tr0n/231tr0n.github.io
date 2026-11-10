@@ -42,13 +42,11 @@
 	--board-line: var(--ef-bg4);
 	--board-star: var(--ef-yellow);
 	--board-center: var(--ef-bg1);
-	--token-highlight: var(--ef-yellow);
 	--token-pick: var(--ef-purple);
 	--token-shine: rgb(255 255 255 / 58%);
 	--shadow: rgb(92 106 114 / 22%);
 	--shadow-token:
 		inset 0 0 0 2px rgb(255 255 255 / 38%), 0 0 0 1px rgb(0 0 0 / 45%), 0 2px 4px rgb(0 0 0 / 35%);
-	--shadow-token-selected: 0 0 0 2px var(--token-highlight), 0 2px 4px rgb(0 0 0 / 35%);
 	--shadow-dice: inset 0 0 0 1px rgb(255 255 255 / 12%), 0 2px 4px rgb(0 0 0 / 35%);
 	--shadow-winner: inset 0 0 0 5px rgb(255 255 255 / 35%), 0 0 28px var(--player-color);
 	--overlay: rgb(253 246 227 / 88%);

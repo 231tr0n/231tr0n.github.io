@@ -51,7 +51,7 @@
 	{#if bundleStatsError}
 		<div class="zeltron-error">{bundleStatsError}</div>
 	{:else if bundleStats}
-		<Sandbox description="" srcDoc={responsiveStats ?? bundleStats} title="Bundle Report" />
+		<Sandbox description="" srcDoc={responsiveStats ?? ''} title="Bundle Report" />
 	{:else}
 		<Loading />
 	{/if}

@@ -3,11 +3,11 @@ import { externalLinkRel } from '#lib/constants/app.constants.js';
 const externalLinkTokens = externalLinkRel.split(/\s+/);
 
 const isExternalHref = (href: string): boolean => {
-	const lower = href.toLowerCase();
+	const lower = href.trim().toLowerCase();
 	return (
 		lower.startsWith('http://') ||
 		lower.startsWith('https://') ||
-		href.startsWith('//') ||
+		lower.startsWith('//') ||
 		lower.startsWith('mailto:')
 	);
 };

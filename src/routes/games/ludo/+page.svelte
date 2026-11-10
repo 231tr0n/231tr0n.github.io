@@ -2,10 +2,11 @@
 	import Page from '#lib/components/Page.svelte';
 	import Sandbox from '#lib/components/Sandbox.svelte';
 	import SnippetSource from '#lib/components/SnippetSource.svelte';
+	import { snippetBasePath } from '#lib/utils/snippet-files.js';
 	import { asset } from '$app/paths';
 
 	const indexHtml = asset('resources/snippets/ludo/index.html');
-	const snippetBase = indexHtml.slice(0, indexHtml.lastIndexOf('/'));
+	const snippetBase = snippetBasePath(indexHtml);
 </script>
 
 <Page scrollspy={true}>

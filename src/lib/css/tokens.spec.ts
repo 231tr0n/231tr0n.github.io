@@ -3,6 +3,9 @@ import { describe, expect, it } from 'vitest';
 
 const ludoCss = readFileSync('static/resources/snippets/ludo/style.css', 'utf8');
 const ludoJs = readFileSync('static/resources/snippets/ludo/index.js', 'utf8');
+const tictactoeJs = readFileSync('static/resources/snippets/tictactoe/index.js', 'utf8');
+const ludoHtml = readFileSync('static/resources/snippets/ludo/index.html', 'utf8');
+const tictactoeHtml = readFileSync('static/resources/snippets/tictactoe/index.html', 'utf8');
 const gameCss = [
 	ludoCss,
 	readFileSync('static/resources/snippets/tictactoe/style.css', 'utf8')
@@ -37,7 +40,14 @@ describe('semantic color tokens', () => {
 	});
 
 	it('keeps components free of Everforest and raw colors', () => {
-		for (const source of [gameCss, ...componentSources]) {
+		for (const source of [
+			gameCss,
+			ludoJs,
+			tictactoeJs,
+			ludoHtml,
+			tictactoeHtml,
+			...componentSources
+		]) {
 			expect(source).not.toMatch(/--ef-/);
 			expect(source).not.toMatch(/#[0-9a-f]{3,8}\b|rgba?\(|hsla?\(/i);
 		}
@@ -79,7 +89,7 @@ describe('semantic color tokens', () => {
 		expect(reducedMotion).toMatch(/\.primary:hover[\s\S]*transform:\s*none/);
 		expect(ludoCss).toMatch(/\.token::before\s*\{[^}]*inset:\s*-20%/s);
 		expect(ludoCss).toMatch(
-			/\.token\.approach::before,[\s\S]*?\.token\.finished::before\s*\{[^}]*inset:\s*min\(-20%,\s*-8px\)/s
+			/\.token\.approach::before,[\s\S]*?\.token\.finished::before\s*\{[^}]*inset:\s*-8px/s
 		);
 	});
 
@@ -123,6 +133,16 @@ describe('semantic color tokens', () => {
 		}
 	});
 
+	it('keeps player colors on tokens and start cells', () => {
+		const tokenBlock = /\.token\s*\{([^}]*)\}/s.exec(ludoCss)?.[1] ?? '';
+		expect(tokenBlock).toMatch(/background:\s*var\(--player-color\)/);
+		expect(tokenBlock).not.toMatch(/\b(?:opacity|filter):/);
+		expect(ludoCss).toMatch(/\.star\s*\{[^}]*fill:\s*var\(--board-star\)/s);
+		expect(ludoCss).toMatch(/\.ring-cell\.start\s*\{[^}]*fill:\s*var\(--player-color\)/s);
+		const playerBlock = /\.player\s*\{([^}]*)\}/s.exec(ludoCss)?.[1] ?? '';
+		expect(playerBlock).not.toMatch(/transition/);
+	});
+
 	it('tints star safe cells with a non-player color', () => {
 		expect(tokenCss).toContain('--board-safe: var(--ef-aqua);');
 		expect(ludoCss).toMatch(/\.ring-cell\.safe\s*\{[^}]*fill:\s*var\(--board-safe\)/s);
@@ -140,6 +160,12 @@ describe('semantic color tokens', () => {
 });
 
 describe('layout contracts', () => {
+	it('keeps tooltips inside the viewport', () => {
+		expect(main).toMatch(/\.tooltip\s*\{[^}]*max-width:\s*calc\(100vw - 8px\)/s);
+		expect(main).toMatch(/\.tooltip\s*\{[^}]*white-space:\s*normal/s);
+		expect(main).toMatch(/\.tooltip\s*\{[^}]*overflow-wrap:\s*anywhere/s);
+	});
+
 	it('keeps the scrollspy sticky', () => {
 		expect(page).toMatch(/h4\s*\{[^}]*position:\s*sticky/s);
 		expect(page).toMatch(/h4\s*\{[^}]*top:\s*0/s);

@@ -22,6 +22,18 @@
 
 	let iframe: HTMLIFrameElement | undefined;
 
+	const sameOriginBase = 'http://same-origin.invalid';
+	const isSameOrigin = (value: string): boolean => {
+		if (value === '') return false;
+		try {
+			const url = new URL(value, sameOriginBase);
+			if (url.origin === sameOriginBase) return true;
+			return typeof location !== 'undefined' && url.origin === location.origin;
+		} catch {
+			return false;
+		}
+	};
+
 	const syncTheme = (dark: boolean) => {
 		if (!iframe?.contentWindow) return;
 		iframe.contentWindow.postMessage({ type: 'theme', dark }, '*');
@@ -77,7 +89,7 @@
 		onload={() => {
 			syncTheme(document.body.classList.contains('dark'));
 		}}
-		sandbox={allowSameOrigin && !srcDoc ? trustedSandboxPolicy : sandboxPolicy}
+		sandbox={allowSameOrigin && !srcDoc && isSameOrigin(src) ? trustedSandboxPolicy : sandboxPolicy}
 		{src}
 		{title}>
 	</iframe>

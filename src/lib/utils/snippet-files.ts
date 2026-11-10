@@ -15,6 +15,11 @@ const toFileState = (result: PromiseSettledResult<string>): FileState => {
 	};
 };
 
+export const snippetBasePath = (indexHtml: string): string => {
+	const slash = indexHtml.lastIndexOf('/');
+	return slash === -1 ? '' : indexHtml.slice(0, slash);
+};
+
 export const loadSnippetFiles = async (basePath: string): Promise<SnippetFileStates> => {
 	const results = await Promise.allSettled([
 		cachedFetch(`${basePath}/index.js`),

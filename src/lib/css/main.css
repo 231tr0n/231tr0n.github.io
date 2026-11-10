@@ -329,7 +329,9 @@ hr {
 	border-radius: 4px;
 	font-size: 12px;
 	font-family: 'Roboto-Condensed', monospace;
-	white-space: nowrap;
+	max-width: calc(100vw - 8px);
+	overflow-wrap: anywhere;
+	white-space: normal;
 	background-color: var(--color-component-background);
 	color: var(--color-component-foreground);
 	pointer-events: none;

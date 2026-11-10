@@ -2,10 +2,12 @@
 	import { cacheKeyPrefix } from '#lib/constants/app.constants.js';
 
 	const clearCache = () => {
-		const keys = Object.keys(localStorage).filter((k) => k.startsWith(cacheKeyPrefix));
-		keys.forEach((k) => {
-			localStorage.removeItem(k);
-		});
+		try {
+			const keys = Object.keys(localStorage).filter((key) => key.startsWith(cacheKeyPrefix));
+			for (const key of keys) localStorage.removeItem(key);
+		} catch (error) {
+			console.error('Failed to clear cache', error);
+		}
 	};
 </script>
 

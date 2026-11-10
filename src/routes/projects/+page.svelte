@@ -1,5 +1,6 @@
 <script lang="ts">
 	import Page from '#lib/components/Page.svelte';
+	import { SvelteMap } from 'svelte/reactivity';
 	import Accordion from '#lib/components/Accordion.svelte';
 	import Progress from '#lib/components/Progress.svelte';
 	import BarGraph from '#lib/components/BarGraph.svelte';
@@ -7,7 +8,6 @@
 	import type { PostData, GitHubLanguages } from '#lib/types/index.js';
 	import { percentageScale, decimalPrecision } from '#lib/constants/app.constants.js';
 	import { onMount } from 'svelte';
-	import { SvelteMap } from 'svelte/reactivity';
 	import { cachedFetch, HttpError } from '#lib/utils/fetch-cache.js';
 
 	let processedRepos = $state(0);
@@ -76,9 +76,9 @@
 				};
 
 				for (const key of languages.keys()) {
-					const prev = languageBytes.get(key) ?? 0;
-					const lang = languages.get(key) ?? 0;
-					languageBytes.set(key, prev + lang);
+					const previousBytes = languageBytes.get(key) ?? 0;
+					const repoBytes = languages.get(key) ?? 0;
+					languageBytes.set(key, previousBytes + repoBytes);
 				}
 
 				processed += 1;

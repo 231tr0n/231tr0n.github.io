@@ -20,7 +20,7 @@
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run",
 		"test:coverage": "vitest --run --coverage",
-		"ci": "npm install && npm run lint && npm run build && npm run test"
+		"ci": "npm ci && npm run lint && npm run build && npm run test"
 	},
 	"devDependencies": {
 		"@eslint-community/eslint-plugin-eslint-comments": "^4.8.1",

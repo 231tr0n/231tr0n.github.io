@@ -54,7 +54,7 @@
 	{/snippet}
 	<div class="bottom">
 		<div class="padding overflow">
-			<table bind:this={table}>
+			<table bind:this={table} aria-label={title}>
 				<tbody>
 					<tr>
 						{#each entries as [key, value] (key)}

@@ -10,7 +10,7 @@ const children = createRawSnippet(() => ({
 describe('Accordion', () => {
 	it('starts closed and toggles open', async () => {
 		render(Accordion, { props: { name: 'Section', children } });
-		const toggle = screen.getByRole('button', { name: 'Accordion summary toggler' });
+		const toggle = screen.getByRole('button', { name: 'Expand Section' });
 		expect(toggle).toHaveAttribute('aria-expanded', 'false');
 		expect(screen.queryByText('Accordion content')).not.toBeInTheDocument();
 

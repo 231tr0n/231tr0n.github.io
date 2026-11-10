@@ -53,24 +53,49 @@ describe('theme bridge script', () => {
 		dom = loadTheme(false);
 		const themeDom = dom;
 
-		themeDom.window.postMessage({ type: 'theme', dark: true }, '*');
+		const send = (dark: boolean) => {
+			themeDom.window.dispatchEvent(
+				new themeDom.window.MessageEvent('message', {
+					data: { type: 'theme', dark },
+					source: themeDom.window as unknown as MessageEventSource
+				})
+			);
+		};
+		send(true);
 		await vi.waitFor(() => {
 			expect(themeDom.window.document.documentElement.classList.contains('dark')).toBe(true);
 		});
 		expect(themeDom.window.document.documentElement.style.colorScheme).toBe('dark');
 
-		themeDom.window.postMessage({ type: 'theme', dark: false }, '*');
+		send(false);
 		await vi.waitFor(() => {
 			expect(themeDom.window.document.documentElement.classList.contains('dark')).toBe(false);
 		});
 		expect(themeDom.window.document.documentElement.style.colorScheme).toBe('light');
 	});
 
+	it('ignores theme messages from other sources', () => {
+		dom = loadTheme(false);
+		const themeDom = dom;
+		themeDom.window.dispatchEvent(
+			new themeDom.window.MessageEvent('message', {
+				data: { type: 'theme', dark: true },
+				source: null
+			})
+		);
+		expect(themeDom.window.document.documentElement.classList.contains('dark')).toBe(false);
+	});
+
 	it('ignores malformed messages but accepts a later valid message', () => {
 		dom = loadTheme(false);
 		const themeDom = dom;
 		const dispatch = (data: unknown) => {
-			themeDom.window.dispatchEvent(new themeDom.window.MessageEvent('message', { data }));
+			themeDom.window.dispatchEvent(
+				new themeDom.window.MessageEvent('message', {
+					data,
+					source: themeDom.window as unknown as MessageEventSource
+				})
+			);
 		};
 
 		dispatch({ type: 'not-theme', dark: true });

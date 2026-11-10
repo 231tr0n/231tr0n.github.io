@@ -101,4 +101,17 @@ describe('setupExternalLinks', () => {
 		expect(byId('empty').target).toBe('');
 		destroy();
 	});
+	it('treats leading whitespace before an external URL as external', () => {
+		document.body.innerHTML = `
+			<a id="space" href="  https://example.com">space</a>
+			<a id="protocol" href="  //cdn.example.com/file">protocol</a>
+		`;
+		const destroy = setupExternalLinks();
+		for (const id of ['space', 'protocol']) {
+			const anchor = byId(id);
+			expect(anchor.target).toBe('_blank');
+			expect(anchor.rel.split(' ')).toEqual(expect.arrayContaining(['noopener', 'noreferrer']));
+		}
+		destroy();
+	});
 });

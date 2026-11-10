@@ -11,6 +11,7 @@
 <button
 	class="zeltron-inline-flex-middle"
 	aria-label="Toggle fullscreen"
+	aria-pressed={fullscreen}
 	onclick={toggleFullscreen}
 	type="button">
 	{#if !fullscreen}

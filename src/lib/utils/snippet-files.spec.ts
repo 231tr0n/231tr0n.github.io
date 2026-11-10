@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { createStorage } from '../../test/helpers.js';
-import { loadSnippetFiles } from './snippet-files';
+import { loadSnippetFiles, snippetBasePath } from './snippet-files';
 
 beforeEach(() => {
 	vi.stubGlobal('localStorage', createStorage());
@@ -63,5 +63,9 @@ describe('loadSnippetFiles', () => {
 
 		const result = await loadSnippetFiles('/snippets/ludo');
 		expect(result.js).toEqual({ code: null, error: 'Failed to load file' });
+	});
+	it('derives the snippet base path and tolerates a bare filename', () => {
+		expect(snippetBasePath('/resources/snippets/ludo/index.html')).toBe('/resources/snippets/ludo');
+		expect(snippetBasePath('index.html')).toBe('');
 	});
 });

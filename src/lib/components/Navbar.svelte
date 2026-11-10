@@ -49,6 +49,7 @@
 	<button
 		class="zeltron-strong-component"
 		aria-label="Toggle theme"
+		aria-pressed={darkMode().dark}
 		onclick={toggleTheme}
 		type="button">
 		{#if mounted}

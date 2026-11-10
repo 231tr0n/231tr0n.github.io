@@ -1,9 +1,8 @@
 import type { JSDOM } from 'jsdom';
 import { afterEach, describe, expect, it } from 'vitest';
-import { loadStaticSnippet } from '../test/static-snippet.js';
+import { loadStaticSnippet, type SnippetStorage } from '../test/static-snippet.js';
 
-const loadGame = (storage?: { session?: Record<string, string>; local?: Record<string, string> }) =>
-	loadStaticSnippet('tictactoe', storage);
+const loadGame = (storage?: SnippetStorage) => loadStaticSnippet('tictactoe', storage);
 
 const cell = (dom: JSDOM, id: string) => {
 	const element = dom.window.document.getElementById(id);
@@ -273,7 +272,7 @@ describe('TicTacToe game', () => {
 	});
 	it('restores saved state after DOM wiring on reload', () => {
 		dom = loadGame({
-			local: {
+			localStorage: {
 				'tictactoe-game-state': JSON.stringify({
 					cells: ['X', '', '', '', 'O', '', '', '', ''],
 					turn: 'X',
@@ -292,7 +291,7 @@ describe('TicTacToe game', () => {
 	});
 	it('derives a finished game from the saved board', () => {
 		dom = loadGame({
-			local: {
+			localStorage: {
 				'tictactoe-game-state': JSON.stringify({
 					cells: ['X', 'X', 'X', 'O', 'O', '', '', '', ''],
 					turn: 'O',
@@ -308,7 +307,7 @@ describe('TicTacToe game', () => {
 
 	it('restores a tied game', () => {
 		dom = loadGame({
-			local: {
+			localStorage: {
 				'tictactoe-game-state': JSON.stringify({
 					cells: ['X', 'O', 'X', 'X', 'O', 'O', 'O', 'X', 'X'],
 					turn: 'X',
@@ -323,7 +322,7 @@ describe('TicTacToe game', () => {
 
 	it('restores whose turn it is from the saved board', () => {
 		dom = loadGame({
-			local: {
+			localStorage: {
 				'tictactoe-game-state': JSON.stringify({
 					cells: ['X', '', '', '', '', '', '', '', '']
 				})
@@ -335,7 +334,7 @@ describe('TicTacToe game', () => {
 
 	it('rejects a board with impossible marks', () => {
 		dom = loadGame({
-			local: {
+			localStorage: {
 				'tictactoe-game-state': JSON.stringify({
 					cells: ['Z', '', '', '', '', '', '', '', '']
 				})
@@ -346,9 +345,9 @@ describe('TicTacToe game', () => {
 		expect(dom.window.localStorage.getItem('tictactoe-game-state')).toBeNull();
 	});
 
-	it('rejects a board with two winning lines', () => {
+	it('rejects a board where both players have a winning line', () => {
 		dom = loadGame({
-			local: {
+			localStorage: {
 				'tictactoe-game-state': JSON.stringify({
 					cells: ['X', 'X', 'X', 'O', 'O', 'O', 'X', '', '']
 				})
@@ -358,9 +357,22 @@ describe('TicTacToe game', () => {
 		expect(message(dom)).toBe("X's turn");
 	});
 
+	it('restores a single move that completed two lines for the same player', () => {
+		dom = loadGame({
+			localStorage: {
+				'tictactoe-game-state': JSON.stringify({
+					cells: ['X', 'X', 'X', 'X', 'O', 'O', 'X', 'O', 'O']
+				})
+			}
+		});
+		expect(cell(dom, '00').textContent).toBe('X');
+		expect(message(dom)).toBe("'X' won");
+		expect(dom.window.document.getElementById('game-board')).toHaveClass('game-over');
+	});
+
 	it('rejects inconsistent saved state', () => {
 		dom = loadGame({
-			local: {
+			localStorage: {
 				'tictactoe-game-state': JSON.stringify({
 					cells: ['O', 'O', 'X', '', '', '', '', '', ''],
 					turn: 'X',

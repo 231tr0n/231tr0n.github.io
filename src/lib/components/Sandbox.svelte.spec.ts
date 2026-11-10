@@ -43,6 +43,42 @@ describe('Sandbox', () => {
 		expect(screen.getByTitle('Game')).toHaveAttribute('sandbox', trustedSandboxPolicy);
 	});
 
+	it('trusts relative same-origin sources used during SSR', () => {
+		render(Sandbox, {
+			props: {
+				src: '../resources/snippets/ludo/index.html',
+				title: 'Game',
+				description: '',
+				allowSameOrigin: true
+			}
+		});
+		expect(screen.getByTitle('Game')).toHaveAttribute('sandbox', trustedSandboxPolicy);
+	});
+
+	it('trusts an absolute same-origin source', () => {
+		render(Sandbox, {
+			props: {
+				src: `${window.location.origin}/game.html`,
+				title: 'Game',
+				description: '',
+				allowSameOrigin: true
+			}
+		});
+		expect(screen.getByTitle('Game')).toHaveAttribute('sandbox', trustedSandboxPolicy);
+	});
+
+	it('never trusts cross-origin sources', () => {
+		render(Sandbox, {
+			props: {
+				src: 'https://other.example/game.html',
+				title: 'Game',
+				description: '',
+				allowSameOrigin: true
+			}
+		});
+		expect(screen.getByTitle('Game')).toHaveAttribute('sandbox', sandboxPolicy);
+	});
+
 	it('keeps user HTML on the strict policy even when trusted is requested', () => {
 		render(Sandbox, {
 			props: {

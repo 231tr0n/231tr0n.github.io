@@ -72,7 +72,9 @@ const attach = (target: HTMLElement) => {
 		showTimeout = setTimeout(
 			() => {
 				showTimeout = null;
-				tip = createTooltip(label);
+				const current = getTooltipText(target);
+				if (current === null) return;
+				tip = createTooltip(current);
 				const container =
 					document.fullscreenElement?.contains(target) === true
 						? document.fullscreenElement
@@ -224,7 +226,7 @@ const attachTo = (el: HTMLElement) => {
 const migrateTitle = (el: HTMLElement) => {
 	const label = el.getAttribute('title');
 	if (label === null) return;
-	el.setAttribute('aria-label', label);
+	if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', label);
 	el.removeAttribute('title');
 };
 

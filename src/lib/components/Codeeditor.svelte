@@ -151,7 +151,7 @@
 
 	const onFrameFullscreenChange = () => {
 		if (!editor) return;
-		editor.resize();
+		requestAnimationFrame(() => editor?.resize(true));
 	};
 </script>
 
@@ -282,6 +282,11 @@
 {/if}
 
 <style>
+	:global(.codeeditor-frame:fullscreen) {
+		height: 100vh;
+		max-width: none;
+	}
+
 	:global(.codeeditor-frame) {
 		width: 100%;
 		box-sizing: border-box;

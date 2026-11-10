@@ -16,7 +16,6 @@ const WIN_INDICES = [
 	[0, 4, 8],
 	[2, 4, 6]
 ];
-const WIN_LINES = WIN_INDICES.map((line) => line.map((index) => cells.at(index)));
 const marksWin = (marks, mark) =>
 	WIN_INDICES.some((line) => line.every((index) => marks.at(index) === mark));
 
@@ -30,7 +29,13 @@ const STORAGE_KEY = 'tictactoe-game-state';
 
 const readStoredState = () => {
 	try {
-		return sessionStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(STORAGE_KEY);
+		const session = sessionStorage.getItem(STORAGE_KEY);
+		if (session !== null) return session;
+	} catch {
+		// Fall through to the persistent store.
+	}
+	try {
+		return localStorage.getItem(STORAGE_KEY);
 	} catch {
 		return null;
 	}
@@ -39,15 +44,31 @@ const readStoredState = () => {
 const writeStoredState = (value) => {
 	try {
 		sessionStorage.setItem(STORAGE_KEY, value);
+	} catch {
+		try {
+			sessionStorage.removeItem(STORAGE_KEY);
+		} catch {
+			// Ignore unavailable storage.
+		}
+	}
+	try {
 		localStorage.setItem(STORAGE_KEY, value);
 	} catch {
-		// Persistence is best-effort.
+		try {
+			localStorage.removeItem(STORAGE_KEY);
+		} catch {
+			// Ignore unavailable storage.
+		}
 	}
 };
 
 const clearStoredState = () => {
 	try {
 		sessionStorage.removeItem(STORAGE_KEY);
+	} catch {
+		// Ignore unavailable storage.
+	}
+	try {
 		localStorage.removeItem(STORAGE_KEY);
 	} catch {
 		// Ignore unavailable storage.
@@ -55,10 +76,9 @@ const clearStoredState = () => {
 };
 
 const winningMark = () => {
-	for (const [a, b, c] of WIN_LINES) {
-		const mark = a.textContent;
-		if (mark && mark === b.textContent && mark === c.textContent) return mark;
-	}
+	const marks = cells.map((cell) => cell.textContent ?? '');
+	if (marksWin(marks, 'X')) return 'X';
+	if (marksWin(marks, 'O')) return 'O';
 	return '';
 };
 
@@ -111,7 +131,7 @@ const restoreState = () => {
 			stored === null ||
 			typeof stored !== 'object' ||
 			!Array.isArray(stored.cells) ||
-			stored.cells.length !== 9
+			stored.cells.length !== cells.length
 		) {
 			clearStoredState();
 			return false;
@@ -143,11 +163,10 @@ const restoreState = () => {
 			turn = winner;
 			setGameOver(true);
 			msg.textContent = `'${winner}' won`;
-		} else if (moves === 9) {
+		} else if (moves === cells.length) {
 			setGameOver(true);
 			msg.textContent = "It's a tie";
 		} else {
-			setGameOver(false);
 			msg.textContent = `${turn}'s turn`;
 		}
 		return true;
@@ -159,13 +178,13 @@ const restoreState = () => {
 
 const play = (i, j) => {
 	const cell = cellAt(i, j);
-	if (gameOver || cell.textContent || win()) return;
+	if (gameOver || cell.textContent) return;
 	paint(cell, turn);
 	moves++;
 	if (win()) {
 		setGameOver(true);
 		msg.textContent = `'${turn}' won`;
-	} else if (moves === 9) {
+	} else if (moves === cells.length) {
 		setGameOver(true);
 		msg.textContent = "It's a tie";
 	} else {

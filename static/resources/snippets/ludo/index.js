@@ -203,7 +203,9 @@ const createInitialState = () => ({
 	legal: [],
 	safe: new Set(),
 	rolloff: { participants: [], pointer: 0, rolls: new Map() },
-	winner: -1
+	winner: -1,
+	roller: null,
+	rollingKind: null
 });
 
 let selectedCount = 4;
@@ -215,7 +217,13 @@ const STORAGE_KEY = 'ludo-game-state';
 
 const readStoredState = () => {
 	try {
-		return sessionStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(STORAGE_KEY);
+		const session = sessionStorage.getItem(STORAGE_KEY);
+		if (session !== null) return session;
+	} catch {
+		// Fall through to the persistent store.
+	}
+	try {
+		return localStorage.getItem(STORAGE_KEY);
 	} catch {
 		return null;
 	}
@@ -224,15 +232,31 @@ const readStoredState = () => {
 const writeStoredState = (value) => {
 	try {
 		sessionStorage.setItem(STORAGE_KEY, value);
+	} catch {
+		try {
+			sessionStorage.removeItem(STORAGE_KEY);
+		} catch {
+			// Ignore unavailable storage.
+		}
+	}
+	try {
 		localStorage.setItem(STORAGE_KEY, value);
 	} catch {
-		// Persistence is best-effort; the game still works without storage.
+		try {
+			localStorage.removeItem(STORAGE_KEY);
+		} catch {
+			// Ignore unavailable storage.
+		}
 	}
 };
 
 const clearStoredState = () => {
 	try {
 		sessionStorage.removeItem(STORAGE_KEY);
+	} catch {
+		// Ignore unavailable storage.
+	}
+	try {
 		localStorage.removeItem(STORAGE_KEY);
 	} catch {
 		// Ignore unavailable storage.
@@ -433,21 +457,20 @@ const render = () => {
 	gameoverScreen.hidden = state.phase !== 'gameover';
 	gameScreen.inert = state.phase === 'gameover';
 
+	const rollingPlayer = state.phase === 'rolling' ? (state.roller ?? null) : null;
 	const activePlayer =
 		state.phase === 'setup'
 			? -1
-			: state.phase === 'rolloff'
-				? currentRolloffPlayer()
-				: state.current;
+			: (rollingPlayer ?? (state.phase === 'rolloff' ? currentRolloffPlayer() : state.current));
+	const rolloffView =
+		state.phase === 'rolloff' || (state.phase === 'rolling' && state.rollingKind === 'rolloff');
 
-	if (activePlayer >= 0) {
-		turnEl.className = 'turn';
-		turnEl.textContent =
-			state.phase === 'rolloff' ? `${nameOf(activePlayer)} \u00b7 roll-off` : nameOf(activePlayer);
-	} else {
-		turnEl.className = 'turn';
-		turnEl.textContent = '';
-	}
+	turnEl.textContent =
+		activePlayer >= 0
+			? rolloffView
+				? `${nameOf(activePlayer)} \u00b7 roll-off`
+				: nameOf(activePlayer)
+			: '';
 
 	for (let player = 0; player < state.count; player++) {
 		const element = playerEls.at(player);
@@ -476,7 +499,7 @@ const render = () => {
 	restartButton.disabled = state.phase === 'rolling' || state.phase === 'animating';
 	diceButton.setAttribute(
 		'aria-label',
-		state.phase === 'rolloff' ? `Roll for ${nameOf(currentRolloffPlayer())}` : 'Roll the dice'
+		rolloffView ? `Roll for ${nameOf(activePlayer)}` : 'Roll the dice'
 	);
 
 	if (state.phase === 'gameover') {
@@ -625,7 +648,8 @@ const isBlocked = (ringIndex, player) => {
 	return false;
 };
 
-const pathBlocked = (token, target) => {
+// Inclusive of the landing square: a blockade cannot be passed or landed on.
+const hasBlockadeOnPath = (token, target) => {
 	const lastRingStep = Math.min(target, LAST_RING_POS);
 	for (let pos = token.pos + 1; pos <= lastRingStep; pos++) {
 		const ringIndex = (startIndex(token.player) + pos) % RING_SIZE;
@@ -647,7 +671,7 @@ const computeLegalMoves = (player, roll) => {
 		}
 		const target = token.pos + roll;
 		if (target > FINISH_POS) continue;
-		if (pathBlocked(token, target)) continue;
+		if (hasBlockadeOnPath(token, target)) continue;
 		moves.push({ tokenId: token.id, target });
 	}
 	return moves;
@@ -665,8 +689,9 @@ const sleep = (ms) =>
 		setTimeout(resolve, ms);
 	});
 
-const focusDice = () => diceButton.focus();
-const focusFirstMove = () => tokenEls.get(state.legal.at(0)?.tokenId)?.focus();
+const focusDice = () => diceButton.focus({ preventScroll: true });
+const focusFirstMove = () =>
+	tokenEls.get(state.legal.at(0)?.tokenId)?.focus({ preventScroll: true });
 
 const advanceTurn = () => {
 	state.sixes = 0;
@@ -751,8 +776,10 @@ const randomDie = () => {
 	return ((values.at(0) ?? 0) % DIE_FACES) + 1;
 };
 
-const animateDie = async () => {
+const animateDie = async (roller, kind) => {
 	state.phase = 'rolling';
+	state.roller = roller;
+	state.rollingKind = kind;
 	render();
 	for (let step = 0; step < DIE_ANIMATION_STEPS; step++) {
 		state.die = randomDie();
@@ -762,13 +789,15 @@ const animateDie = async () => {
 	const value = randomDie();
 	state.die = value;
 	render();
+	state.roller = null;
+	state.rollingKind = null;
 	return value;
 };
 
 const rolloffTurn = async () => {
 	if (state.phase !== 'rolloff') return;
 	const player = currentRolloffPlayer();
-	const value = await animateDie();
+	const value = await animateDie(player, 'rolloff');
 	state.rolloff.rolls.set(player, value);
 
 	const nextPointer = state.rolloff.pointer + 1;
@@ -817,7 +846,7 @@ const rollDice = async () => {
 	if (state.phase !== 'await-roll') return;
 
 	const player = state.current;
-	const value = await animateDie();
+	const value = await animateDie(player, 'turn');
 	if (value === DIE_FACES) state.sixes += 1;
 	else state.sixes = 0;
 
@@ -863,6 +892,7 @@ const rollDice = async () => {
 };
 
 const startGame = (count) => {
+	if (!Number.isInteger(count) || count < MIN_PLAYERS || count > MAX_PLAYERS) return;
 	state = {
 		phase: 'rolloff',
 		count,
@@ -878,7 +908,9 @@ const startGame = (count) => {
 			pointer: 0,
 			rolls: new Map()
 		},
-		winner: -1
+		winner: -1,
+		roller: null,
+		rollingKind: null
 	};
 	buildBoard();
 	buildTokens();
@@ -917,12 +949,29 @@ const selectCount = (event) => {
 	updateCountButtons();
 };
 
-const isInsideToken = (id, x, y) => {
+const tokenGeometry = (id) => {
 	const element = tokenEls.get(id);
-	if (!element) return false;
+	if (!element) return null;
 	const rect = element.getBoundingClientRect();
-	const radius = Math.min(rect.width, rect.height) / 2;
-	return Math.hypot(x - (rect.left + rect.width / 2), y - (rect.top + rect.height / 2)) <= radius;
+	return {
+		centerX: rect.left + rect.width / 2,
+		centerY: rect.top + rect.height / 2,
+		radius: Math.min(rect.width, rect.height) / 2
+	};
+};
+
+const tokenDistance = (id, x, y) => {
+	const geometry = tokenGeometry(id);
+	return geometry
+		? Math.hypot(x - geometry.centerX, y - geometry.centerY)
+		: Number.POSITIVE_INFINITY;
+};
+
+const isInsideToken = (id, x, y) => {
+	const geometry = tokenGeometry(id);
+	return geometry
+		? Math.hypot(x - geometry.centerX, y - geometry.centerY) <= geometry.radius
+		: false;
 };
 
 const hitsNonMovableToken = (event, movable) =>
@@ -947,13 +996,7 @@ const clickToken = (event) => {
 	let nearestId = tokenId;
 	let nearestDistance = Number.POSITIVE_INFINITY;
 	for (const id of movable) {
-		const candidate = tokenEls.get(id);
-		if (!candidate) continue;
-		const rect = candidate.getBoundingClientRect();
-		const distance = Math.hypot(
-			event.clientX - (rect.left + rect.width / 2),
-			event.clientY - (rect.top + rect.height / 2)
-		);
+		const distance = tokenDistance(id, event.clientX, event.clientY);
 		if (distance < nearestDistance) {
 			nearestDistance = distance;
 			nearestId = id;
@@ -1045,6 +1088,7 @@ const restoreState = () => {
 			stored.sixes >= 0 &&
 			stored.sixes <= 2 &&
 			(stored.sixes === 0 || stored.die === DIE_FACES) &&
+			(stored.phase === 'rolloff' || stored.die !== DIE_FACES || stored.sixes >= 1) &&
 			(stored.phase !== 'choose' || stored.die >= 1);
 		const rolloff = stored?.rolloff;
 		const rolloffParticipants = rolloff?.participants;
@@ -1060,11 +1104,13 @@ const restoreState = () => {
 				rolloff.pointer >= 0 &&
 				rolloff.pointer < rolloffParticipants.length &&
 				Array.isArray(rolloff?.rolls) &&
+				rolloff.rolls.length === rolloff.pointer &&
+				new Set(rolloff.rolls.map((pair) => pair[0])).size === rolloff.rolls.length &&
 				rolloff.rolls.every(
-					(pair) =>
+					(pair, index) =>
 						Array.isArray(pair) &&
 						pair.length === 2 &&
-						rolloffParticipants.includes(pair[0]) &&
+						pair[0] === rolloffParticipants.at(index) &&
 						Number.isInteger(pair[1]) &&
 						pair[1] >= 1 &&
 						pair[1] <= DIE_FACES
@@ -1091,8 +1137,8 @@ const restoreState = () => {
 			count: stored.count,
 			tokens: stored.tokens,
 			current: stored.current,
-			die: Number.isInteger(stored.die) ? stored.die : 0,
-			sixes: Number.isInteger(stored.sixes) ? stored.sixes : 0,
+			die: stored.die,
+			sixes: stored.sixes,
 			message: stored.message,
 			legal: [],
 			safe: buildSafeCells(),
@@ -1101,7 +1147,9 @@ const restoreState = () => {
 				pointer: stored.rolloff?.pointer ?? 0,
 				rolls: new Map(stored.rolloff?.rolls ?? [])
 			},
-			winner: stored.winner ?? -1
+			winner: stored.winner,
+			roller: null,
+			rollingKind: null
 		};
 		if (state.phase === 'choose') {
 			state.legal = computeLegalMoves(state.current, state.die);
@@ -1117,6 +1165,8 @@ const restoreState = () => {
 		buildPlayerStrip();
 		updateCountButtons();
 		render();
+		if (state.phase === 'choose') focusFirstMove();
+		else if (state.phase === 'await-roll' || state.phase === 'rolloff') focusDice();
 		return true;
 	} catch {
 		clearStoredState();

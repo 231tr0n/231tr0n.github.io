@@ -16,4 +16,4 @@
 		content="An unexpected error occurred on 231tr0n. Try again later or contact the site owner." />
 </svelte:head>
 
-<div class="zeltron-error">{page.status} - {page.error?.message ?? 'Unknown error'}</div>
+<h1 class="zeltron-error">{page.status} - {page.error?.message ?? 'Unknown error'}</h1>

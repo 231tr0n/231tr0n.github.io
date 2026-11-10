@@ -1,4 +1,6 @@
-let dark = $state(true);
+let dark = $state(
+	typeof document === 'undefined' ? true : document.body.classList.contains('dark')
+);
 
 const instance = {
 	get dark() {

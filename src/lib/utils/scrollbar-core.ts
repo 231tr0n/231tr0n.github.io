@@ -4,8 +4,7 @@ import {
 	scrollbarMinThumbH,
 	scrollbarTrackSize,
 	scrollbarHideEpsilon,
-	scrollbarTrackOverhang,
-	percentageScale
+	scrollbarTrackOverhang
 } from '#lib/constants/app.constants.js';
 
 const disableSmoothScroll = (node: HTMLElement): (() => void) => {
@@ -23,6 +22,8 @@ export const makeTrack = (dir: 'v' | 'h') => {
 	track.className = `custom-scrollbar-track-${dir}`;
 	const thumb = document.createElement('button');
 	thumb.type = 'button';
+	thumb.tabIndex = -1;
+	thumb.setAttribute('aria-hidden', 'true');
 	thumb.className = `custom-scrollbar-thumb-${dir}`;
 	if (dir === 'v') {
 		thumb.style.minHeight = `${String(scrollbarMinThumbV)}px`;
@@ -188,20 +189,6 @@ export const setupTrackClick = (track: HTMLElement, node: HTMLElement, dir: 'v' 
 	return cleanup;
 };
 
-export const updateThumbAriaLabel = (node: HTMLElement, thumb: HTMLElement, dir: 'v' | 'h') => {
-	const isVertical = dir === 'v';
-	const scrollSize = isVertical ? node.scrollHeight : node.scrollWidth;
-	const clientSize = isVertical ? node.clientHeight : node.clientWidth;
-	const scrollPos = isVertical ? node.scrollTop : node.scrollLeft;
-	if (scrollSize <= clientSize + scrollbarHideEpsilon) {
-		thumb.removeAttribute('aria-label');
-		return;
-	}
-	const clamped = Math.max(0, Math.min(scrollPos, scrollSize - clientSize));
-	const percent = Math.round((clamped / (scrollSize - clientSize)) * percentageScale);
-	thumb.setAttribute('aria-label', `Scroll: ${String(percent)}%`);
-};
-
 export const attachAxis = (
 	node: HTMLElement,
 	track: HTMLElement,
@@ -211,11 +198,9 @@ export const attachAxis = (
 	const cleanups: (() => void)[] = [
 		on(node, 'scroll', () => {
 			syncScroll(node, track, thumb, dir);
-			updateThumbAriaLabel(node, thumb, dir);
 		}),
 		setupDrag(thumb, node, track, dir),
 		setupTrackClick(track, node, dir)
 	];
-	updateThumbAriaLabel(node, thumb, dir);
 	return cleanups;
 };

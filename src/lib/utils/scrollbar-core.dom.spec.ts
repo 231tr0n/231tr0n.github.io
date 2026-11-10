@@ -5,8 +5,7 @@ import {
 	makeTrack,
 	setupDrag,
 	setupTrackClick,
-	syncScroll,
-	updateThumbAriaLabel
+	syncScroll
 } from './scrollbar-core';
 
 const setMetric = (
@@ -237,36 +236,6 @@ describe('setupTrackClick', () => {
 	});
 });
 
-describe('updateThumbAriaLabel', () => {
-	it('removes the label when there is no scroll range', () => {
-		const { node, thumb } = createScrollFixture();
-		setMetric(node, 'scrollHeight', 50);
-		setMetric(node, 'clientHeight', 50);
-		thumb.setAttribute('aria-label', 'old');
-
-		updateThumbAriaLabel(node, thumb, 'v');
-		expect(thumb.hasAttribute('aria-label')).toBe(false);
-	});
-
-	it('reports a clamped scroll percentage', () => {
-		const { node, thumb } = createScrollFixture();
-		setMetric(node, 'scrollHeight', 100);
-		setMetric(node, 'clientHeight', 50);
-
-		node.scrollTop = 25;
-		updateThumbAriaLabel(node, thumb, 'v');
-		expect(thumb.getAttribute('aria-label')).toBe('Scroll: 50%');
-
-		node.scrollTop = 200;
-		updateThumbAriaLabel(node, thumb, 'v');
-		expect(thumb.getAttribute('aria-label')).toBe('Scroll: 100%');
-
-		node.scrollTop = -10;
-		updateThumbAriaLabel(node, thumb, 'v');
-		expect(thumb.getAttribute('aria-label')).toBe('Scroll: 0%');
-	});
-});
-
 describe('attachAxis', () => {
 	it('syncs on scroll and cleans up listeners', () => {
 		const { node, track, thumb } = createScrollFixture();
@@ -275,11 +244,9 @@ describe('attachAxis', () => {
 		setMetric(track, 'clientHeight', 100);
 		const cleanups = attachAxis(node, track, thumb, 'v');
 
-		expect(thumb.getAttribute('aria-label')).toBe('Scroll: 0%');
 		node.scrollTop = 25;
 		node.dispatchEvent(new Event('scroll'));
 		expect(thumb.style.top).toBe('25px');
-		expect(thumb.getAttribute('aria-label')).toBe('Scroll: 50%');
 
 		for (const cleanup of cleanups) cleanup();
 	});

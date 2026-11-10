@@ -5,8 +5,8 @@ import tictactoeHtml from '../../static/resources/snippets/tictactoe/index.html?
 import tictactoeScript from '../../static/resources/snippets/tictactoe/index.js?raw';
 
 export interface SnippetStorage {
-	session?: Record<string, string>;
-	local?: Record<string, string>;
+	sessionStorage?: Record<string, string>;
+	localStorage?: Record<string, string>;
 }
 
 export const loadStaticSnippet = (name: 'ludo' | 'tictactoe', storage?: SnippetStorage): JSDOM => {
@@ -15,9 +15,9 @@ export const loadStaticSnippet = (name: 'ludo' | 'tictactoe', storage?: SnippetS
 			? { html: ludoHtml, script: ludoScript }
 			: { html: tictactoeHtml, script: tictactoeScript };
 	const dom = new JSDOM(html, { runScripts: 'dangerously', url: 'http://localhost/' });
-	for (const [key, value] of Object.entries(storage?.session ?? {}))
+	for (const [key, value] of Object.entries(storage?.sessionStorage ?? {}))
 		dom.window.sessionStorage.setItem(key, value);
-	for (const [key, value] of Object.entries(storage?.local ?? {}))
+	for (const [key, value] of Object.entries(storage?.localStorage ?? {}))
 		dom.window.localStorage.setItem(key, value);
 	const script = dom.window.document.createElement('script');
 	script.textContent = source;

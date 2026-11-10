@@ -1,11 +1,8 @@
 import type { JSDOM } from 'jsdom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { loadStaticSnippet } from '../test/static-snippet.js';
+import { loadStaticSnippet, type SnippetStorage } from '../test/static-snippet.js';
 
-const loadLudo = (storage?: {
-	session?: Record<string, string>;
-	local?: Record<string, string>;
-}) => {
+const loadLudo = (storage?: SnippetStorage) => {
 	const dom = loadStaticSnippet('ludo', storage);
 	Object.defineProperty(dom.window, 'setTimeout', {
 		configurable: true,
@@ -237,6 +234,25 @@ describe('Ludo game', () => {
 		await runAsync('chooseToken(0)');
 		expect(run<number>('state.tokens.at(0).pos')).toBe(8);
 		expect(run<number>('state.tokens.at(4).pos')).toBe(34);
+	});
+
+	it('shows exactly the die value used for the legal moves', async () => {
+		for (let face = 1; face <= 6; face++) {
+			run('startGame(2)');
+			run(
+				'state.phase = "await-roll"; state.current = 0; state.sixes = 0; state.tokens.at(0).pos = 10'
+			);
+			setDie(getDom(), face);
+			await runAsync('rollDice()');
+			expect(run<number>('state.die')).toBe(face);
+			expect(dom?.window.document.querySelectorAll('.pip.on')).toHaveLength(face);
+			if (run<string>('state.phase') === 'choose') {
+				const legal = run<{ tokenId: number; target: number }[]>('state.legal');
+				expect(legal.length).toBeGreaterThan(0);
+				const tokenMove = legal.find((move) => move.tokenId === 0);
+				expect(tokenMove?.target).toBe(10 + face);
+			}
+		}
 	});
 
 	it('keeps the rolled dice at full visibility while it is disabled', () => {
@@ -656,7 +672,6 @@ describe('Ludo game', () => {
 		expect(dom?.window.document.querySelectorAll('.ring-cell.safe')).toHaveLength(8);
 		expect(dom?.window.document.querySelectorAll('.ring-cell.start')).toHaveLength(4);
 		expect(dom?.window.document.querySelectorAll('.star')).toHaveLength(4);
-		expect(dom?.window.document.querySelectorAll('.center-star')).toHaveLength(0);
 		expect(dom?.window.document.querySelectorAll('.center-circle')).toHaveLength(1);
 		const stars = run<{ cell: number; x: number; y: number }[]>(`(() => {
 			return [...document.querySelectorAll('.star')].map((element) => {
@@ -769,17 +784,49 @@ describe('Ludo game', () => {
 
 	it('ignores out-of-range player counts and guards setup during animation', () => {
 		run('startGame(2)');
+		dom?.window.document.querySelector<HTMLButtonElement>('.count-button[data-count="2"]')?.click();
+		expect(run<number>('selectedCount')).toBe(2);
 		for (const count of [1, 5, 7]) {
 			run(
 				`const fake = document.createElement("button"); fake.className = "count-button"; fake.dataset.count = "${String(count)}"; countRow.appendChild(fake); fake.click();`
 			);
-			expect(run<number>('selectedCount')).toBe(4);
+			expect(run<number>('selectedCount')).toBe(2);
+		}
+
+		for (const count of [1, 5, 7]) {
+			run(`startGame(${String(count)})`);
+			expect(run<number>('state.count')).toBe(2);
+			expect(run<number>('state.tokens.length')).toBe(8);
 		}
 
 		run('state.phase = "rolling"; showSetup()');
 		expect(run<string>('state.phase')).toBe('rolling');
 		run('state.phase = "animating"; showSetup()');
 		expect(run<string>('state.phase')).toBe('animating');
+	});
+
+	it('labels the roll-off player correctly during the die animation', () => {
+		run('startGame(3)');
+		run(
+			'state.rolloff.pointer = 1; state.phase = "rolling"; state.roller = 1; state.rollingKind = "rolloff"; render()'
+		);
+		expect(run<string>('turnEl.textContent')).toBe('Green \u00b7 roll-off');
+		expect(dom?.window.document.getElementById('dice')?.getAttribute('aria-label')).toBe(
+			'Roll for Green'
+		);
+	});
+
+	it('ignores a second roll while the die is rolling', async () => {
+		run('startGame(2)');
+		run('state.phase = "await-roll"; state.current = 0; state.sixes = 0');
+		setDie(getDom(), 6);
+		const first = getDom().window.eval('rollDice()');
+		const second = getDom().window.eval('rollDice()');
+		await Promise.all([Promise.resolve(first), Promise.resolve(second)]);
+		await vi.waitFor(() => {
+			expect(run<string>('state.phase')).toBe('choose');
+		});
+		expect(run<number>('state.sixes')).toBe(1);
 	});
 
 	it('wires the dice and token controls', async () => {
@@ -905,7 +952,7 @@ describe('Ludo game', () => {
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
-		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		dom = loadLudo({ localStorage: { 'ludo-game-state': saved ?? '' } });
 		expect(run<string>('state.phase')).toBe('choose');
 		expect(run<number>('state.current')).toBe(1);
 		expect(run<number>('state.tokens.at(0).pos')).toBe(12);
@@ -914,7 +961,7 @@ describe('Ludo game', () => {
 		expect(dom?.window.document.querySelectorAll('.player')).toHaveLength(4);
 	});
 	it('starts fresh when saved state is corrupt', () => {
-		dom = loadLudo({ local: { 'ludo-game-state': '{not json' } });
+		dom = loadLudo({ localStorage: { 'ludo-game-state': '{not json' } });
 		expect(run<string>('state.phase')).toBe('setup');
 		expect(run<boolean>('setupScreen.hidden')).toBe(false);
 		expect(dom?.window.localStorage.getItem('ludo-game-state')).toBeNull();
@@ -922,10 +969,12 @@ describe('Ludo game', () => {
 
 	it('restores a roll-off in progress', () => {
 		run('startGame(3)');
-		run('state.rolloff.pointer = 1; render()');
+		run(
+			'state.rolloff.rolls.set(state.rolloff.participants.at(0), 4); state.rolloff.pointer = 1; render()'
+		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
-		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		dom = loadLudo({ localStorage: { 'ludo-game-state': saved ?? '' } });
 		expect(run<string>('state.phase')).toBe('rolloff');
 		expect(run<number>('state.rolloff.pointer')).toBe(1);
 		expect(run<number[]>('state.rolloff.participants')).toEqual([0, 1, 2]);
@@ -939,7 +988,7 @@ describe('Ludo game', () => {
 		};
 		saved.rolloff.participants = 5;
 		dom?.window.close();
-		dom = loadLudo({ local: { 'ludo-game-state': JSON.stringify(saved) } });
+		dom = loadLudo({ localStorage: { 'ludo-game-state': JSON.stringify(saved) } });
 		expect(run<string>('state.phase')).toBe('setup');
 		expect(dom?.window.localStorage.getItem('ludo-game-state')).toBeNull();
 	});
@@ -951,7 +1000,7 @@ describe('Ludo game', () => {
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
-		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		dom = loadLudo({ localStorage: { 'ludo-game-state': saved ?? '' } });
 		expect(run<string>('state.phase')).toBe('gameover');
 		expect(run<number>('state.winner')).toBe(0);
 		expect(run<boolean>('gameoverScreen.hidden')).toBe(false);
@@ -976,7 +1025,7 @@ describe('Ludo game', () => {
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
-		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		dom = loadLudo({ localStorage: { 'ludo-game-state': saved ?? '' } });
 		expect(run<string>('state.phase')).toBe('await-roll');
 		expect(run<number>('state.legal.length')).toBe(0);
 		expect(dom?.window.document.getElementById('dice')).not.toBeDisabled();
@@ -989,7 +1038,7 @@ describe('Ludo game', () => {
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
-		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		dom = loadLudo({ localStorage: { 'ludo-game-state': saved ?? '' } });
 		expect(run<string>('state.phase')).toBe('setup');
 	});
 
@@ -1000,7 +1049,7 @@ describe('Ludo game', () => {
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
-		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		dom = loadLudo({ localStorage: { 'ludo-game-state': saved ?? '' } });
 		expect(run<string>('state.phase')).toBe('setup');
 	});
 
@@ -1009,7 +1058,7 @@ describe('Ludo game', () => {
 		run('state.phase = "gameover"; state.winner = 0; state.current = 0; render()');
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
-		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		dom = loadLudo({ localStorage: { 'ludo-game-state': saved ?? '' } });
 		expect(run<string>('state.phase')).toBe('setup');
 		expect(dom?.window.localStorage.getItem('ludo-game-state')).toBeNull();
 	});
@@ -1020,7 +1069,7 @@ describe('Ludo game', () => {
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
-		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		dom = loadLudo({ localStorage: { 'ludo-game-state': saved ?? '' } });
 		expect(run<string>('state.phase')).toBe('setup');
 	});
 
@@ -1031,7 +1080,7 @@ describe('Ludo game', () => {
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
-		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		dom = loadLudo({ localStorage: { 'ludo-game-state': saved ?? '' } });
 		expect(run<string>('state.phase')).toBe('setup');
 	});
 
@@ -1042,7 +1091,7 @@ describe('Ludo game', () => {
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
-		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		dom = loadLudo({ localStorage: { 'ludo-game-state': saved ?? '' } });
 		expect(run<string>('state.phase')).toBe('choose');
 		expect(run<number>('state.current')).toBe(1);
 		expect(run<number>('state.die')).toBe(6);
@@ -1089,6 +1138,13 @@ describe('Ludo game', () => {
 			['winner outside gameover', (payload) => (payload.winner = 0)],
 			['bad rolloff pointer', (payload) => (payload.rolloff.pointer = 5)],
 			['bad rolloff roll', (payload) => (payload.rolloff.rolls = [[0, 7]])],
+			[
+				'rolloff rolls out of order',
+				(payload) => {
+					payload.rolloff.pointer = 1;
+					payload.rolloff.rolls = [[1, 6]];
+				}
+			],
 			['bad rolloff participant', (payload) => (payload.rolloff.participants = [9])],
 			['duplicate rolloff participant', (payload) => (payload.rolloff.participants = [0, 0])]
 		];
@@ -1096,7 +1152,7 @@ describe('Ludo game', () => {
 			dom?.window.close();
 			const payload = JSON.parse(JSON.stringify(base)) as SavedPayload;
 			mutate(payload);
-			dom = loadLudo({ local: { 'ludo-game-state': JSON.stringify(payload) } });
+			dom = loadLudo({ localStorage: { 'ludo-game-state': JSON.stringify(payload) } });
 			expect(run<string>('state.phase'), name).toBe('setup');
 		}
 	});

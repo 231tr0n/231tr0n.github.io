@@ -292,7 +292,6 @@ svg * {
 	transition:
 		left 0.1s linear,
 		top 0.1s linear,
-		opacity 0.15s ease,
 		filter 0.15s ease;
 	pointer-events: auto;
 	cursor: default;
@@ -313,7 +312,7 @@ svg * {
 .token.approach::before,
 .token.finished::before {
 	/* Keep the endgame piece tappable; the click guard blocks neighbour overlap. */
-	inset: min(-20%, -8px);
+	inset: -8px;
 }
 
 .token.in-base {
@@ -584,10 +583,6 @@ svg * {
 	background: var(--color-background);
 }
 
-.gameover-overlay {
-	background: var(--overlay);
-}
-
 .panel {
 	width: min(92vw, 430px);
 	padding: 26px 24px;
@@ -607,7 +602,6 @@ svg * {
 }
 
 .panel h2 {
-	color: var(--color-foreground);
 	font-size: 30px;
 }
 

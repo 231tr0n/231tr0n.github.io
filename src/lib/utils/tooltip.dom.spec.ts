@@ -160,4 +160,22 @@ describe('tooltip', () => {
 		vi.advanceTimersByTime(animationDelay);
 		expect(document.querySelector('.tooltip')?.textContent).toBe('Dynamic');
 	});
+	it('keeps an existing aria-label when migrating title', async () => {
+		const button = document.createElement('button');
+		button.setAttribute('title', 'Tooltip text');
+		button.setAttribute('aria-label', 'Accessible name');
+		document.body.append(button);
+		await flushMutations();
+		expect(button.getAttribute('aria-label')).toBe('Accessible name');
+		expect(button.hasAttribute('title')).toBe(false);
+	});
+
+	it('uses the latest aria-label when the delay elapses', () => {
+		const button = document.getElementById('label');
+		if (!button) throw new Error('Missing button');
+		button.dispatchEvent(mouse('mouseenter'));
+		button.setAttribute('aria-label', 'Updated label');
+		vi.advanceTimersByTime(animationDelay);
+		expect(document.querySelector('.tooltip')?.textContent).toBe('Updated label');
+	});
 });

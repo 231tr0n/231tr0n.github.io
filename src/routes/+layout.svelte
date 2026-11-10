@@ -114,7 +114,9 @@
 </script>
 
 <svelte:head>
+	<title>{page.error ? `${String(page.status)} — 231tr0n` : title}</title>
 	{#if !page.error}
+		<link href={canonicalUrl} rel="canonical" />
 		<meta content={title} property="og:title" />
 		<meta content={canonicalUrl} property="og:url" />
 		<meta name="twitter:title" content={title} />
