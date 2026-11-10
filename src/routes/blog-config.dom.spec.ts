@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/svelte';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import ConfigPage from './blog/config/+page.svelte';
 
 vi.mock('#lib/components/Codeeditor.svelte', async () => ({
@@ -24,6 +24,10 @@ beforeEach(() => {
 	fetchMock.mockReset();
 	fetchMock.mockImplementation(defaultFetch);
 	vi.stubGlobal('fetch', fetchMock);
+});
+
+afterEach(() => {
+	vi.restoreAllMocks();
 });
 
 describe('Neovim configuration page', () => {
@@ -51,8 +55,10 @@ describe('Neovim configuration page', () => {
 	});
 
 	it('shows a config loading error', async () => {
+		const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 		fetchMock.mockRejectedValue(new Error('config unavailable'));
 		render(ConfigPage);
 		expect(await screen.findByText('config unavailable')).toBeInTheDocument();
+		expect(error).toHaveBeenCalled();
 	});
 });

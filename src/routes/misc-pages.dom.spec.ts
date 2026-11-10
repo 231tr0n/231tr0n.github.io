@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/svelte';
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import HtmlPlayground from './misc/htmlplayground/+page.svelte';
 import Sourcemap from './misc/sourcemap/+page.svelte';
 
@@ -18,6 +18,10 @@ beforeEach(() => {
 	fetchMock.mockReset();
 	fetchMock.mockImplementation(defaultFetch);
 	vi.stubGlobal('fetch', fetchMock);
+});
+
+afterEach(() => {
+	vi.restoreAllMocks();
 });
 
 describe('misc routes', () => {
@@ -45,20 +49,26 @@ describe('misc routes', () => {
 	});
 
 	it('shows an error when the statistics cannot be loaded', async () => {
+		const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 		fetchMock.mockRejectedValue(new Error('network down'));
 		render(Sourcemap);
 		expect(await screen.findByText('network down')).toBeInTheDocument();
+		expect(error).toHaveBeenCalled();
 	});
 
 	it('handles an empty statistics response', async () => {
+		const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 		fetchMock.mockResolvedValueOnce(new Response(''));
 		render(Sourcemap);
 		expect(await screen.findByText('Error loading stats file')).toBeInTheDocument();
+		expect(error).toHaveBeenCalled();
 	});
 
 	it('handles a non-Error statistics rejection', async () => {
+		const error = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 		fetchMock.mockRejectedValueOnce('offline');
 		render(Sourcemap);
 		expect(await screen.findByText('Unknown error')).toBeInTheDocument();
+		expect(error).toHaveBeenCalled();
 	});
 });
