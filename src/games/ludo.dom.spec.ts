@@ -874,7 +874,7 @@ describe('Ludo game', () => {
 	it('restores a saved game and clears it on setup', () => {
 		run('startGame(4)');
 		run(
-			'state.phase = "choose"; state.current = 1; state.die = 4; state.sixes = 1; state.tokens.at(0).pos = 12; state.tokens.at(4).pos = 3; state.legal = [{ tokenId: 4, target: 7 }]; state.message = "Choose a token."; render()'
+			'state.phase = "choose"; state.current = 1; state.die = 4; state.sixes = 0; state.tokens.at(0).pos = 12; state.tokens.at(4).pos = 3; state.legal = [{ tokenId: 4, target: 7 }]; state.message = "Choose a token."; render()'
 		);
 		expect(run<string | null>('sessionStorage.getItem(STORAGE_KEY)')).not.toBeNull();
 		run(
@@ -892,7 +892,7 @@ describe('Ludo game', () => {
 	it('restores a saved game on reload', () => {
 		run('startGame(4)');
 		run(
-			'state.phase = "choose"; state.current = 1; state.die = 4; state.sixes = 1; state.tokens.at(0).pos = 12; state.tokens.at(4).pos = 3; state.legal = [{ tokenId: 4, target: 7 }]; state.message = "Choose a token."; render()'
+			'state.phase = "choose"; state.current = 1; state.die = 4; state.sixes = 0; state.tokens.at(0).pos = 12; state.tokens.at(4).pos = 3; state.legal = [{ tokenId: 4, target: 7 }]; state.message = "Choose a token."; render()'
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
@@ -963,7 +963,7 @@ describe('Ludo game', () => {
 	it('turns an impossible choose state back into a roll', () => {
 		run('startGame(2)');
 		run(
-			'state.phase = "choose"; state.current = 0; state.die = 2; state.tokens.forEach((token) => { token.pos = token.id === 0 ? 56 : 57; }); state.legal = []; render()'
+			'state.phase = "choose"; state.current = 0; state.die = 2; state.tokens.forEach((token) => { token.pos = token.player === 0 ? (token.id === 0 ? 56 : 57) : -1; }); state.legal = []; render()'
 		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
@@ -971,6 +971,28 @@ describe('Ludo game', () => {
 		expect(run<string>('state.phase')).toBe('await-roll');
 		expect(run<number>('state.legal.length')).toBe(0);
 		expect(dom?.window.document.getElementById('dice')).not.toBeDisabled();
+	});
+
+	it('rejects a non-gameover state with a finished player', () => {
+		run('startGame(2)');
+		run(
+			'state.phase = "await-roll"; state.tokens.forEach((token) => { token.pos = token.player === 0 ? 57 : -1; }); render()'
+		);
+		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
+		dom?.window.close();
+		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		expect(run<string>('state.phase')).toBe('setup');
+	});
+
+	it('rejects a gameover state with two finished players', () => {
+		run('startGame(2)');
+		run(
+			'state.phase = "gameover"; state.winner = 0; state.current = 0; state.tokens.forEach((token) => { token.pos = 57; }); render()'
+		);
+		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
+		dom?.window.close();
+		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		expect(run<string>('state.phase')).toBe('setup');
 	});
 
 	it('rejects a gameover winner that has not finished', () => {
@@ -981,5 +1003,202 @@ describe('Ludo game', () => {
 		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
 		expect(run<string>('state.phase')).toBe('setup');
 		expect(dom?.window.localStorage.getItem('ludo-game-state')).toBeNull();
+	});
+	it('rejects gameover when the current player is not the winner', () => {
+		run('startGame(2)');
+		run(
+			'state.phase = "gameover"; state.winner = 0; state.current = 1; state.tokens.forEach((token) => { if (token.player === 0) token.pos = 57; }); render()'
+		);
+		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
+		dom?.window.close();
+		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		expect(run<string>('state.phase')).toBe('setup');
+	});
+
+	it('rejects gameover when a different player finished', () => {
+		run('startGame(2)');
+		run(
+			'state.phase = "gameover"; state.winner = 0; state.current = 0; state.tokens.forEach((token) => { token.pos = token.player === 1 ? 57 : -1; }); render()'
+		);
+		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
+		dom?.window.close();
+		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		expect(run<string>('state.phase')).toBe('setup');
+	});
+
+	it('restores the exact saved snapshot', () => {
+		run('startGame(2)');
+		run(
+			'state.phase = "choose"; state.current = 1; state.die = 6; state.sixes = 2; state.winner = -1; state.tokens.at(4).pos = 8; state.message = "Choose a token."; render()'
+		);
+		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
+		dom?.window.close();
+		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		expect(run<string>('state.phase')).toBe('choose');
+		expect(run<number>('state.current')).toBe(1);
+		expect(run<number>('state.die')).toBe(6);
+		expect(run<number>('state.sixes')).toBe(2);
+		expect(run<number>('state.winner')).toBe(-1);
+		expect(run<number>('state.tokens.at(4).pos')).toBe(8);
+		expect(run<string>('state.message')).toBe('Choose a token.');
+	});
+
+	it('rejects malformed saved payloads', () => {
+		run('startGame(2)');
+		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
+		expect(saved).not.toBeNull();
+		interface SavedPayload {
+			phase: string;
+			count: number;
+			current: number;
+			tokens: [
+				{ id: number; player: number; slot: number; pos: number },
+				...{ id: number; player: number; slot: number; pos: number }[]
+			];
+			die: number;
+			sixes: number;
+			message: unknown;
+			winner: number;
+			rolloff: { participants: number[]; pointer: number; rolls: number[][] };
+		}
+		const base = JSON.parse(saved ?? '{}') as SavedPayload;
+		expect(base.phase).toBe('rolloff');
+		const mutations: [string, (payload: SavedPayload) => void][] = [
+			['unknown phase', (payload) => (payload.phase = 'paused')],
+			['bad count', (payload) => (payload.count = 5)],
+			['bad token id', (payload) => (payload.tokens[0].id = 1)],
+			['bad token player', (payload) => (payload.tokens[0].player = 1)],
+			['bad token slot', (payload) => (payload.tokens[0].slot = 2)],
+			['bad token position', (payload) => (payload.tokens[0].pos = 58)],
+			['token position low', (payload) => (payload.tokens[0].pos = -2)],
+			['current out of range', (payload) => (payload.current = 9)],
+			['bad die', (payload) => (payload.die = 7)],
+			['choose without roll', (payload) => ((payload.phase = 'choose'), (payload.die = 0))],
+			['bad sixes', (payload) => (payload.sixes = 3)],
+			['sixes without a six', (payload) => ((payload.die = 4), (payload.sixes = 1))],
+			['bad message', (payload) => (payload.message = 5)],
+			['winner outside gameover', (payload) => (payload.winner = 0)],
+			['bad rolloff pointer', (payload) => (payload.rolloff.pointer = 5)],
+			['bad rolloff roll', (payload) => (payload.rolloff.rolls = [[0, 7]])],
+			['bad rolloff participant', (payload) => (payload.rolloff.participants = [9])],
+			['duplicate rolloff participant', (payload) => (payload.rolloff.participants = [0, 0])]
+		];
+		for (const [name, mutate] of mutations) {
+			dom?.window.close();
+			const payload = JSON.parse(JSON.stringify(base)) as SavedPayload;
+			mutate(payload);
+			dom = loadLudo({ local: { 'ludo-game-state': JSON.stringify(payload) } });
+			expect(run<string>('state.phase'), name).toBe('setup');
+		}
+	});
+
+	it('gives capturing and non-capturing movable tokens the same cues', async () => {
+		run('startGame(2)');
+		run(`
+			state.tokens.forEach((token) => { token.pos = 57; });
+			state.tokens.at(0).pos = 7;
+			state.tokens.at(1).pos = 10;
+			state.tokens.at(4).pos = 35;
+			state.current = 0; state.die = 2; state.phase = 'choose';
+			state.legal = computeLegalMoves(0, 2);
+			state.message = 'Red rolled 2. Choose a token to move.';
+			render();
+		`);
+		const movable = [...(dom?.window.document.querySelectorAll('.token.movable') ?? [])];
+		expect(movable).toHaveLength(2);
+		expect(movable[0]?.className).toBe(movable[1]?.className);
+		expect(movable[0]?.getAttribute('aria-disabled')).toBe('false');
+		expect(run<string>('messageEl.textContent')).not.toMatch(/captur/i);
+		await runAsync('chooseToken(0)');
+		expect(run<number>('state.tokens.at(4).pos')).toBe(-1);
+		expect(run<string>('state.message')).toMatch(/captured/i);
+	});
+	it('ignores pad taps on a neighbour but keeps taps on the movable token', async () => {
+		run('startGame(2)');
+		run('state.phase = "choose"; state.legal = [{ tokenId: 0, target: 0 }]; render()');
+		const tokenElement = (id: string): HTMLElement => {
+			const element = dom?.window.document.querySelector<HTMLElement>(
+				`.token[data-token-id="${id}"]`
+			);
+			if (!element) throw new Error(`Missing token ${id}`);
+			return element;
+		};
+		const rect = (size: number) => ({
+			left: 0,
+			top: 0,
+			width: size,
+			height: size,
+			right: size,
+			bottom: size,
+			x: 0,
+			y: 0,
+			toJSON: () => ({})
+		});
+		const movableEl = tokenElement('0');
+		const otherEl = tokenElement('4');
+		vi.spyOn(movableEl, 'getBoundingClientRect').mockReturnValue(rect(10));
+		vi.spyOn(otherEl, 'getBoundingClientRect').mockReturnValue({
+			...rect(40),
+			left: -10,
+			top: -10,
+			right: 30,
+			bottom: 30,
+			x: -10,
+			y: -10
+		});
+		const click = (x: number, y: number) =>
+			movableEl.dispatchEvent(
+				new (getDom().window.MouseEvent)('click', { bubbles: true, clientX: x, clientY: y })
+			);
+		const flush = async () => {
+			for (let i = 0; i < 8; i++) await runAsync('Promise.resolve()');
+		};
+
+		// Outside the movable token but inside the neighbour: ignored.
+		click(18, 18);
+		await flush();
+		expect(run<string>('state.phase')).toBe('choose');
+		expect(run<number>('state.tokens.at(0).pos')).toBe(-1);
+
+		// Inside the movable token even though it overlaps the neighbour: allowed.
+		click(5, 5);
+		await flush();
+		expect(run<number>('state.tokens.at(0).pos')).toBe(0);
+	});
+	it('keeps taps that land inside the nearest movable token pad', async () => {
+		run('startGame(2)');
+		run(
+			'state.phase = "choose"; state.legal = [{ tokenId: 0, target: 0 }, { tokenId: 1, target: 1 }]; render()'
+		);
+		const tokenElement = (id: string): HTMLElement => {
+			const element = dom?.window.document.querySelector<HTMLElement>(
+				`.token[data-token-id="${id}"]`
+			);
+			if (!element) throw new Error(`Missing token ${id}`);
+			return element;
+		};
+		const rectAt = (x: number, y: number, size = 20) => ({
+			left: x - size / 2,
+			top: y - size / 2,
+			width: size,
+			height: size,
+			right: x + size / 2,
+			bottom: y + size / 2,
+			x: x - size / 2,
+			y: y - size / 2,
+			toJSON: () => ({})
+		});
+		const movableEl = tokenElement('0');
+		const padEl = tokenElement('1');
+		const otherEl = tokenElement('2');
+		vi.spyOn(movableEl, 'getBoundingClientRect').mockReturnValue(rectAt(0, 0));
+		vi.spyOn(padEl, 'getBoundingClientRect').mockReturnValue(rectAt(11, 0));
+		vi.spyOn(otherEl, 'getBoundingClientRect').mockReturnValue(rectAt(0, 14));
+		// The pad element wins hit-testing, but the point is inside token 0's visible circle.
+		padEl.dispatchEvent(
+			new (getDom().window.MouseEvent)('click', { bubbles: true, clientX: 0, clientY: 8.5 })
+		);
+		for (let i = 0; i < 8; i++) await runAsync('Promise.resolve()');
+		expect(run<number>('state.tokens.at(0).pos')).toBe(0);
 	});
 });

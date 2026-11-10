@@ -41,3 +41,7 @@ export const decimalPrecision = 2;
 export const externalLinkRel = 'noopener noreferrer';
 
 export const sandboxPolicy = 'allow-forms allow-modals allow-popups allow-scripts allow-downloads';
+
+// Trusted, same-origin game snippets need storage access to resume a saved game.
+// Never use this for user-supplied HTML.
+export const trustedSandboxPolicy = `${sandboxPolicy} allow-same-origin`;

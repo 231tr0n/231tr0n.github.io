@@ -3,7 +3,7 @@ import { tick } from 'svelte';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import Sandbox from './Sandbox.svelte';
 import { darkMode } from '#lib/utils/dark.svelte.js';
-import { sandboxPolicy } from '#lib/constants/app.constants.js';
+import { sandboxPolicy, trustedSandboxPolicy } from '#lib/constants/app.constants.js';
 
 const themeStyle = (dark = false) =>
 	`<style>html { background: Canvas; color-scheme: ${dark ? 'dark' : 'light'}; }</style>`;
@@ -29,6 +29,30 @@ describe('Sandbox', () => {
 		expect(iframe).toHaveAttribute('sandbox', sandboxPolicy);
 		expect(screen.getByText('Sandbox')).toBeInTheDocument();
 		expect(screen.getByText('A game')).toBeInTheDocument();
+	});
+
+	it('grants same-origin storage when explicitly trusted', () => {
+		render(Sandbox, {
+			props: {
+				src: '/game.html',
+				title: 'Game',
+				description: 'A game',
+				allowSameOrigin: true
+			}
+		});
+		expect(screen.getByTitle('Game')).toHaveAttribute('sandbox', trustedSandboxPolicy);
+	});
+
+	it('keeps user HTML on the strict policy even when trusted is requested', () => {
+		render(Sandbox, {
+			props: {
+				srcDoc: '<p>user</p>',
+				title: 'Output',
+				description: '',
+				allowSameOrigin: true
+			}
+		});
+		expect(screen.getByTitle('Output')).toHaveAttribute('sandbox', sandboxPolicy);
 	});
 
 	it('wires the fullscreen button to the frame', async () => {

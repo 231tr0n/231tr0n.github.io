@@ -303,7 +303,19 @@ svg * {
 .token::before {
 	content: '';
 	position: absolute;
-	inset: -9px;
+	/* Scale the tap pad with the token so small pieces cannot steal neighbour taps. */
+	inset: -20%;
+}
+
+.token.in-base::before {
+	/* Yard slots are two cells apart, so a fixed floor is safe and keeps a usable target. */
+	inset: -8px;
+}
+
+.token.approach::before,
+.token.finished::before {
+	/* Keep the endgame piece tappable; the click guard blocks neighbour overlap. */
+	inset: min(-20%, -8px);
 }
 
 .token.in-base {

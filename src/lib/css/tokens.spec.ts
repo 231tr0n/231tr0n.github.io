@@ -9,6 +9,7 @@ const gameCss = [
 ].join('\n');
 const tokenCss = readFileSync('static/resources/snippets/everforest.css', 'utf8');
 const page = readFileSync('src/lib/components/Page.svelte', 'utf8');
+const select = readFileSync('src/lib/components/Select.svelte', 'utf8');
 const frame = readFileSync('src/lib/components/Frame.svelte', 'utf8');
 const sandbox = readFileSync('src/lib/components/Sandbox.svelte', 'utf8');
 const componentSources = Object.values({
@@ -57,7 +58,7 @@ describe('semantic color tokens', () => {
 		expect(ludoCss).toMatch(
 			/@media \(max-width: 380px\), \(max-height: 430px\)[\s\S]*?\.dice\s*\{[^}]*clamp\(15px/s
 		);
-		const reducedMotionMatch = /@media \(prefers-reduced-motion: reduce\) \{([\s\S]*)\n\}/.exec(
+		const reducedMotionMatch = /@media \(prefers-reduced-motion: reduce\) \{([\s\S]*?)\n\}/.exec(
 			ludoCss
 		);
 		const reducedMotion = reducedMotionMatch?.[1] ?? '';
@@ -68,13 +69,17 @@ describe('semantic color tokens', () => {
 		expect(reducedMotion).toMatch(/animation:\s*none/);
 		expect(reducedMotion).toMatch(/transition:\s*none/);
 		expect(reducedMotion).toMatch(/\.primary:hover[\s\S]*transform:\s*none/);
+		expect(ludoCss).toMatch(/\.token::before\s*\{[^}]*inset:\s*-20%/s);
+		expect(ludoCss).toMatch(
+			/\.token\.approach::before,[\s\S]*?\.token\.finished::before\s*\{[^}]*inset:\s*min\(-20%,\s*-8px\)/s
+		);
 	});
 
 	it('stops the loading spinner for reduced motion', () => {
 		const loading = componentSources.find((source) => source.includes('@keyframes spin'));
 		expect(loading).toBeDefined();
 		expect(loading).toMatch(
-			/@media \(prefers-reduced-motion: reduce\)[\s\S]*\.bar[\s\S]*animation:\s*none/
+			/@media \(prefers-reduced-motion: reduce\) \{\s*\.bar\s*\{[^}]*animation:\s*none/s
 		);
 	});
 
@@ -84,9 +89,11 @@ describe('semantic color tokens', () => {
 				ludoCss
 			);
 		const minDice = Number(smallDice?.[1]);
-		const approach = /const CENTER_APPROACHES = \[\s*\[([\d.]+), ([\d.]+)\]/.exec(ludoJs);
-		const approachColumn = Number(approach?.[1]);
-		const approachRow = Number(approach?.[2]);
+		const approachBlock = /const CENTER_APPROACHES = \[([\s\S]*?)\];/.exec(ludoJs)?.[1] ?? '';
+		const approaches = [...approachBlock.matchAll(/\[([\d.]+), ([\d.]+)\]/g)].map((match) => ({
+			column: Number(match[1]),
+			row: Number(match[2])
+		}));
 		const tokenWidth =
 			/\.token\.approach,\s*\.token\.finished\s*\{[^}]*clamp\([^,]+,\s*([\d.]+)%/s.exec(ludoCss);
 		const tokenPercent = Number(tokenWidth?.[1]);
@@ -95,16 +102,17 @@ describe('semantic color tokens', () => {
 			...[...diceReady.matchAll(/scale\(([\d.]+)\)/g)].map((match) => Number(match[1]))
 		);
 		expect(minDice).toBeGreaterThan(0);
-		expect(approachColumn).toBeGreaterThan(0);
-		expect(approachRow).toBeGreaterThan(0);
+		expect(approaches).toHaveLength(4);
 		expect(tokenPercent).toBeGreaterThan(0);
 		expect(pulseScale).toBeGreaterThan(1);
 		// Worst case: a 320x240 game gives a board of 50vh = 120px.
 		const board = 120;
 		const diceHalf = (minDice * pulseScale) / 2;
 		const tokenHalf = (board * (tokenPercent / 100)) / 2;
-		const approachDistance = ((approachRow - approachColumn) / 15) * board;
-		expect(diceHalf + tokenHalf).toBeLessThan(approachDistance);
+		for (const { column, row } of approaches) {
+			const approachDistance = (Math.hypot(column - 7.5, row - 7.5) / 15) * board;
+			expect(diceHalf + tokenHalf).toBeLessThan(approachDistance);
+		}
 	});
 
 	it('maps the site anchor through the palette', () => {
@@ -117,6 +125,11 @@ describe('layout contracts', () => {
 	it('keeps the scrollspy sticky', () => {
 		expect(page).toMatch(/h4\s*\{[^}]*position:\s*sticky/s);
 		expect(page).toMatch(/h4\s*\{[^}]*top:\s*0/s);
+	});
+
+	it('keeps Select menu options on one line at least as wide as the control', () => {
+		expect(select).toMatch(/\.select-menu\s*\{[^}]*min-width:\s*100%/s);
+		expect(select).toMatch(/div\.select-menu button\s*\{[^}]*white-space:\s*nowrap/s);
 	});
 
 	it('keeps the compact frame chrome and fullscreen visible', () => {

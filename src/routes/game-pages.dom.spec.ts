@@ -49,6 +49,7 @@ describe('game routes', () => {
 		expect(screen.getByTestId('fake-sandbox')).toHaveTextContent(
 			'/resources/snippets/ludo/index.html'
 		);
+		expect(screen.getByTestId('fake-sandbox')).toHaveAttribute('data-allow-same-origin', 'true');
 	});
 
 	it('renders the TicTacToe page, rules and source files', async () => {
@@ -62,6 +63,7 @@ describe('game routes', () => {
 		expect(screen.getByTestId('fake-sandbox')).toHaveTextContent(
 			'/resources/snippets/tictactoe/index.html'
 		);
+		expect(screen.getByTestId('fake-sandbox')).toHaveAttribute('data-allow-same-origin', 'true');
 	});
 
 	it.each([

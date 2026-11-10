@@ -2,8 +2,11 @@
 	let {
 		title = '',
 		src = '',
-		srcDoc = ''
-	}: { title?: string; src?: string; srcDoc?: string } = $props();
+		srcDoc = '',
+		allowSameOrigin = false
+	}: { title?: string; src?: string; srcDoc?: string; allowSameOrigin?: boolean } = $props();
 </script>
 
-<div data-testid="fake-sandbox">{title}:{srcDoc}:{src}</div>
+<div data-allow-same-origin={allowSameOrigin} data-testid="fake-sandbox">
+	{title}:{srcDoc}:{src}
+</div>

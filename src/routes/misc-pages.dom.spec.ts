@@ -26,6 +26,7 @@ describe('misc routes', () => {
 		expect(screen.getByRole('heading', { name: 'HTML Playground', level: 1 })).toBeInTheDocument();
 		expect(screen.getByTestId('fake-codeeditor')).toBeInTheDocument();
 		expect(screen.getByTestId('fake-sandbox')).toHaveTextContent('Output');
+		expect(screen.getByTestId('fake-sandbox')).toHaveAttribute('data-allow-same-origin', 'false');
 
 		screen.getByRole('button', { name: 'Fake run' }).click();
 		await vi.waitFor(() => {
@@ -38,7 +39,9 @@ describe('misc routes', () => {
 		expect(
 			screen.getByRole('heading', { name: 'Website Bundle Statistics', level: 1 })
 		).toBeInTheDocument();
-		expect(await screen.findByTestId('fake-sandbox')).toHaveTextContent('Bundle Report');
+		const sandbox = await screen.findByTestId('fake-sandbox');
+		expect(sandbox).toHaveTextContent('Bundle Report');
+		expect(sandbox).toHaveAttribute('data-allow-same-origin', 'false');
 	});
 
 	it('shows an error when the statistics cannot be loaded', async () => {

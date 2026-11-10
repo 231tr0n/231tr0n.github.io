@@ -909,6 +909,19 @@ const selectCount = (event) => {
 	updateCountButtons();
 };
 
+const isInsideToken = (id, x, y) => {
+	const element = tokenEls.get(id);
+	if (!element) return false;
+	const rect = element.getBoundingClientRect();
+	const radius = Math.min(rect.width, rect.height) / 2;
+	return Math.hypot(x - (rect.left + rect.width / 2), y - (rect.top + rect.height / 2)) <= radius;
+};
+
+const hitsNonMovableToken = (event, movable) =>
+	state.tokens.some(
+		(token) => !movable.has(token.id) && isInsideToken(token.id, event.clientX, event.clientY)
+	);
+
 const clickToken = (event) => {
 	const target = event.target;
 	if (!(target instanceof Element)) return;
@@ -938,6 +951,11 @@ const clickToken = (event) => {
 			nearestId = id;
 		}
 	}
+	if (
+		!isInsideToken(nearestId, event.clientX, event.clientY) &&
+		hitsNonMovableToken(event, movable)
+	)
+		return;
 	void chooseToken(nearestId);
 };
 
@@ -989,19 +1007,28 @@ const restoreState = () => {
 		const currentValid =
 			Number.isInteger(stored?.current) && stored.current >= 0 && stored.current < count;
 		const winner = stored?.winner;
-		const winnerTokensHome =
-			Array.isArray(stored?.tokens) &&
-			stored.tokens
-				.filter((token) => token?.player === winner)
-				.every((token) => token.pos === FINISH_POS);
+		const homeCounts = new Map();
+		if (Array.isArray(stored?.tokens)) {
+			for (const token of stored.tokens) {
+				if (token?.pos === FINISH_POS) {
+					homeCounts.set(token.player, (homeCounts.get(token.player) ?? 0) + 1);
+				}
+			}
+		}
+		const finishedPlayers = [...homeCounts]
+			.filter(([, tokensHome]) => tokensHome === TOKENS_PER_PLAYER)
+			.map(([player]) => player);
+		const onlyWinnerFinished = finishedPlayers.length === 1 && finishedPlayers.at(0) === winner;
+		const noFinishedPlayers = finishedPlayers.length === 0;
 		const gameoverValid =
 			stored?.phase !== 'gameover' ||
 			(Number.isInteger(winner) &&
 				winner >= 0 &&
 				winner < count &&
 				stored.current === winner &&
-				winnerTokensHome);
-		const winnerValid = stored?.phase === 'gameover' ? gameoverValid : winner === -1;
+				onlyWinnerFinished);
+		const winnerValid =
+			stored?.phase === 'gameover' ? gameoverValid : winner === -1 && noFinishedPlayers;
 		const rollValid =
 			Number.isInteger(stored?.die) &&
 			stored.die >= 0 &&
@@ -1009,6 +1036,7 @@ const restoreState = () => {
 			Number.isInteger(stored?.sixes) &&
 			stored.sixes >= 0 &&
 			stored.sixes <= 2 &&
+			(stored.sixes === 0 || stored.die === DIE_FACES) &&
 			(stored.phase !== 'choose' || stored.die >= 1);
 		const rolloff = stored?.rolloff;
 		const rolloffParticipants = rolloff?.participants;

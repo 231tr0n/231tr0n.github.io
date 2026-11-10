@@ -41,6 +41,17 @@ describe('tooltip', () => {
 		expect(title?.hasAttribute('title')).toBe(false);
 	});
 
+	it('does not attach a tooltip to iframes', async () => {
+		const frame = document.createElement('iframe');
+		frame.setAttribute('src', 'about:blank');
+		frame.setAttribute('title', 'Game');
+		document.body.append(frame);
+		await flushMutations();
+		frame.dispatchEvent(mouse('mouseenter'));
+		vi.advanceTimersByTime(animationDelay);
+		expect(document.querySelector('.tooltip')).toBeNull();
+	});
+
 	it('shows an anchor tooltip with the href after the delay', () => {
 		const link = document.getElementById('link');
 		if (!link) throw new Error('Missing link');

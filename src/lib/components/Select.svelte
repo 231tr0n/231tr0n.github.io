@@ -160,6 +160,7 @@
 		top: 100%;
 		left: 50%;
 		transform: translate(-50%, 0%);
+		min-width: 100%;
 	}
 
 	.content {
@@ -172,5 +173,6 @@
 
 	div.select-menu button {
 		width: 100%;
+		white-space: nowrap;
 	}
 </style>

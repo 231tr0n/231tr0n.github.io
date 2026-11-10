@@ -208,6 +208,7 @@ const attach = (target: HTMLElement) => {
 const instances = new WeakMap<HTMLElement, { destroy: () => void }>();
 
 const canAttach = (el: HTMLElement): boolean => {
+	if (el instanceof HTMLIFrameElement) return false;
 	if (!el.matches(tooltipAttachSelector)) return false;
 	if (instances.has(el)) return false;
 	if (el.querySelector(tooltipAttachSelector)) return false;

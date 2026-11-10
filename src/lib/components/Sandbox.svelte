@@ -1,7 +1,7 @@
 <script lang="ts">
 	import Frame from './Frame.svelte';
 	import FullscreenButton from './FullscreenButton.svelte';
-	import { sandboxPolicy } from '#lib/constants/app.constants.js';
+	import { sandboxPolicy, trustedSandboxPolicy } from '#lib/constants/app.constants.js';
 	import { darkMode } from '#lib/utils/dark.svelte.js';
 
 	let {
@@ -9,13 +9,15 @@
 		description,
 		src = '',
 		srcDoc = '',
-		compact = false
+		compact = false,
+		allowSameOrigin = false
 	}: {
 		title: string;
 		description: string;
 		src?: string;
 		srcDoc?: string;
 		compact?: boolean;
+		allowSameOrigin?: boolean;
 	} = $props();
 
 	let iframe: HTMLIFrameElement | undefined;
@@ -75,7 +77,7 @@
 		onload={() => {
 			syncTheme(document.body.classList.contains('dark'));
 		}}
-		sandbox={sandboxPolicy}
+		sandbox={allowSameOrigin && !srcDoc ? trustedSandboxPolicy : sandboxPolicy}
 		{src}
 		{title}>
 	</iframe>

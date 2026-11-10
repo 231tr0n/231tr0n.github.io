@@ -50,5 +50,5 @@
 
 	<SnippetSource basePath={snippetBase} />
 	<h2>Output</h2>
-	<Sandbox compact={true} description="Game" src={indexHtml} title="ludo" />
+	<Sandbox allowSameOrigin={true} compact={true} description="Game" src={indexHtml} title="ludo" />
 </Page>
