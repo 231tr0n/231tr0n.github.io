@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const ludoCss = readFileSync('static/resources/snippets/ludo/style.css', 'utf8');
+const ludoJs = readFileSync('static/resources/snippets/ludo/index.js', 'utf8');
 const gameCss = [
 	ludoCss,
 	readFileSync('static/resources/snippets/tictactoe/style.css', 'utf8')
@@ -66,6 +67,15 @@ describe('semantic color tokens', () => {
 		expect(reducedMotion).toMatch(/\.dice\.rolling \{/);
 		expect(reducedMotion).toMatch(/animation:\s*none/);
 		expect(reducedMotion).toMatch(/transition:\s*none/);
+		expect(reducedMotion).toMatch(/\.primary:hover[\s\S]*transform:\s*none/);
+	});
+
+	it('stops the loading spinner for reduced motion', () => {
+		const loading = componentSources.find((source) => source.includes('@keyframes spin'));
+		expect(loading).toBeDefined();
+		expect(loading).toMatch(
+			/@media \(prefers-reduced-motion: reduce\)[\s\S]*\.bar[\s\S]*animation:\s*none/
+		);
 	});
 
 	it('keeps the smallest dice clear of the approach square', () => {
@@ -74,14 +84,26 @@ describe('semantic color tokens', () => {
 				ludoCss
 			);
 		const minDice = Number(smallDice?.[1]);
+		const approach = /const CENTER_APPROACHES = \[\s*\[([\d.]+), ([\d.]+)\]/.exec(ludoJs);
+		const approachColumn = Number(approach?.[1]);
+		const approachRow = Number(approach?.[2]);
+		const tokenWidth =
+			/\.token\.approach,\s*\.token\.finished\s*\{[^}]*clamp\([^,]+,\s*([\d.]+)%/s.exec(ludoCss);
+		const tokenPercent = Number(tokenWidth?.[1]);
+		const diceReady = /@keyframes dice-ready \{([\s\S]*?)\n\}/.exec(ludoCss)?.[1] ?? '';
+		const pulseScale = Math.max(
+			...[...diceReady.matchAll(/scale\(([\d.]+)\)/g)].map((match) => Number(match[1]))
+		);
 		expect(minDice).toBeGreaterThan(0);
-		// Worst case: a 320x240 game gives a board of 50vh = 120px. The approach
-		// square sits 90 of 1000 board units from the centre, the dice pulses to
-		// 1.07x, and approach tokens are 2.2% of the board wide.
+		expect(approachColumn).toBeGreaterThan(0);
+		expect(approachRow).toBeGreaterThan(0);
+		expect(tokenPercent).toBeGreaterThan(0);
+		expect(pulseScale).toBeGreaterThan(1);
+		// Worst case: a 320x240 game gives a board of 50vh = 120px.
 		const board = 120;
-		const diceHalf = (minDice * 1.07) / 2;
-		const tokenHalf = (board * 0.022) / 2;
-		const approachDistance = (90 / 1000) * board;
+		const diceHalf = (minDice * pulseScale) / 2;
+		const tokenHalf = (board * (tokenPercent / 100)) / 2;
+		const approachDistance = ((approachRow - approachColumn) / 15) * board;
 		expect(diceHalf + tokenHalf).toBeLessThan(approachDistance);
 	});
 

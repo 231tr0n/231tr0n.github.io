@@ -6,16 +6,19 @@ for (let i = 0; i < 3; i++) {
 	}
 }
 const cellAt = (r, c) => cells.at(r * 3 + c);
-const WIN_LINES = [
-	[cellAt(0, 0), cellAt(0, 1), cellAt(0, 2)],
-	[cellAt(1, 0), cellAt(1, 1), cellAt(1, 2)],
-	[cellAt(2, 0), cellAt(2, 1), cellAt(2, 2)],
-	[cellAt(0, 0), cellAt(1, 0), cellAt(2, 0)],
-	[cellAt(0, 1), cellAt(1, 1), cellAt(2, 1)],
-	[cellAt(0, 2), cellAt(1, 2), cellAt(2, 2)],
-	[cellAt(0, 0), cellAt(1, 1), cellAt(2, 2)],
-	[cellAt(2, 0), cellAt(1, 1), cellAt(0, 2)]
+const WIN_INDICES = [
+	[0, 1, 2],
+	[3, 4, 5],
+	[6, 7, 8],
+	[0, 3, 6],
+	[1, 4, 7],
+	[2, 5, 8],
+	[0, 4, 8],
+	[2, 4, 6]
 ];
+const WIN_LINES = WIN_INDICES.map((line) => line.map((index) => cells.at(index)));
+const marksWin = (marks, mark) =>
+	WIN_INDICES.some((line) => line.every((index) => marks.at(index) === mark));
 
 const msg = document.getElementById('message');
 const restart = document.getElementById('restart');
@@ -85,10 +88,7 @@ const setGameOver = (over) => {
 const saveState = () => {
 	writeStoredState(
 		JSON.stringify({
-			cells: cells.map((cell) => cell.textContent),
-			turn,
-			moves,
-			gameOver
+			cells: cells.map((cell) => cell.textContent)
 		})
 	);
 };
@@ -119,9 +119,14 @@ const restoreState = () => {
 		const marks = stored.cells.map((mark) => (mark === 'X' || mark === 'O' ? mark : ''));
 		const xCount = marks.filter((mark) => mark === 'X').length;
 		const oCount = marks.filter((mark) => mark === 'O').length;
+		const xWin = marksWin(marks, 'X');
+		const oWin = marksWin(marks, 'O');
 		if (
 			marks.some((mark, index) => mark !== stored.cells.at(index)) ||
-			(xCount !== oCount && xCount !== oCount + 1)
+			(xCount !== oCount && xCount !== oCount + 1) ||
+			(xWin && oWin) ||
+			(xWin && xCount !== oCount + 1) ||
+			(oWin && xCount !== oCount)
 		) {
 			clearStoredState();
 			return false;
@@ -133,7 +138,7 @@ const restoreState = () => {
 		});
 		moves = xCount + oCount;
 		turn = xCount === oCount ? 'X' : 'O';
-		const winner = winningMark();
+		const winner = xWin ? 'X' : oWin ? 'O' : '';
 		if (winner) {
 			turn = winner;
 			setGameOver(true);

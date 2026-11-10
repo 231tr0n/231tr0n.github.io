@@ -937,7 +937,9 @@ describe('Ludo game', () => {
 
 	it('restores a finished game and focuses play again', () => {
 		run('startGame(2)');
-		run('state.phase = "gameover"; state.winner = 0; state.message = "Red wins!"; render()');
+		run(
+			'state.phase = "gameover"; state.winner = 0; state.current = 0; state.tokens.forEach((token) => { if (token.player === 0) token.pos = 57; }); render()'
+		);
 		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
 		dom?.window.close();
 		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
@@ -952,6 +954,32 @@ describe('Ludo game', () => {
 		run(
 			'state.tokens.at(0).pos = (startIndex(1) - 1 - startIndex(0) + RING_SIZE) % RING_SIZE; state.tokens.at(1).pos = state.tokens.at(0).pos; render()'
 		);
+		const yardTokens = dom?.window.document.querySelectorAll('.token.in-base') ?? [];
+		expect(yardTokens).toHaveLength(6);
 		expect(dom?.window.document.querySelectorAll('.token.in-base.stacked')).toHaveLength(0);
+		expect(dom?.window.document.querySelectorAll('.token.in-base .stack-badge')).toHaveLength(0);
+	});
+
+	it('turns an impossible choose state back into a roll', () => {
+		run('startGame(2)');
+		run(
+			'state.phase = "choose"; state.current = 0; state.die = 2; state.tokens.forEach((token) => { token.pos = token.id === 0 ? 56 : 57; }); state.legal = []; render()'
+		);
+		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
+		dom?.window.close();
+		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		expect(run<string>('state.phase')).toBe('await-roll');
+		expect(run<number>('state.legal.length')).toBe(0);
+		expect(dom?.window.document.getElementById('dice')).not.toBeDisabled();
+	});
+
+	it('rejects a gameover winner that has not finished', () => {
+		run('startGame(2)');
+		run('state.phase = "gameover"; state.winner = 0; state.current = 0; render()');
+		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
+		dom?.window.close();
+		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		expect(run<string>('state.phase')).toBe('setup');
+		expect(dom?.window.localStorage.getItem('ludo-game-state')).toBeNull();
 	});
 });

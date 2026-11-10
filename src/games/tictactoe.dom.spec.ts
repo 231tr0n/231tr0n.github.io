@@ -271,7 +271,7 @@ describe('TicTacToe game', () => {
 		expect(dom.window.sessionStorage.getItem('tictactoe-game-state')).toBeNull();
 		expect(dom.window.localStorage.getItem('tictactoe-game-state')).toBeNull();
 	});
-	it('restores saved state before DOM wiring on reload', () => {
+	it('restores saved state after DOM wiring on reload', () => {
 		dom = loadGame({
 			local: {
 				'tictactoe-game-state': JSON.stringify({
@@ -319,6 +319,43 @@ describe('TicTacToe game', () => {
 		});
 		expect(message(dom)).toBe("It's a tie");
 		expect(dom.window.document.getElementById('game-board')).toHaveClass('game-over');
+	});
+
+	it('restores whose turn it is from the saved board', () => {
+		dom = loadGame({
+			local: {
+				'tictactoe-game-state': JSON.stringify({
+					cells: ['X', '', '', '', '', '', '', '', '']
+				})
+			}
+		});
+		expect(cell(dom, '00').textContent).toBe('X');
+		expect(message(dom)).toBe("O's turn");
+	});
+
+	it('rejects a board with impossible marks', () => {
+		dom = loadGame({
+			local: {
+				'tictactoe-game-state': JSON.stringify({
+					cells: ['Z', '', '', '', '', '', '', '', '']
+				})
+			}
+		});
+		expect(cell(dom, '00').textContent).toBe('');
+		expect(message(dom)).toBe("X's turn");
+		expect(dom.window.localStorage.getItem('tictactoe-game-state')).toBeNull();
+	});
+
+	it('rejects a board with two winning lines', () => {
+		dom = loadGame({
+			local: {
+				'tictactoe-game-state': JSON.stringify({
+					cells: ['X', 'X', 'X', 'O', 'O', 'O', 'X', '', '']
+				})
+			}
+		});
+		expect(cell(dom, '00').textContent).toBe('');
+		expect(message(dom)).toBe("X's turn");
 	});
 
 	it('rejects inconsistent saved state', () => {

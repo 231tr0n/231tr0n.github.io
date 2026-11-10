@@ -192,8 +192,7 @@ const CENTER = 500;
 const GRID = 15;
 const CELL = (CENTER * 2) / GRID;
 
-let selectedCount = 4;
-let state = {
+const createInitialState = () => ({
 	phase: 'setup',
 	count: 4,
 	tokens: [],
@@ -205,7 +204,10 @@ let state = {
 	safe: new Set(),
 	rolloff: { participants: [], pointer: 0, rolls: new Map() },
 	winner: -1
-};
+});
+
+let selectedCount = 4;
+let state = createInitialState();
 let playerEls = [];
 let tokenEls = new Map();
 
@@ -238,19 +240,7 @@ const clearStoredState = () => {
 };
 
 const resetState = () => {
-	state = {
-		phase: 'setup',
-		count: 4,
-		tokens: [],
-		current: 0,
-		die: 0,
-		sixes: 0,
-		message: 'Best of luck.',
-		legal: [],
-		safe: new Set(),
-		rolloff: { participants: [], pointer: 0, rolls: new Map() },
-		winner: -1
-	};
+	state = createInitialState();
 };
 
 const seatFor = (player, count = state.count) => {
@@ -420,7 +410,6 @@ const saveState = () => {
 			die: state.die,
 			sixes: state.sixes,
 			message: state.message,
-			legal: state.legal,
 			rolloff: {
 				participants: state.rolloff.participants,
 				pointer: state.rolloff.pointer,
@@ -988,24 +977,39 @@ const restoreState = () => {
 			Array.isArray(stored?.tokens) &&
 			stored.tokens.length === count * TOKENS_PER_PLAYER &&
 			stored.tokens.every(
-				(token) =>
+				(token, index) =>
 					token !== null &&
-					Number.isInteger(token.id) &&
-					Number.isInteger(token.player) &&
-					token.player >= 0 &&
-					token.player < count &&
-					Number.isInteger(token.slot) &&
-					token.slot >= 0 &&
-					token.slot < TOKENS_PER_PLAYER &&
+					token.id === index &&
+					token.player === Math.floor(index / TOKENS_PER_PLAYER) &&
+					token.slot === index % TOKENS_PER_PLAYER &&
 					Number.isInteger(token.pos) &&
 					token.pos >= -1 &&
 					token.pos <= FINISH_POS
 			);
 		const currentValid =
 			Number.isInteger(stored?.current) && stored.current >= 0 && stored.current < count;
-		const winnerValid =
-			stored?.winner === -1 ||
-			(Number.isInteger(stored?.winner) && stored.winner >= 0 && stored.winner < count);
+		const winner = stored?.winner;
+		const winnerTokensHome =
+			Array.isArray(stored?.tokens) &&
+			stored.tokens
+				.filter((token) => token?.player === winner)
+				.every((token) => token.pos === FINISH_POS);
+		const gameoverValid =
+			stored?.phase !== 'gameover' ||
+			(Number.isInteger(winner) &&
+				winner >= 0 &&
+				winner < count &&
+				stored.current === winner &&
+				winnerTokensHome);
+		const winnerValid = stored?.phase === 'gameover' ? gameoverValid : winner === -1;
+		const rollValid =
+			Number.isInteger(stored?.die) &&
+			stored.die >= 0 &&
+			stored.die <= DIE_FACES &&
+			Number.isInteger(stored?.sixes) &&
+			stored.sixes >= 0 &&
+			stored.sixes <= 2 &&
+			(stored.phase !== 'choose' || stored.die >= 1);
 		const rolloff = stored?.rolloff;
 		const rolloffParticipants = rolloff?.participants;
 		const rolloffValid =
@@ -1029,20 +1033,6 @@ const restoreState = () => {
 						pair[1] >= 1 &&
 						pair[1] <= DIE_FACES
 				));
-		const legalValid =
-			stored?.phase === 'choose'
-				? Array.isArray(stored.legal) &&
-					stored.legal.every(
-						(move) =>
-							move !== null &&
-							Number.isInteger(move.tokenId) &&
-							move.tokenId >= 0 &&
-							move.tokenId < count * TOKENS_PER_PLAYER &&
-							Number.isInteger(move.target) &&
-							move.target >= 0 &&
-							move.target <= FINISH_POS
-					)
-				: true;
 		const valid =
 			stored !== null &&
 			typeof stored === 'object' &&
@@ -1053,10 +1043,9 @@ const restoreState = () => {
 			tokensValid &&
 			currentValid &&
 			winnerValid &&
-			legalValid &&
+			rollValid &&
 			rolloffValid &&
-			typeof stored.message === 'string' &&
-			(stored.phase !== 'gameover' || (stored.winner >= 0 && stored.winner < count));
+			typeof stored.message === 'string';
 		if (!valid) {
 			clearStoredState();
 			return false;
@@ -1069,7 +1058,7 @@ const restoreState = () => {
 			die: Number.isInteger(stored.die) ? stored.die : 0,
 			sixes: Number.isInteger(stored.sixes) ? stored.sixes : 0,
 			message: stored.message,
-			legal: stored.phase === 'choose' ? stored.legal : [],
+			legal: [],
 			safe: buildSafeCells(),
 			rolloff: {
 				participants: stored.rolloff?.participants ?? [],
@@ -1078,6 +1067,14 @@ const restoreState = () => {
 			},
 			winner: stored.winner ?? -1
 		};
+		if (state.phase === 'choose') {
+			state.legal = computeLegalMoves(state.current, state.die);
+			if (state.legal.length === 0) {
+				state.phase = 'await-roll';
+				state.message = `${nameOf(state.current)}, tap the dice to roll.`;
+			}
+		}
+		if (state.phase === 'gameover') state.message = `${nameOf(state.winner)} wins!`;
 		selectedCount = state.count;
 		buildBoard();
 		buildTokens();

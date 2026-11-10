@@ -997,4 +997,9 @@ svg * {
 	.panel {
 		transition: none;
 	}
+
+	.primary:hover,
+	.dice:hover:not(:disabled) {
+		transform: none;
+	}
 }
