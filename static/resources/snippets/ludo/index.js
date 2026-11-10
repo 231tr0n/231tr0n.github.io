@@ -237,6 +237,22 @@ const clearStoredState = () => {
 	}
 };
 
+const resetState = () => {
+	state = {
+		phase: 'setup',
+		count: 4,
+		tokens: [],
+		current: 0,
+		die: 0,
+		sixes: 0,
+		message: 'Best of luck.',
+		legal: [],
+		safe: new Set(),
+		rolloff: { participants: [], pointer: 0, rolls: new Map() },
+		winner: -1
+	};
+};
+
 const seatFor = (player, count = state.count) => {
 	const seats = count === 2 ? [0, 2] : count === 3 ? [0, 1, 2] : [0, 1, 2, 3];
 	return seats.at(player) ?? player;
@@ -310,15 +326,15 @@ const finishedPosition = (token) => {
 };
 
 const tokenLocationKey = (token) => {
-	if (token.pos === -1) return `yard-${token.player}`;
+	if (token.pos === -1) return `yard-${token.id}`;
 	if (token.pos < HOME_START) return `ring-${ringIndexOf(token)}`;
 	if (token.pos < FINISH_POS) return `home-${token.player}-${token.pos}`;
 	return `finished-${token.player}`;
 };
 
 const setTokenPosition = (element, x, y) => {
-	element.style.left = `${(x / 10).toFixed(2)}%`;
-	element.style.top = `${(y / 10).toFixed(2)}%`;
+	element.style.left = `${((x / (CENTER * 2)) * 100).toFixed(2)}%`;
+	element.style.top = `${((y / (CENTER * 2)) * 100).toFixed(2)}%`;
 };
 
 const renderTokens = () => {
@@ -429,7 +445,7 @@ const render = () => {
 				: state.current;
 
 	if (activePlayer >= 0) {
-		turnEl.className = `turn p${seatFor(activePlayer)}`;
+		turnEl.className = 'turn';
 		turnEl.textContent =
 			state.phase === 'rolloff' ? `${nameOf(activePlayer)} \u00b7 roll-off` : nameOf(activePlayer);
 	} else {
@@ -468,9 +484,9 @@ const render = () => {
 
 	if (state.phase === 'gameover') {
 		winnerLabel.textContent = `${nameOf(state.winner)} wins!`;
-		winnerLabel.className = `p${seatFor(state.winner)}`;
 		winnerSub.textContent = `All ${String(TOKENS_PER_PLAYER)} tokens made it home.`;
 		winnerDot.className = `winner-dot p${seatFor(state.winner)}`;
+		againButton.focus();
 	}
 
 	renderTokens();
@@ -703,7 +719,6 @@ const chooseToken = async (tokenId) => {
 		state.phase = 'gameover';
 		state.message = `${nameOf(token.player)} wins!`;
 		render();
-		againButton.focus();
 		return;
 	}
 
@@ -967,14 +982,81 @@ const restoreState = () => {
 	if (raw === null) return false;
 	try {
 		const stored = JSON.parse(raw);
+		const phases = ['rolloff', 'await-roll', 'choose', 'gameover'];
+		const count = stored?.count;
+		const tokensValid =
+			Array.isArray(stored?.tokens) &&
+			stored.tokens.length === count * TOKENS_PER_PLAYER &&
+			stored.tokens.every(
+				(token) =>
+					token !== null &&
+					Number.isInteger(token.id) &&
+					Number.isInteger(token.player) &&
+					token.player >= 0 &&
+					token.player < count &&
+					Number.isInteger(token.slot) &&
+					token.slot >= 0 &&
+					token.slot < TOKENS_PER_PLAYER &&
+					Number.isInteger(token.pos) &&
+					token.pos >= -1 &&
+					token.pos <= FINISH_POS
+			);
+		const currentValid =
+			Number.isInteger(stored?.current) && stored.current >= 0 && stored.current < count;
+		const winnerValid =
+			stored?.winner === -1 ||
+			(Number.isInteger(stored?.winner) && stored.winner >= 0 && stored.winner < count);
+		const rolloff = stored?.rolloff;
+		const rolloffParticipants = rolloff?.participants;
+		const rolloffValid =
+			stored?.phase !== 'rolloff' ||
+			(Array.isArray(rolloffParticipants) &&
+				rolloffParticipants.length > 0 &&
+				new Set(rolloffParticipants).size === rolloffParticipants.length &&
+				rolloffParticipants.every(
+					(player) => Number.isInteger(player) && player >= 0 && player < count
+				) &&
+				Number.isInteger(rolloff?.pointer) &&
+				rolloff.pointer >= 0 &&
+				rolloff.pointer < rolloffParticipants.length &&
+				Array.isArray(rolloff?.rolls) &&
+				rolloff.rolls.every(
+					(pair) =>
+						Array.isArray(pair) &&
+						pair.length === 2 &&
+						rolloffParticipants.includes(pair[0]) &&
+						Number.isInteger(pair[1]) &&
+						pair[1] >= 1 &&
+						pair[1] <= DIE_FACES
+				));
+		const legalValid =
+			stored?.phase === 'choose'
+				? Array.isArray(stored.legal) &&
+					stored.legal.every(
+						(move) =>
+							move !== null &&
+							Number.isInteger(move.tokenId) &&
+							move.tokenId >= 0 &&
+							move.tokenId < count * TOKENS_PER_PLAYER &&
+							Number.isInteger(move.target) &&
+							move.target >= 0 &&
+							move.target <= FINISH_POS
+					)
+				: true;
 		const valid =
 			stored !== null &&
 			typeof stored === 'object' &&
-			[2, 3, 4].includes(stored.count) &&
-			Array.isArray(stored.tokens) &&
-			stored.tokens.length === stored.count * TOKENS_PER_PLAYER &&
-			Array.isArray(stored.legal) &&
-			stored.phase !== 'setup';
+			Number.isInteger(count) &&
+			count >= MIN_PLAYERS &&
+			count <= MAX_PLAYERS &&
+			phases.includes(stored.phase) &&
+			tokensValid &&
+			currentValid &&
+			winnerValid &&
+			legalValid &&
+			rolloffValid &&
+			typeof stored.message === 'string' &&
+			(stored.phase !== 'gameover' || (stored.winner >= 0 && stored.winner < count));
 		if (!valid) {
 			clearStoredState();
 			return false;
@@ -984,10 +1066,10 @@ const restoreState = () => {
 			count: stored.count,
 			tokens: stored.tokens,
 			current: stored.current,
-			die: stored.die,
-			sixes: stored.sixes,
+			die: Number.isInteger(stored.die) ? stored.die : 0,
+			sixes: Number.isInteger(stored.sixes) ? stored.sixes : 0,
 			message: stored.message,
-			legal: stored.legal,
+			legal: stored.phase === 'choose' ? stored.legal : [],
 			safe: buildSafeCells(),
 			rolloff: {
 				participants: stored.rolloff?.participants ?? [],
@@ -1005,6 +1087,7 @@ const restoreState = () => {
 		return true;
 	} catch {
 		clearStoredState();
+		resetState();
 		return false;
 	}
 };

@@ -476,6 +476,7 @@ svg * {
 .dice:disabled {
 	opacity: 0.45;
 	cursor: default;
+	pointer-events: none;
 }
 
 .dice * {
@@ -732,6 +733,11 @@ svg * {
 		width: 24px;
 		height: 24px;
 		font-size: 15px;
+	}
+
+	.dice {
+		width: clamp(15px, 10%, 56px);
+		height: clamp(15px, 10%, 56px);
 	}
 
 	.board-wrap {

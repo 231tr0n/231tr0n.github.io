@@ -2,7 +2,8 @@ import type { JSDOM } from 'jsdom';
 import { afterEach, describe, expect, it } from 'vitest';
 import { loadStaticSnippet } from '../test/static-snippet.js';
 
-const loadGame = () => loadStaticSnippet('tictactoe');
+const loadGame = (storage?: { session?: Record<string, string>; local?: Record<string, string> }) =>
+	loadStaticSnippet('tictactoe', storage);
 
 const cell = (dom: JSDOM, id: string) => {
 	const element = dom.window.document.getElementById(id);
@@ -268,6 +269,71 @@ describe('TicTacToe game', () => {
 
 		dom.window.document.getElementById('restart')?.click();
 		expect(dom.window.sessionStorage.getItem('tictactoe-game-state')).toBeNull();
+		expect(dom.window.localStorage.getItem('tictactoe-game-state')).toBeNull();
+	});
+	it('restores saved state before DOM wiring on reload', () => {
+		dom = loadGame({
+			local: {
+				'tictactoe-game-state': JSON.stringify({
+					cells: ['X', '', '', '', 'O', '', '', '', ''],
+					turn: 'X',
+					moves: 2,
+					gameOver: false,
+					message: "X's turn"
+				})
+			}
+		});
+		expect(cell(dom, '00').textContent).toBe('X');
+		expect(cell(dom, '00')).toHaveAttribute('aria-label', 'Row 1, column 1, X');
+		expect(cell(dom, '00').tabIndex).toBe(-1);
+		expect(cell(dom, '11').textContent).toBe('O');
+		expect(cell(dom, '22').tabIndex).toBe(0);
+		expect(message(dom)).toBe("X's turn");
+	});
+	it('derives a finished game from the saved board', () => {
+		dom = loadGame({
+			local: {
+				'tictactoe-game-state': JSON.stringify({
+					cells: ['X', 'X', 'X', 'O', 'O', '', '', '', ''],
+					turn: 'O',
+					moves: 2,
+					gameOver: false
+				})
+			}
+		});
+		expect(message(dom)).toBe("'X' won");
+		expect(dom.window.document.getElementById('game-board')).toHaveClass('game-over');
+		expect(cell(dom, '00').tabIndex).toBe(-1);
+	});
+
+	it('restores a tied game', () => {
+		dom = loadGame({
+			local: {
+				'tictactoe-game-state': JSON.stringify({
+					cells: ['X', 'O', 'X', 'X', 'O', 'O', 'O', 'X', 'X'],
+					turn: 'X',
+					moves: 8,
+					gameOver: false
+				})
+			}
+		});
+		expect(message(dom)).toBe("It's a tie");
+		expect(dom.window.document.getElementById('game-board')).toHaveClass('game-over');
+	});
+
+	it('rejects inconsistent saved state', () => {
+		dom = loadGame({
+			local: {
+				'tictactoe-game-state': JSON.stringify({
+					cells: ['O', 'O', 'X', '', '', '', '', '', ''],
+					turn: 'X',
+					moves: 3,
+					gameOver: true
+				})
+			}
+		});
+		expect(cell(dom, '00').textContent).toBe('');
+		expect(message(dom)).toBe("X's turn");
 		expect(dom.window.localStorage.getItem('tictactoe-game-state')).toBeNull();
 	});
 });

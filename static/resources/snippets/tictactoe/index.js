@@ -5,7 +5,6 @@ for (let i = 0; i < 3; i++) {
 		cells.push(document.getElementById(`${i}${j}`));
 	}
 }
-
 const cellAt = (r, c) => cells.at(r * 3 + c);
 const WIN_LINES = [
 	[cellAt(0, 0), cellAt(0, 1), cellAt(0, 2)],
@@ -52,11 +51,15 @@ const clearStoredState = () => {
 	}
 };
 
-const win = () =>
-	WIN_LINES.some(
-		([a, b, c]) =>
-			a.textContent && a.textContent === b.textContent && a.textContent === c.textContent
-	);
+const winningMark = () => {
+	for (const [a, b, c] of WIN_LINES) {
+		const mark = a.textContent;
+		if (mark && mark === b.textContent && mark === c.textContent) return mark;
+	}
+	return '';
+};
+
+const win = () => winningMark() !== '';
 
 const paint = (cell, mark) => {
 	cell.textContent = mark;
@@ -85,8 +88,7 @@ const saveState = () => {
 			cells: cells.map((cell) => cell.textContent),
 			turn,
 			moves,
-			gameOver,
-			message: msg.textContent
+			gameOver
 		})
 	);
 };
@@ -114,15 +116,35 @@ const restoreState = () => {
 			clearStoredState();
 			return false;
 		}
+		const marks = stored.cells.map((mark) => (mark === 'X' || mark === 'O' ? mark : ''));
+		const xCount = marks.filter((mark) => mark === 'X').length;
+		const oCount = marks.filter((mark) => mark === 'O').length;
+		if (
+			marks.some((mark, index) => mark !== stored.cells.at(index)) ||
+			(xCount !== oCount && xCount !== oCount + 1)
+		) {
+			clearStoredState();
+			return false;
+		}
 		reset(false);
-		stored.cells.forEach((mark, index) => {
+		marks.forEach((mark, index) => {
 			const cell = cells.at(index);
-			if (cell) paint(cell, mark === 'X' || mark === 'O' ? mark : '');
+			if (cell) paint(cell, mark);
 		});
-		turn = stored.turn === 'O' ? 'O' : 'X';
-		moves = Number.isInteger(stored.moves) ? stored.moves : 0;
-		setGameOver(Boolean(stored.gameOver));
-		msg.textContent = typeof stored.message === 'string' ? stored.message : "X's turn";
+		moves = xCount + oCount;
+		turn = xCount === oCount ? 'X' : 'O';
+		const winner = winningMark();
+		if (winner) {
+			turn = winner;
+			setGameOver(true);
+			msg.textContent = `'${winner}' won`;
+		} else if (moves === 9) {
+			setGameOver(true);
+			msg.textContent = "It's a tie";
+		} else {
+			setGameOver(false);
+			msg.textContent = `${turn}'s turn`;
+		}
 		return true;
 	} catch {
 		clearStoredState();
@@ -148,7 +170,6 @@ const play = (i, j) => {
 	saveState();
 };
 
-if (!restoreState()) reset();
 msg.setAttribute('role', 'status');
 msg.setAttribute('aria-live', 'polite');
 restart.onclick = () => reset();
@@ -168,3 +189,4 @@ for (let i = 0; i < 3; i++) {
 		};
 	}
 }
+if (!restoreState()) reset();

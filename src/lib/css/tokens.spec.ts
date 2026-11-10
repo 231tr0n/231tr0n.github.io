@@ -41,10 +41,10 @@ describe('semantic color tokens', () => {
 		}
 	});
 
-	it('never hides Ludo UI responsively', () => {
-		expect(gameCss).not.toMatch(
-			/(?:\.brand|\.player-name|\.player-strip|\.turn|\.home-count|\.move-button-label|\.subtitle|\.hint)[^{]*\{[^}]*display:\s*none/s
-		);
+	it('never hides game UI with display none', () => {
+		const hiddenRules = gameCss.match(/[^{}]+\{[^}]*display:\s*none[^}]*\}/g) ?? [];
+		expect(hiddenRules.length).toBeGreaterThan(0);
+		for (const rule of hiddenRules) expect(rule).toMatch(/\[hidden\][^{]*\{/);
 	});
 
 	it('centers the dice and gives it an enabled pulse', () => {
@@ -52,16 +52,37 @@ describe('semantic color tokens', () => {
 		expect(ludoCss).toMatch(/\.dice\s*\{[^}]*inset:\s*0/s);
 		expect(ludoCss).toMatch(/\.dice\s*\{[^}]*margin:\s*auto/s);
 		expect(ludoCss).toMatch(/\.dice:not\(:disabled\)[^{]*\{[^}]*animation:\s*dice-ready/s);
+		expect(ludoCss).toMatch(/\.dice:disabled[^{]*\{[^}]*pointer-events:\s*none/s);
 		expect(ludoCss).toMatch(
-			/prefers-reduced-motion[\s\S]*\.token\.movable[\s\S]*animation:\s*none/
+			/@media \(max-width: 380px\), \(max-height: 430px\)[\s\S]*?\.dice\s*\{[^}]*clamp\(15px/s
 		);
-		expect(ludoCss).toMatch(
-			/prefers-reduced-motion[\s\S]*\.token\.movable\.in-base[\s\S]*animation:\s*none/
+		const reducedMotionMatch = /@media \(prefers-reduced-motion: reduce\) \{([\s\S]*)\n\}/.exec(
+			ludoCss
 		);
-		expect(ludoCss).toMatch(/prefers-reduced-motion[\s\S]*\.dice\.rolling[\s\S]*animation:\s*none/);
-		expect(ludoCss).toMatch(
-			/prefers-reduced-motion[\s\S]*\.dice:not\(:disabled\)[\s\S]*animation:\s*none/
-		);
+		const reducedMotion = reducedMotionMatch?.[1] ?? '';
+		expect(reducedMotion).toMatch(/\.token\.movable,/);
+		expect(reducedMotion).toMatch(/\.token\.movable\.in-base,/);
+		expect(reducedMotion).toMatch(/\.dice:not\(:disabled\),/);
+		expect(reducedMotion).toMatch(/\.dice\.rolling \{/);
+		expect(reducedMotion).toMatch(/animation:\s*none/);
+		expect(reducedMotion).toMatch(/transition:\s*none/);
+	});
+
+	it('keeps the smallest dice clear of the approach square', () => {
+		const smallDice =
+			/@media \(max-width: 380px\), \(max-height: 430px\)[\s\S]*?\.dice\s*\{[^}]*clamp\((\d+)px/s.exec(
+				ludoCss
+			);
+		const minDice = Number(smallDice?.[1]);
+		expect(minDice).toBeGreaterThan(0);
+		// Worst case: a 320x240 game gives a board of 50vh = 120px. The approach
+		// square sits 90 of 1000 board units from the centre, the dice pulses to
+		// 1.07x, and approach tokens are 2.2% of the board wide.
+		const board = 120;
+		const diceHalf = (minDice * 1.07) / 2;
+		const tokenHalf = (board * 0.022) / 2;
+		const approachDistance = (90 / 1000) * board;
+		expect(diceHalf + tokenHalf).toBeLessThan(approachDistance);
 	});
 
 	it('maps the site anchor through the palette', () => {

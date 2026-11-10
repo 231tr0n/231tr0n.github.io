@@ -2,8 +2,11 @@ import type { JSDOM } from 'jsdom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { loadStaticSnippet } from '../test/static-snippet.js';
 
-const loadLudo = () => {
-	const dom = loadStaticSnippet('ludo');
+const loadLudo = (storage?: {
+	session?: Record<string, string>;
+	local?: Record<string, string>;
+}) => {
+	const dom = loadStaticSnippet('ludo', storage);
 	Object.defineProperty(dom.window, 'setTimeout', {
 		configurable: true,
 		value: (handler: TimerHandler) => {
@@ -236,7 +239,7 @@ describe('Ludo game', () => {
 		expect(run<number>('state.tokens.at(4).pos')).toBe(34);
 	});
 
-	it('places pips in the standard die patterns and centers the dice', () => {
+	it('places pips in the standard die patterns and mounts the dice on the board', () => {
 		run('startGame(2)');
 		expect(run<boolean>('document.querySelector(".board > #dice") !== null')).toBe(true);
 		const layouts: Record<number, number[]> = {
@@ -782,7 +785,9 @@ describe('Ludo game', () => {
 		expect(movable).toBeInTheDocument();
 		movable?.click();
 		await vi.waitFor(() => {
-			expect(run<number>('state.tokens.some((token) => token.pos === 0) ? 1 : 0')).toBe(1);
+			expect(run<number[]>('state.tokens.slice(0, 4).map((token) => token.pos)')).toEqual([
+				0, -1, -1, -1
+			]);
 		});
 
 		run('startGame(2)');
@@ -794,7 +799,9 @@ describe('Ludo game', () => {
 		});
 		dom?.window.document.querySelector<HTMLElement>('.token')?.click();
 		await vi.waitFor(() => {
-			expect(run<number>('state.tokens.some((token) => token.pos === 0) ? 1 : 0')).toBe(1);
+			expect(run<number[]>('state.tokens.slice(0, 4).map((token) => token.pos)')).toEqual([
+				0, -1, -1, -1
+			]);
 		});
 		expect(run<number>('state.current')).toBe(0);
 
@@ -820,6 +827,14 @@ describe('Ludo game', () => {
 		await vi.waitFor(() => {
 			expect(run<number>('state.tokens.at(1).pos')).toBe(0);
 		});
+		expect(run<number>('state.tokens.at(0).pos')).toBe(-1);
+	});
+
+	it('ignores clicks on tokens that are not movable', () => {
+		run('startGame(2)');
+		run('state.phase = "choose"; state.legal = [{ tokenId: 2, target: 0 }]; render()');
+		dom?.window.document.querySelector<HTMLElement>('.token[data-token-id="0"]')?.click();
+		expect(run<string>('state.phase')).toBe('choose');
 		expect(run<number>('state.tokens.at(0).pos')).toBe(-1);
 	});
 
@@ -873,5 +888,70 @@ describe('Ludo game', () => {
 		run('showSetup()');
 		expect(run<string | null>('sessionStorage.getItem(STORAGE_KEY)')).toBeNull();
 		expect(run<string | null>('localStorage.getItem(STORAGE_KEY)')).toBeNull();
+	});
+	it('restores a saved game on reload', () => {
+		run('startGame(4)');
+		run(
+			'state.phase = "choose"; state.current = 1; state.die = 4; state.sixes = 1; state.tokens.at(0).pos = 12; state.tokens.at(4).pos = 3; state.legal = [{ tokenId: 4, target: 7 }]; state.message = "Choose a token."; render()'
+		);
+		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
+		dom?.window.close();
+		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		expect(run<string>('state.phase')).toBe('choose');
+		expect(run<number>('state.current')).toBe(1);
+		expect(run<number>('state.tokens.at(0).pos')).toBe(12);
+		expect(run<number>('state.tokens.at(4).pos')).toBe(3);
+		expect(run<number>('state.legal.length')).toBe(1);
+		expect(dom?.window.document.querySelectorAll('.player')).toHaveLength(4);
+	});
+	it('starts fresh when saved state is corrupt', () => {
+		dom = loadLudo({ local: { 'ludo-game-state': '{not json' } });
+		expect(run<string>('state.phase')).toBe('setup');
+		expect(run<boolean>('setupScreen.hidden')).toBe(false);
+		expect(dom?.window.localStorage.getItem('ludo-game-state')).toBeNull();
+	});
+
+	it('restores a roll-off in progress', () => {
+		run('startGame(3)');
+		run('state.rolloff.pointer = 1; render()');
+		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
+		dom?.window.close();
+		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		expect(run<string>('state.phase')).toBe('rolloff');
+		expect(run<number>('state.rolloff.pointer')).toBe(1);
+		expect(run<number[]>('state.rolloff.participants')).toEqual([0, 1, 2]);
+		expect(dom?.window.document.getElementById('dice')).not.toBeDisabled();
+	});
+
+	it('discards an invalid roll-off payload', () => {
+		run('startGame(2)');
+		const saved = JSON.parse(dom?.window.sessionStorage.getItem('ludo-game-state') ?? '{}') as {
+			rolloff: { participants: unknown };
+		};
+		saved.rolloff.participants = 5;
+		dom?.window.close();
+		dom = loadLudo({ local: { 'ludo-game-state': JSON.stringify(saved) } });
+		expect(run<string>('state.phase')).toBe('setup');
+		expect(dom?.window.localStorage.getItem('ludo-game-state')).toBeNull();
+	});
+
+	it('restores a finished game and focuses play again', () => {
+		run('startGame(2)');
+		run('state.phase = "gameover"; state.winner = 0; state.message = "Red wins!"; render()');
+		const saved = dom?.window.sessionStorage.getItem('ludo-game-state');
+		dom?.window.close();
+		dom = loadLudo({ local: { 'ludo-game-state': saved ?? '' } });
+		expect(run<string>('state.phase')).toBe('gameover');
+		expect(run<number>('state.winner')).toBe(0);
+		expect(run<boolean>('gameoverScreen.hidden')).toBe(false);
+		expect(dom?.window.document.activeElement?.id).toBe('again');
+	});
+
+	it('keeps yard tokens unstacked when opponents share a ring cell', () => {
+		run('startGame(2)');
+		run(
+			'state.tokens.at(0).pos = (startIndex(1) - 1 - startIndex(0) + RING_SIZE) % RING_SIZE; state.tokens.at(1).pos = state.tokens.at(0).pos; render()'
+		);
+		expect(dom?.window.document.querySelectorAll('.token.in-base.stacked')).toHaveLength(0);
 	});
 });
