@@ -8,6 +8,9 @@ import {
 	tooltipMinMargin
 } from '#lib/constants/app.constants.js';
 
+const touchHideDelay = 500;
+const touchResetDelay = 1000;
+
 const getTooltipText = (element: HTMLElement): string | null => {
 	const anchor = element instanceof HTMLAnchorElement ? element : element.closest('a');
 	const href = anchor?.getAttribute('href');
@@ -69,7 +72,9 @@ const attach = (target: HTMLElement) => {
 		showTimeout = setTimeout(
 			() => {
 				showTimeout = null;
-				tip = createTooltip(label);
+				const current = getTooltipText(target);
+				if (current === null) return;
+				tip = createTooltip(current);
 				const container =
 					document.fullscreenElement?.contains(target) === true
 						? document.fullscreenElement
@@ -112,11 +117,11 @@ const attach = (target: HTMLElement) => {
 		touchHideTimeout = setTimeout(() => {
 			touchHideTimeout = null;
 			hide();
-		}, 500);
+		}, touchHideDelay);
 		touchedResetTimeout = setTimeout(() => {
 			touched = false;
 			touchedResetTimeout = null;
-		}, 1000);
+		}, touchResetDelay);
 	};
 
 	const updateTipContent = () => {
@@ -204,12 +209,14 @@ const attach = (target: HTMLElement) => {
 
 const instances = new WeakMap<HTMLElement, { destroy: () => void }>();
 
-const canAttach = (el: HTMLElement): boolean =>
-	el.matches(tooltipAttachSelector) &&
-	!instances.has(el) &&
-	!el.querySelector(tooltipAttachSelector) &&
-	!(el.closest('.ace_editor') && !el.hasAttribute('aria-label')) &&
-	getTooltipText(el) !== null;
+const canAttach = (el: HTMLElement): boolean => {
+	if (el instanceof HTMLIFrameElement) return false;
+	if (!el.matches(tooltipAttachSelector)) return false;
+	if (instances.has(el)) return false;
+	if (el.querySelector(tooltipAttachSelector)) return false;
+	if (el.closest('.ace_editor') && !el.hasAttribute('aria-label')) return false;
+	return getTooltipText(el) !== null;
+};
 
 const attachTo = (el: HTMLElement) => {
 	if (!canAttach(el)) return;
@@ -219,7 +226,7 @@ const attachTo = (el: HTMLElement) => {
 const migrateTitle = (el: HTMLElement) => {
 	const label = el.getAttribute('title');
 	if (label === null) return;
-	el.setAttribute('aria-label', label);
+	if (!el.hasAttribute('aria-label')) el.setAttribute('aria-label', label);
 	el.removeAttribute('title');
 };
 

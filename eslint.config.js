@@ -203,5 +203,31 @@ export default defineConfig(
 		rules: {
 			'svelte/no-add-event-listener': 'off'
 		}
+	},
+	{
+		files: [
+			'src/**/*.spec.ts',
+			'src/**/*.dom.spec.ts',
+			'src/**/*.svelte.spec.ts',
+			'src/test/**/*.ts',
+			'src/test/**/*.svelte'
+		],
+		rules: {
+			'@typescript-eslint/await-thenable': 'off',
+			'@typescript-eslint/no-confusing-void-expression': 'off',
+			'@typescript-eslint/no-this-alias': 'off',
+			'@typescript-eslint/no-unnecessary-condition': 'off',
+			'@typescript-eslint/no-unnecessary-type-assertion': 'off',
+			'@typescript-eslint/no-unnecessary-type-parameters': 'off',
+			'@typescript-eslint/no-unsafe-type-assertion': 'off',
+			'@typescript-eslint/no-unused-vars': ['error', { argsIgnorePattern: '^_' }],
+			'@typescript-eslint/prefer-destructuring': 'off',
+			'@typescript-eslint/promise-function-async': 'off',
+			'@typescript-eslint/require-await': 'off',
+			'@typescript-eslint/strict-void-return': 'off',
+			'@typescript-eslint/unbound-method': 'off',
+			'@typescript-eslint/naming-convention': 'off',
+			'promise/prefer-await-to-callbacks': 'off'
+		}
 	}
 );

@@ -1,18 +1,14 @@
 <script lang="ts">
 	import Page from '#lib/components/Page.svelte';
+	import { SvelteMap } from 'svelte/reactivity';
 	import Accordion from '#lib/components/Accordion.svelte';
 	import Progress from '#lib/components/Progress.svelte';
 	import BarGraph from '#lib/components/BarGraph.svelte';
 	import Post from '#lib/components/Post.svelte';
-	import type { PostData, GithubLanguages } from '#lib/types/index.js';
-	import {
-		animationDuration,
-		percentageScale,
-		decimalPrecision
-	} from '#lib/constants/app.constants.js';
+	import type { PostData, GitHubLanguages } from '#lib/types/index.js';
+	import { percentageScale, decimalPrecision } from '#lib/constants/app.constants.js';
 	import { onMount } from 'svelte';
-	import { SvelteMap } from 'svelte/reactivity';
-	import { cachedFetch } from '#lib/utils/fetch-cache.js';
+	import { cachedFetch, HttpError } from '#lib/utils/fetch-cache.js';
 
 	let processedRepos = $state(0);
 	let totalRepos = $state(0);
@@ -27,15 +23,14 @@
 		try {
 			return JSON.parse(await cachedFetch(url)) as unknown;
 		} catch (error) {
-			const message = error instanceof Error ? error.message : '';
-			if (message.includes('Fetch failed: 403') || message.includes('Fetch failed: 429')) {
+			if (error instanceof HttpError && (error.status === 403 || error.status === 429)) {
 				throw new Error('GitHub API rate limit exceeded', { cause: error });
 			}
 			throw error;
 		}
 	};
 
-	const fetchGithubRepoData = async (
+	const fetchGitHubRepoData = async (
 		url: string,
 		onProgress: (processed: number, total: number) => void
 	) => {
@@ -68,7 +63,7 @@
 				const raw = await fetchJson(repo.languagesUrl);
 				if (!isRecord(raw)) throw new Error('Invalid API response');
 
-				const languages: GithubLanguages = new SvelteMap<string, number>();
+				const languages: GitHubLanguages = new SvelteMap<string, number>();
 				for (const [key, value] of Object.entries(raw)) languages.set(key, Number(value));
 
 				const data: PostData = {
@@ -81,9 +76,9 @@
 				};
 
 				for (const key of languages.keys()) {
-					const prev = languageBytes.get(key) ?? 0;
-					const lang = languages.get(key) ?? 0;
-					languageBytes.set(key, prev + lang);
+					const previousBytes = languageBytes.get(key) ?? 0;
+					const repoBytes = languages.get(key) ?? 0;
+					languageBytes.set(key, previousBytes + repoBytes);
 				}
 
 				processed += 1;
@@ -110,17 +105,13 @@
 
 	onMount(async () => {
 		try {
-			const result = await fetchGithubRepoData(
+			const { repoData, languagePercentages: percentages } = await fetchGitHubRepoData(
 				'https://api.github.com/users/231tr0n/repos?per_page=100',
 				(processed, total) => {
 					processedRepos = processed;
 					totalRepos = total;
 				}
 			);
-			await new Promise((resolve) => {
-				setTimeout(resolve, animationDuration);
-			});
-			const { repoData, languagePercentages: percentages } = result;
 			repoList = repoData;
 			languagePercentages = percentages;
 		} catch (error) {
@@ -136,11 +127,11 @@
 	{#if fetchError}
 		<div class="zeltron-error">{fetchError}</div>
 	{:else if repoList && languagePercentages}
-		<Accordion name="Github Language Statistics" open={true}>
+		<Accordion name="GitHub Language Statistics" open={true}>
 			<BarGraph
-				context="Github"
+				context="GitHub"
 				data={languagePercentages}
-				height={10}
+				height={30}
 				sort={true}
 				title="Language Statistics" />
 		</Accordion>
@@ -150,6 +141,6 @@
 		{/each}
 	{:else}
 		<br />
-		<Progress max={totalRepos} value={processedRepos} />
+		<Progress max={Math.max(totalRepos, 1)} value={processedRepos} />
 	{/if}
 </Page>

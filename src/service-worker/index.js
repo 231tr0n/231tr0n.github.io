@@ -15,11 +15,11 @@ const scope = self.registration.scope;
  */
 const toPathname = (path) => new URL(path.replace(/^\//, ''), scope).pathname;
 
-const ASSETS = [
+const ASSETS = new Set([
 	...immutable.map((entry) => toPathname(entry.path)),
 	...assets.map((entry) => asset(entry.path)),
 	...prerendered.map((entry) => toPathname(entry.path))
-];
+]);
 
 /**
  * @param {Request} request
@@ -35,7 +35,7 @@ self.addEventListener('install', (event) => {
 	event.waitUntil(
 		(async () => {
 			const cache = await caches.open(CACHE);
-			await cache.addAll(ASSETS);
+			await cache.addAll([...ASSETS]);
 		})()
 	);
 });
@@ -63,7 +63,7 @@ self.addEventListener('fetch', (event) => {
 		const sameOrigin = url.origin === self.location.origin;
 		const cache = await caches.open(CACHE);
 
-		if (sameOrigin && ASSETS.includes(url.pathname)) {
+		if (sameOrigin && ASSETS.has(url.pathname)) {
 			const response = await cache.match(url.pathname);
 			if (response) return response;
 		}

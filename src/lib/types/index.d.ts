@@ -13,9 +13,9 @@ export interface AceMode {
 	Mode: new () => import('ace-code/src/edit_session').SyntaxMode;
 }
 
-export type OnSetSelectedItem = (item: number) => void;
+export type SetSelectedItem = (item: number) => void;
 
-export type GithubLanguages = Map<string, number>;
+export type GitHubLanguages = Map<string, number>;
 
 export interface FileState {
 	code: string | null;

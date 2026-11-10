@@ -34,7 +34,7 @@
 				class="summary-toggler"
 				aria-controls={contentId}
 				aria-expanded={open}
-				aria-label="Accordion summary toggler"
+				aria-label={open ? `Collapse ${name}` : `Expand ${name}`}
 				onclick={summaryToggler}
 				type="button">
 				{#if open}

@@ -1,4 +1,6 @@
-let dark = $state(true);
+let dark = $state(
+	typeof document === 'undefined' ? true : document.body.classList.contains('dark')
+);
 
 const instance = {
 	get dark() {
@@ -6,6 +8,7 @@ const instance = {
 	},
 	set dark(value) {
 		dark = value;
+		if (typeof document !== 'undefined') document.body.classList.toggle('dark', value);
 	}
 };
 

@@ -3,14 +3,40 @@ import {
 	scrollbarMinThumbV,
 	scrollbarMinThumbH,
 	scrollbarTrackSize,
-	scrollbarHideEpsilon
+	scrollbarHideEpsilon,
+	scrollbarTrackOverhang
 } from '#lib/constants/app.constants.js';
+
+interface InlineStyle {
+	value: string;
+	priority: string;
+}
+
+export const readInlineStyle = (node: HTMLElement, property: string): InlineStyle => ({
+	value: node.style.getPropertyValue(property),
+	priority: node.style.getPropertyPriority(property)
+});
+
+export const restoreInlineStyle = (node: HTMLElement, property: string, previous: InlineStyle) => {
+	if (previous.value) node.style.setProperty(property, previous.value, previous.priority);
+	else node.style.removeProperty(property);
+};
+
+const disableSmoothScroll = (node: HTMLElement): (() => void) => {
+	const previous = readInlineStyle(node, 'scroll-behavior');
+	node.style.setProperty('scroll-behavior', 'auto');
+	return () => {
+		restoreInlineStyle(node, 'scroll-behavior', previous);
+	};
+};
 
 export const makeTrack = (dir: 'v' | 'h') => {
 	const track = document.createElement('div');
 	track.className = `custom-scrollbar-track-${dir}`;
 	const thumb = document.createElement('button');
 	thumb.type = 'button';
+	thumb.tabIndex = -1;
+	thumb.setAttribute('aria-hidden', 'true');
 	thumb.className = `custom-scrollbar-thumb-${dir}`;
 	if (dir === 'v') {
 		thumb.style.minHeight = `${String(scrollbarMinThumbV)}px`;
@@ -22,6 +48,20 @@ export const makeTrack = (dir: 'v' | 'h') => {
 	thumb.setAttribute('data-custom-scrollbar-thumb', '');
 	track.appendChild(thumb);
 	return { track, thumb };
+};
+
+export const styleTrack = (track: HTMLElement, dir: 'v' | 'h'): void => {
+	if (dir === 'v') {
+		track.style.top = '0';
+		track.style.right = '0';
+		track.style.width = `${String(scrollbarTrackSize)}px`;
+		track.style.height = `calc(100% + ${String(scrollbarTrackOverhang)}px)`;
+	} else {
+		track.style.bottom = '0';
+		track.style.left = '0';
+		track.style.right = '0';
+		track.style.height = `${String(scrollbarTrackSize)}px`;
+	}
 };
 
 export const doubleAnimationFrame = (fn: () => void) => {
@@ -40,7 +80,6 @@ const getThumbGeometry = (node: HTMLElement, track: HTMLElement, dir: 'v' | 'h')
 		(clientSize / scrollSize) * trackSize
 	);
 	return {
-		isVertical,
 		scrollSize,
 		clientSize,
 		trackSize,
@@ -105,7 +144,7 @@ export const setupDrag = (
 		const scrollRange = scrollSize - clientSize;
 		if (scrollRange <= 0 || maxPos <= 0) return;
 
-		node.style.setProperty('scroll-behavior', 'auto');
+		const restoreScrollBehavior = disableSmoothScroll(node);
 
 		const startThumbPos = (startScrollPos / scrollRange) * maxPos;
 		if (isVertical) {
@@ -130,7 +169,7 @@ export const setupDrag = (
 		const cleanupMove = on(document, 'mousemove', onMove);
 		const cleanupUp = on(document, 'mouseup', cleanupDrag);
 		dragCleanup = () => {
-			node.style.removeProperty('scroll-behavior');
+			restoreScrollBehavior();
 			cleanupMove();
 			cleanupUp();
 		};
@@ -152,29 +191,15 @@ export const setupTrackClick = (track: HTMLElement, node: HTMLElement, dir: 'v' 
 		if (!scrollRange) return;
 
 		const rect = track.getBoundingClientRect();
-		node.style.setProperty('scroll-behavior', 'auto');
+		const restoreScrollBehavior = disableSmoothScroll(node);
 		if (isVertical) {
 			node.scrollTop = ((event.clientY - rect.top) / rect.height) * scrollRange;
 		} else {
 			node.scrollLeft = ((event.clientX - rect.left) / rect.width) * scrollRange;
 		}
-		node.style.removeProperty('scroll-behavior');
+		restoreScrollBehavior();
 	});
 	return cleanup;
-};
-
-export const updateThumbAriaLabel = (node: HTMLElement, thumb: HTMLElement, dir: 'v' | 'h') => {
-	const isVertical = dir === 'v';
-	const scrollSize = isVertical ? node.scrollHeight : node.scrollWidth;
-	const clientSize = isVertical ? node.clientHeight : node.clientWidth;
-	const scrollPos = isVertical ? node.scrollTop : node.scrollLeft;
-	if (scrollSize <= clientSize + scrollbarHideEpsilon) {
-		thumb.removeAttribute('aria-label');
-		return;
-	}
-	const clamped = Math.max(0, Math.min(scrollPos, scrollSize - clientSize));
-	const percent = Math.round((clamped / (scrollSize - clientSize)) * 100);
-	thumb.setAttribute('aria-label', `Scroll: ${String(percent)}%`);
 };
 
 export const attachAxis = (
@@ -186,11 +211,9 @@ export const attachAxis = (
 	const cleanups: (() => void)[] = [
 		on(node, 'scroll', () => {
 			syncScroll(node, track, thumb, dir);
-			updateThumbAriaLabel(node, thumb, dir);
 		}),
 		setupDrag(thumb, node, track, dir),
 		setupTrackClick(track, node, dir)
 	];
-	updateThumbAriaLabel(node, thumb, dir);
 	return cleanups;
 };

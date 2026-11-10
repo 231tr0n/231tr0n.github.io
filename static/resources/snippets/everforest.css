@@ -1,0 +1,84 @@
+:root {
+	--ef-bg0: #fdf6e3;
+	--ef-bg1: #f4f0d9;
+	--ef-bg2: #efebd4;
+	--ef-bg3: #e6e2cc;
+	--ef-bg4: #e0dcc7;
+	--ef-bg5: #bdc3af;
+	--ef-fg: #5c6a72;
+	--ef-grey0: #a6b0a0;
+	--ef-grey1: #939f91;
+	--ef-grey2: #829181;
+	--ef-red: #f85552;
+	--ef-green: #8da101;
+	--ef-yellow: #dfa000;
+	--ef-blue: #3a94c5;
+	--ef-purple: #df69ba;
+	--ef-aqua: #35a77c;
+	--ef-orange: #f57d26;
+
+	--color-background: var(--ef-bg0);
+	--color-foreground: var(--ef-fg);
+	--color-muted: var(--ef-grey2);
+	--color-accent: var(--ef-orange);
+	--color-accent-fg: var(--ef-bg0);
+	--color-panel: var(--ef-bg1);
+	--color-panel-alt: var(--ef-bg2);
+	--color-panel-border: var(--ef-bg4);
+	--color-surface: var(--ef-bg2);
+	--color-surface-hover: var(--ef-bg3);
+	--color-border: var(--ef-bg4);
+	--color-x: var(--ef-green);
+	--color-o: var(--ef-blue);
+	--color-message-bg: var(--ef-green);
+	--color-message-fg: var(--ef-bg0);
+	--color-player-0: var(--ef-red);
+	--color-player-1: var(--ef-green);
+	--color-player-2: var(--ef-yellow);
+	--color-player-3: var(--ef-blue);
+	--board-bg: var(--ef-bg0);
+	--board-cell: var(--ef-bg2);
+	--board-safe: var(--ef-aqua);
+	--board-line: var(--ef-bg4);
+	--board-star: var(--ef-yellow);
+	--board-center: var(--ef-bg1);
+	--token-pick: var(--ef-purple);
+	--token-shine: rgb(255 255 255 / 58%);
+	--shadow: rgb(92 106 114 / 22%);
+	--shadow-token:
+		inset 0 0 0 2px rgb(255 255 255 / 38%), 0 0 0 1px rgb(0 0 0 / 45%), 0 2px 4px rgb(0 0 0 / 35%);
+	--shadow-dice: inset 0 0 0 1px rgb(255 255 255 / 12%), 0 2px 4px rgb(0 0 0 / 35%);
+	--shadow-winner: inset 0 0 0 5px rgb(255 255 255 / 35%), 0 0 28px var(--player-color);
+	--overlay: rgb(253 246 227 / 88%);
+	--dice-glow: rgb(245 125 38 / 45%);
+}
+
+html.dark {
+	--ef-bg0: #2d353b;
+	--ef-bg1: #343f44;
+	--ef-bg2: #3d484d;
+	--ef-bg3: #475258;
+	--ef-bg4: #4f585e;
+	--ef-bg5: #56635f;
+	--ef-fg: #d3c6aa;
+	--ef-grey0: #7a8478;
+	--ef-grey1: #859289;
+	--ef-grey2: #9da9a0;
+	--ef-red: #e67e80;
+	--ef-green: #a7c080;
+	--ef-yellow: #dbbc7f;
+	--ef-blue: #7fbbb3;
+	--ef-purple: #d699b6;
+	--ef-aqua: #83c092;
+	--ef-orange: #e69875;
+
+	--shadow: rgb(0 0 0 / 45%);
+	--overlay: rgb(45 53 59 / 88%);
+	--dice-glow: rgb(230 152 117 / 45%);
+}
+
+@font-face {
+	font-family: Roboto-Condensed;
+	src: url('/fonts/roboto-condensed.woff2') format('woff2');
+	font-display: swap;
+}

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
+	import { on } from 'svelte/events';
 	import Select from './Select.svelte';
 	import { scrollspyOffset, scrollspyThreshold } from '#lib/constants/app.constants.js';
 
@@ -13,11 +14,12 @@
 
 	let sections = $state<HTMLElement[]>([]);
 	let currentItem = $state(0);
-	let breadcrumb: HTMLHeadingElement | undefined = $state();
+	let breadcrumb: HTMLDivElement | undefined = $state();
 	const items: string[] = $state([]);
 	let pageDiv: HTMLDivElement;
 
-	const getSpyBottom = () => (breadcrumb?.getBoundingClientRect().bottom ?? 0) + scrollspyOffset;
+	const getSpyBottom = () =>
+		pageDiv.getBoundingClientRect().top + (breadcrumb?.offsetHeight ?? 0) + scrollspyOffset;
 
 	const onSetSelectedItem = (value: number) => {
 		if (!scrollspy || !breadcrumb) return;
@@ -32,7 +34,7 @@
 	onMount(() => {
 		if (!scrollspy) return;
 		if (!breadcrumb) return;
-		pageDiv.onscroll = () => {
+		const off = on(pageDiv, 'scroll', () => {
 			cancelAnimationFrame(scrollRafId);
 			scrollRafId = requestAnimationFrame(() => {
 				const threshold = getSpyBottom() + scrollspyThreshold;
@@ -43,14 +45,14 @@
 				}
 				currentItem = nextItem;
 			});
-		};
+		});
 		const heading = pageDiv.querySelector<HTMLElement>('div.content h1');
 		const subheadings = Array.from(pageDiv.querySelectorAll<HTMLElement>('div.content h2'));
 		sections = heading ? [heading, ...subheadings] : subheadings;
-		for (const section of sections) items.push(section.innerText);
+		for (const section of sections) items.push(section.textContent.trim());
 
 		return () => {
-			pageDiv.onscroll = null;
+			off();
 			cancelAnimationFrame(scrollRafId);
 		};
 	});
@@ -59,9 +61,9 @@
 <div bind:this={pageDiv} class="page">
 	<div class="content">
 		{#if scrollspy}
-			<h4 bind:this={breadcrumb} class="zeltron-component zeltron-flex-middle">
+			<div bind:this={breadcrumb} class="scrollspy zeltron-component zeltron-flex-middle">
 				<Select colored={true} {currentItem} fixedWidth={true} {items} {onSetSelectedItem} />
-			</h4>
+			</div>
 		{/if}
 		{@render children?.()}
 	</div>
@@ -96,7 +98,7 @@
 		z-index: var(--z-index-page-background);
 	}
 
-	h4 {
+	.scrollspy {
 		padding: 5px;
 		position: sticky;
 		top: 0;

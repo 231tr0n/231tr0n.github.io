@@ -32,6 +32,11 @@
 	.bar-4 {
 		animation-delay: -0.5s;
 	}
+	@media (prefers-reduced-motion: reduce) {
+		.bar {
+			animation: none;
+		}
+	}
 	@keyframes spin {
 		0%,
 		66.66% {

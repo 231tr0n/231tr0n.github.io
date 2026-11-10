@@ -1,3 +1,4 @@
+<!-- eslint-disable html/require-title -- the layout supplies one per route. -->
 <!doctype html>
 <html lang="en">
 	<head>
@@ -25,7 +26,6 @@
 		<meta property="og:site_name" content="231tr0n" />
 		<meta property="og:locale" content="en_US" />
 		<meta name="twitter:card" content="summary_large_image" />
-		<title>231tr0n — Linux Enthusiast, Programmer and Gopher</title>
 		%sveltekit.head%
 	</head>
 	<body data-sveltekit-preload-data="hover">
@@ -34,8 +34,8 @@
 				// Keep the "theme" key in sync with themeStorageKey in app.constants.ts.
 				let theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
 				try {
-					theme = localStorage.getItem('theme') ?? theme;
-					localStorage.setItem('theme', theme);
+					const stored = localStorage.getItem('theme');
+					if (stored === 'dark' || stored === 'light') theme = stored;
 				} catch {
 					// Storage can be unavailable; fall back to the system preference.
 				}

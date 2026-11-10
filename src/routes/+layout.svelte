@@ -22,6 +22,8 @@
 				return 'HTML Playground';
 			case '/misc/sourcemap':
 				return 'Bundle Statistics';
+			case '/games/ludo':
+				return 'Ludo';
 			case '/games/tictactoe':
 				return 'Tic Tac Toe';
 			case '/blog/config':
@@ -32,7 +34,7 @@
 		}
 	};
 
-	let title = $derived.by(() => {
+	const title = $derived.by(() => {
 		if (page.route.id === '/') return '231tr0n — Linux Enthusiast, Programmer and Gopher';
 		const mapped = getRouteTitle(page.route.id);
 		if (mapped !== null) return `${mapped} — 231tr0n`;
@@ -40,7 +42,7 @@
 		return seg.charAt(0).toUpperCase() + seg.slice(1) + ' — 231tr0n';
 	});
 
-	let canonicalUrl = $derived(`${__SITE_URL__}${page.url.pathname}`);
+	const canonicalUrl = $derived(`${__SITE_URL__}${page.url.pathname}`);
 
 	$effect(() => {
 		return setupExternalLinks();
@@ -112,7 +114,9 @@
 </script>
 
 <svelte:head>
+	<title>{page.error ? `${String(page.status)} — 231tr0n` : title}</title>
 	{#if !page.error}
+		<link href={canonicalUrl} rel="canonical" />
 		<meta content={title} property="og:title" />
 		<meta content={canonicalUrl} property="og:url" />
 		<meta name="twitter:title" content={title} />

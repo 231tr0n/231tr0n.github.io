@@ -32,7 +32,6 @@ export const scrollbarMinThumbV = 20;
 export const scrollbarMinThumbH = 20;
 export const scrollbarTrackSize = 5;
 export const scrollbarZIndex = 7;
-export const scrollbarAceSetupTimeout = 3000;
 export const scrollbarHideEpsilon = 1;
 export const scrollbarTrackOverhang = 2;
 
@@ -42,3 +41,7 @@ export const decimalPrecision = 2;
 export const externalLinkRel = 'noopener noreferrer';
 
 export const sandboxPolicy = 'allow-forms allow-modals allow-popups allow-scripts allow-downloads';
+
+// Trusted, same-origin game snippets need storage access to resume a saved game.
+// Never use this for user-supplied HTML.
+export const trustedSandboxPolicy = `${sandboxPolicy} allow-same-origin`;

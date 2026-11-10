@@ -19,7 +19,8 @@
 		"lint-fix": "eslint --fix . && prettier --write .",
 		"test:unit": "vitest",
 		"test": "npm run test:unit -- --run",
-		"ci": "npm install && npm run lint && npm run build && npm run test"
+		"test:coverage": "vitest --run --coverage",
+		"ci": "npm ci && npm run lint && npm run build && npm run test"
 	},
 	"devDependencies": {
 		"@eslint-community/eslint-plugin-eslint-comments": "^4.8.1",
@@ -30,7 +31,11 @@
 		"@sveltejs/kit": "^3.1.1",
 		"@sveltejs/load-config": "^0.2.3",
 		"@sveltejs/vite-plugin-svelte": "^7.3.1",
+		"@testing-library/jest-dom": "^7.0.1",
+		"@testing-library/svelte": "^5.4.2",
+		"@types/jsdom": "^30.0.0",
 		"@types/node": "^26.6.6",
+		"@vitest/coverage-v8": "^5.1.0",
 		"eslint": "^10.14.0",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-es-x": "^10.1.0",
@@ -38,6 +43,7 @@
 		"eslint-plugin-security": "^4.2.1",
 		"eslint-plugin-svelte": "^3.24.1",
 		"globals": "^17.14.0",
+		"jsdom": "^31.0.0",
 		"npm-check-updates": "^23.1.1",
 		"prettier": "^3.9.10",
 		"prettier-plugin-svelte": "^4.1.1",

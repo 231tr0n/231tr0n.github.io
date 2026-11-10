@@ -5,9 +5,17 @@
 
 	const games: PostData[] = [
 		{
+			name: 'Ludo',
+			badges: ['javascript', 'html', 'css'],
+			description: 'Classic Ludo for 2 to 4 players on a 15×15 board with Everforest colors.',
+			url: '/games/ludo',
+			open: false,
+			external: false
+		},
+		{
 			name: 'TicTacToe',
 			badges: ['javascript', 'html', 'css'],
-			description: 'Creating TicTacToe game in browser with html, css and javascript.',
+			description: 'Local two-player TicTacToe built with plain HTML, CSS, and JavaScript.',
 			url: '/games/tictactoe',
 			open: false,
 			external: false

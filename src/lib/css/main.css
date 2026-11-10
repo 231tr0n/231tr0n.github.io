@@ -158,6 +158,7 @@ progress::-webkit-progress-bar {
 
 a {
 	text-decoration: none;
+	overflow-wrap: anywhere;
 	color: var(--color-anchor);
 }
 
@@ -169,13 +170,8 @@ a img {
 	border: 2px solid transparent;
 }
 
-a img:hover,
-a img.border-img:hover {
+a img:hover {
 	border: 2px solid var(--color-anchor);
-}
-
-a img.border-img {
-	border: 2px solid var(--color-component-background);
 }
 
 body {
@@ -193,6 +189,14 @@ button {
 	color: var(--color-button-foreground);
 	border: 2px solid transparent;
 	outline: none;
+}
+
+a:focus-visible,
+button:focus-visible,
+select:focus-visible,
+input:focus-visible {
+	outline: 2px solid var(--color-anchor);
+	outline-offset: 2px;
 }
 
 button:hover {
@@ -245,6 +249,7 @@ ol {
 
 li,
 p {
+	overflow-wrap: anywhere;
 	text-align: justify;
 }
 
@@ -270,10 +275,6 @@ hr {
 	align-items: center;
 }
 
-.zeltron-box-shadow {
-	box-shadow: 0 0 5px var(--color-foreground);
-}
-
 .zeltron-error {
 	font-size: 30px;
 	padding: 1em;
@@ -286,20 +287,11 @@ hr {
 	color: var(--color-foreground);
 }
 
-.zeltron-anchor {
-	border: 2px solid transparent;
-}
-
-.zeltron-anchor:hover {
-	border: 2px solid var(--color-anchor);
-}
-
 .zeltron-border,
 .zeltron-component-border {
 	border: 1px solid var(--color-component-background);
 }
 
-.zeltron-thick-border,
 .zeltron-thick-component-border {
 	border: 2px solid var(--color-component-background);
 }
@@ -339,7 +331,9 @@ hr {
 	border-radius: 4px;
 	font-size: 12px;
 	font-family: 'Roboto-Condensed', monospace;
-	white-space: nowrap;
+	max-width: calc(100vw - 8px);
+	overflow-wrap: anywhere;
+	white-space: normal;
 	background-color: var(--color-component-background);
 	color: var(--color-component-foreground);
 	pointer-events: none;

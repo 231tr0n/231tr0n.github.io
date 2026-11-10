@@ -1,6 +1,13 @@
-import { syncScroll, attachAxis, doubleAnimationFrame, makeTrack } from './scrollbar-core';
-import { processAce, ensureAceProcessed, type AceScrollbarInstance } from './scrollbar-ace';
-import { scrollbarTrackSize, scrollbarTrackOverhang } from '#lib/constants/app.constants.js';
+import {
+	syncScroll,
+	attachAxis,
+	doubleAnimationFrame,
+	makeTrack,
+	styleTrack,
+	readInlineStyle,
+	restoreInlineStyle
+} from './scrollbar-core.js';
+import { processAce, type AceScrollbarInstance } from './scrollbar-ace.js';
 
 const initScrollbar = (
 	node: HTMLElement,
@@ -10,33 +17,32 @@ const initScrollbar = (
 	hThumb: HTMLElement | null,
 	onDestroy?: () => void
 ) => {
+	const previousScrollbarWidth = readInlineStyle(node, 'scrollbar-width');
 	node.setAttribute('data-custom-scrollbar', '');
 	node.style.setProperty('scrollbar-width', 'none');
 
-	const eventCleanups: (() => void)[] = [];
-	if (vTrack && vThumb) eventCleanups.push(...attachAxis(node, vTrack, vThumb, 'v'));
-	if (hTrack && hThumb) eventCleanups.push(...attachAxis(node, hTrack, hThumb, 'h'));
+	const axes = [
+		vTrack && vThumb ? { track: vTrack, thumb: vThumb, dir: 'v' as const } : null,
+		hTrack && hThumb ? { track: hTrack, thumb: hThumb, dir: 'h' as const } : null
+	].filter((axis): axis is { track: HTMLElement; thumb: HTMLElement; dir: 'v' | 'h' } =>
+		Boolean(axis)
+	);
+	const syncAll = () => {
+		for (const axis of axes) syncScroll(node, axis.track, axis.thumb, axis.dir);
+	};
+	const eventCleanups = axes.flatMap((axis) => attachAxis(node, axis.track, axis.thumb, axis.dir));
 
-	const resizeObserver = new ResizeObserver(() => {
-		if (vTrack && vThumb) syncScroll(node, vTrack, vThumb, 'v');
-		if (hTrack && hThumb) syncScroll(node, hTrack, hThumb, 'h');
-	});
+	const resizeObserver = new ResizeObserver(syncAll);
 	resizeObserver.observe(node);
 	if (vTrack?.parentElement) resizeObserver.observe(vTrack.parentElement);
 	if (hTrack?.parentElement) resizeObserver.observe(hTrack.parentElement);
 
 	const mutationObserver = new MutationObserver(() => {
-		requestAnimationFrame(() => {
-			if (vTrack && vThumb) syncScroll(node, vTrack, vThumb, 'v');
-			if (hTrack && hThumb) syncScroll(node, hTrack, hThumb, 'h');
-		});
+		requestAnimationFrame(syncAll);
 	});
 	mutationObserver.observe(node, { attributes: true, subtree: true });
 
-	doubleAnimationFrame(() => {
-		if (vTrack && vThumb) syncScroll(node, vTrack, vThumb, 'v');
-		if (hTrack && hThumb) syncScroll(node, hTrack, hThumb, 'h');
-	});
+	doubleAnimationFrame(syncAll);
 
 	let destroyed = false;
 	return {
@@ -44,7 +50,7 @@ const initScrollbar = (
 			if (destroyed) return;
 			destroyed = true;
 			node.removeAttribute('data-custom-scrollbar');
-			node.style.removeProperty('scrollbar-width');
+			restoreInlineStyle(node, 'scrollbar-width', previousScrollbarWidth);
 			resizeObserver.disconnect();
 			mutationObserver.disconnect();
 			eventCleanups.forEach((cleanup) => {
@@ -79,7 +85,7 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 	const instances = new Map<HTMLElement, ScrollbarInstance>();
 	const aceInstances = new Map<HTMLElement, AceScrollbarInstance>();
 	const posRefCount = new Map<HTMLElement, number>();
-	const forcedParents = new WeakSet<HTMLElement>();
+	const forcedParents = new Map<HTMLElement, ReturnType<typeof readInlineStyle>>();
 
 	const revertEnsurePos = (elem: HTMLElement) => {
 		const count = posRefCount.get(elem);
@@ -88,8 +94,9 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 			posRefCount.set(elem, count - 1);
 			return;
 		}
-		if (forcedParents.has(elem)) {
-			elem.style.removeProperty('position');
+		const previous = forcedParents.get(elem);
+		if (previous) {
+			restoreInlineStyle(elem, 'position', previous);
 			forcedParents.delete(elem);
 		}
 		posRefCount.delete(elem);
@@ -112,8 +119,8 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 
 	const ensurePos = (elem: HTMLElement) => {
 		if (!posRefCount.has(elem) && getComputedStyle(elem).position === 'static') {
-			elem.style.position = 'relative';
-			forcedParents.add(elem);
+			forcedParents.set(elem, readInlineStyle(elem, 'position'));
+			elem.style.setProperty('position', 'relative', 'important');
 		}
 		posRefCount.set(elem, (posRefCount.get(elem) ?? 0) + 1);
 	};
@@ -122,43 +129,26 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 		const axes = getScrollAxes(el);
 		if (!axes.v && !axes.h) return;
 
-		let vTrack: HTMLElement | null = null;
-		let vThumb: HTMLElement | null = null;
-		let hTrack: HTMLElement | null = null;
-		let hThumb: HTMLElement | null = null;
 		const affectedParents: HTMLElement[] = [];
-
-		if (axes.v) {
+		const tracks = new Map<'v' | 'h', { track: HTMLElement; thumb: HTMLElement }>();
+		for (const { dir, needed } of [
+			{ dir: 'v' as const, needed: axes.v },
+			{ dir: 'h' as const, needed: axes.h }
+		]) {
+			if (!needed) continue;
 			const parent = el.parentElement;
-			if (parent) {
-				ensurePos(parent);
-				affectedParents.push(parent);
-				const trackParts = makeTrack('v');
-				vTrack = trackParts.track;
-				vThumb = trackParts.thumb;
-				vTrack.style.top = '0';
-				vTrack.style.right = '0';
-				vTrack.style.width = `${String(scrollbarTrackSize)}px`;
-				vTrack.style.height = `calc(100% + ${String(scrollbarTrackOverhang)}px)`;
-				parent.appendChild(vTrack);
-			}
+			if (!parent) continue;
+			ensurePos(parent);
+			affectedParents.push(parent);
+			const trackParts = makeTrack(dir);
+			styleTrack(trackParts.track, dir);
+			parent.appendChild(trackParts.track);
+			tracks.set(dir, trackParts);
 		}
-
-		if (axes.h) {
-			const parent = el.parentElement;
-			if (parent) {
-				ensurePos(parent);
-				affectedParents.push(parent);
-				const trackParts = makeTrack('h');
-				hTrack = trackParts.track;
-				hThumb = trackParts.thumb;
-				hTrack.style.bottom = '0';
-				hTrack.style.left = '0';
-				hTrack.style.right = '0';
-				hTrack.style.height = `${String(scrollbarTrackSize)}px`;
-				parent.appendChild(hTrack);
-			}
-		}
+		const vTrack = tracks.get('v')?.track ?? null;
+		const vThumb = tracks.get('v')?.thumb ?? null;
+		const hTrack = tracks.get('h')?.track ?? null;
+		const hThumb = tracks.get('h')?.thumb ?? null;
 
 		if (vTrack || hTrack) {
 			const instance = initScrollbar(el, vTrack, vThumb, hTrack, hThumb, () => {
@@ -173,10 +163,10 @@ export const setupScrollbars = (container: HTMLElement = document.body) => {
 			? node
 			: node.closest<HTMLElement>('.ace_editor');
 		if (editor) {
-			ensureAceProcessed(editor, aceInstances);
+			processAce(editor, aceInstances);
 		} else {
 			const editors = node.querySelectorAll<HTMLElement>('.ace_editor');
-			for (const aceEditor of editors) ensureAceProcessed(aceEditor, aceInstances);
+			for (const aceEditor of editors) processAce(aceEditor, aceInstances);
 		}
 
 		processScrollable(node);

@@ -7,7 +7,7 @@
 	let mounted = $state(false);
 
 	const toggleTheme = () => {
-		const isDark = document.body.classList.toggle('dark');
+		const isDark = !darkMode().dark;
 		darkMode().dark = isDark;
 		try {
 			localStorage.setItem(themeStorageKey, isDark ? themeDark : themeLight);
@@ -17,6 +17,7 @@
 	};
 
 	onMount(() => {
+		// The bootstrap script has already applied the persisted theme to the body.
 		darkMode().dark = document.body.classList.contains('dark');
 		mounted = true;
 	});
@@ -49,6 +50,7 @@
 	<button
 		class="zeltron-strong-component"
 		aria-label="Toggle theme"
+		aria-pressed={darkMode().dark}
 		onclick={toggleTheme}
 		type="button">
 		{#if mounted}

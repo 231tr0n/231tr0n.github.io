@@ -1,27 +1,31 @@
 <script lang="ts">
+	import { tick } from 'svelte';
+	import { on } from 'svelte/events';
 	import { slide } from 'svelte/transition';
 	import { selectPaddingOffset } from '#lib/constants/app.constants.js';
-	import type { OnSetSelectedItem } from '#lib/types/index.js';
+	import type { SetSelectedItem } from '#lib/types/index.js';
 
 	let {
 		items,
-		emptyItem = false,
 		currentItem,
 		colored,
 		fixedWidth = false,
 		onSetSelectedItem
 	}: {
 		items: string[];
-		emptyItem?: boolean;
 		currentItem: number;
 		colored: boolean;
 		fixedWidth?: boolean;
-		onSetSelectedItem: OnSetSelectedItem | null;
+		onSetSelectedItem: SetSelectedItem | null;
 	} = $props();
 
 	let open = $state(false);
 	let selectContext: HTMLElement;
-	const localItems = $derived(emptyItem ? ['', ...items] : [...items]);
+	let selectRoot: HTMLElement;
+	const selectId = $props.id();
+	const triggerId = `${selectId}-trigger`;
+	const menuId = `${selectId}-listbox`;
+	const localItems = $derived(items);
 	const largest = $derived.by(() => {
 		let longest = '';
 		for (const item of localItems) {
@@ -41,27 +45,99 @@
 		};
 	};
 
+	const focusOption = (index: number) => {
+		const options = Array.from(selectRoot.querySelectorAll<HTMLElement>('[role="option"]'));
+		options.at(index)?.focus();
+	};
+
+	const openMenu = async (index = currentItem) => {
+		open = true;
+		await tick();
+		focusOption(index);
+	};
+
+	const closeMenu = (restoreFocus = false) => {
+		open = false;
+		if (restoreFocus) selectContext.focus({ preventScroll: true });
+	};
+
 	const toggleSelectionMenu = () => {
-		open = !open;
+		if (open) closeMenu();
+		else void openMenu();
 	};
 
 	const selectItem = (item: number) => {
 		onSetSelectedItem?.(item);
-		toggleSelectionMenu();
+		closeMenu(true);
 	};
+
+	const onTriggerKeydown = (event: KeyboardEvent) => {
+		if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+			event.preventDefault();
+			void openMenu(currentItem);
+		} else if (event.key === 'Escape' && open) {
+			event.preventDefault();
+			closeMenu(true);
+		}
+	};
+
+	const onOptionKeydown = (event: KeyboardEvent, index: number) => {
+		switch (event.key) {
+			case 'ArrowDown':
+				event.preventDefault();
+				focusOption((index + 1) % localItems.length);
+				break;
+			case 'ArrowUp':
+				event.preventDefault();
+				focusOption((index - 1 + localItems.length) % localItems.length);
+				break;
+			case 'Home':
+				event.preventDefault();
+				focusOption(0);
+				break;
+			case 'End':
+				event.preventDefault();
+				focusOption(localItems.length - 1);
+				break;
+			case 'Enter':
+			case ' ':
+				event.preventDefault();
+				selectItem(index);
+				break;
+			case 'Escape':
+				event.preventDefault();
+				closeMenu(true);
+				break;
+			case 'Tab':
+				closeMenu(true);
+				break;
+		}
+	};
+
+	$effect(() => {
+		if (!open) return;
+		return on(window, 'pointerdown', (event) => {
+			if (event.target instanceof Node && selectRoot.contains(event.target)) return;
+			closeMenu();
+		});
+	});
 </script>
 
-<div class="select-root" class:fixedWidth>
+<div bind:this={selectRoot} class="select-root" class:fixedWidth>
 	<button
 		bind:this={selectContext}
+		id={triggerId}
 		class="select-context"
 		class:fixedWidth
 		class:zeltron-strong-component={colored}
+		aria-controls={open ? menuId : undefined}
 		aria-expanded={open}
+		aria-haspopup="listbox"
 		aria-label="Select item, current: {localItems.at(currentItem) ?? ''}"
 		onclick={toggleSelectionMenu}
+		onkeydown={onTriggerKeydown}
 		type="button">
-		{localItems.at(currentItem)}
+		<span class="select-label">{localItems.at(currentItem)}</span>
 		{#if open}
 			<svg
 				fill="currentColor"
@@ -93,13 +169,18 @@
 		<div
 			class="select-menu zeltron-flex-middle zeltron-component zeltron-thick-component-border"
 			transition:slide>
-			<div class="content">
+			<div id={menuId} class="content" aria-labelledby={triggerId} role="listbox" tabindex="-1">
 				{#each localItems.entries() as [index, item] (index)}
 					<button
-						aria-current={index === currentItem ? 'true' : undefined}
+						aria-selected={index === currentItem}
 						onclick={() => {
 							selectItem(index);
 						}}
+						onkeydown={(event) => {
+							onOptionKeydown(event, index);
+						}}
+						role="option"
+						tabindex="-1"
 						type="button">
 						{item}
 					</button>
@@ -119,6 +200,7 @@
 	svg {
 		width: 15px;
 		height: 15px;
+		flex: 0 0 auto;
 		margin-left: 10px;
 	}
 
@@ -138,10 +220,20 @@
 		justify-content: space-between;
 		align-items: center;
 		position: relative;
+		min-height: 24px;
+		white-space: nowrap;
 	}
 
 	.select-context.fixedWidth {
-		width: min(100%, 10rem);
+		width: max-content;
+		max-width: 100%;
+	}
+
+	.select-label {
+		min-width: 0;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.select-menu {
@@ -149,17 +241,21 @@
 		top: 100%;
 		left: 50%;
 		transform: translate(-50%, 0%);
+		min-width: 100%;
 	}
 
 	.content {
 		width: fit-content;
+		flex: 1;
 		display: flex;
 		flex-direction: column;
-		max-height: 250px;
+		max-height: min(250px, calc(100vh - 150px));
 		overflow: auto;
 	}
 
 	div.select-menu button {
 		width: 100%;
+		min-height: 24px;
+		white-space: nowrap;
 	}
 </style>

@@ -3,6 +3,7 @@ import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { defineConfig } from 'vitest/config';
 import { normalizePath } from 'vite';
 import { sveltekit } from '@sveltejs/kit/vite';
+import { svelteTesting } from '@testing-library/svelte/vite';
 import { visualizer } from 'rollup-plugin-visualizer';
 import pkg from './package.json' with { type: 'json' };
 
@@ -51,6 +52,7 @@ export default defineConfig(({ command, isPreview }) => ({
 				base: getBasePath(command === 'serve' && isPreview !== true)
 			}
 		}),
+		svelteTesting(),
 		visualizer(),
 		{
 			name: 'static-watch',
@@ -69,6 +71,19 @@ export default defineConfig(({ command, isPreview }) => ({
 	],
 	test: {
 		expect: { requireAssertions: true },
+		coverage: {
+			provider: 'v8',
+			reportsDirectory: './coverage',
+			reporter: ['text', 'html', 'lcov'],
+			include: ['src/**/*.{ts,js,svelte}', 'static/resources/snippets/**/*.js'],
+			exclude: [
+				'src/**/*.d.ts',
+				'src/**/*.spec.ts',
+				'src/**/*.svelte.spec.ts',
+				'src/test/**',
+				'src/lib/types/**'
+			]
+		},
 		projects: [
 			{
 				extends: './vite.config.ts',
@@ -76,7 +91,16 @@ export default defineConfig(({ command, isPreview }) => ({
 					name: 'server',
 					environment: 'node',
 					include: ['src/**/*.{test,spec}.{js,ts}'],
-					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}']
+					exclude: ['src/**/*.svelte.{test,spec}.{js,ts}', 'src/**/*.dom.spec.ts']
+				}
+			},
+			{
+				extends: './vite.config.ts',
+				test: {
+					name: 'client',
+					environment: 'jsdom',
+					setupFiles: ['./src/test/setup.ts'],
+					include: ['src/**/*.svelte.spec.ts', 'src/**/*.dom.spec.ts']
 				}
 			}
 		]

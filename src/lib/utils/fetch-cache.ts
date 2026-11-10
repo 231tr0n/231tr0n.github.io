@@ -10,31 +10,53 @@ const parseCacheEntry = (raw: string): { data: string; timestamp: number } | nul
 		}
 		return null;
 	} catch (error) {
-		console.error('Failed to parse cache entry', error);
+		console.warn('Failed to parse cache entry', error);
 		return null;
 	}
 };
 
+export class HttpError extends Error {
+	public readonly status: number;
+
+	public constructor(status: number) {
+		super(`Fetch failed: ${String(status)}`);
+		this.name = 'HttpError';
+		this.status = status;
+	}
+}
+
 export const cachedFetch = async (url: string): Promise<string> => {
 	const cacheKey = `${cacheKeyPrefix}${url}`;
+	let stale: string | null = null;
 	try {
 		const raw = localStorage.getItem(cacheKey);
 		if (raw !== null) {
 			const entry = parseCacheEntry(raw);
-			if (entry !== null && Date.now() - entry.timestamp < cacheTtl) return entry.data;
-			localStorage.removeItem(cacheKey);
+			if (entry === null) {
+				try {
+					localStorage.removeItem(cacheKey);
+				} catch {
+					// Ignore unavailable storage.
+				}
+			} else if (Date.now() - entry.timestamp < cacheTtl) return entry.data;
+			else stale = entry.data;
 		}
 	} catch (error) {
-		console.error('Failed to read cache', error);
+		console.warn('Failed to read cache', error);
 	}
 
-	const response = await fetch(url);
-	if (!response.ok) throw new Error(`Fetch failed: ${String(response.status)}`);
-	const text = await response.text();
 	try {
-		localStorage.setItem(cacheKey, JSON.stringify({ data: text, timestamp: Date.now() }));
+		const response = await fetch(url);
+		if (!response.ok) throw new HttpError(response.status);
+		const text = await response.text();
+		try {
+			localStorage.setItem(cacheKey, JSON.stringify({ data: text, timestamp: Date.now() }));
+		} catch (error) {
+			console.warn('Failed to write cache', error);
+		}
+		return text;
 	} catch (error) {
-		console.error('Failed to write cache', error);
+		if (stale !== null && !(error instanceof HttpError)) return stale;
+		throw error;
 	}
-	return text;
 };
