@@ -19,7 +19,7 @@
 	let pageDiv: HTMLDivElement;
 
 	const getSpyBottom = () =>
-		(pageDiv?.getBoundingClientRect().top ?? 0) + (breadcrumb?.offsetHeight ?? 0) + scrollspyOffset;
+		pageDiv.getBoundingClientRect().top + (breadcrumb?.offsetHeight ?? 0) + scrollspyOffset;
 
 	const onSetSelectedItem = (value: number) => {
 		if (!scrollspy || !breadcrumb) return;
