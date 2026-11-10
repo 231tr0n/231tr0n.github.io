@@ -22,6 +22,35 @@ const msg = document.getElementById('message');
 const restart = document.getElementById('restart');
 let turn = 'X';
 let moves = 0;
+let gameOver = false;
+
+const STORAGE_KEY = 'tictactoe-game-state';
+
+const readStoredState = () => {
+	try {
+		return sessionStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(STORAGE_KEY);
+	} catch {
+		return null;
+	}
+};
+
+const writeStoredState = (value) => {
+	try {
+		sessionStorage.setItem(STORAGE_KEY, value);
+		localStorage.setItem(STORAGE_KEY, value);
+	} catch {
+		// Persistence is best-effort.
+	}
+};
+
+const clearStoredState = () => {
+	try {
+		sessionStorage.removeItem(STORAGE_KEY);
+		localStorage.removeItem(STORAGE_KEY);
+	} catch {
+		// Ignore unavailable storage.
+	}
+};
 
 const win = () =>
 	WIN_LINES.some(
@@ -41,6 +70,7 @@ const paint = (cell, mark) => {
 };
 
 const setGameOver = (over) => {
+	gameOver = over;
 	board.classList.toggle('game-over', over);
 	if (!over) return;
 	for (const cell of cells) {
@@ -49,17 +79,60 @@ const setGameOver = (over) => {
 	}
 };
 
-const reset = () => {
+const saveState = () => {
+	writeStoredState(
+		JSON.stringify({
+			cells: cells.map((cell) => cell.textContent),
+			turn,
+			moves,
+			gameOver,
+			message: msg.textContent
+		})
+	);
+};
+
+const reset = (clearStorage = true) => {
 	for (const cell of cells) paint(cell, '');
 	turn = 'X';
 	moves = 0;
 	setGameOver(false);
 	msg.textContent = "X's turn";
+	if (clearStorage) clearStoredState();
+};
+
+const restoreState = () => {
+	const raw = readStoredState();
+	if (raw === null) return false;
+	try {
+		const stored = JSON.parse(raw);
+		if (
+			stored === null ||
+			typeof stored !== 'object' ||
+			!Array.isArray(stored.cells) ||
+			stored.cells.length !== 9
+		) {
+			clearStoredState();
+			return false;
+		}
+		reset(false);
+		stored.cells.forEach((mark, index) => {
+			const cell = cells.at(index);
+			if (cell) paint(cell, mark === 'X' || mark === 'O' ? mark : '');
+		});
+		turn = stored.turn === 'O' ? 'O' : 'X';
+		moves = Number.isInteger(stored.moves) ? stored.moves : 0;
+		setGameOver(Boolean(stored.gameOver));
+		msg.textContent = typeof stored.message === 'string' ? stored.message : "X's turn";
+		return true;
+	} catch {
+		clearStoredState();
+		return false;
+	}
 };
 
 const play = (i, j) => {
 	const cell = cellAt(i, j);
-	if (cell.textContent || win()) return;
+	if (gameOver || cell.textContent || win()) return;
 	paint(cell, turn);
 	moves++;
 	if (win()) {
@@ -72,12 +145,13 @@ const play = (i, j) => {
 		turn = turn === 'X' ? 'O' : 'X';
 		msg.textContent = `${turn}'s turn`;
 	}
+	saveState();
 };
 
-reset();
+if (!restoreState()) reset();
 msg.setAttribute('role', 'status');
 msg.setAttribute('aria-live', 'polite');
-restart.onclick = reset;
+restart.onclick = () => reset();
 for (let i = 0; i < 3; i++) {
 	for (let j = 0; j < 3; j++) {
 		const cell = cellAt(i, j);

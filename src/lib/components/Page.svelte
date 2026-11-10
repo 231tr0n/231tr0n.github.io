@@ -18,7 +18,8 @@
 	const items: string[] = $state([]);
 	let pageDiv: HTMLDivElement;
 
-	const getSpyBottom = () => (breadcrumb?.getBoundingClientRect().bottom ?? 0) + scrollspyOffset;
+	const getSpyBottom = () =>
+		(pageDiv?.getBoundingClientRect().top ?? 0) + (breadcrumb?.offsetHeight ?? 0) + scrollspyOffset;
 
 	const onSetSelectedItem = (value: number) => {
 		if (!scrollspy || !breadcrumb) return;

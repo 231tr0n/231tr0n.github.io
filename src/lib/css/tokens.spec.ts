@@ -53,6 +53,13 @@ describe('semantic color tokens', () => {
 		expect(ludoCss).toMatch(/\.dice\s*\{[^}]*margin:\s*auto/s);
 		expect(ludoCss).toMatch(/\.dice:not\(:disabled\)[^{]*\{[^}]*animation:\s*dice-ready/s);
 		expect(ludoCss).toMatch(
+			/prefers-reduced-motion[\s\S]*\.token\.movable[\s\S]*animation:\s*none/
+		);
+		expect(ludoCss).toMatch(
+			/prefers-reduced-motion[\s\S]*\.token\.movable\.in-base[\s\S]*animation:\s*none/
+		);
+		expect(ludoCss).toMatch(/prefers-reduced-motion[\s\S]*\.dice\.rolling[\s\S]*animation:\s*none/);
+		expect(ludoCss).toMatch(
 			/prefers-reduced-motion[\s\S]*\.dice:not\(:disabled\)[\s\S]*animation:\s*none/
 		);
 	});

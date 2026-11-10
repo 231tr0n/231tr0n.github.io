@@ -167,7 +167,7 @@ const FINISH_LINES = [
 
 // Path model: -1 = yard, 0 = spawn square, 1..50 = remaining ring, 51..55 = home lane,
 // 56 = center approach, 57 = finish.
-const RING_SIZE = 52;
+const RING_SIZE = PATH.length;
 const LAST_RING_POS = RING_SIZE - 2;
 const HOME_LANE_STEPS = HOME_LANES[0].length;
 const STEPS_TO_FINISH = HOME_LANE_STEPS + 1;
@@ -208,6 +208,34 @@ let state = {
 };
 let playerEls = [];
 let tokenEls = new Map();
+
+const STORAGE_KEY = 'ludo-game-state';
+
+const readStoredState = () => {
+	try {
+		return sessionStorage.getItem(STORAGE_KEY) ?? localStorage.getItem(STORAGE_KEY);
+	} catch {
+		return null;
+	}
+};
+
+const writeStoredState = (value) => {
+	try {
+		sessionStorage.setItem(STORAGE_KEY, value);
+		localStorage.setItem(STORAGE_KEY, value);
+	} catch {
+		// Persistence is best-effort; the game still works without storage.
+	}
+};
+
+const clearStoredState = () => {
+	try {
+		sessionStorage.removeItem(STORAGE_KEY);
+		localStorage.removeItem(STORAGE_KEY);
+	} catch {
+		// Ignore unavailable storage.
+	}
+};
 
 const seatFor = (player, count = state.count) => {
 	const seats = count === 2 ? [0, 2] : count === 3 ? [0, 1, 2] : [0, 1, 2, 3];
@@ -361,6 +389,32 @@ const renderTokens = () => {
 	}
 };
 
+const saveState = () => {
+	if (state.phase === 'rolling' || state.phase === 'animating') return;
+	if (state.phase === 'setup') {
+		clearStoredState();
+		return;
+	}
+	writeStoredState(
+		JSON.stringify({
+			phase: state.phase,
+			count: state.count,
+			tokens: state.tokens,
+			current: state.current,
+			die: state.die,
+			sixes: state.sixes,
+			message: state.message,
+			legal: state.legal,
+			rolloff: {
+				participants: state.rolloff.participants,
+				pointer: state.rolloff.pointer,
+				rolls: [...state.rolloff.rolls.entries()]
+			},
+			winner: state.winner
+		})
+	);
+};
+
 const render = () => {
 	setupScreen.hidden = state.phase !== 'setup';
 	gameScreen.hidden = state.phase === 'setup';
@@ -420,6 +474,7 @@ const render = () => {
 	}
 
 	renderTokens();
+	saveState();
 };
 
 const YARD_ORIGINS = [
@@ -907,5 +962,54 @@ restartButton.setAttribute('aria-label', 'Restart game');
 restartButton.title = 'Restart game';
 diceButton.setAttribute('aria-label', 'Roll the dice');
 
-updateCountButtons();
-render();
+const restoreState = () => {
+	const raw = readStoredState();
+	if (raw === null) return false;
+	try {
+		const stored = JSON.parse(raw);
+		const valid =
+			stored !== null &&
+			typeof stored === 'object' &&
+			[2, 3, 4].includes(stored.count) &&
+			Array.isArray(stored.tokens) &&
+			stored.tokens.length === stored.count * TOKENS_PER_PLAYER &&
+			Array.isArray(stored.legal) &&
+			stored.phase !== 'setup';
+		if (!valid) {
+			clearStoredState();
+			return false;
+		}
+		state = {
+			phase: stored.phase,
+			count: stored.count,
+			tokens: stored.tokens,
+			current: stored.current,
+			die: stored.die,
+			sixes: stored.sixes,
+			message: stored.message,
+			legal: stored.legal,
+			safe: buildSafeCells(),
+			rolloff: {
+				participants: stored.rolloff?.participants ?? [],
+				pointer: stored.rolloff?.pointer ?? 0,
+				rolls: new Map(stored.rolloff?.rolls ?? [])
+			},
+			winner: stored.winner ?? -1
+		};
+		selectedCount = state.count;
+		buildBoard();
+		buildTokens();
+		buildPlayerStrip();
+		updateCountButtons();
+		render();
+		return true;
+	} catch {
+		clearStoredState();
+		return false;
+	}
+};
+
+if (!restoreState()) {
+	updateCountButtons();
+	render();
+}

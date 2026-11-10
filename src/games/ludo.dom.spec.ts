@@ -374,7 +374,6 @@ describe('Ludo game', () => {
 		await runAsync('rollDice()');
 		expect(run<string>('state.phase')).toBe('choose');
 		expect(run<number>('state.legal.length')).toBe(4);
-		expect(dom?.window.document.querySelector('.move-bar')).toBeNull();
 		expect(run<string>('state.message')).toBe(
 			'Red rolled a 6. Tap a token in the yard to move it out.'
 		);
@@ -453,6 +452,7 @@ describe('Ludo game', () => {
 		run('state.tokens.at(4).pos = 35');
 		setDie(getDom(), 2);
 		await runAsync('rollDice()');
+		expect(run<number>('state.tokens.at(4).pos')).toBe(35);
 		expect(run<string>('state.message')).not.toMatch(/captur/i);
 		expect(
 			run<boolean>('state.legal.some((move) => move.tokenId === 0 && move.target === 9)')
@@ -828,7 +828,6 @@ describe('Ludo game', () => {
 		run(
 			'state.phase = "choose"; state.legal = [0, 1, 2, 3].map((tokenId) => ({ tokenId, target: 0 })); render()'
 		);
-		expect(dom?.window.document.querySelector('.move-bar')).toBeNull();
 		dom?.window.document.getElementById('restart')?.click();
 		expect(run<string>('state.phase')).toBe('setup');
 		expect(run<number>('state.legal.length')).toBe(0);
@@ -856,5 +855,23 @@ describe('Ludo game', () => {
 		const player = dom?.window.document.querySelector<HTMLElement>('.player');
 		expect(player?.getAttribute('aria-label')).toBe('Red player, 2 of 4 tokens home');
 		expect(player?.querySelector('.home-count')?.textContent).toBe('2/4');
+	});
+	it('restores a saved game and clears it on setup', () => {
+		run('startGame(4)');
+		run(
+			'state.phase = "choose"; state.current = 1; state.die = 4; state.sixes = 1; state.tokens.at(0).pos = 12; state.tokens.at(4).pos = 3; state.legal = [{ tokenId: 4, target: 7 }]; state.message = "Choose a token."; render()'
+		);
+		expect(run<string | null>('sessionStorage.getItem(STORAGE_KEY)')).not.toBeNull();
+		run(
+			'state.current = 0; state.tokens.forEach((token) => { token.pos = -1; }); state.phase = "setup"; restoreState()'
+		);
+		expect(run<string>('state.phase')).toBe('choose');
+		expect(run<number>('state.current')).toBe(1);
+		expect(run<number>('state.tokens.at(0).pos')).toBe(12);
+		expect(dom?.window.document.querySelectorAll('.ring-cell')).toHaveLength(52);
+
+		run('showSetup()');
+		expect(run<string | null>('sessionStorage.getItem(STORAGE_KEY)')).toBeNull();
+		expect(run<string | null>('localStorage.getItem(STORAGE_KEY)')).toBeNull();
 	});
 });

@@ -254,4 +254,20 @@ describe('TicTacToe game', () => {
 		element.dispatchEvent(new dom.window.KeyboardEvent('keydown', { key: 'a', bubbles: true }));
 		expect(element.textContent).toBe('');
 	});
+	it('restores a saved game and clears it on restart', () => {
+		dom = loadGame();
+		dom.window.eval('play(0, 0); play(1, 1)');
+		expect(dom.window.sessionStorage.getItem('tictactoe-game-state')).not.toBeNull();
+
+		dom.window.eval('reset(false)');
+		expect(cell(dom, '00').textContent).toBe('');
+		dom.window.eval('restoreState()');
+		expect(cell(dom, '00').textContent).toBe('X');
+		expect(cell(dom, '11').textContent).toBe('O');
+		expect(message(dom)).toBe("X's turn");
+
+		dom.window.document.getElementById('restart')?.click();
+		expect(dom.window.sessionStorage.getItem('tictactoe-game-state')).toBeNull();
+		expect(dom.window.localStorage.getItem('tictactoe-game-state')).toBeNull();
+	});
 });

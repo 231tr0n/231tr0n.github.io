@@ -355,6 +355,11 @@ svg * {
 	filter: brightness(1.2);
 }
 
+.token.movable:focus-visible {
+	outline: 3px solid var(--color-accent);
+	outline-offset: 3px;
+}
+
 .token.movable.in-base:focus-visible {
 	outline: 3px solid var(--color-foreground);
 	outline-offset: 2px;
@@ -475,10 +480,6 @@ svg * {
 
 .dice * {
 	cursor: inherit;
-}
-
-.dice:disabled * {
-	cursor: default;
 }
 
 .dice.rolling {
