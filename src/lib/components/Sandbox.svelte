@@ -87,6 +87,7 @@
 		max-width: var(--layout-content-max-width);
 		box-sizing: border-box;
 		height: calc(100vh - 10vh - var(--layout-header-height) - var(--layout-footer-height));
+		min-height: 320px;
 	}
 
 	:global(.iframe.compact) {
@@ -107,6 +108,7 @@
 		display: flex;
 		flex-direction: column;
 		height: 100vh;
+		min-height: 0;
 		max-width: none;
 	}
 

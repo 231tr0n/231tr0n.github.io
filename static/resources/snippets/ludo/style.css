@@ -788,19 +788,23 @@ svg * {
 		flex-wrap: wrap;
 	}
 
+	.brand {
+		font-size: 13px;
+	}
+
 	.player {
-		padding: 1px 3px;
-		font-size: 9px;
-		gap: 3px;
+		padding: 0 2px;
+		font-size: 8px;
+		gap: 2px;
 	}
 
 	.player .dot {
-		width: 8px;
-		height: 8px;
+		width: 7px;
+		height: 7px;
 	}
 
 	.player .home-count {
-		font-size: 8px;
+		font-size: 7px;
 	}
 
 	.icon-button {
@@ -814,7 +818,7 @@ svg * {
 	}
 
 	.board {
-		width: min(94vw, 62vh, 700px);
+		width: min(94vw, 50vh, 700px);
 	}
 
 	.controls {
@@ -957,9 +961,8 @@ svg * {
 	}
 
 	.board {
-		height: 100%;
-		width: auto;
-		max-width: 100%;
+		height: auto;
+		width: min(94vw, 50vh, 700px);
 	}
 
 	.controls {
