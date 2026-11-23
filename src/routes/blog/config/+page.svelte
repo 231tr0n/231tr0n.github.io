@@ -78,13 +78,17 @@
 		<li>
 			Once I secured my first job via campus placements and started working at an enterprise level,
 			I quickly realised that my current auto completion setup was very slow since it was in <span
-				class="zeltron-highlightkeyword">vim script</span>
+				class="zeltron-highlightkeyword">
+				vim script
+			</span>
 			and the plugins which I was using were also in it.
 		</li>
 		<li>
 			Additionally I also needed debuggers to debug stuff unlike before when I used to make do with
 			print statements. Although there was a plugin for it like <a
-				href="https://github.com/puremourning/vimspector">Vimspector</a>
+				href="https://github.com/puremourning/vimspector">
+				Vimspector
+			</a>
 			, I felt like dabbling anymore with
 			<span class="zeltron-highlightkeyword">vim script</span>
 			is not going to meet my needs.
@@ -129,29 +133,34 @@
 		</li>
 		<li>
 			Finally I fixed all issues related to my configuration being <span
-				class="zeltron-highlightkeyword">performant on very big files</span>
+				class="zeltron-highlightkeyword">
+				performant on very big files
+			</span>
 			. I did this by opening sqlite.c file from the sqlite3 source code which was a amalgamated file
 			with 200000+ lines of code and the size of the file was 8MB+. Most of the issues I faced came from
 			treesitter and completion plugins.
 		</li>
 		<li>
 			After all these iterations of changing my editor's configuration, I ended up with around 50+
-			plugins most of which are from <a href="https://github.com/echasnovski/mini.nvim"
-				>mini.nvim</a>
+			plugins most of which are from <a href="https://github.com/echasnovski/mini.nvim">
+				mini.nvim
+			</a>
 			. The startup time of my configuration is less than 150ms and it works on files as big as 8MB without
 			any delays thus achieving the <span class="zeltron-highlightkeyword">ideal state</span>
 			which I always dreamt of.
 		</li>
 		<li>
-			Since I have achieved my ideal state, <span class="zeltron-highlightkeyword"
-				>I promised myself not to touch my editor's configuration unless necessary</span>
+			Since I have achieved my ideal state, <span class="zeltron-highlightkeyword">
+				I promised myself not to touch my editor's configuration unless necessary
+			</span>
 			. You can look at my github configuration commits to verify this claim.
 		</li>
 	</ul>
 	<h2>Acknowledgement</h2>
 	<p>
-		I am really grateful to all <span class="zeltron-highlightkeyword"
-			>neovim contributors, maintainers and plugin authors</span>
+		I am really grateful to all <span class="zeltron-highlightkeyword">
+			neovim contributors, maintainers and plugin authors
+		</span>
 		who do such a great job of patching neovim, developing features in it and creating such high quality
 		plugins.
 	</p>
